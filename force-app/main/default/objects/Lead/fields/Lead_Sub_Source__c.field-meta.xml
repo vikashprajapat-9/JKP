@@ -1,0 +1,97 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Lead_Sub_Source__c</fullName>
+    <label>Lead Sub Source</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <controllingField>LeadSource</controllingField>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Meta Form Ads</fullName>
+                <default>false</default>
+                <label>Meta Form Ads</label>
+            </value>
+            <value>
+                <fullName>Meta Lead Ads</fullName>
+                <default>false</default>
+                <label>Meta Lead Ads</label>
+            </value>
+            <value>
+                <fullName>Website Forms</fullName>
+                <default>false</default>
+                <label>Website Forms</label>
+            </value>
+            <value>
+                <fullName>LinkedIn Ads</fullName>
+                <default>false</default>
+                <label>LinkedIn Ads</label>
+            </value>
+            <value>
+                <fullName>Channel Partner</fullName>
+                <default>false</default>
+                <label>Channel Partner</label>
+            </value>
+            <value>
+                <fullName>Partner – Offline Form</fullName>
+                <default>false</default>
+                <label>Partner – Offline Form</label>
+            </value>
+            <value>
+                <fullName>Direct Lead</fullName>
+                <default>false</default>
+                <label>Direct Lead</label>
+            </value>
+            <value>
+                <fullName>Hotline Calls</fullName>
+                <default>false</default>
+                <label>Hotline Calls</label>
+            </value>
+            <value>
+                <fullName>Others</fullName>
+                <default>false</default>
+                <label>Others</label>
+            </value>
+        </valueSetDefinition>
+        <valueSettings>
+            <controllingFieldValue>Digital Source</controllingFieldValue>
+            <valueName>Meta Form Ads</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Digital Source</controllingFieldValue>
+            <valueName>Meta Lead Ads</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Digital Source</controllingFieldValue>
+            <valueName>Website Forms</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Digital Source</controllingFieldValue>
+            <valueName>LinkedIn Ads</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Channel Partner Source</controllingFieldValue>
+            <valueName>Channel Partner</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Manual Source</controllingFieldValue>
+            <valueName>Partner – Offline Form</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Manual Source</controllingFieldValue>
+            <valueName>Direct Lead</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Manual Source</controllingFieldValue>
+            <valueName>Hotline Calls</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Manual Source</controllingFieldValue>
+            <valueName>Others</valueName>
+        </valueSettings>
+    </valueSet>
+</CustomField>

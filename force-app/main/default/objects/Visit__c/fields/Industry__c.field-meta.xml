@@ -1,0 +1,74 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Industry__c</fullName>
+    <label>Industry</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>IT</fullName>
+                <default>false</default>
+                <label>IT</label>
+            </value>
+            <value>
+                <fullName>ITES/BPO/KPO</fullName>
+                <default>false</default>
+                <label>ITES/BPO/KPO</label>
+            </value>
+            <value>
+                <fullName>Manufacturing</fullName>
+                <default>false</default>
+                <label>Manufacturing</label>
+            </value>
+            <value>
+                <fullName>Financial SERV.</fullName>
+                <default>false</default>
+                <label>Financial SERV.</label>
+            </value>
+            <value>
+                <fullName>Hospitality Services</fullName>
+                <default>false</default>
+                <label>Hospitality Services</label>
+            </value>
+            <value>
+                <fullName>Medical / Pharmaceutical</fullName>
+                <default>false</default>
+                <label>Medical / Pharmaceutical</label>
+            </value>
+            <value>
+                <fullName>Media Entertainment</fullName>
+                <default>false</default>
+                <label>Media Entertainment</label>
+            </value>
+            <value>
+                <fullName>Travel Transport</fullName>
+                <default>false</default>
+                <label>Travel Transport</label>
+            </value>
+            <value>
+                <fullName>Real Estate</fullName>
+                <default>false</default>
+                <label>Real estate</label>
+            </value>
+            <value>
+                <fullName>Retail Services</fullName>
+                <default>false</default>
+                <label>Retail Services</label>
+            </value>
+            <value>
+                <fullName>Telecom</fullName>
+                <default>false</default>
+                <label>Telecom</label>
+            </value>
+            <value>
+                <fullName>Others</fullName>
+                <default>false</default>
+                <label>Others</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

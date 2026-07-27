@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Budget_Aligned__c</fullName>
+    <label>Budget Aligned</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Below Project Budget</fullName>
+                <default>false</default>
+                <label>Below Project Budget</label>
+            </value>
+            <value>
+                <fullName>Matching Budget</fullName>
+                <default>false</default>
+                <label>Matching Budget</label>
+            </value>
+            <value>
+                <fullName>Slightly Above Budget</fullName>
+                <default>false</default>
+                <label>Slightly Above Budget</label>
+            </value>
+            <value>
+                <fullName>Premium Buyer</fullName>
+                <default>false</default>
+                <label>Premium Buyer</label>
+            </value>
+            <value>
+                <fullName>Luxury Buyer</fullName>
+                <default>false</default>
+                <label>Luxury Buyer</label>
+            </value>
+            <value>
+                <fullName>Budget Not Finalized</fullName>
+                <default>false</default>
+                <label>Budget Not Finalized</label>
+            </value>
+            <value>
+                <fullName>Financial Assistance Required</fullName>
+                <default>false</default>
+                <label>Financial Assistance Required</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

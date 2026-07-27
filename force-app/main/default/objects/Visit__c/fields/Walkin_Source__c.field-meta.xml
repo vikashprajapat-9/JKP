@@ -1,0 +1,100 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Walkin_Source__c</fullName>
+    <label>Walkin Source</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Hoarding</fullName>
+                <default>false</default>
+                <label>Hoarding</label>
+            </value>
+            <value>
+                <fullName>Newspaper</fullName>
+                <default>false</default>
+                <label>Newspaper</label>
+            </value>
+            <value>
+                <fullName>Other Activations</fullName>
+                <default>false</default>
+                <label>Other Activations</label>
+            </value>
+            <value>
+                <fullName>Facebook/Instagram</fullName>
+                <default>false</default>
+                <label>Facebook/Instagram</label>
+            </value>
+            <value>
+                <fullName>99 Acres</fullName>
+                <default>false</default>
+                <label>99 Acres</label>
+            </value>
+            <value>
+                <fullName>Commonfloor</fullName>
+                <default>false</default>
+                <label>Commonfloor</label>
+            </value>
+            <value>
+                <fullName>Housing</fullName>
+                <default>false</default>
+                <label>Housing</label>
+            </value>
+            <value>
+                <fullName>Magicbricks</fullName>
+                <default>false</default>
+                <label>Magicbricks</label>
+            </value>
+            <value>
+                <fullName>Website</fullName>
+                <default>false</default>
+                <label>Website</label>
+            </value>
+            <value>
+                <fullName>Emailer</fullName>
+                <default>false</default>
+                <label>Emailer</label>
+            </value>
+            <value>
+                <fullName>SMS</fullName>
+                <default>false</default>
+                <label>SMS</label>
+            </value>
+            <value>
+                <fullName>Google</fullName>
+                <default>false</default>
+                <label>Google</label>
+            </value>
+            <value>
+                <fullName>Site Visit Referral</fullName>
+                <default>false</default>
+                <label>Site Visit Referral</label>
+            </value>
+            <value>
+                <fullName>V-Team</fullName>
+                <default>false</default>
+                <label>V-Team</label>
+            </value>
+            <value>
+                <fullName>V-Connect</fullName>
+                <default>false</default>
+                <label>V-Connect</label>
+            </value>
+            <value>
+                <fullName>V-Associates</fullName>
+                <default>false</default>
+                <label>V-Associates</label>
+            </value>
+            <value>
+                <fullName>Channel Partner</fullName>
+                <default>false</default>
+                <label>Channel Partner</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

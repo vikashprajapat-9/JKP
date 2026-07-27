@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Severity__c</fullName>
+    <externalId>false</externalId>
+    <formula>IF(ISPICKVAL(Error_Category__c, &quot;Authentication Error&quot;), &quot;Critical&quot;,
+IF(ISPICKVAL(Error_Category__c, &quot;Technical Error&quot;),      &quot;High&quot;,
+IF(ISPICKVAL(Error_Category__c, &quot;Master Data Error&quot;),    &quot;Medium&quot;,
+IF(ISPICKVAL(Error_Category__c, &quot;Business Error&quot;),       &quot;Medium&quot;,
+IF(ISPICKVAL(Error_Category__c, &quot;Rate Limit Error&quot;),     &quot;Low&quot;,
+&quot;Unknown&quot;)))))</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Severity</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

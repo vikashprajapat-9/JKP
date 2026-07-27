@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Purpose_Of_Visit__c</fullName>
+    <label>Purpose Of Visit</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>To meet my relationship manager</fullName>
+                <default>false</default>
+                <label>To meet my relationship manager</label>
+            </value>
+            <value>
+                <fullName>To visit the construction site</fullName>
+                <default>false</default>
+                <label>To visit the construction site</label>
+            </value>
+            <value>
+                <fullName>To get more information on my apartment/unit</fullName>
+                <default>false</default>
+                <label>To get more information on my apartment/unit</label>
+            </value>
+            <value>
+                <fullName>Future Investments</fullName>
+                <default>false</default>
+                <label>Future Investments</label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <label>Other</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

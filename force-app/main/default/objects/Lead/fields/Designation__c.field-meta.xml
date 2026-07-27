@@ -1,0 +1,85 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Designation__c</fullName>
+    <label>Designation</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Salaried Employee</fullName>
+                <default>false</default>
+                <label>Salaried Employee</label>
+            </value>
+            <value>
+                <fullName>Senior Professional</fullName>
+                <default>false</default>
+                <label>Senior Professional</label>
+            </value>
+            <value>
+                <fullName>Manager</fullName>
+                <default>false</default>
+                <label>Manager</label>
+            </value>
+            <value>
+                <fullName>IT Professional</fullName>
+                <default>false</default>
+                <label>IT Professional</label>
+            </value>
+            <value>
+                <fullName>Government Employee</fullName>
+                <default>false</default>
+                <label>Government Employee</label>
+            </value>
+            <value>
+                <fullName>Business Owner</fullName>
+                <default>false</default>
+                <label>Business Owner</label>
+            </value>
+            <value>
+                <fullName>Self Employed</fullName>
+                <default>false</default>
+                <label>Self Employed</label>
+            </value>
+            <value>
+                <fullName>Entrepreneur</fullName>
+                <default>false</default>
+                <label>Entrepreneur</label>
+            </value>
+            <value>
+                <fullName>Doctor</fullName>
+                <default>false</default>
+                <label>Doctor</label>
+            </value>
+            <value>
+                <fullName>CA / Lawyer</fullName>
+                <default>false</default>
+                <label>CA / Lawyer</label>
+            </value>
+            <value>
+                <fullName>NRI</fullName>
+                <default>false</default>
+                <label>NRI</label>
+            </value>
+            <value>
+                <fullName>Retired</fullName>
+                <default>false</default>
+                <label>Retired</label>
+            </value>
+            <value>
+                <fullName>Homemaker</fullName>
+                <default>false</default>
+                <label>Homemaker</label>
+            </value>
+            <value>
+                <fullName>Freelancer</fullName>
+                <default>false</default>
+                <label>Freelancer</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>
