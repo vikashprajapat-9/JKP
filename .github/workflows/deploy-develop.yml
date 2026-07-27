@@ -15,7 +15,7 @@ jobs:
         run: |
           npm install -g @salesforce/cli
           sf version
-          
+
       - name: Verify CLI Installation
         run: sf version
 
@@ -30,3 +30,11 @@ jobs:
       - name: Verify Authentication
         run: |
           sf org list
+
+      - name: Deploy Source
+        run: |
+          sf project deploy start \
+            --target-org integration \
+            --source-dir force-app \
+            --ignore-conflicts \
+            --wait 30
