@@ -12,8 +12,10 @@ jobs:
         uses: actions/checkout@v4
 
       - name: Install Salesforce CLI
-        uses: salesforcecli/github-action@v2
-
+        run: |
+          npm install -g @salesforce/cli
+          sf version
+          
       - name: Verify CLI Installation
         run: sf version
 
