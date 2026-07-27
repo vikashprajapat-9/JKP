@@ -3,7 +3,6 @@
     <fullName>Walkin_Source__c</fullName>
     <label>Walkin Source</label>
     <required>false</required>
-    <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Picklist</type>
     <valueSet>

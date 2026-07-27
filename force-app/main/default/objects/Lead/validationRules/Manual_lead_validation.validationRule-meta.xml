@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Manual_lead_validation</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(
+    OR(
+        ISPICKVAL(LeadSource, &quot;Manual Source&quot;)
+    ),
+    NOT(
+        OR(
+            ISPICKVAL(Lead_Priority__c, &quot;Hot&quot;),
+            ISPICKVAL(Lead_Priority__c, &quot;Warm&quot;)
+        )
+    )
+)</errorConditionFormula>
+    <errorMessage>Manually created leads must be classified as Hot or Warm</errorMessage>
+</ValidationRule>
