@@ -3,7 +3,6 @@
     <fullName>Residential_Address__c</fullName>
     <label>Residential Address</label>
     <length>32768</length>
-    <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Html</type>
     <visibleLines>25</visibleLines>

@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Name_minimum_2_Char</fullName>
+    <active>true</active>
+    <errorConditionFormula>OR(
+    ISBLANK(LastName),
+    LEN(TRIM(LastName)) &lt; 2,
+    REGEX(TRIM(LastName), &quot;^[0-9]+$&quot;)
+)</errorConditionFormula>
+    <errorMessage>Please enter a valid Lead Name.</errorMessage>
+</ValidationRule>

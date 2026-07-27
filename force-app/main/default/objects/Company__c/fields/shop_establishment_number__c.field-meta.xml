@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>shop_establishment_number__c</fullName>
+    <fullName>Shop_Establishment_number__c</fullName>
     <externalId>false</externalId>
-    <label>shop &amp; establishment number</label>
+    <label>Shop &amp; Establishment number</label>
     <length>255</length>
     <required>false</required>
     <trackHistory>false</trackHistory>

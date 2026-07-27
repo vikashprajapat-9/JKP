@@ -3,7 +3,6 @@
     <fullName>Pre_Hand_Over_Issues__c</fullName>
     <label>Pre Hand-Over Issues</label>
     <required>false</required>
-    <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
     <type>Picklist</type>
     <valueSet>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Project_is_mandatory</fullName>
+    <active>true</active>
+    <errorConditionFormula>ISBLANK(Project__c)</errorConditionFormula>
+    <errorMessage>Please enter the  Interested Project.</errorMessage>
+</ValidationRule>
