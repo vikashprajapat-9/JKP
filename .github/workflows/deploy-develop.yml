@@ -11,7 +11,7 @@ concurrency:
 
 jobs:
   deploy-integration:
-    name: Deploy to Integration Sandbox
+    name: Deploy to Main Sandbox
     runs-on: ubuntu-latest
 
     permissions:
