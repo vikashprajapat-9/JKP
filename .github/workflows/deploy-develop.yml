@@ -1,4 +1,4 @@
-name: Deploy to Integration Sandbox
+name: Deploy to Main Sandbox
 
 on:
   push:
