@@ -58,13 +58,13 @@ jobs:
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
 
-          subject: "✅ Integration Deployment Successful"
+          subject: "JKP Snadbox Deployment Successful"
 
           to: ${{ secrets.EMAIL_TO }}
           from: GitHub Actions
 
           html_body: |
-            <h2 style="color:green;">Deployment Successful ✅</h2>
+            <h2 style="color:green;">Deployment Successful</h2>
 
             <table border="1" cellpadding="8" cellspacing="0">
               <tr>
@@ -109,13 +109,13 @@ jobs:
           username: ${{ secrets.EMAIL_USERNAME }}
           password: ${{ secrets.EMAIL_PASSWORD }}
 
-          subject: "❌ Integration Deployment Failed"
+          subject: "JKP Sandbox Deployment Failed"
 
           to: ${{ secrets.EMAIL_TO }}
           from: GitHub Actions
 
           html_body: |
-            <h2 style="color:red;">Deployment Failed ❌</h2>
+            <h2 style="color:red;">Deployment Failed</h2>
 
             <table border="1" cellpadding="8" cellspacing="0">
               <tr>
