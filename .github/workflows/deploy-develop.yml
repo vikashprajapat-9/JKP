@@ -1,35 +1,44 @@
 name: Deploy to Main Sandbox
 
 on:
-  workflow_dispatch:
+  push:
+    branches:
+      - develop
+
+concurrency:
+  group: deploy-integration
+  cancel-in-progress: false
 
 jobs:
-  authenticate:
+  deploy-integration:
+    name: Deploy to Integration Sandbox
     runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
 
     steps:
       - name: Checkout Repository
         uses: actions/checkout@v4
+        with:
+          fetch-depth: 0
 
       - name: Install Salesforce CLI
         run: |
           npm install -g @salesforce/cli
           sf version
 
-      - name: Verify CLI Installation
-        run: sf version
-
       - name: Authenticate to Salesforce
-        shell: bash
         run: |
           echo "${{ secrets.SF_AUTH_URL }}" > auth.txt
           sf org login sfdx-url \
             --sfdx-url-file auth.txt \
             --alias integration
+          rm auth.txt
 
       - name: Verify Authentication
         run: |
-          sf org list
+          sf org display --target-org integration
 
       - name: Deploy Source
         run: |
@@ -37,4 +46,106 @@ jobs:
             --target-org integration \
             --source-dir force-app \
             --ignore-conflicts \
-            --wait 30
+            --wait 60
+
+      - name: Send Success Email
+        if: success()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+
+          subject: "✅ Integration Deployment Successful"
+
+          to: ${{ secrets.EMAIL_TO }}
+          from: GitHub Actions
+
+          html_body: |
+            <h2 style="color:green;">Deployment Successful ✅</h2>
+
+            <table border="1" cellpadding="8" cellspacing="0">
+              <tr>
+                <td><b>Repository</b></td>
+                <td>${{ github.repository }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Branch</b></td>
+                <td>${{ github.ref_name }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Author</b></td>
+                <td>${{ github.actor }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Commit</b></td>
+                <td>${{ github.event.head_commit.message }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Workflow</b></td>
+                <td>${{ github.workflow }}</td>
+              </tr>
+            </table>
+
+            <br>
+
+            <a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">
+            View GitHub Action Run
+            </a>
+
+      - name: Send Failure Email
+        if: failure()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+
+          subject: "❌ Integration Deployment Failed"
+
+          to: ${{ secrets.EMAIL_TO }}
+          from: GitHub Actions
+
+          html_body: |
+            <h2 style="color:red;">Deployment Failed ❌</h2>
+
+            <table border="1" cellpadding="8" cellspacing="0">
+              <tr>
+                <td><b>Repository</b></td>
+                <td>${{ github.repository }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Branch</b></td>
+                <td>${{ github.ref_name }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Author</b></td>
+                <td>${{ github.actor }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Commit</b></td>
+                <td>${{ github.event.head_commit.message }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Workflow</b></td>
+                <td>${{ github.workflow }}</td>
+              </tr>
+            </table>
+
+            <br>
+
+            <a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">
+            View GitHub Action Run
+            </a>
