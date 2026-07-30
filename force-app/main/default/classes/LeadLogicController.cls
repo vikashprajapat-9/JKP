@@ -76,4 +76,41 @@ public class LeadLogicController {
         }
     }
 
+    public static void validateLeads(List<Lead> leads) {
+        for (Lead l : leads) {
+            // Last Name
+            if (String.isBlank(l.LastName) ||
+                l.LastName.length() < 2 ||
+                l.LastName.replaceAll('[^0-9]', '') == l.LastName) {
+                l.addError('Please enter a valid Lead Name.');
+            }
+            // Phone
+            if (String.isBlank(l.Phone)) {
+                l.addError('Please enter a valid phone number.');
+            }
+            //  Budget Range
+            if (String.isBlank(l.Budget_Aligned__c)) {
+                l.addError('Please select a valid Budget Range.');
+            }
+            //  Lead Source
+            if (String.isBlank(l.LeadSource)) {
+                l.addError('Please select a valid Lead Source.');
+            }
+
+            // Project
+            if (l.Project__c == null) {
+                l.addError('Please select the Interested Project.');
+            }
+
+            // priority
+            if (
+                l.LeadSource == 'Manual' &&
+                l.Lead_Priority__c != 'Hot' &&
+                l.Lead_Priority__c != 'Warm'
+            ) {
+                l.addError('Manually created leads must be classified as Hot or Warm.');
+            }
+        }
+    }
+
 }
