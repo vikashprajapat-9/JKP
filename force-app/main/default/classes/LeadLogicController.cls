@@ -3,20 +3,11 @@
  * Class Name      : LeadLogicController
  * Author          : <YourName>
  * Created Date    : Jul 27, 2026
- * Last Modified By: <YourName>
- * Last Modified On: Jul 27, 2026
- * Description     : This class implements for......
- *  
- * Change History  :
- *  Date          │   Author     │   Change
- * ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
- *  Jul 27, 2026  │ <YourName>   │ Initial version
- * ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
  */
 
 public class LeadLogicController {
 
-	 public static void calculateLeadScore(List<Lead> leads) {
+	public static void calculateLeadScore(List<Lead> leads) {
         if(leads.isEmpty()){
             return;
         }
@@ -35,7 +26,7 @@ public class LeadLogicController {
                 values.add(l.Budget_Aligned__c);
         }
         Map<String, Decimal> scoreMap = new Map<String, Decimal>();
-		 List<Lead_Priority_Configs__c> priorityConfigs = [ SELECT Min_Score__c, Max_Score__c, Priority__c FROM Lead_Priority_Configs__c WHERE Active__c = true ORDER BY Min_Score__c ASC];
+		List<Lead_Priority_Configs__c> priorityConfigs = [ SELECT Min_Score__c, Max_Score__c, Priority__c FROM Lead_Priority_Configs__c WHERE Active__c = true ORDER BY Min_Score__c ASC];
         for(Lead_Score_Config__c cfg : [ SELECT Field_API_Name__c,Picklist_Value__c,Score__c,Active__c FROM Lead_Score_Config__c WHERE Active__c = true AND Picklist_Value__c IN :values
         ]){
             String key = cfg.Field_API_Name__c + '-' + cfg.Picklist_Value__c;
@@ -46,10 +37,10 @@ public class LeadLogicController {
 				l.Lead_Priority__c = 'Hot';
 			}
 			if (l.LeadSource != 'Digital Source' || l.Lead_Sub_Source__c == 'Website Forms') {
-                 l.Lead_Score__c = 0;
-                 continue;
+                l.Lead_Score__c = 0;
+                continue;
             }
-			 
+			
             Decimal totalScore = 0;
             totalScore += getScore(scoreMap,'Designation__c',l.Designation__c);
             totalScore += getScore(scoreMap,'Purchase_Type__c',l.Purchase_Type__c);
@@ -75,7 +66,7 @@ public class LeadLogicController {
     }
 
 
-     public static void normalizePhone(List<Lead> leads) {
+    public static void normalizePhone(List<Lead> leads) {
         for (Lead l : leads) {
 
             if (String.isBlank(l.Phone)) {
