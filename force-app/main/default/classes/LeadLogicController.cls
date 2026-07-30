@@ -1,10 +1,3 @@
-/**
- * ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
- * Class Name      : LeadLogicController
- * Author          : <YourName>
- * Created Date    : Jul 27, 2026
- */
-
 public class LeadLogicController {
 
 	public static void calculateLeadScore(List<Lead> leads) {
