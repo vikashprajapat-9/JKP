@@ -12,8 +12,8 @@
         <label>Channel Partner Source</label>
     </standardValue>
     <standardValue>
-        <fullName>Walk In</fullName>
+        <fullName>Manual Source</fullName>
         <default>false</default>
-        <label>Walk In</label>
+        <label>Manual Source</label>
     </standardValue>
 </StandardValueSet>
