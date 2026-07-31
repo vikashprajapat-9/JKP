@@ -1,3 +1,3 @@
 trigger LeadTrigger on Lead(before insert, before update) {
-	 LeadLogicController.calculateLeadScore(Trigger.new);
+	 LeadLogicController.performInitialOperations(Trigger.new, Trigger.oldMap);
 }
