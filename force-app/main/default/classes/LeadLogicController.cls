@@ -1,22 +1,6 @@
-/**
- * ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
- * Class Name      : LeadLogicController
- * Author          : <YourName>
- * Created Date    : Jul 27, 2026
- * Last Modified By: <YourName>
- * Last Modified On: Jul 27, 2026
- * Description     : This class implements for......
- *  
- * Change History  :
- *  Date          │   Author     │   Change
- * ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
- *  Jul 27, 2026  │ <YourName>   │ Initial version
- * ――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――――
- */
-
 public class LeadLogicController {
 
-	 public static void calculateLeadScore(List<Lead> leads) {
+	public static void calculateLeadScore(List<Lead> leads) {
         if(leads.isEmpty()){
             return;
         }
@@ -51,11 +35,15 @@ public class LeadLogicController {
             scoreMap.put(key,cfg.Score__c);
         }
         for(Lead l : leads){			 
+			if (l.Lead_Sub_Source__c == 'Website Forms') {
+				l.Lead_Priority__c = 'Hot';
+			}
+			
             Decimal totalScore = 0;
             totalScore += getScore(scoreMap,'Designation__c',l.Designation__c);
             totalScore += getScore(scoreMap,'Purchase_Type__c',l.Purchase_Type__c);
             totalScore += getScore(scoreMap,'Time_to_Purchase__c',l.Time_to_Purchase__c);
-            totalScore += getScore(scoreMap,'Budget_Alignment__c',l.Budget_Aligned__c);
+            totalScore += getScore(scoreMap,'Budget_Aligned__c',l.Budget_Aligned__c);
             l.Lead_Score__c = totalScore;
 			for (Lead_Priority_Configs__c cfg : priorityConfigs) {
 				if (totalScore >= cfg.Min_Score__c && totalScore <= cfg.Max_Score__c) {
@@ -75,7 +63,7 @@ public class LeadLogicController {
     }
 
 
-     public static void normalizePhone(List<Lead> leads) {
+    public static void normalizePhone(List<Lead> leads) {
         for (Lead l : leads) {
 
             if (String.isBlank(l.Phone)) {
@@ -89,6 +77,43 @@ public class LeadLogicController {
                 phone = phone.substring(phone.length() - 10);
             }
             l.Normalised_Phone__c = phone;
+        }
+    }
+
+    public static void validateLeads(List<Lead> leads) {
+        for (Lead l : leads) {
+            // Last Name
+            if (String.isBlank(l.LastName) ||
+                l.LastName.length() < 2 ||
+                l.LastName.replaceAll('[^0-9]', '') == l.LastName) {
+                l.addError('Please enter a valid Lead Name.');
+            }
+            // Phone
+            if (String.isBlank(l.Phone)) {
+                l.addError('Please enter a valid phone number.');
+            }
+            //  Budget Range
+            if (String.isBlank(l.Budget_Aligned__c)) {
+                l.addError('Please select a valid Budget Range.');
+            }
+            //  Lead Source
+            if (String.isBlank(l.LeadSource)) {
+                l.addError('Please select a valid Lead Source.');
+            }
+
+            // Project
+            if (l.Project__c == null) {
+                l.addError('Please select the Interested Project.');
+            }
+
+            // priority
+            if (
+                l.LeadSource == 'Manual' &&
+                l.Lead_Priority__c != 'Hot' &&
+                l.Lead_Priority__c != 'Warm'
+            ) {
+                l.addError('Manually created leads must be classified as Hot or Warm.');
+            }
         }
     }
 
