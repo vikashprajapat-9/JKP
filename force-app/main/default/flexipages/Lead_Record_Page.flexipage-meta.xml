@@ -136,12 +136,6 @@
                 <identifier>RecordNormalised_Phone__cField</identifier>
             </fieldInstance>
         </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldItem>Record.test__c</fieldItem>
-                <identifier>Recordtest__cField</identifier>
-            </fieldInstance>
-        </itemInstances>
         <name>Facet-788c7335-5efe-4699-9209-1d897383375a</name>
         <type>Facet</type>
     </flexiPageRegions>
@@ -172,7 +166,7 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Lead_Priority__c</fieldItem>
+                <fieldItem>Record.Lead_Classification__c</fieldItem>
                 <identifier>RecordLead__cField</identifier>
             </fieldInstance>
         </itemInstances>

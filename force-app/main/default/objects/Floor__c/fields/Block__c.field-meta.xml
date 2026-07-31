@@ -1,14 +1,13 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
     <fullName>Block__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
     <label>Block</label>
     <referenceTo>Block__c</referenceTo>
     <relationshipLabel>Floors</relationshipLabel>
     <relationshipName>Floors</relationshipName>
-    <relationshipOrder>0</relationshipOrder>
-    <reparentableMasterDetail>false</reparentableMasterDetail>
+    <required>false</required>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
-    <type>MasterDetail</type>
-    <writeRequiresMasterRead>false</writeRequiresMasterRead>
+    <type>Lookup</type>
 </CustomField>

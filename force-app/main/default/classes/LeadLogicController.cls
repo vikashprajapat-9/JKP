@@ -36,7 +36,7 @@ public class LeadLogicController {
         }
         for(Lead l : leads){			 
 			if (l.Lead_Sub_Source__c == 'Website Forms') {
-				l.Lead_Priority__c = 'Hot';
+				l.Lead_Classification__c = 'Hot';
 			}
 			
             Decimal totalScore = 0;
@@ -109,8 +109,8 @@ public class LeadLogicController {
             // priority
             if (
                 l.LeadSource == 'Manual' &&
-                l.Lead_Priority__c != 'Hot' &&
-                l.Lead_Priority__c != 'Warm'
+                l.Lead_Classification__c != 'Hot' &&
+                l.Lead_Classification__c != 'Warm'
             ) {
                 l.addError('Manually created leads must be classified as Hot or Warm.');
             }

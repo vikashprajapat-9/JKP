@@ -8,8 +8,8 @@ public with sharing class LeadTriggerHandler {
         List<Lead> phoneLeads = new List<Lead>();
 		for(Lead ld : newLeads) {
             if (isInsert) {
-                scoreLeads.add(newLead);
-                phoneLeads.add(newLead);
+                leadsToScore.add(ld);
+                phoneLeads.add(ld);
                 continue;
             }
             Lead oldLead = oldMap.get(ld.Id);
