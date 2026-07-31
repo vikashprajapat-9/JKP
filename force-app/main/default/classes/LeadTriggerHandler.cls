@@ -1,32 +1,40 @@
 public with sharing class LeadTriggerHandler {
     public static void beforeInsertUpdate(List<Lead> newLeads, Map<Id, Lead> oldMap,Boolean isInsert, Boolean isUpdate) {
-        List<Lead> scoreLeads = new List<Lead>();
+		if(newLeads.isEmpty()) {
+			System.debug('Lead List is Empty!');
+			return;
+		}
+		List<Lead> leadsToScore = new List<Lead>();
         List<Lead> phoneLeads = new List<Lead>();
-            for (Lead newLead : newLeads) {
-                if (isInsert) {
-					scoreLeads.add(newLead);
-                    phoneLeads.add(newLead);
-                    continue;
+		for(Lead ld : newLeads) {
+            if (isInsert) {
+                leadsToScore.add(ld);
+                phoneLeads.add(ld);
+                continue;
             }
-            Lead oldLead = oldMap.get(newLead.Id);
-            if (
-                newLead.Designation__c != oldLead.Designation__c ||
-                newLead.Purchase_Type__c != oldLead.Purchase_Type__c ||
-                newLead.Time_to_Purchase__c != oldLead.Time_to_Purchase__c ||
-                newLead.Budget_Aligned__c != oldLead.Budget_Aligned__c ||
-                newLead.LeadSource != oldLead.LeadSource ||
-                newLead.Lead_Sub_Source__c != oldLead.Lead_Sub_Source__c
-            ) {
-                scoreLeads.add(newLead);
-            }
-
-            if (newLead.Phone != oldLead.Phone) {
-                phoneLeads.add(newLead);
+            Lead oldLead = oldMap.get(ld.Id);
+			if(
+				(ld.Lead_Sub_Source__c == 'Website Forms') && 
+				(ld.LeadSource != 'Digital Source') && 
+				(
+					!oldMap.containsKey(ld.Id) || 
+					(
+						ld.Designation__c != oldLead.Designation__c || 
+						ld.Purchase_Type__c != oldLead.Purchase_Type__c || 
+						ld.Time_to_Purchase__c != oldLead.Time_to_Purchase__c || 
+						ld.Budget_Aligned__c != oldLead.Budget_Aligned__c
+					)
+				)
+			) {
+				leadsToScore.add(ld);
+			}
+            if (ld.Phone != oldLead.Phone) {
+                phoneLeads.add(ld);
             }
         }
 
-        if (!scoreLeads.isEmpty()) {
-            LeadLogicController.calculateLeadScore(scoreLeads);
+        if (!leadsToScore.isEmpty()) {
+            LeadLogicController.calculateLeadScore(leadsToScore);
         }
 
         if (!phoneLeads.isEmpty()) {
