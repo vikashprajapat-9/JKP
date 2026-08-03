@@ -24,6 +24,7 @@ trigger EventTrigger on Lead_Duplicate_Event__e (after insert) {
         enquiry.Re_Enquiry_Sub_Source__c = e.New_Lead_Sub_Source__c;
         enquiry.Enquiry_DateTime__c = System.now();
         enquiry.Source_Match__c = (existingLead.LeadSource == e.New_Lead_Source__c) ? 'Same Source' : 'New Source';
+        enquiry.Sub_Source_Match__c = (existingLead.Lead_Sub_Source__c == e.New_Lead_Sub_Source__c) ? 'Same Sub Source' : 'New Sub Source';
         reEnquiries.add(enquiry);
 
         if (existingLead.LeadSource != e.New_Lead_Source__c) {

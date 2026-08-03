@@ -86,7 +86,7 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>test__c</field>
+                <field>Multi_Channel_Engaged__c</field>
             </layoutItems>
         </layoutColumns>
         <style>OneColumn</style>

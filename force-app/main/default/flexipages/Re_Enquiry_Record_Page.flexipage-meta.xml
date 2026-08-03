@@ -76,6 +76,18 @@
                 <identifier>RecordEnquiry_DateTime_cField</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.Sub_Source_Match__c</fieldItem>
+                <identifier>RecordSub_Source_Match__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.Re_Enquiry_Sub_Source__c</fieldItem>
+                <identifier>RecordRe_Enquiry_Sub_Source__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-cd0b2f19-3d4c-4084-a0b0-257df1e2c8e9</name>
         <type>Facet</type>
     </flexiPageRegions>
