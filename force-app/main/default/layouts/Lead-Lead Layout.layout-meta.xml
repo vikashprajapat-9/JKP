@@ -301,7 +301,7 @@
     </relatedLists>
     <relatedLists>
         <fields>NAME</fields>
-        <relatedList>Call_Log__c.Lead__c</relatedList>
+        <relatedList>Call_Disposition__c.Lead__c</relatedList>
     </relatedLists>
     <relatedLists>
         <fields>NAME</fields>
