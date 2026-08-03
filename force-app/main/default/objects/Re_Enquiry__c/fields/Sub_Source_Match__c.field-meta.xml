@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="UTF-8"?>
 <CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
-    <fullName>Re_Enquiry_Source__c</fullName>
-    <label>Re-Enquiry Source</label>
+    <fullName>Sub_Source_Match__c</fullName>
+    <label>Sub Source Match</label>
     <required>false</required>
     <trackHistory>false</trackHistory>
     <trackTrending>false</trackTrending>
@@ -11,19 +11,14 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>Digital Source</fullName>
+                <fullName>New Sub Source</fullName>
                 <default>false</default>
-                <label>Digital Source</label>
+                <label>New Sub Source</label>
             </value>
             <value>
-                <fullName>Manual Source</fullName>
+                <fullName>Same Sub Source</fullName>
                 <default>false</default>
-                <label>Manual Source</label>
-            </value>
-            <value>
-                <fullName>Channel Partner Source</fullName>
-                <default>false</default>
-                <label>Channel Partner Source</label>
+                <label>Same Sub Source</label>
             </value>
         </valueSetDefinition>
     </valueSet>

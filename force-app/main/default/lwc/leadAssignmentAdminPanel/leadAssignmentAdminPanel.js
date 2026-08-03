@@ -120,7 +120,7 @@ export default class LeadAssignmentAdminPanel extends LightningElement {
                 });
             })
             .catch(error => {
-                 console.error('Projects Error', error);
+                console.error('Projects Error', error);
                 this.showToast('Error', this.getErrorMessage(error), 'error');
             });
     }
@@ -128,11 +128,11 @@ export default class LeadAssignmentAdminPanel extends LightningElement {
     loadGroups() {
         getAssignmentGroups()
             .then(result => {
-                 console.log('Assignment Groups:', JSON.parse(JSON.stringify(result)));
+                console.log('Assignment Groups:', JSON.parse(JSON.stringify(result)));
                 this.assignmentGroups = result;
             })
             .catch(error => {
-                 console.error(error);
+                console.error(error);
                 this.showToast('Error', this.getErrorMessage(error), 'error');
             });
     }

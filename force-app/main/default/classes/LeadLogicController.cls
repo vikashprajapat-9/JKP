@@ -72,14 +72,12 @@ public class LeadLogicController {
             }
             String phone = l.Phone;
             phone = phone.replaceAll('[^0-9]', '');
-
             if (phone.length() > 10) {
                 phone = phone.substring(phone.length() - 10);
             }
             l.Normalised_Phone__c = phone;
         }
-    }
-
+    }                                                                                
     public static void validateLeads(List<Lead> leads) {
         for (Lead l : leads) {
             // Last Name
@@ -114,6 +112,179 @@ public class LeadLogicController {
             ) {
                 l.addError('Manually created leads must be classified as Hot or Warm.');
             }
+        }
+    }
+
+    private static Boolean isChannelPartner(String source){
+    return source != null && source.equalsIgnoreCase('Channel Partner Source');
+    }
+
+    private static Boolean isSameSource(Lead existingLead, Lead newLead){
+        return existingLead.LeadSource == newLead.LeadSource;
+    }
+
+    private static Boolean isSameSubSource(Lead existingLead, Lead newLead){
+        return existingLead.Lead_Sub_Source__c == newLead.Lead_Sub_Source__c;
+    }
+    // public static void checkDuplicateLead(List<Lead> leads) {
+    //     Set<String> phones = new Set<String>();
+    //     Set<Id> projectIds = new Set<Id>();
+    //     for (Lead l : leads) {
+    //         if (String.isNotBlank(l.Normalised_Phone__c)) {
+    //             phones.add(l.Normalised_Phone__c);
+    //         }
+    //         if (l.Project__c != null) {
+    //             projectIds.add(l.Project__c);
+    //         }
+    //     }
+    //     if (phones.isEmpty() || projectIds.isEmpty()) {
+    //         return;
+    //     }
+    //     List<Lead> existingLeads = [ SELECT Id,Normalised_Phone__c,Project__c,Multi_Channel_Engaged__c,LeadSource,Lead_Sub_Source__c FROM Lead WHERE Normalised_Phone__c IN :phones AND Project__c IN :projectIds ];
+    //     Map<String,Lead> duplicateMap = new Map<String,Lead>();
+    //     for(Lead l : existingLeads){
+    //         duplicateMap.put(l.Normalised_Phone__c+'#'+String.valueOf(l.Project__c),  l );
+    //     }
+    //     List<Re_Enquiry__c> reEnquiries = new List<Re_Enquiry__c>();
+    //     List<Lead> leadsToUpdate = new List<Lead>();
+
+    //     for(Lead newLead : leads){
+    //         String key =  newLead.Normalised_Phone__c+'#'+String.valueOf(newLead.Project__c);
+    //         if(!duplicateMap.containsKey(key))
+    //             continue;
+    //         Lead existingLead = duplicateMap.get(key);
+    //         Boolean existingCP = isChannelPartner(existingLead.LeadSource);
+    //         Boolean incomingCP = isChannelPartner(newLead.LeadSource);
+    //         //----------------------------------------------------
+    //         // CASE 1
+    //         // Existing = Digital/Manual
+    //         // Incoming = Digital/Manual
+    //         //----------------------------------------------------
+
+    //         if(!existingCP && !incomingCP){
+    //             Re_Enquiry__c enquiry = new Re_Enquiry__c();
+    //             enquiry.Lead__c = existingLead.Id;
+    //             enquiry.Re_Enquiry_Source__c = newLead.LeadSource;
+    //             enquiry.Re_Enquiry_Sub_Source__c = newLead.Lead_Sub_Source__c;
+    //             enquiry.Enquiry_DateTime__c = System.now();
+    //             enquiry.Source_Match__c =isSameSource(existingLead,newLead)? 'Same Source': 'New Source';
+    //             enquiry.Sub_Source_Match__c = isSameSubSource(existingLead,newLead) ? 'Same Sub Source': 'New Sub Source';
+    //             reEnquiries.add(enquiry);
+    //             if(!isSameSource(existingLead,newLead)){
+    //                 existingLead.Multi_Channel_Engaged__c = true;
+    //                 leadsToUpdate.add(existingLead);
+    //             }
+    //             newLead.addError( 'Lead already exists. Re-Enquiry has been created.' );
+    //         }
+    //         //----------------------------------------------------
+    //         // CASE 2
+    //         // Existing CP
+    //         // Incoming CP
+    //         //----------------------------------------------------
+    //         else if(existingCP && incomingCP){
+    //           //  newLead.addError(  'Lead already exists with another CP — ownership goes to whichever CP completes the first successful Site Visit.');
+    //         }
+
+    //         //----------------------------------------------------
+    //         // CASE 3
+    //         // Existing Digital/Manaual
+    //         // Incoming CP
+    //         //----------------------------------------------------
+    //         else if(!existingCP && incomingCP){
+    //             newLead.addError('Lead requires approval because an existing Digital/Manual Lead is present.' );
+    //         }
+    //         //----------------------------------------------------
+    //         // CASE 4
+    //         // Existing CP
+    //         // Incoming Digital/Manual
+    //         //----------------------------------------------------
+    //         else if(existingCP && !incomingCP){
+    //             Integer lockDays = 60;
+    //             Date expiry = existingLead.CreatedDate.date().addDays(lockDays);
+    //             if(Date.today() <= expiry){
+    //                 newLead.addError( 'Lead cannot be created because Channel Partner lock-in is active.');
+    //             }
+    //         }
+    //     }
+    //     if(!reEnquiries.isEmpty())
+    //         insert reEnquiries;
+
+    //     if(!leadsToUpdate.isEmpty())
+    //         update leadsToUpdate;
+
+    //     }
+
+    public static void checkDuplicateLead(List<Lead> leads) {
+        Set<String> phones = new Set<String>();
+        Set<Id> projectIds = new Set<Id>();
+        for (Lead l : leads) {
+            if (String.isNotBlank(l.Normalised_Phone__c)) {
+                phones.add(l.Normalised_Phone__c);
+            }
+            if (l.Project__c != null) {
+                projectIds.add(l.Project__c);
+            }
+        }
+        if (phones.isEmpty() || projectIds.isEmpty()) {
+            return;
+        }
+        List<Lead> existingLeads = [ SELECT Id,Normalised_Phone__c,Project__c,Multi_Channel_Engaged__c,LeadSource,Lead_Sub_Source__c,CreatedDate FROM Lead WHERE Normalised_Phone__c IN :phones AND Project__c IN :projectIds ];
+        Map<String,Lead> duplicateMap = new Map<String,Lead>();
+        for(Lead l : existingLeads){
+            duplicateMap.put(l.Normalised_Phone__c+'#'+String.valueOf(l.Project__c),  l );
+        }
+        List<Lead_Duplicate_Event__e> events = new List<Lead_Duplicate_Event__e>();
+        for(Lead newLead : leads){
+            String key =  newLead.Normalised_Phone__c+'#'+String.valueOf(newLead.Project__c);
+            if(!duplicateMap.containsKey(key))
+                continue;
+            Lead existingLead = duplicateMap.get(key);
+            Boolean existingCP = isChannelPartner(existingLead.LeadSource);
+            Boolean incomingCP = isChannelPartner(newLead.LeadSource);
+            //----------------------------------------------------
+            // CASE 1
+            // Existing = Digital/Manual
+            // Incoming = Digital/Manual
+            //----------------------------------------------------
+            if(!existingCP && !incomingCP){
+                events.add(new Lead_Duplicate_Event__e(
+                    Existing_Lead_Id__c    = existingLead.Id,
+                    New_Lead_Source__c     = newLead.LeadSource,
+                    New_Lead_Sub_Source__c = newLead.Lead_Sub_Source__c
+                ));
+                newLead.addError( 'Lead already exists. Re-Enquiry has been created.' );
+            }
+            //----------------------------------------------------
+            // CASE 2
+            // Existing CP
+            // Incoming CP
+            //----------------------------------------------------
+            else if(existingCP && incomingCP){
+              //  newLead.addError(  'Lead already exists with another CP — ownership goes to whichever CP completes the first successful Site Visit.');
+            }
+            //----------------------------------------------------
+            // CASE 3
+            // Existing Digital/Manaual
+            // Incoming CP
+            //----------------------------------------------------
+            else if(!existingCP && incomingCP){
+               // newLead.addError('Lead requires approval because an existing Digital/Manual Lead is present.' );
+            }
+            //----------------------------------------------------
+            // CASE 4
+            // Existing CP
+            // Incoming Digital/Manual
+            //----------------------------------------------------
+            else if(existingCP && !incomingCP){
+                Integer lockDays = 60;
+                Date expiry = existingLead.CreatedDate.date().addDays(lockDays);
+                if(Date.today() <= expiry){
+                    newLead.addError( 'Lead cannot be created because Channel Partner lock-in is active.');
+                }
+            }
+        }
+        if(!events.isEmpty()){
+            EventBus.publish(events);
         }
     }
 
