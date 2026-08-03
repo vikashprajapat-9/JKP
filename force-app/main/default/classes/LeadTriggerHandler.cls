@@ -16,21 +16,22 @@ public with sharing class LeadTriggerHandler {
                 newLead.Budget_Aligned__c != oldLead.Budget_Aligned__c ||
                 newLead.LeadSource != oldLead.LeadSource ||
                 newLead.Lead_Sub_Source__c != oldLead.Lead_Sub_Source__c
-            ) {
+            ){
                 scoreLeads.add(newLead);
             }
-
             if (newLead.Phone != oldLead.Phone) {
                 phoneLeads.add(newLead);
             }
         }
-
         if (!scoreLeads.isEmpty()) {
             LeadLogicController.calculateLeadScore(scoreLeads);
         }
-
         if (!phoneLeads.isEmpty()) {
             LeadLogicController.normalizePhone(phoneLeads);
         }
+        if (isInsert) {
+            LeadLogicController.checkDuplicateLead(newLeads);
+        }
     }
+    
 }
