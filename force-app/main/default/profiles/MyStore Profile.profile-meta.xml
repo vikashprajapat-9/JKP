@@ -126,6 +126,11 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
+        <field>Lead_Duplicate_Event__e.Existing_Opportunity_Id__c</field>
+        <readable>false</readable>
+    </fieldPermissions>
+    <fieldPermissions>
+        <editable>false</editable>
         <field>Lead_Duplicate_Event__e.New_Lead_Source__c</field>
         <readable>false</readable>
     </fieldPermissions>
