@@ -1,0 +1,19 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StandardValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <sorted>false</sorted>
+    <standardValue>
+        <fullName>Digital Source</fullName>
+        <default>false</default>
+        <label>Digital Source</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Channel Partner Source</fullName>
+        <default>false</default>
+        <label>Channel Partner Source</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Manual Source</fullName>
+        <default>false</default>
+        <label>Manual Source</label>
+    </standardValue>
+</StandardValueSet>

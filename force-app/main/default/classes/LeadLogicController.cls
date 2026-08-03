@@ -19,33 +19,37 @@ public class LeadLogicController {
                 values.add(l.Budget_Aligned__c);
         }
         Map<String, Decimal> scoreMap = new Map<String, Decimal>();
-		List<Lead_Priority_Configs__c> priorityConfigs = [ SELECT Min_Score__c, Max_Score__c, Priority__c FROM Lead_Priority_Configs__c WHERE Active__c = true ORDER BY Min_Score__c ASC];
-        for(Lead_Score_Config__c cfg : [ SELECT Field_API_Name__c,Picklist_Value__c,Score__c,Active__c FROM Lead_Score_Config__c WHERE Active__c = true AND Picklist_Value__c IN :values
-        ]){
+		List<Lead_Priority_Configs__c> priorityConfigs = [
+                                                            SELECT Min_Score__c, Max_Score__c, Priority__c 
+                                                            FROM Lead_Priority_Configs__c 
+                                                            WHERE Active__c = true 
+                                                            ORDER BY Min_Score__c ASC
+                                                        ];
+        for(Lead_Score_Config__c cfg : [
+                                        SELECT Field_API_Name__c,Picklist_Value__c,Score__c,Active__c 
+                                        FROM Lead_Score_Config__c 
+                                        WHERE Active__c = true 
+                                        AND Picklist_Value__c IN :values
+                                        ]){
             String key = cfg.Field_API_Name__c + '-' + cfg.Picklist_Value__c;
             scoreMap.put(key,cfg.Score__c);
         }
-        for(Lead l : leads){
+        for(Lead l : leads){			 
 			if (l.Lead_Sub_Source__c == 'Website Forms') {
-				l.Lead_Priority__c = 'Hot';
+				l.Lead_Classification__c = 'Hot';
 			}
-			if (l.LeadSource != 'Digital Source' || l.Lead_Sub_Source__c == 'Website Forms') {
-                l.Lead_Score__c = 0;
-                continue;
-            }
 			
             Decimal totalScore = 0;
             totalScore += getScore(scoreMap,'Designation__c',l.Designation__c);
             totalScore += getScore(scoreMap,'Purchase_Type__c',l.Purchase_Type__c);
             totalScore += getScore(scoreMap,'Time_to_Purchase__c',l.Time_to_Purchase__c);
-            totalScore += getScore(scoreMap,'Budget_Alignment__c',l.Budget_Aligned__c);
+            totalScore += getScore(scoreMap,'Budget_Aligned__c',l.Budget_Aligned__c);
             l.Lead_Score__c = totalScore;
 			for (Lead_Priority_Configs__c cfg : priorityConfigs) {
 				if (totalScore >= cfg.Min_Score__c && totalScore <= cfg.Max_Score__c) {
-					l.Lead_Priority__c = cfg.Priority__c;
+					l.Lead_Classification__c = cfg.Priority__c;
 					break;
 				}
-				
 			}
         }
     }
@@ -103,8 +107,8 @@ public class LeadLogicController {
             // priority
             if (
                 l.LeadSource == 'Manual' &&
-                l.Lead_Priority__c != 'Hot' &&
-                l.Lead_Priority__c != 'Warm'
+                l.Lead_Classification__c != 'Hot' &&
+                l.Lead_Classification__c != 'Warm'
             ) {
                 l.addError('Manually created leads must be classified as Hot or Warm.');
             }

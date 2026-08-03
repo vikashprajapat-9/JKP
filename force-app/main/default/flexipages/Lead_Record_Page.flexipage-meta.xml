@@ -172,7 +172,7 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Lead_Priority__c</fieldItem>
+                <fieldItem>Record.Lead_Classification__c</fieldItem>
                 <identifier>RecordLead__cField</identifier>
             </fieldInstance>
         </itemInstances>
