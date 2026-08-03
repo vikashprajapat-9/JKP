@@ -1,4 +1,4 @@
-name: Deploy to Main Sandbox
+name: Deploy only the changes to Main Sandbox
 
 on:
   push:
@@ -6,45 +6,80 @@ on:
       - develop
 
 concurrency:
-  group: deploy-integration
+  group: deploy-devThree
   cancel-in-progress: false
 
 jobs:
-  deploy-integration:
-    name: Deploy to Main Sandbox
+  deploy-devThree:
+    name: Deploy only the changes to Main Sandbox
     runs-on: ubuntu-latest
 
     permissions:
       contents: read
 
     steps:
+
       - name: Checkout Repository
         uses: actions/checkout@v4
         with:
           fetch-depth: 0
-
+    
       - name: Install Salesforce CLI
         run: |
           npm install -g @salesforce/cli
           sf version
+    
+      - name: Install SGD
+        run: |
+          echo y | sf plugins install sfdx-git-delta
+    
+      - name: Create Delta Folder
+        run: mkdir delta
 
+      - name: Generate Delta
+        run: |
+          sf sgd source delta \
+            --from "${{ github.event.before }}" \
+            --to "${{ github.sha }}" \
+            --generate-delta \
+            --output-dir delta
+            
       - name: Authenticate to Salesforce
         run: |
           echo "${{ secrets.SF_AUTH_URL }}" > auth.txt
           sf org login sfdx-url \
             --sfdx-url-file auth.txt \
-            --alias integration
+            --alias devThree
           rm auth.txt
-
+    
       - name: Verify Authentication
         run: |
-          sf org display --target-org integration
+          sf org display --target-org devThree
 
-      - name: Deploy Source
+      - name: Check Delta
+        id: delta
+        run: |
+          if grep -q "<types>" delta/package/package.xml; then
+            echo "deploy=true" >> $GITHUB_OUTPUT
+          else
+            echo "deploy=false" >> $GITHUB_OUTPUT
+          fi
+
+      # Use this instead of Deploy Delta to deploy the complete package
+      # - name: Deploy Source
+      #   run: |
+      #     sf project deploy start \
+      #       --target-org devThree \
+      #       --source-dir force-app \
+      #       --ignore-conflicts \
+      #       --wait 60
+      
+      - name: Deploy Delta
+        if: steps.delta.outputs.deploy == 'true'
         run: |
           sf project deploy start \
+            --source-dir delta/force-app \
             --target-org integration \
-            --source-dir force-app \
             --ignore-conflicts \
             --wait 60
 
