@@ -38,7 +38,7 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>Lead_Classification__c</field>
+                <field>Lead_Priority__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
