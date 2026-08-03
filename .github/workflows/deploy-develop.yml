@@ -113,14 +113,18 @@ jobs:
         id: deploy
         if: steps.delta.outputs.deploy == 'true'
         run: |
+          set +e
+
           sf project deploy start \
             --source-dir delta/force-app \
             --target-org dev \
             --ignore-conflicts \
             --wait 60 \
-            --json > deploy-result.json
-          cat deploy-result.json
+            --json | tee deploy-result.json
 
+          EXIT_CODE=$?
+          cat deploy-result.json
+          exit $EXIT_CODE
       - name: Read Deployment Result
         if: steps.delta.outputs.deploy == 'true'
         run: |
