@@ -6,11 +6,11 @@ on:
       - develop
 
 concurrency:
-  group: deploy-devThree
+  group: deploy-dev
   cancel-in-progress: false
 
 jobs:
-  deploy-devThree:
+  deploy-dev:
     name: Deploy only the changes to Main Sandbox
     runs-on: ubuntu-latest
 
@@ -43,18 +43,18 @@ jobs:
             --to "${{ github.sha }}" \
             --generate-delta \
             --output-dir delta
-            
+
       - name: Authenticate to Salesforce
         run: |
           echo "${{ secrets.SF_AUTH_URL }}" > auth.txt
           sf org login sfdx-url \
             --sfdx-url-file auth.txt \
-            --alias devThree
+            --alias dev
           rm auth.txt
     
       - name: Verify Authentication
         run: |
-          sf org display --target-org devThree
+          sf org display --target-org dev
 
       - name: Check Delta
         id: delta
@@ -65,23 +65,80 @@ jobs:
             echo "deploy=false" >> $GITHUB_OUTPUT
           fi
 
+      - name: Build Deployment Summary
+        if: steps.delta.outputs.deploy == 'true'
+        run: |
+          python3 << 'EOF'
+          import xml.etree.ElementTree as ET
+
+          ns={'m':'http://soap.sforce.com/2006/04/metadata'}
+
+          tree=ET.parse('delta/package/package.xml')
+          root=tree.getroot()
+
+          summary=[]
+
+          for t in root.findall('m:types',ns):
+              name=t.find('m:name',ns).text
+              summary.append(f"{name}")
+              summary.append("-"*len(name))
+
+              for m in t.findall('m:members',ns):
+                  summary.append(m.text)
+
+              summary.append("")
+
+          with open("deployment-summary.txt","w") as f:
+              f.write("\n".join(summary))
+          EOF
+      - name: Read Deployment Summary
+        if: steps.delta.outputs.deploy == 'true'
+        run: |
+          {
+            echo "DEPLOYMENT_SUMMARY<<EOF"
+            cat deployment-summary.txt
+            echo "EOF"
+          } >> $GITHUB_ENV      
+
       # Use this instead of Deploy Delta to deploy the complete package
       # - name: Deploy Source
       #   run: |
       #     sf project deploy start \
-      #       --target-org devThree \
+      #       --target-org dev \
       #       --source-dir force-app \
       #       --ignore-conflicts \
       #       --wait 60
-      
+
       - name: Deploy Delta
+        id: deploy
         if: steps.delta.outputs.deploy == 'true'
         run: |
+          set +e
+
           sf project deploy start \
             --source-dir delta/force-app \
-            --target-org integration \
+            --target-org dev \
             --ignore-conflicts \
-            --wait 60
+            --wait 60 \
+            --json | tee deploy-result.json
+
+          EXIT_CODE=$?
+          cat deploy-result.json
+          exit $EXIT_CODE
+      - name: Read Deployment Result
+        if: steps.delta.outputs.deploy == 'true'
+        run: |
+          echo "DEPLOY_ID=$(jq -r '.result.id // "N/A"' deploy-result.json)" >> $GITHUB_ENV
+          echo "STATUS=$(jq -r '.result.status // "Unknown"' deploy-result.json)" >> $GITHUB_ENV
+          echo "COMPONENTS=$(jq -r '.result.numberComponentsDeployed // 0' deploy-result.json)" >> $GITHUB_ENV
+          echo "ERRORS=$(jq -r '.result.numberComponentErrors // 0' deploy-result.json)" >> $GITHUB_ENV
+
+      - name: Upload Deployment result
+        if: steps.delta.outputs.deploy == 'true'
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-result
+          path: deploy-result.json
 
       - name: Send Success Email
         if: success()
@@ -126,7 +183,52 @@ jobs:
                 <td><b>Workflow</b></td>
                 <td>${{ github.workflow }}</td>
               </tr>
+              <tr>
+                <td><b>Deployment Status</b></td>
+                <td>${{ env.STATUS }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Deployment ID</b></td>
+                <td>${{ env.DEPLOY_ID }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Components Deployed</b></td>
+                <td>${{ env.COMPONENTS }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Component Errors</b></td>
+                <td>${{ env.ERRORS }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Run Number</b></td>
+                <td>${{ github.run_number }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Commit SHA</b></td>
+                <td>${{ github.sha }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Commit URL</b></td>
+                <td>
+                  <a href="https://github.com/${{ github.repository }}/commit/${{ github.sha }}">
+                    View Commit
+                  </a>
+                </td>
+              </tr>
             </table>
+
+            <br>
+
+            <h3>Metadata Deployed</h3>
+            <pre>
+              ${{ env.DEPLOYMENT_SUMMARY }}
+            </pre>
 
             <br>
 
@@ -177,7 +279,52 @@ jobs:
                 <td><b>Workflow</b></td>
                 <td>${{ github.workflow }}</td>
               </tr>
+              <tr>
+                <td><b>Deployment Status</b></td>
+                <td>${{ env.STATUS }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Deployment ID</b></td>
+                <td>${{ env.DEPLOY_ID }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Components Deployed</b></td>
+                <td>${{ env.COMPONENTS }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Component Errors</b></td>
+                <td>${{ env.ERRORS }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Run Number</b></td>
+                <td>${{ github.run_number }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Commit SHA</b></td>
+                <td>${{ github.sha }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Commit URL</b></td>
+                <td>
+                  <a href="https://github.com/${{ github.repository }}/commit/${{ github.sha }}">
+                    View Commit
+                  </a>
+                </td>
+              </tr>
             </table>
+
+            <br>
+
+            <h3>Metadata Deployed</h3>
+            <pre>
+              ${{ env.DEPLOYMENT_SUMMARY }}
+            </pre>
 
             <br>
 
