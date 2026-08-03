@@ -138,8 +138,32 @@
         </itemInstances>
         <itemInstances>
             <fieldInstance>
-                <fieldItem>Record.Multi_Channel_Engaged__c</fieldItem>
-                <identifier>RecordMulti_Channel_Engaged__cField</identifier>
+                <fieldItem>Record.Is_User_Assigned__c</fieldItem>
+                <identifier>RecordIs_User_Assigned__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.AGM_Related_to__c</fieldItem>
+                <identifier>RecordAssignment_Group_Member__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.Pre_Sales_Team_Member__c</fieldItem>
+                <identifier>RecordPre_Sales_Team_Member__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.AG_Related_to__c</fieldItem>
+                <identifier>RecordAG_Related_to__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.Lead_Assigned_Date_Time__c</fieldItem>
+                <identifier>RecordLead_Assigned_Date_Time__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-788c7335-5efe-4699-9209-1d897383375a</name>
