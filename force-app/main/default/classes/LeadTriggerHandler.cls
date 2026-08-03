@@ -7,12 +7,12 @@ public with sharing class LeadTriggerHandler {
 		List<Lead> leadsToScore = new List<Lead>();
         List<Lead> phoneLeads = new List<Lead>();
 		for(Lead ld : newLeads) {
-      if (isInsert) {
-          leadsToScore.add(ld);
-          phoneLeads.add(ld);
-          continue;
-      }
-      Lead oldLead = oldMap.get(ld.Id);
+        if (isInsert) {
+            leadsToScore.add(ld);
+            phoneLeads.add(ld);
+            continue;
+        }
+        Lead oldLead = oldMap.get(ld.Id);
 			if(
 				(ld.Lead_Sub_Source__c == 'Website Forms') && 
 				(ld.LeadSource != 'Digital Source') && 

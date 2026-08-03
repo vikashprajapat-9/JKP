@@ -8,7 +8,7 @@ trigger EventTrigger on Lead_Duplicate_Event__e (after insert) {
     if (existingLeadIds.isEmpty()) return;
 
     Map<Id, Lead> existingLeads = new Map<Id, Lead>(
-        [SELECT Id, LeadSource, Multi_Channel_Engaged__c FROM Lead WHERE Id IN :existingLeadIds]
+        [SELECT Id, LeadSource, Lead_Sub_Source__c,IsConverted,Multi_Channel_Engaged__c,ConvertedOpportunityId FROM Lead WHERE Id IN :existingLeadIds]
     );
 
     List<Re_Enquiry__c> reEnquiries = new List<Re_Enquiry__c>();
@@ -17,9 +17,12 @@ trigger EventTrigger on Lead_Duplicate_Event__e (after insert) {
     for (Lead_Duplicate_Event__e e : Trigger.new) {
         Lead existingLead = existingLeads.get((Id) e.Existing_Lead_Id__c);
         if (existingLead == null) continue;
-
         Re_Enquiry__c enquiry = new Re_Enquiry__c();
-        enquiry.Lead__c = existingLead.Id;
+        if(existingLead.IsConverted){
+            enquiry.Opportunity__c = existingLead.ConvertedOpportunityId;
+        }else{
+            enquiry.Lead__c = existingLead.Id;
+        }
         enquiry.Re_Enquiry_Source__c = e.New_Lead_Source__c;
         enquiry.Re_Enquiry_Sub_Source__c = e.New_Lead_Sub_Source__c;
         enquiry.Enquiry_DateTime__c = System.now();
