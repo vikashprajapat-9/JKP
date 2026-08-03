@@ -8,8 +8,8 @@
     ),
     NOT(
         OR(
-            ISPICKVAL(Lead_Priority__c, &quot;Hot&quot;),
-            ISPICKVAL(Lead_Priority__c, &quot;Warm&quot;)
+            ISPICKVAL(Lead_Classification__c, &quot;Hot&quot;),
+            ISPICKVAL(Lead_Classification__c, &quot;Warm&quot;)
         )
     )
 )</errorConditionFormula>
