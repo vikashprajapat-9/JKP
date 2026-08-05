@@ -72,8 +72,18 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Follow_Up_DateTime__c</fieldItem>
-                <identifier>RecordFollow_Up_DateTime_cField</identifier>
+                <fieldItem>Record.Notes__c</fieldItem>
+                <identifier>RecordNotes_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Description__c</fieldItem>
+                <identifier>RecordDescription_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-ba7928d2-524f-4bca-891a-f4cfe40f9e2c</name>
@@ -106,8 +116,8 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Disposition__c</fieldItem>
-                <identifier>RecordDisposition_cField</identifier>
+                <fieldItem>Record.Follow_Up_DateTime__c</fieldItem>
+                <identifier>RecordFollow_Up_DateTime_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
@@ -116,8 +126,18 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Notes__c</fieldItem>
-                <identifier>RecordNotes_cField</identifier>
+                <fieldItem>Record.Call_Disposition__c</fieldItem>
+                <identifier>RecordCall_Disposition_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Subject__c</fieldItem>
+                <identifier>RecordSubject_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-0209ab91-f73b-46a6-914b-5a210149b042</name>
