@@ -138,32 +138,68 @@
         </itemInstances>
         <itemInstances>
             <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.Is_User_Assigned__c</fieldItem>
                 <identifier>RecordIs_User_Assigned__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
             <fieldInstance>
-                <fieldItem>Record.AGM_Related_to__c</fieldItem>
-                <identifier>RecordAssignment_Group_Member__cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.Pre_Sales_Team_Member__c</fieldItem>
                 <identifier>RecordPre_Sales_Team_Member__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
             <fieldInstance>
-                <fieldItem>Record.AG_Related_to__c</fieldItem>
-                <identifier>RecordAG_Related_to__cField</identifier>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Lead_Assigned_Date_Time__c</fieldItem>
+                <identifier>RecordLead_Assigned_Date_Time__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <itemInstances>
             <fieldInstance>
-                <fieldItem>Record.Lead_Assigned_Date_Time__c</fieldItem>
-                <identifier>RecordLead_Assigned_Date_Time__cField</identifier>
+                <fieldItem>Record.Unit_Size__c</fieldItem>
+                <identifier>RecordUnit_Size__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.Unit_Type__c</fieldItem>
+                <identifier>RecordUnit_Type__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.Assess_Budget__c</fieldItem>
+                <identifier>RecordAssess_Budget__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.Assess_Finance_Readiness__c</fieldItem>
+                <identifier>RecordAssess_Finance_Readiness__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.Purchase_Purpose__c</fieldItem>
+                <identifier>RecordPurchase_Purpose__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.Purchase_Timeline__c</fieldItem>
+                <identifier>RecordPurchase_Timeline__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-788c7335-5efe-4699-9209-1d897383375a</name>
@@ -216,6 +252,16 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
+                <fieldItem>Record.Lead_Score__c</fieldItem>
+                <identifier>RecordLead_Score__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.Loss_Reason__c</fieldItem>
                 <identifier>RecordLoss_Reason__cField</identifier>
             </fieldInstance>
@@ -226,8 +272,45 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Lead_Score__c</fieldItem>
-                <identifier>RecordLead_Score__cField</identifier>
+                <fieldItem>Record.Other_Loss_Reason__c</fieldItem>
+                <identifier>RecordOther_Loss_Reason_cField</identifier>
+                <visibilityRule>
+                    <criteria>
+                        <leftValue>{!Record.Loss_Reason__c}</leftValue>
+                        <operator>EQUAL</operator>
+                        <rightValue>Other</rightValue>
+                    </criteria>
+                </visibilityRule>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.AGM_Related_to__c</fieldItem>
+                <identifier>RecordAssignment_Group_Member__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.AG_Related_to__c</fieldItem>
+                <identifier>RecordAG_Related_to__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Lead_Follow_Up_DateTime__c</fieldItem>
+                <identifier>RecordLead_Follow_Up_DateTime__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-fc23ed6c-c98b-4a59-9de0-792c0d43e04b</name>
@@ -685,7 +768,7 @@
                             <value>Follow_Up_DateTime__c</value>
                         </valueListItems>
                         <valueListItems>
-                            <value>Disposition__c</value>
+                            <value>Call_Disposition__c</value>
                         </valueListItems>
                     </valueList>
                 </componentInstanceProperties>
@@ -934,6 +1017,12 @@
         <type>Region</type>
     </flexiPageRegions>
     <flexiPageRegions>
+        <itemInstances>
+            <componentInstance>
+                <componentName>leadDisposition</componentName>
+                <identifier>c_leadDisposition</identifier>
+            </componentInstance>
+        </itemInstances>
         <itemInstances>
             <componentInstance>
                 <componentInstanceProperties>
