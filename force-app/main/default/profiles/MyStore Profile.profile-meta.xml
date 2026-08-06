@@ -418,11 +418,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Call_Disposition__c.Lead__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>Call_Disposition__c.Follow_Up_DateTime__c</field>
         <readable>false</readable>
     </fieldPermissions>
