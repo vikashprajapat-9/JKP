@@ -240,6 +240,18 @@
         <apexClass>SiteVisitController</apexClass>
         <enabled>false</enabled>
     </classAccesses>
+    <classAccesses>
+        <apexClass>SobjectLoadAssignment</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>SobjectLoadAssignmentHelper</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
+    <classAccesses>
+        <apexClass>SobjectLoadAssignmentUtility</apexClass>
+        <enabled>false</enabled>
+    </classAccesses>
     <custom>true</custom>
     <fieldPermissions>
         <editable>false</editable>
@@ -1147,6 +1159,27 @@
         <layout>Opportunity-Opportunity Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
+        <layout>Block__c-Block Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Call_Disposition__c-Call Log Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Company__c-Company Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Floor__c-Floor Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Lead-Lead Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Parking_Detail__c-Parking Detail Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
+        <layout>Project__c-Project Layout</layout>
+    </layoutAssignments>
+    <layoutAssignments>
         <layout>Re_Enquiry__c-Re-Enquiry Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
@@ -1268,6 +1301,18 @@
     </tabVisibilities>
     <tabVisibilities>
         <tab>Project__c</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>Re_Enquiry__c</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>Unit__c</tab>
+        <visibility>Hidden</visibility>
+    </tabVisibilities>
+    <tabVisibilities>
+        <tab>User_tracking__c</tab>
         <visibility>Hidden</visibility>
     </tabVisibilities>
     <tabVisibilities>
