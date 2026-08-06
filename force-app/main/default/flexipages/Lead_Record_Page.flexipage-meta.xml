@@ -768,7 +768,7 @@
                             <value>Follow_Up_DateTime__c</value>
                         </valueListItems>
                         <valueListItems>
-                            <value>Disposition__c</value>
+                            <value>Call_Disposition__c</value>
                         </valueListItems>
                     </valueList>
                 </componentInstanceProperties>
