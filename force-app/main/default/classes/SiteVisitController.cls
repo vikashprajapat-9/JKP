@@ -1,5 +1,4 @@
 public without sharing class SiteVisitController {
-    //test
 
     public class SearchWrapper {
         @AuraEnabled
