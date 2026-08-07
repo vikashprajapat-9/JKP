@@ -1,13 +1,366 @@
-name: Deploy to Main Sandbox
+# name: Deploy only the changes to Main Sandbox
+
+# on:
+#   push:
+#     branches:
+#       - develop
+
+# concurrency:
+#   group: deploy-dev
+#   cancel-in-progress: false
+
+# jobs:
+#   deploy-dev:
+#     name: Deploy only the changes to Main Sandbox
+#     runs-on: ubuntu-latest
+
+#     permissions:
+#       contents: read
+
+#     steps:
+
+#       - name: Checkout Repository
+#         uses: actions/checkout@v4
+#         with:
+#           fetch-depth: 0
+    
+#       - name: Install Salesforce CLI
+#         run: |
+#           npm install -g @salesforce/cli
+#           sf version
+    
+#       - name: Install SGD
+#         run: |
+#           echo y | sf plugins install sfdx-git-delta
+    
+#       - name: Create Delta Folder
+#         run: mkdir delta
+
+#       - name: Generate Delta
+#         run: |
+#           sf sgd source delta \
+#             --from "${{ github.event.before }}" \
+#             --to "${{ github.sha }}" \
+#             --generate-delta \
+#             --output-dir delta
+
+#       - name: Authenticate to Salesforce
+#         run: |
+#           echo "${{ secrets.SF_AUTH_URL }}" > auth.txt
+#           sf org login sfdx-url \
+#             --sfdx-url-file auth.txt \
+#             --alias dev
+#           rm auth.txt
+    
+#       - name: Verify Authentication
+#         run: |
+#           sf org display --target-org dev
+
+#       - name: Check Delta
+#         id: delta
+#         run: |
+#           if grep -q "<types>" delta/package/package.xml; then
+#             echo "deploy=true" >> $GITHUB_OUTPUT
+#           else
+#             echo "deploy=false" >> $GITHUB_OUTPUT
+#           fi
+
+#       - name: Build Deployment Summary
+#         if: steps.delta.outputs.deploy == 'true'
+#         run: |
+#           python3 << 'EOF'
+#           import xml.etree.ElementTree as ET
+
+#           ns={'m':'http://soap.sforce.com/2006/04/metadata'}
+
+#           tree=ET.parse('delta/package/package.xml')
+#           root=tree.getroot()
+
+#           summary=[]
+
+#           for t in root.findall('m:types',ns):
+#               name=t.find('m:name',ns).text
+#               summary.append(f"{name}")
+#               summary.append("-"*len(name))
+
+#               for m in t.findall('m:members',ns):
+#                   summary.append(m.text)
+
+#               summary.append("")
+
+#           with open("deployment-summary.txt","w") as f:
+#               f.write("\n".join(summary))
+#           EOF
+#       - name: Read Deployment Summary
+#         if: steps.delta.outputs.deploy == 'true'
+#         run: |
+#           {
+#             echo "DEPLOYMENT_SUMMARY<<EOF"
+#             cat deployment-summary.txt
+#             echo "EOF"
+#           } >> $GITHUB_ENV      
+
+#       # Use this instead of Deploy Delta to deploy the complete package
+#       # - name: Deploy Source
+#       #   run: |
+#       #     sf project deploy start \
+#       #       --target-org dev \
+#       #       --source-dir force-app \
+#       #       --ignore-conflicts \
+#       #       --wait 60
+
+#       - name: Deploy Delta
+#         id: deploy
+#         if: steps.delta.outputs.deploy == 'true'
+#         run: |
+#           set +e
+
+#           sf project deploy start \
+#             --source-dir delta/force-app \
+#             --target-org dev \
+#             --ignore-conflicts \
+#             --wait 60 \
+#             --json | tee deploy-result.json
+
+#           SF_EXIT_CODE=${PIPESTATUS[0]}
+
+#           echo "Salesforce CLI Exit Code: $SF_EXIT_CODE"
+
+#           STATUS=$(jq -r '.result.status // "Unknown"' deploy-result.json)
+
+#           echo "Deployment Status: $STATUS"
+
+#           # If Salesforce reports failure, fail the step
+#           if [[ "$STATUS" != "Succeeded" ]]; then
+#             echo "Deployment failed."
+#             exit 1
+#           fi
+
+#           exit $SF_EXIT_CODE
+
+#       - name: Read Deployment Result
+#         if: always() && steps.delta.outputs.deploy == 'true'
+#         run: |
+#           echo "DEPLOY_ID=$(jq -r '.result.id // "N/A"' deploy-result.json)" >> $GITHUB_ENV
+#           echo "STATUS=$(jq -r '.result.status // "Unknown"' deploy-result.json)" >> $GITHUB_ENV
+#           echo "COMPONENTS=$(jq -r '.result.numberComponentsDeployed // 0' deploy-result.json)" >> $GITHUB_ENV
+#           echo "ERRORS=$(jq -r '.result.numberComponentErrors // 0' deploy-result.json)" >> $GITHUB_ENV
+
+#       - name: Upload Deployment Result
+#         if: always() && steps.delta.outputs.deploy == 'true'
+#         uses: actions/upload-artifact@v4
+#         with:
+#           name: deployment-result
+#           path: deploy-result.json
+
+
+#       - name: Send Success Email
+#         if: success() && steps.delta.outputs.deploy == 'true'
+#         uses: dawidd6/action-send-mail@v3
+#         with:
+#           server_address: smtp.gmail.com
+#           server_port: 465
+#           secure: true
+#           username: ${{ secrets.EMAIL_USERNAME }}
+#           password: ${{ secrets.EMAIL_PASSWORD }}
+
+#           subject: "JKP Snadbox Deployment Successful"
+
+#           to: ${{ secrets.EMAIL_TO }}
+#           from: GitHub Actions
+
+#           html_body: |
+#             <h2 style="color:green;">Deployment Successful</h2>
+
+#             <table border="1" cellpadding="8" cellspacing="0">
+#               <tr>
+#                 <td><b>Repository</b></td>
+#                 <td>${{ github.repository }}</td>
+#               </tr>
+
+#               <tr>
+#                 <td><b>Branch</b></td>
+#                 <td>${{ github.ref_name }}</td>
+#               </tr>
+
+#               <tr>
+#                 <td><b>Author</b></td>
+#                 <td>${{ github.actor }}</td>
+#               </tr>
+
+#               <tr>
+#                 <td><b>Commit</b></td>
+#                 <td>${{ github.event.head_commit.message }}</td>
+#               </tr>
+
+#               <tr>
+#                 <td><b>Workflow</b></td>
+#                 <td>${{ github.workflow }}</td>
+#               </tr>
+#               <tr>
+#                 <td><b>Deployment Status</b></td>
+#                 <td>${{ env.STATUS }}</td>
+#               </tr>
+
+#               <tr>
+#                 <td><b>Deployment ID</b></td>
+#                 <td>${{ env.DEPLOY_ID }}</td>
+#               </tr>
+
+#               <tr>
+#                 <td><b>Components Deployed</b></td>
+#                 <td>${{ env.COMPONENTS }}</td>
+#               </tr>
+
+#               <tr>
+#                 <td><b>Component Errors</b></td>
+#                 <td>${{ env.ERRORS }}</td>
+#               </tr>
+
+#               <tr>
+#                 <td><b>Run Number</b></td>
+#                 <td>${{ github.run_number }}</td>
+#               </tr>
+
+#               <tr>
+#                 <td><b>Commit SHA</b></td>
+#                 <td>${{ github.sha }}</td>
+#               </tr>
+
+#               <tr>
+#                 <td><b>Commit URL</b></td>
+#                 <td>
+#                   <a href="https://github.com/${{ github.repository }}/commit/${{ github.sha }}">
+#                     View Commit
+#                   </a>
+#                 </td>
+#               </tr>
+#             </table>
+
+#             <br>
+
+#             <h3>Metadata Deployed</h3>
+#             <pre>
+#               ${{ env.DEPLOYMENT_SUMMARY }}
+#             </pre>
+
+#             <br>
+
+#             <a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">
+#             View GitHub Action Run
+#             </a>
+
+#       - name: Send Failure Email
+#         if: failure() && steps.delta.outputs.deploy == 'true'
+#         uses: dawidd6/action-send-mail@v3
+#         with:
+#           server_address: smtp.gmail.com
+#           server_port: 465
+#           secure: true
+#           username: ${{ secrets.EMAIL_USERNAME }}
+#           password: ${{ secrets.EMAIL_PASSWORD }}
+
+#           subject: "JKP Sandbox Deployment Failed"
+
+#           to: ${{ secrets.EMAIL_TO }}
+#           from: GitHub Actions
+
+#           html_body: |
+#             <h2 style="color:red;">Deployment Failed</h2>
+
+#             <table border="1" cellpadding="8" cellspacing="0">
+#               <tr>
+#                 <td><b>Repository</b></td>
+#                 <td>${{ github.repository }}</td>
+#               </tr>
+
+#               <tr>
+#                 <td><b>Branch</b></td>
+#                 <td>${{ github.ref_name }}</td>
+#               </tr>
+
+#               <tr>
+#                 <td><b>Author</b></td>
+#                 <td>${{ github.actor }}</td>
+#               </tr>
+
+#               <tr>
+#                 <td><b>Commit</b></td>
+#                 <td>${{ github.event.head_commit.message }}</td>
+#               </tr>
+
+#               <tr>
+#                 <td><b>Workflow</b></td>
+#                 <td>${{ github.workflow }}</td>
+#               </tr>
+#               <tr>
+#                 <td><b>Deployment Status</b></td>
+#                 <td>${{ env.STATUS }}</td>
+#               </tr>
+
+#               <tr>
+#                 <td><b>Deployment ID</b></td>
+#                 <td>${{ env.DEPLOY_ID }}</td>
+#               </tr>
+
+#               <tr>
+#                 <td><b>Components Deployed</b></td>
+#                 <td>${{ env.COMPONENTS }}</td>
+#               </tr>
+
+#               <tr>
+#                 <td><b>Component Errors</b></td>
+#                 <td>${{ env.ERRORS }}</td>
+#               </tr>
+
+#               <tr>
+#                 <td><b>Run Number</b></td>
+#                 <td>${{ github.run_number }}</td>
+#               </tr>
+
+#               <tr>
+#                 <td><b>Commit SHA</b></td>
+#                 <td>${{ github.sha }}</td>
+#               </tr>
+
+#               <tr>
+#                 <td><b>Commit URL</b></td>
+#                 <td>
+#                   <a href="https://github.com/${{ github.repository }}/commit/${{ github.sha }}">
+#                     View Commit
+#                   </a>
+#                 </td>
+#               </tr>
+#             </table>
+
+#             <br>
+
+#             <h3>Metadata Deployed</h3>
+#             <pre>
+#               ${{ env.DEPLOYMENT_SUMMARY }}
+#             </pre>
+
+#             <br>
+
+#             <a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">
+#             View GitHub Action Run
+#             </a>
+
+name: Deploy Complete Project to Main Sandbox
 
 on:
   workflow_dispatch:
 
 jobs:
-  authenticate:
+  deploy:
+    name: Deploy Complete Project to Main Sandbox
     runs-on: ubuntu-latest
 
+    permissions:
+      contents: read
+
     steps:
+
       - name: Checkout Repository
         uses: actions/checkout@v4
 
@@ -21,8 +374,189 @@ jobs:
           echo "${{ secrets.SF_AUTH_URL }}" > auth.txt
           sf org login sfdx-url \
             --sfdx-url-file auth.txt \
-            --alias integration
+            --alias dev
+          rm auth.txt
 
       - name: Verify Authentication
         run: |
-          sf org list
+          sf org display --target-org dev
+
+      - name: Deploy Complete Source
+        id: deploy
+        run: |
+          set +e
+
+          sf project deploy start \
+            --source-dir force-app \
+            --target-org dev \
+            --ignore-conflicts \
+            --wait 120 \
+            --json | tee deploy-result.json
+
+          STATUS=$(jq -r '.result.status // "Unknown"' deploy-result.json)
+
+          if [[ "$STATUS" != "Succeeded" ]]; then
+            echo "Deployment failed."
+            exit 1
+          fi
+
+      - name: Read Deployment Result
+        if: always()
+        run: |
+          echo "DEPLOY_ID=$(jq -r '.result.id // "N/A"' deploy-result.json)" >> $GITHUB_ENV
+          echo "STATUS=$(jq -r '.result.status // "Unknown"' deploy-result.json)" >> $GITHUB_ENV
+          echo "COMPONENTS=$(jq -r '.result.numberComponentsDeployed // 0' deploy-result.json)" >> $GITHUB_ENV
+          echo "ERRORS=$(jq -r '.result.numberComponentErrors // 0' deploy-result.json)" >> $GITHUB_ENV
+
+      - name: Upload Deployment Result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-result
+          path: deploy-result.json
+
+      - name: Send Success Email
+        if: success()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+
+          subject: "JKP Full Sandbox Deployment Successful"
+
+          to: ${{ secrets.EMAIL_TO }}
+          from: GitHub Actions
+
+          html_body: |
+            <h2 style="color:green;">Full Deployment Successful</h2>
+
+            <table border="1" cellpadding="8" cellspacing="0">
+
+              <tr>
+                <td><b>Repository</b></td>
+                <td>${{ github.repository }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Branch</b></td>
+                <td>${{ github.ref_name }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Author</b></td>
+                <td>${{ github.actor }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Workflow</b></td>
+                <td>${{ github.workflow }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Deployment Type</b></td>
+                <td>Complete Project</td>
+              </tr>
+
+              <tr>
+                <td><b>Status</b></td>
+                <td>${{ env.STATUS }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Deployment ID</b></td>
+                <td>${{ env.DEPLOY_ID }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Components Deployed</b></td>
+                <td>${{ env.COMPONENTS }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Component Errors</b></td>
+                <td>${{ env.ERRORS }}</td>
+              </tr>
+
+            </table>
+
+            <br>
+
+            <a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">
+              View GitHub Action Run
+            </a>
+
+      - name: Send Failure Email
+        if: failure()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+
+          subject: "JKP Full Sandbox Deployment Failed"
+
+          to: ${{ secrets.EMAIL_TO }}
+          from: GitHub Actions
+
+          html_body: |
+            <h2 style="color:red;">Full Deployment Failed</h2>
+
+            <table border="1" cellpadding="8" cellspacing="0">
+
+              <tr>
+                <td><b>Repository</b></td>
+                <td>${{ github.repository }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Branch</b></td>
+                <td>${{ github.ref_name }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Author</b></td>
+                <td>${{ github.actor }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Workflow</b></td>
+                <td>${{ github.workflow }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Deployment Type</b></td>
+                <td>Complete Project</td>
+              </tr>
+
+              <tr>
+                <td><b>Status</b></td>
+                <td>${{ env.STATUS }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Deployment ID</b></td>
+                <td>${{ env.DEPLOY_ID }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Components Deployed</b></td>
+                <td>${{ env.COMPONENTS }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Component Errors</b></td>
+                <td>${{ env.ERRORS }}</td>
+              </tr>
+
+            </table>
+
+            <br>
+
+            <a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">
+              View GitHub Action Run
+            </a>

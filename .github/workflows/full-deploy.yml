@@ -1,0 +1,214 @@
+name: Deploy Complete Project to Main Sandbox
+
+on:
+  workflow_dispatch:
+
+jobs:
+  deploy:
+    name: Deploy Complete Project to Main Sandbox
+    runs-on: ubuntu-latest
+
+    permissions:
+      contents: read
+
+    steps:
+
+      - name: Checkout Repository
+        uses: actions/checkout@v4
+
+      - name: Install Salesforce CLI
+        run: |
+          npm install -g @salesforce/cli
+          sf version
+
+      - name: Authenticate to Salesforce
+        run: |
+          echo "${{ secrets.SF_AUTH_URL }}" > auth.txt
+          sf org login sfdx-url \
+            --sfdx-url-file auth.txt \
+            --alias dev
+          rm auth.txt
+
+      - name: Verify Authentication
+        run: |
+          sf org display --target-org dev
+
+      - name: Deploy Complete Source
+        id: deploy
+        run: |
+          set +e
+
+          sf project deploy start \
+            --source-dir force-app \
+            --target-org dev \
+            --ignore-conflicts \
+            --wait 120 \
+            --json | tee deploy-result.json
+
+          STATUS=$(jq -r '.result.status // "Unknown"' deploy-result.json)
+
+          if [[ "$STATUS" != "Succeeded" ]]; then
+            echo "Deployment failed."
+            exit 1
+          fi
+
+      - name: Read Deployment Result
+        if: always()
+        run: |
+          echo "DEPLOY_ID=$(jq -r '.result.id // "N/A"' deploy-result.json)" >> $GITHUB_ENV
+          echo "STATUS=$(jq -r '.result.status // "Unknown"' deploy-result.json)" >> $GITHUB_ENV
+          echo "COMPONENTS=$(jq -r '.result.numberComponentsDeployed // 0' deploy-result.json)" >> $GITHUB_ENV
+          echo "ERRORS=$(jq -r '.result.numberComponentErrors // 0' deploy-result.json)" >> $GITHUB_ENV
+
+      - name: Upload Deployment Result
+        if: always()
+        uses: actions/upload-artifact@v4
+        with:
+          name: deployment-result
+          path: deploy-result.json
+
+      - name: Send Success Email
+        if: success()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+
+          subject: "JKP Full Sandbox Deployment Successful"
+
+          to: ${{ secrets.EMAIL_TO }}
+          from: GitHub Actions
+
+          html_body: |
+            <h2 style="color:green;">Full Deployment Successful</h2>
+
+            <table border="1" cellpadding="8" cellspacing="0">
+
+              <tr>
+                <td><b>Repository</b></td>
+                <td>${{ github.repository }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Branch</b></td>
+                <td>${{ github.ref_name }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Author</b></td>
+                <td>${{ github.actor }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Workflow</b></td>
+                <td>${{ github.workflow }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Deployment Type</b></td>
+                <td>Complete Project</td>
+              </tr>
+
+              <tr>
+                <td><b>Status</b></td>
+                <td>${{ env.STATUS }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Deployment ID</b></td>
+                <td>${{ env.DEPLOY_ID }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Components Deployed</b></td>
+                <td>${{ env.COMPONENTS }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Component Errors</b></td>
+                <td>${{ env.ERRORS }}</td>
+              </tr>
+
+            </table>
+
+            <br>
+
+            <a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">
+              View GitHub Action Run
+            </a>
+
+      - name: Send Failure Email
+        if: failure()
+        uses: dawidd6/action-send-mail@v3
+        with:
+          server_address: smtp.gmail.com
+          server_port: 465
+          secure: true
+          username: ${{ secrets.EMAIL_USERNAME }}
+          password: ${{ secrets.EMAIL_PASSWORD }}
+
+          subject: "JKP Full Sandbox Deployment Failed"
+
+          to: ${{ secrets.EMAIL_TO }}
+          from: GitHub Actions
+
+          html_body: |
+            <h2 style="color:red;">Full Deployment Failed</h2>
+
+            <table border="1" cellpadding="8" cellspacing="0">
+
+              <tr>
+                <td><b>Repository</b></td>
+                <td>${{ github.repository }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Branch</b></td>
+                <td>${{ github.ref_name }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Author</b></td>
+                <td>${{ github.actor }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Workflow</b></td>
+                <td>${{ github.workflow }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Deployment Type</b></td>
+                <td>Complete Project</td>
+              </tr>
+
+              <tr>
+                <td><b>Status</b></td>
+                <td>${{ env.STATUS }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Deployment ID</b></td>
+                <td>${{ env.DEPLOY_ID }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Components Deployed</b></td>
+                <td>${{ env.COMPONENTS }}</td>
+              </tr>
+
+              <tr>
+                <td><b>Component Errors</b></td>
+                <td>${{ env.ERRORS }}</td>
+              </tr>
+
+            </table>
+
+            <br>
+
+            <a href="https://github.com/${{ github.repository }}/actions/runs/${{ github.run_id }}">
+              View GitHub Action Run
+            </a>

@@ -1,0 +1,188 @@
+<template>
+
+    <div class="mainContainer">
+
+        <!-- HEADER -->
+
+        <div class="headerSection">
+
+            <div class="headerLeft">
+
+                <lightning-icon
+                    icon-name="standard:lead"
+                    size="medium"
+                    class="headerIcon">
+                </lightning-icon>
+
+                <div>
+                    <h1 class="mainHeading"> Lead Call Dispositions </h1>
+                    <p class="subHeading">Track customer interactions and follow-ups </p>
+                </div>
+            </div>
+            <div class="headerRight">
+                <lightning-button label="Add Disposition" variant="brand" icon-name="utility:add"
+                        onclick={handleAddDisposition} class="addBtn"> </lightning-button>
+
+            </div>
+
+        </div>
+
+        <!-- FORM SECTION -->
+
+        <template if:true={showForm}>
+            <div class="formContainer">
+                <lightning-input label="Subject" value={subject} onchange={handleSubject} class="inputBox" required>
+                </lightning-input>
+                <lightning-textarea label="Description"  value={description} onchange={handleDescription} class="inputBox" >
+                </lightning-textarea>
+
+                <lightning-combobox label="Call Disposition" value={disposition}  options={dispositionOptions}  onchange={handleDisposition} class="inputBox" required>
+                </lightning-combobox>
+                <lightning-input  type="datetime" label="Call Date Time" value={callDateTime} onchange={handleCallDateTime} class="inputBox" required>
+                </lightning-input>
+                <template if:true={isFollowUpRequired}>
+                <lightning-input type="datetime" label="Follow-up Date Time" value={followUpDateTime} required={isFollowUpRequired} onchange={handleFollowUpDateTime} class="inputBox">
+                </lightning-input>
+                </template>
+                
+                <template if:true={showLossReasonModal}>
+                        <section role="dialog" tabindex="-1"  class="slds-modal slds-fade-in-open">
+                            <div class="slds-modal__container">
+                                <header class="slds-modal__header">
+                                    <h2 class="slds-text-heading_medium">
+                                        Loss Details
+                                    </h2>
+                                </header>
+                                <div class="slds-modal__content slds-p-around_medium">
+                                    <lightning-combobox label="Loss Reason" value={lossReason} options={lossReasonOptions} onchange={handleLossReason}>
+                                    </lightning-combobox>
+                                    <template if:true={showOtherReason}>
+                                        <lightning-textarea   label="Other Loss Reason" value={otherLossReason} onchange={handleOtherReason}>
+                                        </lightning-textarea>
+                                    </template>
+                                </div>
+                                <footer class="slds-modal__footer">
+                                    <lightning-button  label="Cancel" onclick={handleCancel}>  </lightning-button>
+                                    <lightning-button variant="brand" label="Save" onclick={handleLossReasonSave}>
+                                    </lightning-button>
+                                </footer>
+                            </div>
+                        </section>
+                        <div class="slds-backdrop slds-backdrop_open"></div>
+                </template>
+
+                <template if:true={showContactedModal}>
+                        <section role="dialog" tabindex="-1"  class="slds-modal slds-fade-in-open">
+                            <div class="slds-modal__container">
+                                <header class="slds-modal__header">
+                                    <h2 class="slds-text-heading_medium">
+                                        Response Details
+                                    </h2>
+                                </header>
+                                <div class="slds-modal__content slds-p-around_medium">
+                                    <lightning-combobox label="Purchase Purpose" value={purchasePurpose}  options={purchasePurposeOptions} onchange={handlePurchasePurpose} required>
+                                    </lightning-combobox>
+                                    <lightning-combobox label="Unit Type"  value={unitType} options={unitTypeOptions} onchange={handleUnitType}  required class="slds-m-top_medium">
+                                    </lightning-combobox>
+                                    <lightning-input label="Unit Size"  value={unitSize}  onchange={handleUnitSize} required class="slds-m-top_medium">
+                                    </lightning-input>
+                                    <lightning-combobox label="Purchase Timeline" value={purchaseTimeline} options={purchaseTimelineOptions} onchange={handlePurchaseTimeline}  required class="slds-m-top_medium">
+                                    </lightning-combobox>
+                                    <lightning-combobox label="Assess Budget" value={assessBudget} options={assessBudgetOptions} onchange={handleAssessBudget}  required class="slds-m-top_medium">
+                                    </lightning-combobox>
+                                    <lightning-combobox label="Assess Finance Readiness" value={assessFinanceReadiness} options={assessFinanceReadinessOptions} onchange={handleAssessFinanceReadiness}  required class="slds-m-top_medium">
+                                    </lightning-combobox>
+                                </div>
+                                <footer class="slds-modal__footer">
+                                    <lightning-button  label="Cancel" onclick={handleCancel}>  </lightning-button>
+                                    <lightning-button variant="brand" label="Save" onclick={handleContactedSave}>
+                                    </lightning-button>
+                                </footer>
+                            </div>
+                        </section>
+                        <div class="slds-backdrop slds-backdrop_open"></div>
+                </template>
+
+                <div class="buttonSection">
+                    <lightning-button label="Save" variant="brand" onclick={saveDisposition}>
+                    </lightning-button>
+                    <lightning-button label="Cancel" variant="neutral" onclick={handleCancel} class="cancelBtn">
+                    </lightning-button>
+                </div>
+            </div>
+        </template>
+        
+        <!-- EMPTY STATE -->
+        <template if:true={showEmptyState}>
+            <div class="emptyState">
+                <lightning-icon  icon-name="utility:call" size="large">
+                </lightning-icon>
+                <p>No dispositions added yet</p>
+            </div>
+        </template>
+        <!-- DISPOSITION LIST -->
+        <template if:true={dispositions}>
+            <div class="listContainer">
+                <template for:each={paginatedDispositions} for:item="item">
+                    <div key={item.Id} class="dispositionCard">
+                        <!-- CARD HEADER -->
+                        <div class="cardHeader">
+                            <div class="statusBadge">
+                                {item.Call_Disposition__c}
+                            </div>
+                            <div class="dateText">
+                                <lightning-formatted-date-time
+                                        value={item.Call_DateTime__c}
+                                        year="numeric"
+                                        month="short"
+                                        day="2-digit"
+                                        hour="2-digit"
+                                        minute="2-digit">
+                                </lightning-formatted-date-time>
+
+                            </div>
+
+                        </div>
+
+                        <!-- CARD BODY -->
+
+                        <div class="cardBody">
+                            <h2 class="subjectText">
+                                {item.Subject__c}
+                            </h2>
+                            <p class="descriptionText">
+                                {item.Description__c}
+                            </p>
+                        </div>
+                    </div>
+                </template>
+            </div>
+
+        </template>
+
+        <!-- PAGINATION -->
+
+        <template if:true={showPagination}>
+            <div class="paginationContainer">
+                <lightning-button
+                    label="Previous"
+                    icon-name="utility:chevronleft"
+                    onclick={handlePrevious}
+                    disabled={disablePrevious}>
+                </lightning-button>
+
+                <div class="pageInfo">
+                    Page {currentPage} of {totalPages}
+                </div>
+
+                <lightning-button
+                    label="Next"
+                    icon-name="utility:chevronright"
+                    icon-position="right"
+                    onclick={handleNext}
+                    disabled={disableNext}>
+                </lightning-button>
+            </div>
+        </template>
+    </div>
+</template>

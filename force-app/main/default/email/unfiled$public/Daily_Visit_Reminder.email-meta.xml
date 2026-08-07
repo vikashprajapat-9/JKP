@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>UTF-8</encodingKey>
+    <name>Daily Visit Reminder</name>
+    <style>none</style>
+    <subject>Today&apos;s Site Visit Schedule</subject>
+    <textOnly>Today&apos;s Site Visit Schedule
+
+Hi {!OwnerName},
+
+You have {!VisitCount} scheduled site visit(s) for today.
+
+Please find your visit schedule below.
+
+{!VisitTable}
+Reminder
+
+Please ensure each visit is completed and the visit status is updated in Salesforce immediately after completion.
+
+Have a productive day!
+
+
+Regards,
+Salesforce CRM
+
+This is an automated notification. Please do not reply to this email.</textOnly>
+    <type>custom</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

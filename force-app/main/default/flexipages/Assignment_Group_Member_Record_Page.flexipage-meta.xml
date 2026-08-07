@@ -86,6 +86,12 @@
                 <identifier>RecordOut_Of_Office_cField</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.BreakTime_Started__c</fieldItem>
+                <identifier>RecordBreakTime_Started__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-e89b2076-f58f-4424-a356-bd46e6bb70a9</name>
         <type>Facet</type>
     </flexiPageRegions>
