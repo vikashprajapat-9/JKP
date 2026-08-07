@@ -3,10 +3,6 @@ name: Deploy Complete Project to Main Sandbox
 on:
   workflow_dispatch:
 
-concurrency:
-  group: full-deploy
-  cancel-in-progress: false
-
 jobs:
   deploy:
     name: Deploy Complete Project to Main Sandbox
