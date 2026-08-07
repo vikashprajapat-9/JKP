@@ -122,26 +122,40 @@ jobs:
             --wait 60 \
             --json | tee deploy-result.json
 
-          EXIT_CODE=$?
-          cat deploy-result.json
-          exit $EXIT_CODE
+          SF_EXIT_CODE=${PIPESTATUS[0]}
+
+          echo "Salesforce CLI Exit Code: $SF_EXIT_CODE"
+
+          STATUS=$(jq -r '.result.status // "Unknown"' deploy-result.json)
+
+          echo "Deployment Status: $STATUS"
+
+          # If Salesforce reports failure, fail the step
+          if [[ "$STATUS" != "Succeeded" ]]; then
+            echo "Deployment failed."
+            exit 1
+          fi
+
+          exit $SF_EXIT_CODE
+
       - name: Read Deployment Result
-        if: steps.delta.outputs.deploy == 'true'
+        if: always() && steps.delta.outputs.deploy == 'true'
         run: |
           echo "DEPLOY_ID=$(jq -r '.result.id // "N/A"' deploy-result.json)" >> $GITHUB_ENV
           echo "STATUS=$(jq -r '.result.status // "Unknown"' deploy-result.json)" >> $GITHUB_ENV
           echo "COMPONENTS=$(jq -r '.result.numberComponentsDeployed // 0' deploy-result.json)" >> $GITHUB_ENV
           echo "ERRORS=$(jq -r '.result.numberComponentErrors // 0' deploy-result.json)" >> $GITHUB_ENV
 
-      - name: Upload Deployment result
-        if: steps.delta.outputs.deploy == 'true'
+      - name: Upload Deployment Result
+        if: always() && steps.delta.outputs.deploy == 'true'
         uses: actions/upload-artifact@v4
         with:
           name: deployment-result
           path: deploy-result.json
 
+
       - name: Send Success Email
-        if: success()
+        if: success() && steps.delta.outputs.deploy == 'true'
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
@@ -237,7 +251,7 @@ jobs:
             </a>
 
       - name: Send Failure Email
-        if: failure()
+        if: failure() && steps.delta.outputs.deploy == 'true'
         uses: dawidd6/action-send-mail@v3
         with:
           server_address: smtp.gmail.com
