@@ -9,7 +9,6 @@
         </itemInstances>
         <itemInstances>
             <componentInstance>
-<<<<<<< HEAD
                 <componentInstanceProperties>
                     <name>enableInlineEdit</name>
                     <value>true</value>
@@ -70,8 +69,6 @@
         </itemInstances>
         <itemInstances>
             <componentInstance>
-=======
->>>>>>> 2a0b4df (roundrobin changes and checking component-v2)
                 <componentName>home:heroChart</componentName>
                 <identifier>home_heroChart</identifier>
             </componentInstance>

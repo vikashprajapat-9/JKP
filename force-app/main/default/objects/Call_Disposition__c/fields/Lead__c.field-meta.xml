@@ -4,7 +4,6 @@
     <deleteConstraint>SetNull</deleteConstraint>
     <label>Lead</label>
     <referenceTo>Lead</referenceTo>
-    <relationshipLabel>Call Logs</relationshipLabel>
     <relationshipName>Call_Logs</relationshipName>
     <required>false</required>
     <trackTrending>false</trackTrending>
