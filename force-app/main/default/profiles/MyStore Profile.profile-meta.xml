@@ -420,11 +420,6 @@
     </fieldPermissions>
     <fieldPermissions>
         <editable>false</editable>
-        <field>Call_Disposition__c.Follow_Up_DateTime__c</field>
-        <readable>false</readable>
-    </fieldPermissions>
-    <fieldPermissions>
-        <editable>false</editable>
         <field>Call_Disposition__c.Disposition__c</field>
         <readable>false</readable>
     </fieldPermissions>
@@ -1164,9 +1159,6 @@
         <layout>Opportunity-Opportunity Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
-        <layout>Call_Disposition__c-Call Log Layout</layout>
-    </layoutAssignments>
-    <layoutAssignments>
         <layout>Company__c-Company Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
@@ -1295,10 +1287,6 @@
     </tabVisibilities>
     <tabVisibilities>
         <tab>Company__c</tab>
-        <visibility>Hidden</visibility>
-    </tabVisibilities>
-    <tabVisibilities>
-        <tab>Call_Disposition__c</tab>
         <visibility>Hidden</visibility>
     </tabVisibilities>
     <tabVisibilities>
