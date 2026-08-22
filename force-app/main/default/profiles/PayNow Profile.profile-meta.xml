@@ -1159,9 +1159,6 @@
         <layout>Opportunity-Opportunity Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
-        <layout>Call_Disposition__c-Call Log Layout</layout>
-    </layoutAssignments>
-    <layoutAssignments>
         <layout>Company__c-Company Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
