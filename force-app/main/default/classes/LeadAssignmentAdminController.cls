@@ -385,7 +385,7 @@ public static void deletePriorityConfig(Id recordId) {
 @AuraEnabled(cacheable=true)
 public static List<Map<String, String>> getLeadPriorityOptions() {
     List<Map<String, String>> options = new List<Map<String, String>>();
-    Schema.DescribeFieldResult fieldResult = Lead.Lead_Priority__c.getDescribe();
+    Schema.DescribeFieldResult fieldResult = Lead.Lead_Classification__c.getDescribe();
     List<Schema.PicklistEntry> ple = fieldResult.getPicklistValues();
     for (Schema.PicklistEntry pickListVal : ple) {
         Map<String, String> option = new Map<String, String>();

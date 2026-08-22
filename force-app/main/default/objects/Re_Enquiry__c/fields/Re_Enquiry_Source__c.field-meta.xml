@@ -11,59 +11,85 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
+                <fullName>Digital Source</fullName>
+                <default>false</default>
+                <label>Digital Source</label>
+            </value>
+            <value>
+                <fullName>Manual Source</fullName>
+                <default>false</default>
+                <label>Manual Source</label>
+            </value>
+            <value>
+                <fullName>Channel Partner Source</fullName>
+                <default>false</default>
+                <label>Channel Partner Source</label>
+            </value>
+            <value>
                 <fullName>Advertisement</fullName>
                 <default>false</default>
+                <isActive>false</isActive>
                 <label>Advertisement</label>
             </value>
             <value>
                 <fullName>Employee Referral</fullName>
                 <default>false</default>
+                <isActive>false</isActive>
                 <label>Employee Referral</label>
             </value>
             <value>
                 <fullName>External Referral</fullName>
                 <default>false</default>
+                <isActive>false</isActive>
                 <label>External Referral</label>
+            </value>
+            <value>
+                <fullName>Other</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Other</label>
             </value>
             <value>
                 <fullName>Partner</fullName>
                 <default>false</default>
+                <isActive>false</isActive>
                 <label>Partner</label>
             </value>
             <value>
                 <fullName>Public Relations</fullName>
                 <default>false</default>
+                <isActive>false</isActive>
                 <label>Public Relations</label>
             </value>
             <value>
                 <fullName>Seminar - Internal</fullName>
                 <default>false</default>
+                <isActive>false</isActive>
                 <label>Seminar - Internal</label>
             </value>
             <value>
                 <fullName>Seminar - Partner</fullName>
                 <default>false</default>
+                <isActive>false</isActive>
                 <label>Seminar - Partner</label>
             </value>
             <value>
                 <fullName>Trade Show</fullName>
                 <default>false</default>
+                <isActive>false</isActive>
                 <label>Trade Show</label>
             </value>
             <value>
                 <fullName>Web</fullName>
                 <default>false</default>
+                <isActive>false</isActive>
                 <label>Web</label>
             </value>
             <value>
                 <fullName>Word of mouth</fullName>
                 <default>false</default>
+                <isActive>false</isActive>
                 <label>Word of mouth</label>
-            </value>
-            <value>
-                <fullName>Other</fullName>
-                <default>false</default>
-                <label>Other</label>
             </value>
         </valueSetDefinition>
     </valueSet>

@@ -3,15 +3,14 @@
     <fullName>Manual_lead_validation</fullName>
     <active>true</active>
     <errorConditionFormula>AND(
-    OR(
-        ISPICKVAL(LeadSource, &quot;Manual Source&quot;)
-    ),
+    ISPICKVAL(LeadSource, &quot;Manual Source&quot;),
     NOT(
         OR(
-            ISPICKVAL(Lead_Priority__c, &quot;Hot&quot;),
-            ISPICKVAL(Lead_Priority__c, &quot;Warm&quot;)
+            ISPICKVAL(Lead_Classification__c, &quot;Hot&quot;),
+            ISPICKVAL(Lead_Classification__c, &quot;Warm&quot;)
         )
     )
 )</errorConditionFormula>
+    <errorDisplayField>Lead_Classification__c</errorDisplayField>
     <errorMessage>Manually created leads must be classified as Hot or Warm</errorMessage>
 </ValidationRule>

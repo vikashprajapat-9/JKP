@@ -56,6 +56,36 @@
                 <identifier>RecordBlock_Code_cField</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Total_Floors__c</fieldItem>
+                <identifier>RecordTotal_Floors__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.RERA_Registration_Number__c</fieldItem>
+                <identifier>RecordRERA_Registration_Number__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Tower_Location__c</fieldItem>
+                <identifier>RecordTower_Location__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-d7a671c2-1f6b-408d-b833-7cb3cdcd3812</name>
         <type>Facet</type>
     </flexiPageRegions>
@@ -78,6 +108,36 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.OwnerId</fieldItem>
                 <identifier>RecordOwnerIdField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Total_Units__c</fieldItem>
+                <identifier>RecordTotal_Units__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Parking_Availability__c</fieldItem>
+                <identifier>RecordParking_Availability__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Establishment_No__c</fieldItem>
+                <identifier>RecordEstablishment_No__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-90f5648e-e4a4-49d3-8314-f9a2cbe4da72</name>

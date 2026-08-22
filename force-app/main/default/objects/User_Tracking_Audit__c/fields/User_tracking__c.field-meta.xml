@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>User_tracking__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <label>User tracking</label>
+    <referenceTo>User_tracking__c</referenceTo>
+    <relationshipLabel>User Tracking Audits</relationshipLabel>
+    <relationshipName>User_Tracking_Audits</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Queue xmlns="http://soap.sforce.com/2006/04/metadata">
+    <doesIncludeBosses>false</doesIncludeBosses>
+    <doesSendEmailToMembers>false</doesSendEmailToMembers>
+    <email>ishabhardwaaz11@gmail.com</email>
+    <name>Lead Assignment Queue</name>
+    <queueMembers>
+        <users>
+            <user>insightsintegration@00dh20000001brxeaa.ext</user>
+            <user>integration.user@jkp.com</user>
+            <user>abhishek.dubey_cqu064klrdmsl4@utilitarianlabs.com</user>
+        </users>
+    </queueMembers>
+    <queueSobject>
+        <sobjectType>Lead</sobjectType>
+    </queueSobject>
+</Queue>
