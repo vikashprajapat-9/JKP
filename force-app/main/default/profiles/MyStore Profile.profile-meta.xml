@@ -1164,9 +1164,6 @@
         <layout>Opportunity-Opportunity Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
-        <layout>Block__c-Block Layout</layout>
-    </layoutAssignments>
-    <layoutAssignments>
         <layout>Call_Disposition__c-Call Log Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
