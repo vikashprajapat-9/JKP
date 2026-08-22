@@ -1159,21 +1159,6 @@
         <layout>Opportunity-Opportunity Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
-        <layout>Company__c-Company Layout</layout>
-    </layoutAssignments>
-    <layoutAssignments>
-        <layout>Floor__c-Floor Layout</layout>
-    </layoutAssignments>
-    <layoutAssignments>
-        <layout>Lead-Lead Layout</layout>
-    </layoutAssignments>
-    <layoutAssignments>
-        <layout>Parking_Detail__c-Parking Detail Layout</layout>
-    </layoutAssignments>
-    <layoutAssignments>
-        <layout>Project__c-Project Layout</layout>
-    </layoutAssignments>
-    <layoutAssignments>
         <layout>Re_Enquiry__c-Re-Enquiry Layout</layout>
     </layoutAssignments>
     <layoutAssignments>
