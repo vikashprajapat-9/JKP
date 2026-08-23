@@ -8,6 +8,9 @@ package.xml
 **/jsconfig.json
 **/.eslintrc.json
 
+# Standard/system App Launcher metadata
+**/appMenus/**
+
 # LWC Jest
 **/__tests__/**
 
