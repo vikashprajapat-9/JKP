@@ -76,6 +76,19 @@ jobs:
           rm -rf delta
           mkdir -p delta
 
+          echo "========== Git Range =========="
+          echo "From: ${{ github.event.before }}"
+          echo "To:   ${{ github.sha }}"
+
+          echo
+          echo "========== Changed Files =========="
+          git diff --name-status \
+            "${{ github.event.before }}" \
+            "${{ github.sha }}" || true
+
+          echo
+          echo "========== Generating SGD Delta =========="
+
           sf sgd source delta \
             --from "${{ github.event.before }}" \
             --to "${{ github.sha }}" \
@@ -83,9 +96,9 @@ jobs:
             --output-dir delta
 
           echo
-          echo "========== Delta Files =========="
+          echo "========== Generated Delta =========="
           find delta -type f | sort
-
+          
       - name: Inspect Delta
         id: inspect
         run: |
