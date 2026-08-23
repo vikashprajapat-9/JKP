@@ -1,5 +1,6 @@
 public without sharing class SiteVisitController {
 
+    // Initial Data Load Wrapper
     public class SearchWrapper {
         @AuraEnabled
         public List<Lead> leads { get; set; }
@@ -11,6 +12,7 @@ public without sharing class SiteVisitController {
         }
     }
 
+    // Method for getting the records as per the users requirements
     @AuraEnabled(cacheable=true)
     public static SearchWrapper searchRecords(String searchKey){
         SearchWrapper wrapper = new SearchWrapper();
@@ -39,6 +41,7 @@ public without sharing class SiteVisitController {
         return wrapper;
     }
 
+    // Method to simply create visit
     @AuraEnabled
     public static Id createVisit(String leadId, String opportunityId, Visit__c visit){
         if(visit == null){

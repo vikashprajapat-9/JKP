@@ -98,7 +98,7 @@ jobs:
           echo
           echo "========== Generated Delta =========="
           find delta -type f | sort
-          
+
       - name: Inspect Delta
         id: inspect
         run: |
