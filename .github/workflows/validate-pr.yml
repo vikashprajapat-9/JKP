@@ -3,31 +3,14 @@ name: Validate Pull Request
 on:
   workflow_dispatch:
 
+permissions:
+  contents: read
+
 jobs:
   validate:
-    runs-on: ubuntu-latest
-
-    steps:
-      - name: Checkout Repository
-        uses: actions/checkout@v4
-
-      - name: Install Salesforce CLI
-        run: |
-          npm install -g @salesforce/cli
-          sf version
-
-      - name: Authenticate
-        shell: bash
-        run: |
-          echo "${{ secrets.SF_AUTH_URL }}" > auth.txt
-
-          sf org login sfdx-url \
-            --sfdx-url-file auth.txt \
-            --alias integration
-
-      - name: Validate Deployment
-        run: |
-          sf project deploy validate \
-            --target-org integration \
-            --source-dir force-app \
-            --wait 30
+    uses: ./.github/workflows/salesforce-deploy.yml
+    with:
+      deployment_type: validate
+      target_org_alias: integration
+      send_notifications: false
+    secrets: inherit
