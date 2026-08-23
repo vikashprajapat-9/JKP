@@ -40,8 +40,21 @@ jobs:
       - name: Install Salesforce Git Delta
         run: |
           echo "stage=Install SGD" >> "$GITHUB_ENV"
-          sf plugins install sfdx-git-delta
+          SGD_VERSION="6.3.0"
+          echo "Node:"
+          node --version
+          echo
+          echo "Salesforce CLI:"
+          sf version
+          echo
+          echo "Installing sfdx-git-delta@${SGD_VERSION}..."
+          echo "y" | sf plugins install "sfdx-git-delta@${SGD_VERSION}"
+          echo
+          echo "========== Installed Plugins =========="
           sf plugins
+          echo
+          echo "========== SGD Verification =========="
+          sf sgd --help
 
       - name: Verify Git Range
         run: |
