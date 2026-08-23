@@ -11,6 +11,8 @@ package.xml
 # Standard/system App Launcher metadata
 **/appMenus/**
 
+**/permissionsets/sfdcInternalInt__sfdc_slack.permissionset
+
 # LWC Jest
 **/__tests__/**
 
