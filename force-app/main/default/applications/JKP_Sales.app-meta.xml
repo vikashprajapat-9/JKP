@@ -22,6 +22,7 @@
     <tabs>standard-Opportunity</tabs>
     <tabs>standard-report</tabs>
     <tabs>standard-Dashboard</tabs>
+    <tabs>Lead_Assignment_History__c</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>JKP_Sales_UtilityBar</utilityBar>
 </CustomApplication>

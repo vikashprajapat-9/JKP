@@ -114,7 +114,70 @@ public class LeadLogicController {
             }
         }
     }
+    public static void createLeadHistory( List<Lead> newLeads,Map<Id, Lead> oldMap, Boolean isInsert) {
+        if (newLeads == null || newLeads.isEmpty()) {
+            return;
+        }
+        Set<Id> leadIds = new Set<Id>();
+        for (Lead lead : newLeads) {
+            if (lead.Id != null) {
+                leadIds.add(lead.Id);
+            }
+        }
+        Map<Id, Lead_Assignment_History__c> latestHistoryByLead = new Map<Id, Lead_Assignment_History__c>();
+        for (Lead_Assignment_History__c history : [ SELECT Id, Lead__c, Lead_Assigned_To__c, OwnerId, CreatedDate
+                                                    FROM Lead_Assignment_History__c WHERE Lead__c IN :leadIds  ORDER BY CreatedDate DESC
+        ]) {
+            if (!latestHistoryByLead.containsKey(history.Lead__c)) {
+                latestHistoryByLead.put(history.Lead__c, history);
+            }
+        }
+        List<Lead_Assignment_History__c> historyList = new List<Lead_Assignment_History__c>();
+        for (Lead lead : newLeads) {
+            if (lead.OwnerId == null) {
+                continue;
+            }
 
+            Boolean isUserOwner = String.valueOf(lead.OwnerId).startsWith('005');
+            if (!isUserOwner) {
+                continue;
+            }
+            Boolean ownerChanged = false;
+            if (isInsert) {
+                ownerChanged = true;
+            }
+            else {
+                Lead oldLead = oldMap.get(lead.Id);
+                if ( oldLead != null &&  oldLead.OwnerId != lead.OwnerId
+                ) {
+                    ownerChanged = true;
+                }
+            }
+            if (!ownerChanged) {
+                continue;
+            }
+            Lead_Assignment_History__c latestHistory =  latestHistoryByLead.get(lead.Id);
+            if ( latestHistory != null && latestHistory.Lead_Assigned_To__c == lead.OwnerId) {
+                System.debug( 'Assignment history already exists for Lead ' + lead.Id +' and User ' +  lead.OwnerId);
+                continue;
+            }
+            Lead_Assignment_History__c history = new Lead_Assignment_History__c();
+            history.Lead__c = lead.Id;
+            history.Lead_Assigned_To__c = lead.OwnerId;
+            history.OwnerId = lead.OwnerId;
+
+            history.SLA1__c = false;
+            history.SLA2__c = false;
+
+            historyList.add(history);
+        }
+
+        if (!historyList.isEmpty()) {
+            System.debug( 'Creating Lead Assignment History records: ' + historyList.size());
+            insert historyList;
+        }
+    }
+    
     private static Boolean isChannelPartner(String source){
     return source != null && source.equalsIgnoreCase('Channel Partner Source');
     }

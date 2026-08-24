@@ -20,6 +20,7 @@
     <tabs>Pre_Sales_Admin_Panel</tabs>
     <tabs>standard-report</tabs>
     <tabs>standard-Dashboard</tabs>
+    <tabs>Lead_Assignment_History__c</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>JKP_Admin_UtilityBar</utilityBar>
 </CustomApplication>

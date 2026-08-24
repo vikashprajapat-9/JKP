@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Freeze_status_change</fullName>
+    <active>true</active>
+    <errorConditionFormula>AND(
+    ISPICKVAL(PRIORVALUE(Status), &quot;Site Visit Done by Other Agent&quot;),
+    ISCHANGED(Status)
+)</errorConditionFormula>
+    <errorMessage>Status cannot be changed because this lead has already been marked as &apos;Site Visit Done by Other Agent&apos;.</errorMessage>
+</ValidationRule>

@@ -4,8 +4,7 @@
     <active>true</active>
     <errorConditionFormula>AND(
     OR(
-        ISPICKVAL(Call_Disposition__c, &quot;In Discussion&quot;),
-        ISPICKVAL(Call_Disposition__c, &quot;Not Reachable&quot;)
+        ISPICKVAL(Call_Disposition__c, &quot;In Discussion&quot;)
     ),
     ISBLANK(Follow_Up_DateTime__c)
 )</errorConditionFormula>

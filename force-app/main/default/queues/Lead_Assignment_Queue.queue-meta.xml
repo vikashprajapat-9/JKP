@@ -14,4 +14,7 @@
     <queueSobject>
         <sobjectType>Lead</sobjectType>
     </queueSobject>
+    <queueSobject>
+        <sobjectType>Lead_Assignment_History__c</sobjectType>
+    </queueSobject>
 </Queue>

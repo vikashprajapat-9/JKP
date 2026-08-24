@@ -19,6 +19,7 @@
     <tabs>standard-Lead</tabs>
     <tabs>standard-report</tabs>
     <tabs>standard-Dashboard</tabs>
+    <tabs>Lead_Assignment_History__c</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>Jhon_Keells_Lead_Management_UtilityBar</utilityBar>
 </CustomApplication>
