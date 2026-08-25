@@ -290,7 +290,6 @@ export default class LeadDisposition extends LightningElement {
 
         })
         .catch(error => {
-            
             this.dispatchEvent(
                 new ShowToastEvent({
                     title: 'Error',

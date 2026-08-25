@@ -1,0 +1,36 @@
+:host {
+    display: block;
+    background: #f3f3f3;
+    min-height: 100vh;
+}
+
+.search-section {
+    background: white;
+    border-radius: 8px;
+}
+
+.result-card {
+    border-radius: 8px;
+    transition: .2s;
+}
+
+.result-card:hover {
+    box-shadow: 0 6px 18px rgba(0,0,0,.18);
+    transform: translateY(-2px);
+}
+
+.section-heading {
+    font-size: 18px;
+    font-weight: 700;
+    color: #16325c;
+}
+
+.record-label {
+    font-weight: 600;
+    color: #444;
+}
+
+.slds-modal__container {
+    max-width: 700px;
+    width: 90%;
+}

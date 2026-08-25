@@ -20,11 +20,6 @@
                 <label>Upcoming</label>
             </value>
             <value>
-                <fullName>Incomplete</fullName>
-                <default>false</default>
-                <label>Incomplete</label>
-            </value>
-            <value>
                 <fullName>Cancelled</fullName>
                 <default>false</default>
                 <label>Cancelled</label>
@@ -32,7 +27,14 @@
             <value>
                 <fullName>Ended</fullName>
                 <default>false</default>
+                <isActive>false</isActive>
                 <label>Ended</label>
+            </value>
+            <value>
+                <fullName>Incomplete</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Incomplete</label>
             </value>
         </valueSetDefinition>
     </valueSet>

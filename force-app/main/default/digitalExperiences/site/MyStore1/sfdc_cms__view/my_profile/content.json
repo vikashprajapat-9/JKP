@@ -1,0 +1,414 @@
+{
+  "type" : "sfdc_cms__view",
+  "title" : "My Profile",
+  "contentBody" : {
+    "component" : {
+      "children" : [ {
+        "children" : [ {
+          "attributes" : {
+            "backgroundImageConfig" : "",
+            "backgroundImageOverlay" : "rgba(0,0,0,0)",
+            "componentSpacerSize" : "",
+            "dxpStyle" : {
+              "padding" : {
+                "bottom" : "1rem",
+                "left" : "1rem",
+                "right" : "1rem",
+                "top" : "1rem"
+              }
+            },
+            "layoutDirectionDesktop" : "row",
+            "layoutDirectionMobile" : "column",
+            "layoutDirectionTablet" : "column",
+            "maxContentWidth" : "",
+            "sectionColumnGutterWidth" : "",
+            "sectionConfig" : "{\"UUID\":\"316e0a17-4cdb-4edf-87b3-0425fcefdabd\",\"columns\":[{\"UUID\":\"b926a541-2bc4-41cd-a948-88c6355eb412\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}",
+            "sectionMinHeight" : "",
+            "sectionVerticalAlign" : "flex-start"
+          },
+          "children" : [ {
+            "children" : [ {
+              "attributes" : {
+                "clientState" : "{!MyProfile.ClientState}",
+                "dxpStyle" : { },
+                "emailLabel" : "Email Address",
+                "firstNameLabel" : "First Name",
+                "lastNameLabel" : "Last Name",
+                "phoneLabel" : "Phone Number",
+                "profile" : "{!MyProfile.Details}",
+                "profileCardBorderColor" : "#D9DFE7",
+                "profileCardBorderRadius" : 4,
+                "showPhoneDetails" : true
+              },
+              "children" : [ {
+                "children" : [ {
+                  "attributes" : {
+                    "backgroundColor" : "",
+                    "dxpStyle" : { },
+                    "isLinkable" : false,
+                    "linkAssistiveText" : "",
+                    "paddingHorizontal" : "none",
+                    "paddingVertical" : "xx-small",
+                    "text" : "My Profile",
+                    "textAlign" : "left",
+                    "textDecoration" : "{}",
+                    "textDisplayInfo" : "{\"textStyle\": \"heading-large\", \"headingTag\": \"h2\"}"
+                  },
+                  "definition" : "dxp_base:textBlock",
+                  "id" : "e6710579-c848-41a8-b0db-922cf0b5eaf9",
+                  "type" : "component"
+                } ],
+                "id" : "ca2c921f-69eb-485e-89a9-dfeccf43e9b4",
+                "name" : "header",
+                "title" : "header",
+                "type" : "region"
+              }, {
+                "children" : [ {
+                  "attributes" : {
+                    "backgroundColor" : "",
+                    "dxpStyle" : { },
+                    "isLinkable" : false,
+                    "linkAssistiveText" : "",
+                    "paddingHorizontal" : "none",
+                    "paddingVertical" : "none",
+                    "text" : "Name",
+                    "textAlign" : "left",
+                    "textDecoration" : "{}",
+                    "textDisplayInfo" : "{\"textStyle\": \"heading-medium\", \"headingTag\": \"h3\"}"
+                  },
+                  "definition" : "dxp_base:textBlock",
+                  "id" : "3ca31047-5161-4485-91c2-755fb3d23d16",
+                  "type" : "component"
+                } ],
+                "id" : "8b62b5a5-7e78-4b13-bdea-c9a043620cb9",
+                "name" : "personalDetailsHeaderLabel",
+                "title" : "personalDetailsHeaderLabel",
+                "type" : "region"
+              }, {
+                "children" : [ {
+                  "attributes" : {
+                    "dxpStyle" : { },
+                    "size" : "standard",
+                    "text" : "Change Password",
+                    "variant" : "secondary",
+                    "width" : "standard"
+                  },
+                  "definition" : "commerce_builder:actionButton",
+                  "id" : "f07ec70c-dcf6-41a9-82e6-7d4dd964f516",
+                  "type" : "component"
+                } ],
+                "id" : "70fa0c69-73ab-471d-bf21-b169ccf58189",
+                "name" : "changePasswordButton",
+                "title" : "changePasswordButton",
+                "type" : "region"
+              }, {
+                "children" : [ {
+                  "attributes" : {
+                    "backgroundColor" : "",
+                    "dxpStyle" : { },
+                    "isLinkable" : false,
+                    "linkAssistiveText" : "",
+                    "paddingHorizontal" : "none",
+                    "paddingVertical" : "none",
+                    "text" : "Email Address",
+                    "textAlign" : "left",
+                    "textDecoration" : "{}",
+                    "textDisplayInfo" : "{\"textStyle\": \"heading-medium\", \"headingTag\": \"h3\"}"
+                  },
+                  "definition" : "dxp_base:textBlock",
+                  "id" : "4ebd1724-6321-4298-97e5-bf16660b1df6",
+                  "type" : "component"
+                } ],
+                "id" : "c477c665-a901-49d2-8355-926e52da0640",
+                "name" : "emailHeaderLabel",
+                "title" : "emailHeaderLabel",
+                "type" : "region"
+              }, {
+                "children" : [ {
+                  "attributes" : {
+                    "backgroundColor" : "",
+                    "dxpStyle" : { },
+                    "isLinkable" : false,
+                    "linkAssistiveText" : "",
+                    "paddingHorizontal" : "none",
+                    "paddingVertical" : "none",
+                    "text" : "Phone Number",
+                    "textAlign" : "left",
+                    "textDecoration" : "{}",
+                    "textDisplayInfo" : "{\"textStyle\": \"heading-medium\", \"headingTag\": \"h3\"}"
+                  },
+                  "definition" : "dxp_base:textBlock",
+                  "id" : "a4950c03-f70e-4521-9315-2f505455c141",
+                  "type" : "component"
+                } ],
+                "id" : "0df4ae43-4e74-4297-83cd-1c6b8975a70b",
+                "name" : "phoneHeaderLabel",
+                "title" : "phoneHeaderLabel",
+                "type" : "region"
+              } ],
+              "definition" : "commerce_builder:myAccountProfileContainer",
+              "id" : "789e1122-2002-494a-8ff4-ed82918f406f",
+              "type" : "component"
+            } ],
+            "id" : "b926a541-2bc4-41cd-a948-88c6355eb412",
+            "name" : "col1",
+            "title" : "Column 1",
+            "type" : "region"
+          } ],
+          "definition" : "community_layout:section",
+          "id" : "316e0a17-4cdb-4edf-87b3-0425fcefdabd",
+          "type" : "component"
+        }, {
+          "attributes" : {
+            "backgroundImageConfig" : "",
+            "backgroundImageOverlay" : "rgba(0,0,0,0)",
+            "componentSpacerSize" : "",
+            "dxpStyle" : {
+              "padding" : {
+                "bottom" : "1rem",
+                "left" : "1rem",
+                "right" : "1rem",
+                "top" : "1rem"
+              }
+            },
+            "layoutDirectionDesktop" : "row",
+            "layoutDirectionMobile" : "column",
+            "layoutDirectionTablet" : "column",
+            "maxContentWidth" : "",
+            "sectionColumnGutterWidth" : "",
+            "sectionConfig" : "{\"UUID\":\"63669664-438e-47e2-9ef4-2151ae35ad40\",\"columns\":[{\"UUID\":\"619e50d6-f373-4fde-8b9b-206573af063c\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}",
+            "sectionMinHeight" : "",
+            "sectionVerticalAlign" : "flex-start"
+          },
+          "children" : [ {
+            "children" : [ {
+              "attributes" : {
+                "consentData" : "{!Marketing.Subscriptions}",
+                "dxpStyle" : { }
+              },
+              "children" : [ {
+                "children" : [ {
+                  "attributes" : {
+                    "backgroundColor" : "",
+                    "dxpStyle" : { },
+                    "isLinkable" : false,
+                    "linkAssistiveText" : "",
+                    "paddingHorizontal" : "none",
+                    "paddingVertical" : "xx-small",
+                    "text" : "Marketing Communication Preferences",
+                    "textAlign" : "left",
+                    "textDecoration" : "{}",
+                    "textDisplayInfo" : "{\"textStyle\": \"heading-large\", \"headingTag\": \"h2\"}"
+                  },
+                  "definition" : "dxp_base:textBlock",
+                  "id" : "0eb584f5-1620-41aa-96a6-5de53620a079",
+                  "type" : "component"
+                } ],
+                "id" : "9795a480-00ee-47dd-9cfd-23df828152ae",
+                "name" : "consentOptionsHeaderText",
+                "title" : "consentOptionsHeaderText",
+                "type" : "region"
+              }, {
+                "children" : [ {
+                  "attributes" : {
+                    "dxpStyle" : { },
+                    "imageInfos" : "",
+                    "richTextValue" : "<p>Read the <a href=\"{!Site.basePath}/privacy-policy\" rel=\"noopener noreferrer\" target=\"_blank\"><u>Privacy Policy</u></a> to learn how we handle your data.</p>"
+                  },
+                  "definition" : "community_builder:richTextEditor",
+                  "id" : "4cd8bfeb-35de-4154-b881-230286459ae9",
+                  "type" : "component"
+                } ],
+                "id" : "0e1b8c54-10bf-42ce-95ec-24019b801c73",
+                "name" : "consentOptionsFooterText",
+                "title" : "consentOptionsFooterText",
+                "type" : "region"
+              } ],
+              "definition" : "commerce_builder:myAccountMarketingConsentSettings",
+              "id" : "478fb48c-cda0-4716-8997-4cd0e8b45daa",
+              "type" : "component",
+              "dataProviders" : [ {
+                "definition" : "sfdc_cms__commerceMarketingConsentDataProvider",
+                "sfdcExpressionKey" : "Marketing",
+                "attributes" : {
+                  "consentExperience" : "ProfileAndRegistration",
+                  "contactFromUserContext" : true
+                }
+              } ]
+            } ],
+            "id" : "619e50d6-f373-4fde-8b9b-206573af063c",
+            "name" : "col1",
+            "title" : "Column 1",
+            "type" : "region"
+          } ],
+          "definition" : "community_layout:section",
+          "id" : "63669664-438e-47e2-9ef4-2151ae35ad40",
+          "type" : "component"
+        }, {
+          "attributes" : {
+            "backgroundImageConfig" : "",
+            "backgroundImageOverlay" : "rgba(0,0,0,0)",
+            "componentSpacerSize" : "",
+            "dxpStyle" : {
+              "padding" : {
+                "bottom" : "1rem",
+                "left" : "1rem",
+                "right" : "1rem",
+                "top" : "1rem"
+              }
+            },
+            "layoutDirectionDesktop" : "row",
+            "layoutDirectionMobile" : "column",
+            "layoutDirectionTablet" : "column",
+            "maxContentWidth" : "",
+            "sectionColumnGutterWidth" : "",
+            "sectionConfig" : "{\"UUID\":\"ca24785b-84c2-4de5-9cb3-c7bcbe1eea1a\",\"columns\":[{\"UUID\":\"9885b0d1-f0ef-49b0-adea-8a3d78822c97\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":null}]}",
+            "sectionMinHeight" : "",
+            "sectionVerticalAlign" : "flex-start"
+          },
+          "children" : [ {
+            "children" : [ {
+              "attributes" : {
+                "backgroundColor" : "",
+                "borderColor" : "",
+                "borderRadius" : 0,
+                "borderWidth" : 0,
+                "dxpStyle" : { },
+                "hideForFewerThan" : 1,
+                "iconBorderRadius" : 100,
+                "iconBorderWidth" : 0,
+                "iconPadding" : 0,
+                "indicatorType" : "none",
+                "layout" : "reel",
+                "primaryNavigation" : "arrows",
+                "width" : 100
+              },
+              "children" : [ {
+                "children" : [ {
+                  "attributes" : {
+                    "addToCartButtonLabel" : "Add To Cart",
+                    "cardBorderColor" : "rgb(255, 255, 255, 0)",
+                    "cardBorderRadius" : 0,
+                    "cardBorderWeight" : 1,
+                    "cardImageBorderColor" : "rgb(217, 223, 231)",
+                    "cardImageSize" : "cover",
+                    "cardTextFlexAlign" : "flex-start",
+                    "combinePromosThreshold" : "1",
+                    "dxpStyle" : { },
+                    "iconBorderColor" : "#ecebea",
+                    "imageAspectRatio" : "1",
+                    "imageHoverAction" : "zoom",
+                    "item" : "{!Recommendation}",
+                    "priceType" : "displayAllPrices",
+                    "primaryPriceFontSize" : "medium",
+                    "primaryPriceTextStyle" : "{\"bold\":true}",
+                    "promotionTextColor" : "#0d825d",
+                    "secondaryPriceFontSize" : "small",
+                    "secondaryPriceTextColor" : "#707275",
+                    "showButtonOnDesktop" : false,
+                    "showButtonOnMobile" : false,
+                    "showProductImage" : true,
+                    "showSku" : false,
+                    "showWishlistIcon" : true,
+                    "skuLabel" : "SKU:",
+                    "swatchBorderRadius" : 5,
+                    "unavailablePriceLabel" : "Price Unavailable",
+                    "viewProductOptionsButtonLabel" : "View Options"
+                  },
+                  "definition" : "commerce_builder:productCard",
+                  "id" : "a6647ca2-2205-494f-b222-7e0dd30537ae",
+                  "type" : "component"
+                } ],
+                "id" : "ca5c4d88-c971-4fe4-bc42-23e7df3f523b",
+                "name" : "sfdcRepeaterItem",
+                "title" : "sfdcRepeaterItem",
+                "type" : "region"
+              }, {
+                "children" : [ {
+                  "attributes" : {
+                    "backgroundColor" : "",
+                    "dxpStyle" : { },
+                    "isLinkable" : false,
+                    "linkAssistiveText" : "",
+                    "paddingHorizontal" : "none",
+                    "paddingVertical" : "small",
+                    "text" : "Recently Viewed Products",
+                    "textAlign" : "center",
+                    "textDecoration" : "{\"bold\": false}",
+                    "textDisplayInfo" : "{\"headingTag\": \"h2\", \"textStyle\": \"heading-large\"}"
+                  },
+                  "definition" : "dxp_base:textBlock",
+                  "id" : "b7260968-8c9e-40ed-bb10-67853d41720a",
+                  "type" : "component"
+                } ],
+                "id" : "4c218ce1-bdc5-4556-9c5f-38dd6fe27515",
+                "name" : "carouselHeader",
+                "title" : "carouselHeader",
+                "type" : "region"
+              }, {
+                "children" : [ {
+                  "attributes" : {
+                    "dxpStyle" : { }
+                  },
+                  "definition" : "dxp_page_layout:placeHolder",
+                  "id" : "7fb9a755-bb4f-494d-b874-bb0eb587c6bd",
+                  "type" : "component"
+                } ],
+                "id" : "ed248e46-c0f7-484e-a289-6f92d8c71606",
+                "name" : "placeholder",
+                "title" : "placeholder",
+                "type" : "region"
+              } ],
+              "definition" : "experience:carouselV2",
+              "id" : "c53685d5-7a47-4012-9479-513f86ba86c8",
+              "type" : "component",
+              "dataProviders" : [ {
+                "definition" : "sfdc_cms__commerceEinsteinRecommendationsDataProvider",
+                "sfdcExpressionKey" : "Recommendation",
+                "attributes" : {
+                  "recommendationSettings" : "{\"anchor\": \"noContext\", \"recommender\": \"RecentlyViewed\"}"
+                }
+              } ]
+            } ],
+            "id" : "9885b0d1-f0ef-49b0-adea-8a3d78822c97",
+            "name" : "col1",
+            "title" : "Column 1",
+            "type" : "region"
+          } ],
+          "definition" : "community_layout:section",
+          "id" : "ca24785b-84c2-4de5-9cb3-c7bcbe1eea1a",
+          "type" : "component"
+        } ],
+        "id" : "f0bd394a-8313-4043-a287-614a0c4df80f",
+        "name" : "content",
+        "title" : "Content",
+        "type" : "region"
+      }, {
+        "children" : [ {
+          "attributes" : {
+            "dxpStyle" : { },
+            "recordId" : "{!recordId}"
+          },
+          "definition" : "community_builder:seoAssistant",
+          "id" : "e33182be-7486-4b04-a17d-5d73d0d51a8b",
+          "type" : "component"
+        } ],
+        "id" : "8de77ae9-1642-4f3c-a115-be9df462f6c2",
+        "name" : "sfdcHiddenRegion",
+        "title" : "sfdcHiddenRegion",
+        "type" : "region"
+      } ],
+      "definition" : "community_layout:sldsFlexibleLayout",
+      "id" : "c997c185-dc6d-4c83-a17f-e29c88789247",
+      "type" : "component"
+    },
+    "dataProviders" : [ {
+      "definition" : "sfdc_cms__commerceMyProfileDataProvider",
+      "sfdcExpressionKey" : "MyProfile",
+      "attributes" : { }
+    } ],
+    "themeLayoutType" : "MyAccount",
+    "viewType" : "my-profile"
+  },
+  "urlName" : "my-profile"
+}

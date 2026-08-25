@@ -38,7 +38,7 @@
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
-                <field>Lead_Priority__c</field>
+                <field>Lead_Classification__c</field>
             </layoutItems>
             <layoutItems>
                 <behavior>Edit</behavior>
@@ -211,9 +211,9 @@
         <detailHeading>false</detailHeading>
         <editHeading>false</editHeading>
         <label>Useful Links</label>
-        <layoutColumns/>
-        <layoutColumns/>
-        <layoutColumns/>
+        <layoutColumns />
+        <layoutColumns />
+        <layoutColumns />
         <style>CustomLinks</style>
     </layoutSections>
     <platformActionList>

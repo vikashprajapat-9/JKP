@@ -1,0 +1,20 @@
+{
+  "type" : "sfdc_cms__view",
+  "title" : "Product",
+  "contentBody" : {
+    "component" : {
+      "children" : [ {
+        "attributes" : {
+          "textDisplayInfo" : "{\"headingTag\": \"h2\", \"textStyle\": \"heading-medium\"}"
+        },
+        "id" : "805e2339-cf92-486e-91e1-94000ec30c0c"
+      }, {
+        "attributes" : {
+          "textDisplayInfo" : "{\"headingTag\": \"h2\", \"textStyle\": \"heading-medium\"}"
+        },
+        "id" : "ab20d51e-f49a-4310-a496-f80477432a07"
+      } ]
+    }
+  },
+  "urlName" : "product"
+}
