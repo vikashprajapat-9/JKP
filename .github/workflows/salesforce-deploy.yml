@@ -244,6 +244,7 @@ jobs:
           sf org display \
             --target-org "${{ inputs.target_org_alias }}" \
             --json | tee auth-result.json
+            
       - name: Verify Ignored Files
         run: |
           echo "========== .forceignore =========="
@@ -252,7 +253,8 @@ jobs:
           echo
           echo "========== Ignored Permission Set =========="
           sf project list ignored \
-            --source-dir force-app/main/default/permissionsets/sfdcInternalInt__sfdc_slack.permissionset
+            --source-dir force-app/main/default/permissionsets/sfdcInternalInt__sfdc_slack.permissionset-meta.xml
+            
       - name: Start Full Deployment
         if: inputs.deployment_type == 'full'
         run: |
