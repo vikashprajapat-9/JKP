@@ -150,11 +150,11 @@ jobs:
           echo "========== Generating SGD Delta =========="
 
           sf sgd source delta \
-            --from "${{ inputs.from_sha }}" \
-            --to "${{ inputs.to_sha }}" \
+            --from "${{ github.event.before }}" \
+            --to "${{ github.sha }}" \
             --generate-delta \
+            --ignore-file .sgdignore \
             --output-dir delta
-
           echo
           echo "========== Generated Delta =========="
           find delta -type f | sort

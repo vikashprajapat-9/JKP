@@ -64,6 +64,18 @@ export default class LeadDisposition extends LightningElement {
         });
     }
 
+    @wire(getDispositions, { leadId: '$recordId' })
+        wiredDispositions(result) {
+            this.wiredResult = result;
+
+            if (result.data) {
+                this.dispositions = result.data;
+            } else if (result.error) {
+                console.error(result.error);
+                this.dispositions = [];
+            }
+        }
+
     /* PAGINATION */
 
     pageSize = 5;
@@ -72,7 +84,7 @@ export default class LeadDisposition extends LightningElement {
 
     /* GETTERS */
     get isFollowUpRequired() {
-        return this.disposition === 'In Discussion' || this.disposition === 'Not Reachable';
+        return this.disposition === 'In Discussion' ;
     }
     // get isNotInterested(){
     //     return this.disposition === 'Not Interested';
@@ -215,7 +227,21 @@ export default class LeadDisposition extends LightningElement {
         }
         this.showContactedModal  = false;
     }
-
+    closeLossReasonModal() {
+        this.showLossReasonModal = false;
+        this.lossReason = null;
+        this.otherLossReason = null;
+        this.disposition = '';
+    }
+    closeContactedModal() {
+        this.showContactedModal = false;
+        this.purchasePurpose = null;
+        this.unitType = null;
+        this.unitSize = null;
+        this.purchaseTimeline = null;
+        this.assessBudget = null;
+        this.assessFinanceReadiness = null;
+    }
     saveDisposition() {
         const allValid = [...this.template.querySelectorAll(
                 'lightning-input, lightning-combobox'
