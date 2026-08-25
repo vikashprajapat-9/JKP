@@ -43,5 +43,12 @@ public with sharing class LeadTriggerHandler {
             LeadLogicController.checkDuplicateLead(newLeads);
         }
     }
+    public static void afterInsertUpdate(List<Lead> newLeads, Map<Id, Lead> oldMap,Boolean isInsert, Boolean isUpdate) {
+        if(newLeads.isEmpty()) {
+            System.debug('Lead List is Empty!');
+            return;
+        }
+        LeadLogicController.createLeadHistory(  newLeads,oldMap, isInsert);
+    }
     
 }

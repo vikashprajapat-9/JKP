@@ -7,4 +7,11 @@
         <shortDescription>Integration Log</shortDescription>
         <value>True</value>
     </labels>
+    <labels>
+        <fullName>Re_Distribute_Lead</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Re-Distribution Lead</shortDescription>
+        <value>False</value>
+    </labels>
 </CustomLabels>

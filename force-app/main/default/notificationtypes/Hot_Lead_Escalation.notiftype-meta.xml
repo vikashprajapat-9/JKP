@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomNotificationType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customNotifTypeName>Hot Lead Escalation</customNotifTypeName>
+    <description>Hot Lead Not Contacted Within 1 Hour</description>
+    <desktop>true</desktop>
+    <masterLabel>Hot Lead Escalation</masterLabel>
+    <mobile>true</mobile>
+    <slack>false</slack>
+</CustomNotificationType>

@@ -3,6 +3,7 @@
     <fullName>AllOpenLeads</fullName>
     <columns>FULL_NAME</columns>
     <columns>LEAD.COMPANY</columns>
+    <columns>AGM_Related_to__c</columns>
     <columns>LEAD.STATE</columns>
     <columns>LEAD.PHONE</columns>
     <columns>LEAD.EMAIL</columns>

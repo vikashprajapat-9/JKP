@@ -49,6 +49,18 @@
                         <section role="dialog" tabindex="-1"  class="slds-modal slds-fade-in-open">
                             <div class="slds-modal__container">
                                 <header class="slds-modal__header">
+                                    <button
+                                        class="slds-button slds-button_icon slds-modal__close"
+                                        title="Close"
+                                        onclick={closeLossReasonModal}>
+
+                                        <lightning-icon
+                                            icon-name="utility:close"
+                                            alternative-text="Close"
+                                            size="small">
+                                        </lightning-icon>
+
+                                    </button>
                                     <h2 class="slds-text-heading_medium">
                                         Loss Details
                                     </h2>
@@ -62,7 +74,7 @@
                                     </template>
                                 </div>
                                 <footer class="slds-modal__footer">
-                                    <lightning-button  label="Cancel" onclick={handleCancel}>  </lightning-button>
+                                    <lightning-button  label="Cancel" onclick={closeLossReasonModal}>  </lightning-button>
                                     <lightning-button variant="brand" label="Save" onclick={handleLossReasonSave}>
                                     </lightning-button>
                                 </footer>
@@ -75,6 +87,18 @@
                         <section role="dialog" tabindex="-1"  class="slds-modal slds-fade-in-open">
                             <div class="slds-modal__container">
                                 <header class="slds-modal__header">
+                                    <button
+                                        class="slds-button slds-button_icon slds-modal__close"
+                                        title="Close"
+                                        onclick={closeContactedModal}>
+
+                                        <lightning-icon
+                                            icon-name="utility:close"
+                                            alternative-text="Close"
+                                            size="small">
+                                        </lightning-icon>
+
+                                    </button>
                                     <h2 class="slds-text-heading_medium">
                                         Response Details
                                     </h2>
@@ -94,7 +118,7 @@
                                     </lightning-combobox>
                                 </div>
                                 <footer class="slds-modal__footer">
-                                    <lightning-button  label="Cancel" onclick={handleCancel}>  </lightning-button>
+                                    <lightning-button  label="Cancel" onclick={closeContactedModal}>  </lightning-button>
                                     <lightning-button variant="brand" label="Save" onclick={handleContactedSave}>
                                     </lightning-button>
                                 </footer>
@@ -103,13 +127,13 @@
                         <div class="slds-backdrop slds-backdrop_open"></div>
                 </template>
 
-                <div class="buttonSection">
-                    <lightning-button label="Save" variant="brand" onclick={saveDisposition}>
-                    </lightning-button>
-                    <lightning-button label="Cancel" variant="neutral" onclick={handleCancel} class="cancelBtn">
-                    </lightning-button>
+                    <div class="buttonSection">
+                        <lightning-button label="Save" variant="brand" onclick={saveDisposition}>
+                        </lightning-button>
+                        <lightning-button label="Cancel" variant="neutral" onclick={handleCancel} class="cancelBtn">
+                        </lightning-button>
+                    </div>
                 </div>
-            </div>
         </template>
         
         <!-- EMPTY STATE -->

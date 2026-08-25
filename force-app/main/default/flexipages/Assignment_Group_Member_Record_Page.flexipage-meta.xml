@@ -88,6 +88,30 @@
         </itemInstances>
         <itemInstances>
             <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.SLA1_Threshold_Percentage__c</fieldItem>
+                <identifier>RecordSLA1_Threshold_Percentage__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.SLA2_Threshold_Percentage__c</fieldItem>
+                <identifier>RecordSLA2_Threshold_Percentage__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.BreakTime_Started__c</fieldItem>
                 <identifier>RecordBreakTime_Started__cField</identifier>
             </fieldInstance>
@@ -134,6 +158,36 @@
                 </fieldInstanceProperties>
                 <fieldItem>Record.Last_Allocated_RRID__c</fieldItem>
                 <identifier>RecordLast_Allocated_RRID_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.In_Discussion_Lead_Threshold__c</fieldItem>
+                <identifier>RecordIn_Discussion_Lead_Threshold__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.SLA1_Period__c</fieldItem>
+                <identifier>RecordSLA1_Period__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.SLA2_Period__c</fieldItem>
+                <identifier>RecordSLA2_Period__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-a023d234-4952-406e-b45c-3f9f18f1bae9</name>
