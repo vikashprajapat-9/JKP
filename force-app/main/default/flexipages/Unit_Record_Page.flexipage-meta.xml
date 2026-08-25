@@ -90,16 +90,6 @@
                 <identifier>RecordStatus_cField</identifier>
             </fieldInstance>
         </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>readonly</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.OwnerId</fieldItem>
-                <identifier>RecordOwnerIdField</identifier>
-            </fieldInstance>
-        </itemInstances>
         <name>Facet-f06b73b4-4fb3-41e1-b666-78a659a373ac</name>
         <type>Facet</type>
     </flexiPageRegions>
