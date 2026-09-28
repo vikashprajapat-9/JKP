@@ -1,0 +1,146 @@
+<template>
+    <div class="letstalk-container">
+
+        <template if:true={isLoading}>
+            <div class="loading-wrap">
+                <div class="spinner"></div>
+                <p class="loading-text">Loading contact details...</p>
+            </div>
+        </template>
+
+        <template if:true={hasError}>
+            <div class="error-wrap">
+                <p class="error-text">We couldn't load this page right now. Please try again in a moment.</p>
+                <button class="btn-retry" onclick={handleRetry}>Retry</button>
+            </div>
+        </template>
+
+        <template if:true={showContent}>
+            <h1 class="page-title">{pageTitle}</h1>
+            <p class="page-description">{pageDescription}</p>
+
+            <div class="dropdown-wrap">
+                <button
+                    class="dropdown-trigger"
+                    aria-haspopup="listbox"
+                    aria-expanded={isDropdownOpen}
+                    aria-label="Select a project"
+                    onclick={handleToggleDropdown}
+                >
+                    <span class="dropdown-selected-label">{selectedProjectName}</span>
+                    <span class={chevronClass}>
+                        <svg viewBox="0 0 24 24" class="chevron-svg" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                        </svg>
+                    </span>
+                </button>
+
+                <template if:true={isDropdownOpen}>
+                    <ul class="dropdown-menu" role="listbox" aria-label="Projects">
+                        <template for:each={projectOptions} for:item="option">
+                            <li
+                                key={option.id}
+                                class={option.itemClass}
+                                role="option"
+                                aria-selected={option.isSelected}
+                                data-id={option.id}
+                                onclick={handleSelectProject}
+                            >{option.name}</li>
+                        </template>
+                    </ul>
+                </template>
+            </div>
+
+            <template if:true={selectedProjectData}>
+                <div class="cards-grid">
+
+                    <div class="contact-card">
+                        <div class="card-header-row">
+                            <span class="icon-circle">
+                                <svg viewBox="0 0 24 24" class="icon-svg" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                    <circle cx="12" cy="12" r="8.2" fill="none" stroke="currentColor" stroke-width="1.6"/>
+                                    <circle cx="12" cy="12" r="4.4" fill="none" stroke="currentColor" stroke-width="1.6"/>
+                                    <circle cx="12" cy="12" r="1.4" fill="currentColor"/>
+                                </svg>
+                            </span>
+                            <p class="card-title">Property Address</p>
+                        </div>
+                        <p class="card-content">{selectedProjectData.propertyAddress}</p>
+                        <button class="card-action" onclick={handleOpenPropertyMap} aria-label="Open property location on maps">
+                            <span class="card-action-label">Open Location on Maps</span>
+                            <span class="action-arrow-circle">
+                                <svg viewBox="0 0 24 24" class="arrow-svg" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                    <path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </button>
+                    </div>
+
+                    <div class="contact-card">
+                        <div class="card-header-row">
+                            <span class="icon-circle">
+                                <svg viewBox="0 0 24 24" class="icon-svg" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                    <rect x="3.5" y="5.5" width="17" height="13" rx="1.6" fill="none" stroke="currentColor" stroke-width="1.6"/>
+                                    <path d="M4.2 6.5l7.8 6 7.8-6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                            <p class="card-title">Email</p>
+                        </div>
+                        <p class="card-content">{selectedProjectData.email}</p>
+                        <button class="card-action" onclick={handleEmailUs} aria-label="Send us an email">
+                            <span class="card-action-label">Email us</span>
+                            <span class="action-arrow-circle">
+                                <svg viewBox="0 0 24 24" class="arrow-svg" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                    <path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </button>
+                    </div>
+
+                    <div class="contact-card">
+                        <div class="card-header-row">
+                            <span class="icon-circle">
+                                <svg viewBox="0 0 24 24" class="icon-svg" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                    <path d="M6.6 4.5c.6-.2 1.3 0 1.6.6l1 2c.3.6.1 1.3-.4 1.7l-1.1.9c.7 1.8 2.1 3.2 3.9 3.9l.9-1.1c.4-.5 1.1-.7 1.7-.4l2 1c.6.3.8 1 .6 1.6l-.6 1.7c-.2.6-.8 1-1.5 1-6 0-10.9-4.9-10.9-10.9 0-.7.4-1.3 1-1.5l1.8-.6Z" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                            <p class="card-title">CRM Contact</p>
+                        </div>
+                        <p class="card-content">{selectedProjectData.crmContact}</p>
+                        <button class="card-action" onclick={handleCallUs} aria-label="Call our CRM contact">
+                            <span class="card-action-label">Call us</span>
+                            <span class="action-arrow-circle">
+                                <svg viewBox="0 0 24 24" class="arrow-svg" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                    <path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </button>
+                    </div>
+
+                    <div class="contact-card">
+                        <div class="card-header-row">
+                            <span class="icon-circle">
+                                <svg viewBox="0 0 24 24" class="icon-svg" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                    <circle cx="12" cy="12" r="8.2" fill="none" stroke="currentColor" stroke-width="1.6"/>
+                                    <circle cx="12" cy="12" r="4.4" fill="none" stroke="currentColor" stroke-width="1.6"/>
+                                    <circle cx="12" cy="12" r="1.4" fill="currentColor"/>
+                                </svg>
+                            </span>
+                            <p class="card-title">Corporate Address</p>
+                        </div>
+                        <p class="card-content">{selectedProjectData.corporateAddress}</p>
+                        <button class="card-action" onclick={handleOpenCorporateMap} aria-label="Open corporate office location on maps">
+                            <span class="card-action-label">Open Location on Maps</span>
+                            <span class="action-arrow-circle">
+                                <svg viewBox="0 0 24 24" class="arrow-svg" xmlns="http://www.w3.org/2000/svg" aria-hidden="true">
+                                    <path d="M5 12h13M13 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </span>
+                        </button>
+                    </div>
+
+                </div>
+            </template>
+        </template>
+    </div>
+</template>

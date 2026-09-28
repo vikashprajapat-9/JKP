@@ -1,0 +1,67 @@
+<template>
+    <div class="faqs-root">
+
+        <template if:true={isLoading}>
+            <div class="state-wrap">
+                <lightning-spinner alternative-text="Loading FAQs" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template if:true={hasError}>
+            <div class="state-wrap">
+                <lightning-icon icon-name="utility:error" size="medium" variant="error"></lightning-icon>
+                <p class="error-text">We couldn't load FAQs right now. Please try again in a moment.</p>
+            </div>
+        </template>
+
+        <template if:true={showContent}>
+            <h1 class="page-heading">{pageTitle}</h1>
+            <p class="page-description">{pageDescription}</p>
+
+            <div class="tabs-row">
+                <template for:each={categories} for:item="cat">
+                    <button
+                        key={cat.key}
+                        class={cat.tabClass}
+                        data-key={cat.key}
+                        onclick={handleTabClick}
+                    >{cat.label}</button>
+                </template>
+            </div>
+            <div class="tabs-divider"></div>
+
+            <template if:true={hasFaqs}>
+                <div class="accordion-list">
+                    <template for:each={activeFaqs} for:item="faq">
+                        <div key={faq.id} class="accordion-item">
+                            <button
+                                class="accordion-header"
+                                data-id={faq.id}
+                                onclick={handleFaqToggle}
+                                aria-expanded={faq.isOpen}
+                            >
+                                <span class="accordion-question">{faq.question}</span>
+                                <lightning-icon
+                                    icon-name={faq.chevronIcon}
+                                    size="x-small"
+                                    variant="inverse"
+                                    class="accordion-chevron"
+                                ></lightning-icon>
+                            </button>
+
+                            <template if:true={faq.isOpen}>
+                                <div class="accordion-answer">
+                                    <p>{faq.answer}</p>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+            </template>
+
+            <template if:false={hasFaqs}>
+                <p class="empty-text">No FAQs available for this category.</p>
+            </template>
+        </template>
+    </div>
+</template>

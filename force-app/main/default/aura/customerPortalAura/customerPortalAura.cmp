@@ -1,0 +1,9 @@
+<aura:component access="GLOBAL">
+    <!--
+        Thin Aura wrapper around the customerProtal LWC.
+        Visualforce (via Lightning Out) can only bootstrap Aura components,
+        so this wrapper is what gets instantiated on the VF page; it simply
+        renders the LWC shell inside it.
+    -->
+    <c:customerPortal></c:customerPortal>
+</aura:component>

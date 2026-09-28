@@ -16,39 +16,43 @@
                 <label>Immediate</label>
             </value>
             <value>
-                <fullName>Within 1 Month</fullName>
+                <fullName>3-6 Months</fullName>
                 <default>false</default>
-                <label>Within 1 Month</label>
+                <label>3-6 Months</label>
             </value>
             <value>
-                <fullName>Within 3 Months</fullName>
+                <fullName>6-12 Months</fullName>
                 <default>false</default>
-                <label>Within 3 Months</label>
+                <label>6-12 Months</label>
             </value>
             <value>
-                <fullName>Within 6 Months</fullName>
+                <fullName>Just Looking</fullName>
                 <default>false</default>
-                <label>Within 6 Months</label>
-            </value>
-            <value>
-                <fullName>Within 1 Year</fullName>
-                <default>false</default>
-                <label>Within 1 Year</label>
-            </value>
-            <value>
-                <fullName>Just Exploring</fullName>
-                <default>false</default>
-                <label>Just Exploring</label>
+                <label>Just Looking</label>
             </value>
             <value>
                 <fullName>Future Investment</fullName>
                 <default>false</default>
+                <isActive>false</isActive>
                 <label>Future Investment</label>
             </value>
             <value>
                 <fullName>Not Decided Yet</fullName>
                 <default>false</default>
+                <isActive>false</isActive>
                 <label>Not Decided Yet</label>
+            </value>
+            <value>
+                <fullName>Within 1 Month</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Within 1 Month</label>
+            </value>
+            <value>
+                <fullName>Within 3 Months</fullName>
+                <default>false</default>
+                <isActive>false</isActive>
+                <label>Within 3 Months</label>
             </value>
         </valueSetDefinition>
     </valueSet>

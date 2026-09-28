@@ -5,7 +5,7 @@
       "default": true
     }
   ],
-  "name": "JKPsandbox",
+  "name": "JKP Main Sandbox",
   "namespace": "",
   "sfdcLoginUrl": "https://login.salesforce.com",
   "sourceApiVersion": "67.0"

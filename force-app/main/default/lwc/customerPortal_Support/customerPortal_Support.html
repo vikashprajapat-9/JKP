@@ -1,0 +1,179 @@
+<template>
+    <div class="support-container">
+
+        <template if:true={isLoading}>
+            <div class="loading-wrap">
+                <div class="spinner"></div>
+                <p class="loading-text">Loading your service requests...</p>
+            </div>
+        </template>
+
+        <template if:true={hasError}>
+            <div class="error-wrap">
+                <p class="error-text">Something went wrong while loading your service requests. Please try again.</p>
+                <button class="btn-retry" onclick={handleRetry}>Retry</button>
+            </div>
+        </template>
+
+        <template if:true={showContent}>
+
+            <div class="page-header-row">
+                <div class="page-header">
+                    <h1 class="page-title">Support</h1>
+                    <p class="page-description">{pageDescription}</p>
+                </div>
+                <button class="btn-raise" onclick={handleOpenRequestModal}>Raise a Service Request</button>
+            </div>
+
+            <template if:true={showToolbar}>
+                <div class="toolbar-row">
+                    <template if:true={showDlp}>
+                        <div class="dlp-badge">{dlpLabel}</div>
+                    </template>
+
+                    <div class="filter-wrap" onclick={stopPropagation}>
+                        <button class="filter-btn" onclick={handleToggleFilter} aria-haspopup="listbox" aria-expanded={filterAriaExpanded}>
+                            <lightning-icon icon-name="utility:filter" size="xx-small" class="filter-icon"></lightning-icon>
+                            <span class="filter-label">{selectedFilterLabel}</span>
+                            <lightning-icon icon-name="utility:chevrondown" size="xx-small" class="filter-chevron"></lightning-icon>
+                        </button>
+                        <template if:true={isFilterOpen}>
+                            <ul class="filter-menu" role="listbox">
+                                <template for:each={filterOptions} for:item="opt">
+                                    <li key={opt.key} class={opt.className} role="option" data-value={opt.value} onclick={handleSelectFilter}>{opt.label}</li>
+                                </template>
+                            </ul>
+                        </template>
+                    </div>
+                </div>
+            </template>
+
+            <template if:true={hasDisplayedRequests}>
+                <div class="table-scroll">
+                    <table class="sr-table">
+                        <thead>
+                            <tr>
+                                <th class="col-sr">Sr.</th>
+                                <th class="col-desc">Description</th>
+                                <th class="col-project">Project</th>
+                                <th class="col-center">Service request ID</th>
+                                <th class="col-center">Type</th>
+                                <th class="col-center">Status</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={displayedRequests} for:item="req">
+                                <tr key={req.id}>
+                                    <td class="col-sr">{req.srNo}</td>
+                                    <td class="col-desc"><span class="cell-desc">{req.description}</span></td>
+                                    <td class="col-project">{req.projectName}</td>
+                                    <td class="col-center">{req.serviceRequestId}</td>
+                                    <td class="col-center">{req.type}</td>
+                                    <td class="col-center"><span class={req.statusClass}>{req.status}</span></td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+            </template>
+
+            <template if:false={hasDisplayedRequests}>
+                <div class="empty-state">
+                    <template if:true={showEmptyImage}>
+                        <img src={emptyStateImageUrl} alt="No service request raised" class="empty-image" onerror={handleEmptyImageError} />
+                    </template>
+                    <p class="empty-message">No Service Request Raised</p>
+                </div>
+            </template>
+        </template>
+
+        <template if:true={isRequestModalOpen}>
+            <div class="modal-overlay" onclick={handleOverlayClick}>
+                <div class="modal-box" onclick={stopPropagation}>
+                    <button class="modal-close" onclick={handleCloseRequestModal} aria-label="Close">
+                        <lightning-icon icon-name="utility:close" size="x-small"></lightning-icon>
+                    </button>
+                    <h2 class="modal-title">Raise a service request</h2>
+                    <p class="modal-description">
+                        Please select the type of issue that best matches your inquiry or request below.
+                        Our team is dedicated to addressing your needs promptly and efficiently. Thank you
+                        for choosing John Keels Properties ! Your satisfaction is our priority.
+                    </p>
+
+                    <div class="form-field">
+                        <label class="form-label" for="sr-issue">Select an issue</label>
+                        <div class="select-wrap">
+                            <select id="sr-issue" class={issueSelectClass} onchange={handleFieldChange} data-field="issue">
+                                <option value="" selected={isIssueEmpty}>Select an issue</option>
+                                <template for:each={issueOptionsView} for:item="opt">
+                                    <option key={opt.value} value={opt.value} selected={opt.selected}>{opt.label}</option>
+                                </template>
+                            </select>
+                            <lightning-icon icon-name="utility:chevrondown" size="xx-small" class="select-chevron"></lightning-icon>
+                        </div>
+                        <template if:true={errors.issue}>
+                            <p class="field-error">{errors.issue}</p>
+                        </template>
+                    </div>
+
+                    <div class="form-field">
+                        <label class="form-label" for="sr-property">Select Property</label>
+                        <div class="select-wrap">
+                            <select id="sr-property" class={propertySelectClass} onchange={handleFieldChange} data-field="property">
+                                <option value="" selected={isPropertyEmpty}>Select a property</option>
+                                <template for:each={propertyOptionsView} for:item="opt">
+                                    <option key={opt.value} value={opt.value} selected={opt.selected}>{opt.label}</option>
+                                </template>
+                            </select>
+                            <lightning-icon icon-name="utility:chevrondown" size="xx-small" class="select-chevron"></lightning-icon>
+                        </div>
+                        <template if:true={errors.property}>
+                            <p class="field-error">{errors.property}</p>
+                        </template>
+                    </div>
+
+                    <div class="form-field">
+                        <label class="form-label" for="sr-unit">Enter Unit No.</label>
+                        <input type="text" id="sr-unit" class={unitInputClass} value={form.unitNumber} oninput={handleFieldChange} data-field="unitNumber" />
+                        <template if:true={errors.unitNumber}>
+                            <p class="field-error">{errors.unitNumber}</p>
+                        </template>
+                    </div>
+
+                    <template if:true={showOthersField}>
+                        <div class="form-field">
+                            <label class="form-label" for="sr-others">Others</label>
+                            <input type="text" id="sr-others" class={othersInputClass} value={form.otherDetails} oninput={handleFieldChange} data-field="otherDetails" />
+                            <template if:true={errors.otherDetails}>
+                                <p class="field-error">{errors.otherDetails}</p>
+                            </template>
+                        </div>
+                    </template>
+
+                    <div class="form-field">
+                        <label class="form-label" for="sr-description">Description</label>
+                        <textarea id="sr-description" class={descriptionClass} value={form.description} oninput={handleFieldChange} data-field="description"></textarea>
+                        <template if:true={errors.description}>
+                            <p class="field-error">{errors.description}</p>
+                        </template>
+                    </div>
+
+                    <button class="btn-submit" disabled={isSubmitting} onclick={handleSubmit}>Submit</button>
+                </div>
+            </div>
+        </template>
+
+        <template if:true={isSuccessModalOpen}>
+            <div class="modal-overlay" onclick={handleOverlayClick}>
+                <div class="modal-box modal-box-success" onclick={stopPropagation}>
+                    <button class="modal-close" onclick={handleCloseSuccessModal} aria-label="Close">
+                        <lightning-icon icon-name="utility:close" size="x-small"></lightning-icon>
+                    </button>
+                    <img src={successImageUrl} alt="Success" class="success-illustration" />
+                    <h2 class="success-title">{successTitle}</h2>
+                    <p class="success-message">{successMessage}</p>
+                </div>
+            </div>
+        </template>
+    </div>
+</template>

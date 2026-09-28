@@ -1,0 +1,138 @@
+<template>
+    <div class="referral-page">
+
+        <template if:true={isLoading}>
+            <div class="referral-loading">
+                <lightning-spinner alternative-text="Loading referrals" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template if:true={hasError}>
+            <div class="referral-error">
+                <lightning-icon icon-name="utility:error" size="medium" variant="error"></lightning-icon>
+                <p class="referral-error-text">We couldn't load Referrals right now. Please try again in a moment.</p>
+            </div>
+        </template>
+
+        <template if:true={showContent}>
+
+            <div class="referral-header-row">
+                <div class="referral-title-block">
+                    <h1 class="referral-title">Referrals</h1>
+                    <p class="referral-description">
+                        {displayedDescription}
+                        <template if:false={isDescriptionExpanded}>
+                            <button class="read-more-link" onclick={handleReadMore}>Read more</button>
+                        </template>
+                    </p>
+                </div>
+                <button class="refer-now-btn" onclick={handleOpenInviteModal}>Refer Now</button>
+            </div>
+
+            <div class="referral-cards-grid">
+                <template for:each={displayedReferrals} for:item="ref">
+                    <div class="referral-card" key={ref.id}>
+                        <div class="referral-card-top">
+                            <div class="referral-avatar">
+                                <lightning-icon icon-name="utility:user" size="x-small" variant="inverse"></lightning-icon>
+                            </div>
+                            <div class="referral-card-heading">
+                                <p class="referral-name">{ref.friendName}</p>
+                                <p class="referral-property">Property Name: {ref.propertyName}</p>
+                            </div>
+                        </div>
+
+                        <div class="referral-card-divider"></div>
+
+                        <div class="referral-card-details">
+                            <p class="referral-detail-line">
+                                <span class="referral-detail-label">Email ID:</span>
+                                <span class="referral-detail-value">{ref.emailId}</span>
+                            </p>
+                            <p class="referral-detail-line">
+                                <span class="referral-detail-label">Phone Number:</span>
+                                <span class="referral-detail-value">{ref.mobileNumber}</span>
+                            </p>
+                        </div>
+
+                        <span class={ref.statusPillClass}>{ref.status}</span>
+                    </div>
+                </template>
+            </div>
+
+            <template if:true={hasNoReferrals}>
+                <p class="referral-empty-text">You haven't referred anyone yet.</p>
+            </template>
+        </template>
+
+        <template if:true={isInviteModalOpen}>
+            <div class="modal-backdrop" onclick={handleCloseInviteModal}></div>
+            <div class="modal-container invite-modal" role="dialog" aria-modal="true">
+                <button class="modal-close-btn" onclick={handleCloseInviteModal} aria-label="Close">×</button>
+                <h2 class="modal-heading">Invite friends</h2>
+
+                <div class="form-field">
+                    <label class="field-label">Property Name</label>
+                    <div class="select-wrapper">
+                        <select class="field-select" onchange={handlePropertyChange} value={selectedProperty}>
+                            <option value="">- Select -</option>
+                            <template for:each={pageData.propertyOptions} for:item="opt">
+                                <option key={opt.value} value={opt.value}>{opt.label}</option>
+                            </template>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="form-field">
+                    <label class="field-label">Name</label>
+                    <input
+                        type="text"
+                        class="field-input"
+                        placeholder="Enter your friend's name"
+                        value={friendName}
+                        oninput={handleNameChange}
+                    />
+                </div>
+
+                <div class="form-field">
+                    <label class="field-label">Mobile Number</label>
+                    <div class="mobile-input-wrapper">
+                        <span class="country-code">
+                            <span class="flag-icon">🇱🇰</span>
+                        94
+                        </span>
+                        <input
+                            type="tel"
+                            class="field-input mobile-input"
+                            placeholder="Enter your friend's mobile number"
+                            value={mobileNumber}
+                            oninput={handleMobileChange}
+                        />
+                    </div>
+                </div>
+
+                <div class="modal-actions">
+                    <button class="cancel-btn" onclick={handleCloseInviteModal}>Cancel</button>
+                    <button
+                        class={sendInviteBtnClass}
+                        disabled={isSendDisabled}
+                        onclick={handleSendInvite}
+                    >
+                        Send Invite
+                    </button>
+                </div>
+            </div>
+        </template>
+
+        <template if:true={isSuccessModalOpen}>
+            <div class="modal-backdrop" onclick={handleCloseSuccessModal}></div>
+            <div class="modal-container success-modal" role="dialog" aria-modal="true">
+                <button class="modal-close-btn" onclick={handleCloseSuccessModal} aria-label="Close">×</button>
+                <img src={successIllustrationUrl} alt="Referral sent" class="success-illustration" />
+                <h2 class="success-heading">{successData.heading}</h2>
+                <p class="success-message">{successData.message}</p>
+            </div>
+        </template>
+
+    </div>
+</template>

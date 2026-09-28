@@ -10,26 +10,43 @@ public with sharing class LeadTriggerHandler {
         if (isInsert) {
             leadsToScore.add(ld);
             phoneLeads.add(ld);
+            if(ld.OwnerId != null && String.valueOf(ld.OwnerId).startsWith('005')){
+                ld.Is_User_Assigned__c = true;
+                ld.Pre_Sales_Team_Member__c = ld.OwnerId;
+                ld.Lead_Assigned_Date_Time__c = Datetime.now();
+                if(ld.Status == 'New'){
+                    ld.Status = 'Assigned';
+                }
+
+            }
             continue;
         }
         Lead oldLead = oldMap.get(ld.Id);
-			if(
-				(ld.Lead_Sub_Source__c == 'Website Forms') && 
-				(ld.LeadSource != 'Digital Source') && 
-				(
-					!oldMap.containsKey(ld.Id) || 
-					(
-						ld.Designation__c != oldLead.Designation__c || 
-						ld.Purchase_Type__c != oldLead.Purchase_Type__c || 
-						ld.Time_to_Purchase__c != oldLead.Time_to_Purchase__c || 
-						ld.Budget_Aligned__c != oldLead.Budget_Aligned__c
-					)
-				)
-			) {
-				leadsToScore.add(ld);
-			}
+			// if(
+			// 	(ld.Lead_Sub_Source__c == 'Website Forms') && 
+			// 	(ld.LeadSource != 'Digital') && 
+			// 	(
+			// 		!oldMap.containsKey(ld.Id) || 
+			// 		(
+			// 			ld.Designation__c != oldLead.Designation__c || 
+			// 			ld.Purchase_Type__c != oldLead.Purchase_Type__c || 
+			// 			ld.Time_to_Purchase__c != oldLead.Time_to_Purchase__c || 
+			// 			ld.Budget_Aligned__c != oldLead.Budget_Aligned__c
+			// 		)
+			// 	)
+			// ) {
+			// 	leadsToScore.add(ld);
+			// }
             if (ld.Phone != oldLead.Phone) {
                 phoneLeads.add(ld);
+            }
+            if(ld.OwnerId != null && String.valueOf(ld.OwnerId).startsWith('005') && (ld.OwnerId != oldLead.OwnerId) && (oldLead.Status == 'New')){
+                ld.Is_User_Assigned__c = true;
+                ld.Pre_Sales_Team_Member__c = ld.OwnerId;
+                ld.Lead_Assigned_Date_Time__c = Datetime.now();
+                if(ld.Status == 'New'){
+                    ld.Status = 'Assigned';
+                }
             }
         }
 
@@ -48,7 +65,41 @@ public with sharing class LeadTriggerHandler {
             System.debug('Lead List is Empty!');
             return;
         }
-        LeadLogicController.createLeadHistory(  newLeads,oldMap, isInsert);
+        List<Lead> leadsToSendmail  = new List<Lead>();
+        List<Task> tasksToCreate = new List<Task>();
+        for(Lead lead : newLeads){
+            if(isInsert){
+                if(lead.OwnerId !=null && String.valueOf(lead.OwnerId).startsWith('005')){
+                    leadsToSendmail.add(lead);
+                }
+            }else if(isUpdate){
+                Lead oldLead = oldMap.get(lead.Id);
+                if(oldLead != null && (lead.OwnerId != oldLead.OwnerId) && String.valueOf(lead.OwnerId).startsWith('005')){
+                    leadsToSendmail.add(lead);
+                }
+            }
+             // Create Task when Lead Status changes to Qualified
+            if (isUpdate) {
+                Lead oldLead = oldMap.get(lead.Id);
+                if (oldLead != null && lead.Status == 'Qualified' && oldLead.Status != 'Qualified') {
+                    tasksToCreate.add(new Task(
+                        Subject = 'Schedule a visit',
+                        WhoId = lead.Id,
+                        OwnerId = lead.OwnerId,
+                        Status = 'Not Started',
+                        Priority = 'Normal'
+                    ));
+                }
+            }
+    
+        }
+        if(!leadsToSendmail.isEmpty()){
+            LeadLogicController.sendEmailToLeadOwnerOnAssignment(leadsToSendmail);
+        }
+        if (!tasksToCreate.isEmpty()) {
+            insert tasksToCreate;
+        }
+        LeadLogicController.createLeadHistory(newLeads,oldMap, isInsert);
     }
     
 }

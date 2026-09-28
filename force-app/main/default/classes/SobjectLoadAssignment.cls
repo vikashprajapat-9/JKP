@@ -33,8 +33,8 @@ public class SobjectLoadAssignment {
         //                             WHERE Assignment_Group__r.isActive__c = true  and
         //                             Out_Of_Office__c = false and BreakTime_Started__c = false ORDER BY Assignment_Id__c];
 
-        rv_AssignmentGroupMember = [SELECT Id,Assignment_Group__c,Last_Allocated_RRID__c,Out_Of_Office__c,Group_Member__c,Max_Sobject_Assignment_Count__c,In_Discussion_Lead_Threshold__c,SLA1_Threshold_Percentage__c,
-                                    SLA1_Period__c,SLA2_Threshold_Percentage__c,SLA2_Period__c,
+        rv_AssignmentGroupMember = [SELECT Id,Assignment_Group__c,Last_Allocated_RRID__c,Out_Of_Office__c,Group_Member__c,Max_Sobject_Assignment_Count__c,In_Discussion_Lead_Threshold__c,//SLA1_Threshold_Percentage__c,
+                                   // SLA1_Period__c,SLA2_Threshold_Percentage__c,SLA2_Period__c,
                                     Assignment_Id__c,Assignment_Group__r.Name,
                                     Assignment_Group__r.Execution_SOQL__c,Assignment_Group__r.isActive__c,Assignment_Group__r.Last_Allocated_RRid__c,
                                     Assignment_Group__r.Max_Sobject_Assignment_Count__c,Assignment_Group__r.Round_Robin_Queue_Name__c,LastModifiedDate,Active__c,BreakTime_Started__c

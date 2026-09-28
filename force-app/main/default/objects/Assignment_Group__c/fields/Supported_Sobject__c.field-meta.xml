@@ -24,6 +24,11 @@
                 <default>false</default>
                 <label>Case</label>
             </value>
+            <value>
+                <fullName>Opportunity</fullName>
+                <default>false</default>
+                <label>Opportunity</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

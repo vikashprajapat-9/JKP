@@ -1,0 +1,439 @@
+<template>
+    <div class="mainDiv">
+        <h1 class="header">Project Cost Sheet Template</h1>
+        <div class="slds-grid slds-wrap slds-p-top_small">
+            <div class="slds-col slds-size_3-of-15 slds-p-right_small">
+                <lightning-combobox name="Company__c" label="Company" value={costSheetTemObj.Company__c} options={companyOptions} onchange={handleChangeCostSheetTemp} required disabled={lockRecord}></lightning-combobox>
+            </div>
+            <div class="slds-col slds-size_3-of-15 slds-p-right_small">
+                <lightning-combobox name="Project__c" label="Project" value={costSheetTemObj.Project__c} options={projectOptions} onchange={handleChangeCostSheetTemp} required disabled={lockRecord}></lightning-combobox>
+            </div>
+            <div class="slds-col slds-size_3-of-15 slds-p-right_small">
+                <lightning-input type="text" name="Template_Code__c" label="Template Code" value={costSheetTemObj.Template_Code__c} onchange={handleChangeCostSheetTemp} required disabled={lockRecord}></lightning-input>
+            </div>
+            <div class="slds-col slds-size_3-of-15 slds-p-right_small">
+                <lightning-input type="text" name="Name" label="Cost Sheet Template" value={costSheetTemObj.Name} onchange={handleChangeCostSheetTemp} required disabled={lockRecord}></lightning-input>
+            </div>
+            <div class="slds-col slds-size_3-of-15 slds-p-right_small slds-p-top_large">
+                <lightning-input type="checkbox" name="Active__c" label="Active" checked={costSheetTemObj.Active__c} onchange={handleChangeCostSheetTemp} disabled={lockRecord}></lightning-input>
+            </div>
+        </div>
+
+        <template if:true={showAccordians}>
+            <div class="slds-p-top_medium slds-grid slds-gutters">
+                <template for:each={sections} for:item="sect">
+                    <div key={sect.Id} class="slds-section slds-col slds-size_1-of-2" data-id={sect.Id}>
+                        <h3 class="slds-section__title">
+                            <div aria-controls={sect.Id} class="slds-section__title-action sectionName" data-buttonid={sect.Id} onclick={toggleSection}>
+                                <lightning-icon icon-name="utility:down" alternative-text="arrow" size="x-small" class="slds-section__title-action-icon slds-button__icon_left"></lightning-icon>
+                                <span class="slds-truncate slds-p-vertical_small" title={sect.Name}>{sect.Name}</span>
+                            </div>
+                        </h3>
+                        <div data-section-content-id={sect.Id}  class="slds-section__content">
+                            <template if:true={showPricingElement}>
+                                <div onkeyup={handleKeyUp} class="slds-float_right searchPricing" data-type="pricingEle">
+                                    <lightning-input name="enter-search" label="Search Pricing Element" type="search" value={searchedPricingEle}></lightning-input>
+                                </div>
+                                <table class="slds-table slds-table_cell-buffer">
+                                    <thead>
+                                        <tr class="slds-line-height_reset">
+                                            <th scope="col">
+                                                <div class="slds-truncate">
+                                                    <lightning-input onchange={allSelected} type="checkbox" disabled={lockRecord}></lightning-input>
+                                                </div>
+                                            </th>
+                                            <th scope="col">
+                                                <div class="slds-truncate">Pricing Element</div>
+                                            </th>
+                                            <th scope="col">
+                                                <div class="slds-truncate">Unit</div>
+                                            </th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <template for:each={recordsToDisplay} for:item="price">
+                                            <tr key={price.Id}>
+                                                <th scope="col">
+                                                    <div>
+                                                        <template if:true={price.isChecked}>
+                                                            <lightning-input disabled={lockRecord} type="checkbox" data-id={price.Id} onchange={handleCheckboxChange} data-unit={price.Conversion_Unit__c} data-table="pricingElements" data-name={price.Name} data-agreement={price.Agreement__c} checked></lightning-input>
+                                                        </template>
+                                                        <template if:false={price.isChecked}>
+                                                            <lightning-input disabled={lockRecord} type="checkbox" data-id={price.Id} onchange={handleCheckboxChange} data-unit={price.Conversion_Unit__c} data-table="pricingElements" data-name={price.Name} data-agreement={price.Agreement__c}></lightning-input>
+                                                        </template>
+                                                    </div>
+                                                </th>
+                                                <th scope="col">
+                                                    <div>{price.Name}</div>
+                                                </th>
+                                                <th scope="col">
+                                                    <div class="widthCss">{price.Conversion_Unit__c}</div>
+                                                </th>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+                                    <c-custom-pagination-comp class="jobPagination" list={pricingElementList} onpagechanged={jobPaginationCallback}></c-custom-pagination-comp>
+                            </template>
+                            
+        
+                            <template if:true={showProjectUnitAllocation}>
+                                <div class="slds-grid slds-gutters">
+                                    <template if:false={lockRecord}>
+                                        <div class="slds-col">
+                                            <lightning-combobox name="Block__c" label="Select Block" value={selectedTower} options={towerOptions} onchange={handleChangeTowerFloor} disabled={lockRecord}></lightning-combobox>
+                                        </div>
+                                        <div class="slds-col">
+                                            <lightning-combobox name="Floor__c" label="Select Floor" value={selectedFloor} options={floorOptions} disabled={lockRecord} onchange={handleChangeTowerFloor}></lightning-combobox>
+                                        </div>
+                                    </template>
+                                </div>
+        
+                                <!-- Units Table related to selected Tower and Floor -->
+                                <template if:true={displayUnitRecords}>
+                                    <template if:true={lockedNonEditable}>
+                                        <table class="slds-table slds-table_cell-buffer slds-p-vertical_medium">
+                                            <thead>
+                                                <tr class="slds-line-height_reset">
+                                                    <th scope="col">
+                                                        <div class="slds-truncate">
+                                                            <lightning-input onchange={allSelectedUnit} type="checkbox" disabled={lockRecord}></lightning-input>
+                                                        </div>
+                                                    </th>
+                                                    <th scope="col">
+                                                        <div class="slds-truncate" title="Block">Block</div>
+                                                    </th>
+                                                    <th scope="col">
+                                                        <div class="slds-truncate" title="Floor">Floor</div>
+                                                    </th>
+                                                    <th scope="col">
+                                                        <div class="slds-truncate" title="Unit">Unit</div>
+                                                    </th>
+                                                </tr>
+                                            </thead>
+                                            <tbody>
+                                                <template for:each={unitListformatted} for:item="unit">
+                                                    <tr key={unit.Id}>
+                                                        <th scope="col">
+                                                            <div>
+                                                                <template if:true={unit.isChecked}>
+                                                                    <lightning-input type="checkbox" data-id={unit.Id} onchange={handleCheckboxChangeUnit} disabled={lockRecord} checked></lightning-input>
+                                                                </template>
+                                                                <template if:false={unit.isChecked}>
+                                                                    <lightning-input type="checkbox" data-id={unit.Id} onchange={handleCheckboxChangeUnit} disabled={lockRecord}></lightning-input>
+                                                                </template>
+                                                            </div>
+                                                        </th>
+                                                        <th scope="col">
+                                                            <div>{unit.Floor__r.Block__r.Block_Code__c}</div>
+                                                        </th>
+                                                        <th scope="col">
+                                                            <div>{unit.Floor__r.Floor_No__c}</div>
+                                                        </th>
+                                                        <th scope="col">
+                                                            <div>{unit.Unit_Name_Code__c}</div>
+                                                        </th>
+                                                    </tr>
+                                                </template>
+                                            </tbody>
+                                        </table>
+                                    </template>
+                                    <template if:true={newRecord}>
+                                        <div class="slds-p-around_medium">
+                                            <template if:true={displayMainUnitsList}>
+                                                <lightning-datatable key-field="Id" data={paginatedData} columns={columns} onrowselection={handleRowSelection}
+                                                selected-rows={selectedUnitsList}>
+                                                </lightning-datatable>
+                                                <div class="slds-align_absolute-center slds-p-vertical_small slds-col slds-size_6-of-6">
+                                                    <lightning-button label="Previous" onclick={handlePrevious} disabled={isFirstPage}></lightning-button>
+                                                    <span class="slds-p-horizontal_medium">Page {currentPage} of {totalPages}</span>
+                                                    <lightning-button label="Next" onclick={handleNext} disabled={isLastPage}></lightning-button>
+                                                </div>
+                                            </template>
+                                            
+                                            <!-- <lightning-datatable key-field="Id" data={newUnitFormattedList} columns={columns} onrowselection={handleRowSelection} selected-rows={selectedUnitsList}></lightning-datatable> -->
+                                        </div>
+                                    </template>
+                                    <template if:true={containsSoldUnitsList}>
+                                        <div class="slds-scrollable_y slds-col slds-size_6-of-6" style="height: 210px;">
+                                            <table class="slds-table slds-table_cell-buffer slds-p-vertical_medium">
+                                                <thead>
+                                                    <tr class="slds-line-height_reset">
+                                                        <th scope="col">
+                                                            <div class="slds-truncate">
+                                                                <lightning-input type="checkbox" disabled></lightning-input>
+                                                            </div>
+                                                        </th>
+                                                        <th scope="col">
+                                                            <div class="slds-truncate" title="Block">Block</div>
+                                                        </th>
+                                                        <th scope="col">
+                                                            <div class="slds-truncate" title="Floor">Floor</div>
+                                                        </th>
+                                                        <th scope="col">
+                                                            <div class="slds-truncate" title="Unit">Sold Units</div>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <template for:each={soldUnitsList} for:item="unit">
+                                                        <tr key={unit.Id}>
+                                                            <th scope="col">
+                                                                <div><lightning-input type="checkbox" disabled></lightning-input></div>
+                                                            </th>
+                                                            <th scope="col">
+                                                                <div>{unit.Floor__r.Block__r.Block_Code__c}</div>
+                                                            </th>
+                                                            <th scope="col">
+                                                                <div>{unit.Floor__r.Floor_No__c}</div>
+                                                            </th>
+                                                            <th scope="col">
+                                                                <div>{unit.Unit_Name_Code__c}</div>
+                                                            </th>
+                                                        </tr>
+                                                    </template>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                        
+                                    </template>
+                                </template>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </template>
+
+        <!-- Main Pricing Element DIv-->
+        <div class="slds-grid slds-grid_vertical">
+            <template if:true={showPricingLowerDiv}>
+                <div class="slds-grid slds-wrap slds-scrollable_y" style="height: 210px;">
+                    <div class="slds-col slds-p-top_medium slds-size_6-of-12">
+                        <div class="selectedUnits">Selected Units List</div>
+                        <table class="slds-table slds-table_cell-buffer slds-p-vertical_medium">
+                            <thead>
+                                <tr class="slds-line-height_reset">
+                                    <th scope="col">
+                                        <div class="slds-truncate">
+                                            <lightning-input onchange={allSelectedUnit} checked type="checkbox" disabled="true"></lightning-input>
+                                        </div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Block">Block</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Floor">Floor</div>
+                                    </th>
+                                    <th scope="col">
+                                        <div class="slds-truncate" title="Unit">Unit</div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={selectedUnitsToDisplay} for:item="unit">
+                                    <tr key={unit.Id}>
+                                        <th scope="col">
+                                            <div><lightning-input type="checkbox" data-id={unit.Id} onchange={handleCheckboxChangeUnit} disabled="true" checked></lightning-input></div>
+                                        </th>
+                                        <th scope="col">
+                                            <div>{unit.Floor__r.Block__r.Block_Code__c}</div>
+                                        </th>
+                                        <th scope="col">
+                                            <div>{unit.Floor__r.Floor_No__c}</div>
+                                        </th>
+                                        <th scope="col">
+                                            <div>{unit.Unit_Name_Code__c}</div>
+                                        </th>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+
+                        <div>
+                            <!-- <c-custom-pagination-comp class="jobPagination" list={selectedUnitsToDisplay} onpagechanged={jobPaginationSelectedUnits}></c-custom-pagination-comp> -->
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-col">
+                    <div onkeyup={handleKeyUp} class="slds-float_right searchPricing slds-p-top_x-large" data-type="pricingAsstn">
+                        <lightning-input name="enter-search" label="Search Pricing Element" type="search" value={searchedPricingAsstn}></lightning-input>
+                    </div>
+                </div>
+                <div class="slds-col">
+                    <div class=" slds-scrollable">
+                        <table class="slds-table slds-table_cell-buffer">
+                            <thead>
+                                <tr class="slds-line-height_reset">
+                                    <th class="tableHeaderCss" scope="col">
+                                        <div  class="slds-truncate">Pricing Element</div>
+                                    </th>
+                                    <th class="tableHeaderCss" scope="col">
+                                        <div class="slds-truncate">P.E Group</div>
+                                    </th>
+                                    <th class="tableHeaderCss" scope="col">
+                                        <div class="slds-truncate">Unit</div>
+                                    </th>
+                                    <th class="tableHeaderCss" scope="col">
+                                        <div class="slds-truncate">P.E Type</div>
+                                    </th>
+                                     <th class="tableHeaderCss" scope="col">
+                                        <div class="slds-truncate">Type</div>
+                                    </th>
+                                     <th class="tableHeaderCss" scope="col">
+                                        <div class="slds-truncate">Sequence</div>
+                                    </th>
+                                    <th class="tableHeaderCss" scope="col">
+                                        <div class="slds-truncate">Quantity (In sqft)</div>
+                                    </th>
+                                    <th class="tableHeaderCss" scope="col">
+                                        <div class="slds-truncate">Rate</div>
+                                    </th>
+                                    <th class="tableHeaderCss" scope="col">
+                                        <div class="slds-truncate">Amount</div>
+                                    </th>
+                                    <th class="tableHeaderCss" scope="col">
+                                        <div class="slds-truncate">Tax Amount</div>
+                                    </th>
+                                    <th class="tableHeaderCss" scope="col">
+                                        <div class="slds-truncate">Tax Details</div>
+                                    </th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={costPricingAssociationsList} for:item="costPrice">
+                                    <tr key={costPrice.Pricing_Element_Master__c}>
+                                        <th scope="col" class="colCss" >
+                                            <span class="slds-form-element" style="top: 20px;">{costPrice.Name}</span>
+                                        </th>
+                                        <th scope="col" class="colCss">
+                                            <template if:true={costPrice.Agreement__c}>
+                                                <div class="slds-form-element" style="top: 20px;">Agreement</div>
+                                            </template>
+                                            <template if:false={costPrice.Agreement__c}>
+                                                <div class="slds-form-element" style="top: 20px;">Non Agreement</div>
+                                            </template>
+                                        </th>
+                                        <th scope="col" class="colCss">
+                                            <lightning-combobox class="widthCss" name="Unit__c" value={costPrice.Unit__c} options={UnitOptions} onchange={handleCostPriceAssociation} data-pricingid={costPrice.Pricing_Element_Master__c} disabled={lockRecord}></lightning-combobox>
+                                        </th>
+                                        <th scope="col" class="colCss">
+                                            <lightning-combobox class="widthCss200" name="PE_Type__c" value={costPrice.PE_Type__c} options={PETypeOptions} onchange={handleCostPriceAssociation} data-pricingid={costPrice.Pricing_Element_Master__c} disabled={lockRecord}></lightning-combobox>
+                                        </th>
+                                        <th scope="col" class="colCss">
+                                            <lightning-combobox class="widthCss200" name="Type__c" value={costPrice.Type__c} options={TypeOptions} onchange={handleCostPriceAssociation} data-pricingid={costPrice.Pricing_Element_Master__c} disabled={lockRecord}></lightning-combobox>
+                                        </th>
+                                       
+                                        <th scope="col" class="colCss">
+                                            <lightning-input class="widthCss" type="number" name="Sequence__c" value={costPrice.Sequence__c} onchange={handleCostPriceAssociation} data-pricingid={costPrice.Pricing_Element_Master__c} disabled={lockRecord}></lightning-input>
+                                        </th>
+                                        <th scope="col" class="colCss">
+                                            <lightning-input class="widthCss" type="number" name="Quantity__c" value={costPrice.Quantity__c} onchange={handleCostPriceAssociation} data-pricingid={costPrice.Pricing_Element_Master__c} disabled={lockRecord}></lightning-input>
+                                        </th>
+                                        <th scope="col" class="colCss">
+                                            <lightning-input class="widthCss" type="number" name="Rate__c" value={costPrice.Rate__c} onchange={handleCostPriceAssociation} data-pricingid={costPrice.Pricing_Element_Master__c} disabled={lockRecord}></lightning-input>
+                                        </th>
+                                        <th scope="col" class="colCss">
+                                            <lightning-input class="widthCss" type="text" name="Amount__c" value={costPrice.Amount__c}  onchange={handleCostPriceAssociation} readonly data-pricingid={costPrice.Pricing_Element_Master__c} disabled={lockRecord}></lightning-input>
+                                        </th>
+                                        <th scope="col" class="colCss">
+                                            <lightning-input class="widthCss" type="text" name="Tax_Amount__c" value={costPrice.Tax_Amount__c} onchange={handleCostPriceAssociation} readonly data-pricingid={costPrice.Pricing_Element_Master__c} disabled={lockRecord}></lightning-input>
+                                        </th>
+                                        <th scope="col">
+        
+                                            <!-- Tax Details -->
+                                            <table class="slds-table slds-table_cell-buffer">
+                                                <thead>
+                                                    <tr class="slds-line-height_reset">
+                                                        <th class="tblehaeder" scope="col">
+                                                            <div class="slds-truncate">Type</div>
+                                                        </th>
+                                                        <th class="tblehaeder" scope="col">
+                                                            <div class="slds-truncate">Tax</div>
+                                                        </th>
+                                                        <th class="tblehaeder" scope="col">
+                                                            <div class="slds-truncate">App.%</div>
+                                                        </th>
+                                                        <th class="tblehaeder" scope="col">
+                                                            <div class="slds-truncate">Tax%</div>
+                                                        </th>
+                                                        <th class="tblehaeder" scope="col">
+                                                            <div class="slds-truncate">Amount</div>
+                                                        </th>
+                                                        <th class="tblehaeder" scope="col" style="width: 90px;">
+                                                            <lightning-icon size="xx-small" class='red-utility-icon' icon-name="utility:add" alternative-text="Add" title="Add Rows" data-pricingid={costPrice.Pricing_Element_Master__c} onclick={addRow} disabled={lockRecord}></lightning-icon>
+                                                        </th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <template for:each={costPrice.taxList} for:item="tax">
+                                                        <tr key={tax.index}>
+                                                            <th scope="col">
+                                                                <lightning-combobox class="widthCss" name="Tax_Type__c" value={tax.Tax_Type__c} data-pricingamount={costPrice.Amount__c} data-taxamount={costPrice.Tax_Amount__c} options={taxTypeOptions} onchange={handleTaxChange} data-pricingid={costPrice.Pricing_Element_Master__c} data-index={tax.index} disabled={lockRecord}></lightning-combobox>
+                                                            </th>
+                                                            <th scope="col">
+                                                                <lightning-combobox class="widthCss" name="Name" value={tax.Id} options={tax.taxOptions} onchange={handleTaxChange} disabled={lockRecord}
+                                                                    data-pricingid={costPrice.Pricing_Element_Master__c} data-index={tax.index} data-pricingamount={costPrice.Amount__c}></lightning-combobox>
+                                                            </th>
+                                                            <th scope="col">
+                                                                <lightning-input class="widthCss" type="number" name="App__c" value={tax.App__c} onchange={handleTaxChange} disabled={lockRecord}
+                                                                    data-pricingid={costPrice.Pricing_Element_Master__c} data-index={tax.index} data-pricingamount={costPrice.Amount__c}></lightning-input>
+                                                            </th>
+                                                            <th scope="col">
+                                                                <div class="slds-truncate widthCss">{tax.Tax__c}</div>
+                                                            </th>
+                                                            <th scope="col">
+                                                                <div class="slds-truncate widthCss">{tax.Amount__c}</div>
+                                                            </th>
+                                                            <th scope="col" style="width: 90px;">
+                                                                <lightning-button-icon size="small" icon-name="action:delete" alternative-text="Delete" title="Delete" data-id={tax.index} data-pricingid={costPrice.Pricing_Element_Master__c} onclick={handleDeleteAction} disabled={lockRecord}></lightning-button-icon>
+                                                                <template if:true={tax.showCheck}>
+                                                                    <lightning-button-icon size="small" icon-name="action:check" alternative-text="check" title="Check" data-id={tax.index} data-pricingid={costPrice.Pricing_Element_Master__c} onclick={handleDuplication} disabled={lockRecord} class="slds-p-left_x-small"></lightning-button-icon>
+                                                                </template>
+                                                            </th>
+                                                        </tr>
+                                                    </template>
+                                                </tbody>
+                                            </table>
+                                        </th>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>    
+                </div>
+                
+                <div class="slds-col">
+                    <!-- <template if:false={lockRecord}>
+                        <c-custom-pagination-comp class="jobPagination" list={costPricingAssociationsList} onpagechanged={jobPaginationCallbackAsstn}></c-custom-pagination-comp>
+                    </template> -->
+                </div>
+            </template>
+            
+        </div>
+
+        
+        <div class="buttonsDiv slds-align_absolute-center">
+            <div class="customButtonCss" onclick={handleCancel}>
+                Cancel
+            </div>
+            <!-- <lightning-button variant="brand" label="Cancel" onclick={handleCancel} class="refreshBtn"></lightning-button> -->
+            <template if:false={secondNext}>
+                <lightning-button variant="brand" label="Next" onclick={projectUnitAllocationPricingElement} class="slds-m-left_x-small newButtonCss"></lightning-button>
+            </template>
+            <template if:true={secondNext}>
+                <template if:true={editRecord}>
+                    <template if:false={lockRecord}>
+                        <lightning-button variant="brand" label="Apply Changes" disabled={isDisabled1} onclick={handleSave} class="slds-m-left_x-small newButtonCss"></lightning-button>
+                    </template>
+                </template>
+                <template if:false={editRecord}>
+                    <template if:false={lockRecord}>
+                        <lightning-button variant="brand" label="Save" disabled={isDisabled1} onclick={handleSave} class="slds-m-left_x-small newButtonCss"></lightning-button>
+                    </template>
+                </template>
+            </template>
+            
+        </div>
+    </div>
+</template>

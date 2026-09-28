@@ -7,41 +7,6 @@
     <type>Picklist</type>
     <valueSet>
         <restricted>true</restricted>
-        <valueSetDefinition>
-            <sorted>false</sorted>
-            <value>
-                <fullName>3 BHK</fullName>
-                <default>false</default>
-                <label>3 BHK</label>
-            </value>
-            <value>
-                <fullName>3.5 BHK</fullName>
-                <default>false</default>
-                <label>3.5 BHK</label>
-            </value>
-            <value>
-                <fullName>4 BHK</fullName>
-                <default>false</default>
-                <label>4 BHK</label>
-            </value>
-            <value>
-                <fullName>1 BHK</fullName>
-                <default>false</default>
-                <isActive>false</isActive>
-                <label>1 BHK</label>
-            </value>
-            <value>
-                <fullName>2 BHK</fullName>
-                <default>false</default>
-                <isActive>false</isActive>
-                <label>2 BHK</label>
-            </value>
-            <value>
-                <fullName>2.5 BHK</fullName>
-                <default>false</default>
-                <isActive>false</isActive>
-                <label>2.5 BHK</label>
-            </value>
-        </valueSetDefinition>
+        <valueSetName>Unit_Type</valueSetName>
     </valueSet>
 </CustomField>

@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <label><!-- Call Disposition --></label>
+    <name>Call_Disposition__c</name>
+    <picklistValues>
+        <masterLabel>Good Response</masterLabel>
+        <translation><!-- Good Response --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>In Discussion</masterLabel>
+        <translation><!-- In Discussion --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Not Interested</masterLabel>
+        <translation><!-- Not
+            Interested --></translation>
+    </picklistValues>
+    <picklistValues>
+        <masterLabel>Not Reachable</masterLabel>
+        <translation><!-- Not Reachable --></translation>
+    </picklistValues>
+</CustomFieldTranslation>

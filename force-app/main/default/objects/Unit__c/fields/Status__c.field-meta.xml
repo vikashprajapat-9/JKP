@@ -13,7 +13,7 @@
             <value>
                 <fullName>Z1</fullName>
                 <default>false</default>
-                <label>Sold</label>
+                <label>Booked</label>
             </value>
             <value>
                 <fullName>Z0</fullName>
@@ -23,16 +23,18 @@
             <value>
                 <fullName>Z2</fullName>
                 <default>false</default>
-                <label>Blocked</label>
+                <label>On Hold</label>
             </value>
             <value>
                 <fullName>Z3</fullName>
                 <default>false</default>
+                <isActive>false</isActive>
                 <label>Land Lord</label>
             </value>
             <value>
                 <fullName>Z4</fullName>
                 <default>false</default>
+                <isActive>false</isActive>
                 <label>Mortgage</label>
             </value>
         </valueSetDefinition>

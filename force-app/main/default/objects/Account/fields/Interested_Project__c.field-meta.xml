@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Interested_Project__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <label>Interested Project</label>
+    <referenceTo>Project__c</referenceTo>
+    <relationshipLabel>Interested Accounts</relationshipLabel>
+    <relationshipName>Interested_Accounts</relationshipName>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Lookup</type>
+</CustomField>

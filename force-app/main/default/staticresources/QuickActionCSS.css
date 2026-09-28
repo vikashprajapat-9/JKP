@@ -1,0 +1,11 @@
+.slds-modal__container{
+    width: 70% !important;
+    max-width: 70% !important;
+     height: 100vh !important; /* Adjust based on your requirement */
+    max-height: 100vh !important;
+    
+}
+
+.slds-modal__content {
+    overflow-y: visible !important; /* To allow scrolling if content overflows */
+}

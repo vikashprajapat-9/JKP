@@ -1,0 +1,511 @@
+<template>
+    <div class="myvisits-container">
+
+        <template if:true={isLoading}>
+            <div class="loading-wrap">
+                <div class="spinner"></div>
+                <p class="loading-text">Loading your visits...</p>
+            </div>
+        </template>
+
+        <template if:true={hasError}>
+            <div class="error-wrap">
+                <p class="error-text">Something went wrong while loading your visits. Please try again later.</p>
+                <button class="btn-retry" onclick={handleRetry}>Retry</button>
+            </div>
+        </template>
+
+        <template if:true={showContent}>
+            <div class="page-header-row">
+                <div class="page-header">
+                    <h1 class="page-title">Visits for Handover</h1>
+                    <p class="page-description">{pageDescription}</p>
+                </div>
+                <template if:true={showScheduleButton}>
+                    <button class="btn-schedule" onclick={handleOpenScheduleModal}>Schedule Visit</button>
+                </template>
+            </div>
+
+            <div class="tabs-row">
+                <button class={upcomingTabClass} onclick={handleShowUpcoming}>Upcoming Site Visits</button>
+                <button class={completedTabClass} onclick={handleShowCompleted}>Completed Site Visits</button>
+                <button class={incompleteTabClass} onclick={handleShowIncomplete}>Incomplete Site Visits</button>
+            </div>
+            <div class="tabs-divider"></div>
+
+            <template if:true={isUpcomingTab}>
+                <template if:true={hasNoUpcoming}>
+                    <p class="empty-text">You have no upcoming site visits.</p>
+                </template>
+                <div class="cards-grid">
+                    <template for:each={displayedUpcomingVisits} for:item="visit">
+                        <div class="visit-card" key={visit.id}>
+                            <div class="card-image-wrap">
+                                <img src={visit.activeImageUrl} alt={visit.projectName} class="card-image" />
+                                <template if:true={visit.showArrows}>
+                                    <button class="carousel-arrow carousel-arrow-left" data-visit-id={visit.id} data-list="upcoming" onclick={handlePrevImage} aria-label="Previous image">
+                                        <lightning-icon icon-name="utility:chevronleft" size="x-small"></lightning-icon>
+                                    </button>
+                                    <button class="carousel-arrow carousel-arrow-right" data-visit-id={visit.id} data-list="upcoming" onclick={handleNextImage} aria-label="Next image">
+                                        <lightning-icon icon-name="utility:chevronright" size="x-small"></lightning-icon>
+                                    </button>
+                                </template>
+                                <template if:true={visit.showDots}>
+                                    <div class="carousel-dots">
+                                        <template for:each={visit.images} for:item="image">
+                                            <span key={image.key} class={image.dotClass} data-visit-id={visit.id} data-list="upcoming" data-index={image.index} onclick={handleDotClick}></span>
+                                        </template>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-project-name">{visit.projectName}</p>
+                                <p class="card-address">{visit.address}</p>
+
+                                <div class="card-detail-list">
+                                    <p class="card-detail-line"><span class="detail-label">Visit Date:</span>
+                                        {visit.visitDate}</p>
+                                    <p class="card-detail-line"><span class="detail-label">Visit Time:</span>
+                                        {visit.visitTime}</p>
+                                    <p class="card-detail-line"><span class="detail-label">Booking ID:</span>
+                                        {visit.bookingId}</p>
+                                    <p class="card-detail-line"><span class="detail-label">Unit Number:</span>
+                                        {visit.unitNumber}</p>
+                                    <p class="card-detail-line"><span class="detail-label">Customer ID:</span>
+                                        {visit.customerId}</p>
+                                    <p class="card-detail-line"><span class="detail-label">CRM/Handover Person:</span>
+                                        {visit.crmHandoverPerson}</p>
+                                </div>
+
+                                <div class="card-btn-row">
+                                    <button class="btn-secondary" data-visit-id={visit.id} onclick={handleOpenCancelModal}>Cancel Visit</button>
+                                    <button class="btn-primary" data-visit-id={visit.id} onclick={handleOpenRescheduleModal}>Reschedule</button>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </template>
+
+            <template if:true={isCompletedTab}>
+                <template if:true={hasNoCompleted}>
+                    <p class="empty-text">You have no completed site visits.</p>
+                </template>
+                <div class="cards-grid">
+                    <template for:each={displayedCompletedVisits} for:item="visit">
+                        <div class="visit-card" key={visit.id}>
+                            <div class="card-image-wrap">
+                                <img src={visit.activeImageUrl} alt={visit.projectName} class="card-image" />
+                                <template if:true={visit.showArrows}>
+                                    <button class="carousel-arrow carousel-arrow-left" data-visit-id={visit.id} data-list="completed" onclick={handlePrevImage} aria-label="Previous image">
+                                        <lightning-icon icon-name="utility:chevronleft" size="x-small"></lightning-icon>
+                                    </button>
+                                    <button class="carousel-arrow carousel-arrow-right" data-visit-id={visit.id} data-list="completed" onclick={handleNextImage} aria-label="Next image">
+                                        <lightning-icon icon-name="utility:chevronright" size="x-small"></lightning-icon>
+                                    </button>
+                                </template>
+                                <template if:true={visit.showDots}>
+                                    <div class="carousel-dots">
+                                        <template for:each={visit.images} for:item="image">
+                                            <span key={image.key} class={image.dotClass} data-visit-id={visit.id} data-list="completed" data-index={image.index} onclick={handleDotClick}></span>
+                                        </template>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-project-name">{visit.projectName}</p>
+                                <p class="card-address">{visit.address}</p>
+
+                                <div class="card-detail-list">
+                                    <p class="card-detail-line"><span class="detail-label">Visit Date:</span>
+                                        {visit.visitDate}</p>
+                                    <p class="card-detail-line"><span class="detail-label">Visit Completed Date:</span>
+                                        {visit.completedDate}</p>
+                                    <p class="card-detail-line"><span class="detail-label">Visit Time:</span>
+                                        {visit.visitTime}</p>
+                                    <p class="card-detail-line"><span class="detail-label">Visit Completed Time:</span>
+                                        {visit.completedTime}</p>
+                                    <p class="card-detail-line"><span class="detail-label">Booking ID:</span>
+                                        {visit.bookingId}</p>
+                                    <p class="card-detail-line"><span class="detail-label">Unit Number:</span>
+                                        {visit.unitNumber}</p>
+                                    <p class="card-detail-line"><span class="detail-label">Customer ID:</span>
+                                        {visit.customerId}</p>
+                                    <p class="card-detail-line"><span class="detail-label">CRM/Handover Person:</span>
+                                        {visit.crmHandoverPerson}</p>
+                                    <p class="card-detail-line"><span class="detail-label">Comments:</span>
+                                        {visit.comments}</p>
+                                </div>
+
+                                <div class="card-btn-row">
+                                    <button class="btn-primary btn-full" data-visit-id={visit.id} onclick={handleOpenFeedbackModal}>Give Feedback</button>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </template>
+
+            <template if:true={isIncompleteTab}>
+                <template if:true={hasNoIncomplete}>
+                    <p class="empty-text">You have no incomplete site visits.</p>
+                </template>
+                <div class="cards-grid">
+                    <template for:each={displayedIncompleteVisits} for:item="visit">
+                        <div class="visit-card" key={visit.id}>
+                            <div class="card-image-wrap">
+                                <img src={visit.activeImageUrl} alt={visit.projectName} class="card-image" />
+                                <template if:true={visit.showArrows}>
+                                    <button class="carousel-arrow carousel-arrow-left" data-visit-id={visit.id} data-list="incomplete" onclick={handlePrevImage} aria-label="Previous image">
+                                        <lightning-icon icon-name="utility:chevronleft" size="x-small"></lightning-icon>
+                                    </button>
+                                    <button class="carousel-arrow carousel-arrow-right" data-visit-id={visit.id} data-list="incomplete" onclick={handleNextImage} aria-label="Next image">
+                                        <lightning-icon icon-name="utility:chevronright" size="x-small"></lightning-icon>
+                                    </button>
+                                </template>
+                                <template if:true={visit.showDots}>
+                                    <div class="carousel-dots">
+                                        <template for:each={visit.images} for:item="image">
+                                            <span key={image.key} class={image.dotClass} data-visit-id={visit.id} data-list="incomplete" data-index={image.index} onclick={handleDotClick}></span>
+                                        </template>
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="card-body">
+                                <p class="card-project-name">{visit.projectName}</p>
+                                <p class="card-address">{visit.address}</p>
+
+                                <div class="card-detail-list">
+                                    <p class="card-detail-line"><span class="detail-label">Visit Date:</span>
+                                        {visit.visitDate}</p>
+                                    <p class="card-detail-line"><span class="detail-label">Visit Cancelled Date:</span>
+                                        {visit.cancelledDate}</p>
+                                    <p class="card-detail-line"><span class="detail-label">Visit Time:</span>
+                                        {visit.visitTime}</p>
+                                    <p class="card-detail-line"><span class="detail-label">Visit Cancelled Time:</span>
+                                        {visit.cancelledTime}</p>
+                                    <p class="card-detail-line"><span class="detail-label">Booking ID:</span>
+                                        {visit.bookingId}</p>
+                                    <p class="card-detail-line"><span class="detail-label">Unit Number:</span>
+                                        {visit.unitNumber}</p>
+                                    <p class="card-detail-line"><span class="detail-label">Customer ID:</span>
+                                        {visit.customerId}</p>
+                                    <p class="card-detail-line"><span class="detail-label">CRM/Handover Person:</span>
+                                        {visit.crmHandoverPerson}</p>
+                                    <p class="card-detail-line"><span class="detail-label">Comments:</span>
+                                        {visit.comments}</p>
+                                </div>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </template>
+        </template>
+
+        <template if:true={isScheduleModalOpen}>
+            <div class="modal-overlay" onclick={handleOverlayClick}>
+                <div class="modal-box" onclick={stopPropagation}>
+                    <button class="modal-close" onclick={handleCloseModals} aria-label="Close">
+                        <lightning-icon icon-name="utility:close" size="x-small"></lightning-icon>
+                    </button>
+                    <h2 class="modal-title">Schedule a Visit</h2>
+                    <p class="modal-description">Please select a appointment time that works better for you.</p>
+
+                    <div class="form-grid">
+                        <div class="form-field">
+                            <label class="form-label" for="schedule-project">Select Property</label>
+                            <div class="select-wrap">
+                                <select id="schedule-project" class="form-select" value={scheduleForm.project} onchange={handleScheduleFieldChange} data-field="project">
+                                    <option value="">Select Property</option>
+                                    <template for:each={scheduleProjectOptions} for:item="opt">
+                                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                    </template>
+                                </select>
+                                <lightning-icon icon-name="utility:chevrondown" size="x-small" class="select-caret">
+                                </lightning-icon>
+                            </div>
+                        </div>
+
+                        <div class="form-field">
+                            <label class="form-label" for="schedule-unit">Select Unit</label>
+                            <div class="select-wrap">
+                                <select id="schedule-unit" class="form-select" value={scheduleForm.unit} onchange={handleScheduleFieldChange} data-field="unit">
+                                    <option value="">Select Unit</option>
+                                    <template for:each={scheduleUnitOptions} for:item="opt">
+                                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                    </template>
+                                </select>
+                                <lightning-icon icon-name="utility:chevrondown" size="x-small" class="select-caret">
+                                </lightning-icon>
+                            </div>
+                        </div>
+
+                        <div class="form-field">
+                            <label class="form-label" for="schedule-date">Date Of Visit</label>
+                            <input type="date" id="schedule-date" class="form-input" placeholder="Select Date Of Visit" value={scheduleForm.visitDate} onchange={handleScheduleFieldChange} data-field="visitDate" />
+                        </div>
+
+                        <div class="form-field">
+                            <label class="form-label" for="schedule-time">Time Of Visit</label>
+                             <input type="time" id="schedule-time" class="form-input" placeholder="Select Time Of Visit" value={scheduleForm.visitTime} onchange={handleScheduleFieldChange} data-field="visitTime" />
+                               
+                        </div>
+
+                        <div class="form-field">
+                            <label class="form-label" for="schedule-type">Visit Type</label>
+                            <div class="select-wrap">
+                                <select id="schedule-type" class="form-select" value={scheduleForm.visitType} onchange={handleScheduleFieldChange} data-field="visitType">
+                                    <option value="">Select Visit Type</option>
+                                    <template for:each={visitTypeOptions} for:item="opt">
+                                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                    </template>
+                                </select>
+                                <lightning-icon icon-name="utility:chevrondown" size="x-small" class="select-caret">
+                                </lightning-icon>
+                            </div>
+                        </div>
+
+                        <div class="form-field">
+                            <label class="form-label" for="schedule-details">Visit Details</label>
+                            <input type="text" id="schedule-details" class="form-input" placeholder="Write the Purpose of rescheduling your visit" value={scheduleForm.visitDetails} onchange={handleScheduleFieldChange} data-field="visitDetails" />
+                        </div>
+                    </div>
+
+                    <button class="btn-modal-primary" disabled={isScheduleDisabled} onclick={handleSubmitSchedule}>Schedule Now</button>
+                </div>
+            </div>
+        </template>
+
+        <template if:true={isRescheduleModalOpen}>
+            <div class="modal-overlay" onclick={handleOverlayClick}>
+                <div class="modal-box" onclick={stopPropagation}>
+                    <button class="modal-close" onclick={handleCloseModals} aria-label="Close">
+                        <lightning-icon icon-name="utility:close" size="x-small"></lightning-icon>
+                    </button>
+                    <h2 class="modal-title">Reschedule Visit</h2>
+                    <p class="modal-description">Please select a new appointment time that works better for you.</p>
+
+                    <p class="section-label">Property Details</p>
+                    <div class="property-detail-card">
+                        <img src={selectedVisitImageUrl} alt={selectedVisit.projectName} class="property-detail-image" />
+                        <div class="property-detail-info">
+                            <p class="property-detail-name">{selectedVisit.projectName}</p>
+                            <p class="property-detail-address">
+                                <lightning-icon icon-name="utility:location" size="xx-small"
+                                    class="property-detail-icon"></lightning-icon>
+                                {selectedVisit.address}
+                            </p>
+                            <p class="property-detail-type">
+                                <lightning-icon icon-name="utility:home" size="xx-small" class="property-detail-icon">
+                                </lightning-icon>
+                                {selectedVisit.propertyType}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="form-grid">
+                        <div class="form-field">
+                            <label class="form-label" for="reschedule-date">Date Of Visit</label>
+                           <input type="date" id="reschedule-date" class="form-input" placeholder="Select Date Of Visit" value={rescheduleForm.visitDate} onchange={handleRescheduleFieldChange} data-field="visitDate" />
+                               
+                        </div>
+
+                        <div class="form-field">
+                            <label class="form-label" for="reschedule-time">Time Of Visit</label>
+                            <input type="time" id="reschedule-time" class="form-input" placeholder="Select Time Of Visit" value={rescheduleForm.visitTime} onchange={handleRescheduleFieldChange} data-field="visitTime" />
+                               
+                        </div>
+
+                        <div class="form-field">
+                            <label class="form-label" for="reschedule-reason">Reason for Reschedule</label>
+                            <div class="select-wrap">
+                                <select id="reschedule-reason" class="form-select" value={rescheduleForm.reason} onchange={handleRescheduleFieldChange} data-field="reason">
+                                    <option value="">Select Reason for reschedule</option>
+                                    <template for:each={rescheduleReasonOptions} for:item="opt">
+                                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                    </template>
+                                </select>
+                                <lightning-icon icon-name="utility:chevrondown" size="x-small" class="select-caret">
+                                </lightning-icon>
+                            </div>
+                        </div>
+
+                        <div class="form-field">
+                            <label class="form-label" for="reschedule-details">Visit Details</label>
+                            <input type="text" id="reschedule-details" class="form-input" placeholder="Write the Purpose of rescheduling your visit" value={rescheduleForm.visitDetails} onchange={handleRescheduleFieldChange} data-field="visitDetails" />
+                        </div>
+                    </div>
+
+                    <button class="btn-modal-primary" disabled={isRescheduleDisabled} onclick={handleSubmitReschedule}>Confirm Reschedule</button>
+                </div>
+            </div>
+        </template>
+
+        <template if:true={isCancelModalOpen}>
+            <div class="modal-overlay" onclick={handleOverlayClick}>
+                <div class="modal-box" onclick={stopPropagation}>
+                    <button class="modal-close" onclick={handleCloseModals} aria-label="Close">
+                        <lightning-icon icon-name="utility:close" size="x-small"></lightning-icon>
+                    </button>
+                    <h2 class="modal-title">Cancel Visit</h2>
+                    <p class="modal-description">
+                        If you have any questions or need further assistance, please feel free to reach out
+                        to us. We apologize for any inconvenience caused!
+                    </p>
+
+                    <p class="section-label">Property Details</p>
+                    <div class="property-detail-card">
+                        <img src={selectedVisitImageUrl} alt={selectedVisit.projectName} class="property-detail-image" />
+                        <div class="property-detail-info">
+                            <p class="property-detail-name">{selectedVisit.projectName}</p>
+                            <p class="property-detail-address">
+                                <lightning-icon icon-name="utility:location" size="xx-small"
+                                    class="property-detail-icon"></lightning-icon>
+                                {selectedVisit.address}
+                            </p>
+                            <p class="property-detail-type">
+                                <lightning-icon icon-name="utility:home" size="xx-small" class="property-detail-icon">
+                                </lightning-icon>
+                                {selectedVisit.propertyType}
+                            </p>
+                        </div>
+                    </div>
+
+                    <div class="form-field form-field-full">
+                        <label class="form-label" for="cancel-reason">Reason for Cancellation</label>
+                        <textarea id="cancel-reason" class="form-textarea" value={cancelForm.reason} oninput={handleCancelFieldChange} data-field="reason"></textarea>
+                    </div>
+
+                    <button class="btn-modal-primary btn-cancel-visit" disabled={isCancelDisabled} onclick={handleSubmitCancel}>Cancel Visit</button>
+                </div>
+            </div>
+        </template>
+
+        <template if:true={isFeedbackModalOpen}>
+            <div class="modal-overlay" onclick={handleOverlayClick}>
+                <div class="modal-box modal-box-wide" onclick={stopPropagation}>
+                    <button class="modal-close" onclick={handleCloseModals} aria-label="Close">
+                        <lightning-icon icon-name="utility:close" size="x-small"></lightning-icon>
+                    </button>
+                    <h2 class="modal-title">Feedback Form</h2>
+                    <p class="modal-description">
+                        We hope your recent site visit with John Keells Properties . was informative and
+                        valuable. Your feedback is essential to help us continually improve our services.
+                        Please take a moment to share your thoughts with us. We greatly appreciate your
+                        input and look forward to hearing from you!
+                    </p>
+
+                    <div class="feedback-questions">
+                        <template for:each={feedbackQuestions} for:item="question">
+                            <div class="feedback-question" key={question.id}>
+                                <p class="feedback-question-text">{question.questionNumber}. {question.text}</p>
+                                <div class="star-row">
+                                    <template for:each={question.stars} for:item="star">
+                                        <span
+                                            key={star.value}
+                                            class={star.starClass}
+                                            data-question-id={question.id}
+                                            data-value={star.value}
+                                            onclick={handleStarClick}>&#9733;</span>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+
+                    <div class="feedback-btn-row">
+                        <button class="btn-outline" onclick={handleCloseModals}>Cancel</button>
+                        <button class="btn-modal-primary btn-auto-width" disabled={isFeedbackDisabled} onclick={handleSubmitFeedback}>Submit your experience</button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <template if:true={isSuccessModalOpen}>
+            <div class="modal-overlay" onclick={handleOverlayClick}>
+                <div class="modal-box modal-box-success" onclick={stopPropagation}>
+                    <button class="modal-close" onclick={handleCloseSuccessModal} aria-label="Close">
+                <lightning-icon icon-name="utility:close" size="x-small"></lightning-icon>
+            </button>
+
+                    <template if:true={isAnimatedSuccess}>
+                          <template if:false={isFeedbackSuccess}>
+                        <div class="cancel-success-illustration">
+                            <svg viewBox="0 0 160 150" class="cancel-anim-svg" xmlns="http://www.w3.org/2000/svg">
+                                <g class="cal-swing">
+                                    <!-- hanging rings -->
+                                    <circle cx="58" cy="18" r="6" fill="none" stroke="#182957" stroke-width="4" />
+                                    <circle cx="102" cy="18" r="6" fill="none" stroke="#182957" stroke-width="4" />
+                                    <line x1="58" y1="18" x2="58" y2="30" stroke="#182957" stroke-width="4"
+                                        stroke-linecap="round" />
+                                    <line x1="102" y1="18" x2="102" y2="30" stroke="#182957" stroke-width="4"
+                                        stroke-linecap="round" />
+
+                                    <!-- calendar body -->
+                                    <rect x="24" y="28" width="112" height="96" rx="16" fill="#ffffff" stroke="#182957"
+                                        stroke-width="4" />
+
+                                    <!-- orange top band -->
+                                    <g class="cal-band">
+                                        <path d="M24 44 V44a16 16 0 0 1 16-16h72a16 16 0 0 1 16 16v10H24Z"
+                                            fill="#ff7a45" />
+                                    </g>
+
+                                    <!-- blue clock circle -->
+                                    <circle cx="52" cy="82" r="17" fill="#2f9ee0" />
+                                    <g class="cal-clock-hand">
+                                        <line x1="52" y1="82" x2="52" y2="71" stroke="#ffffff" stroke-width="3"
+                                            stroke-linecap="round" />
+                                        <line x1="52" y1="82" x2="60" y2="82" stroke="#ffffff" stroke-width="3"
+                                            stroke-linecap="round" />
+                                    </g>
+
+                                    <!-- red lines -->
+                                    <rect x="80" y="75" width="42" height="6" rx="3" fill="#e5504f" />
+                                    <rect x="80" y="88" width="30" height="6" rx="3" fill="#e5504f" />
+
+                                    <!-- green bar -->
+                                    <rect class="cal-green-bar" x="34" y="106" width="92" height="10" rx="5"
+                                        fill="#7cb82a" />
+                                </g>
+                            </svg>
+                        </div>
+                         </template>
+                         <template if:true={isFeedbackSuccess}>
+                            <div class="feedback-success-illustration">
+                                <svg viewBox="0 0 160 150" class="feedback-anim-svg" xmlns="http://www.w3.org/2000/svg">
+                                    <!-- speech bubble outline, tail bottom-left -->
+                                    <g class="fb-bubble">
+                                        <path d="M80 20a46 46 0 1 1-20.5 87.3L46 118l3-17.5A46 46 0 0 1 80 20Z"
+                                            fill="#ffffff" stroke="#182957" stroke-width="5" stroke-linejoin="round" stroke-linecap="round"/>
+                                    </g>
+
+                                    <!-- light blue outer circle -->
+                                    <g class="fb-ring-outer">
+                                        <circle cx="80" cy="66" r="34" fill="#0f1c40"/>
+                                    </g>
+
+                                    <!-- green inner circle -->
+                                    <g class="fb-ring-inner">
+                                        <circle cx="80" cy="66" r="30" fill="#a8d24a"/>
+                                    </g>
+
+                                    <!-- white checkmark -->
+                                    <path class="fb-check" d="M72 66l5.5 5.5L90 59" fill="none" stroke="#ffffff"
+                                        stroke-width="4.5" stroke-linecap="round" stroke-linejoin="round"/>
+                                </svg>
+                            </div>
+                        </template>
+                    </template>
+
+                    <template if:false={isAnimatedSuccess}>
+                        <img src={successImageUrl} alt="Success" class="success-illustration" />
+                    </template>
+
+                    <h2 class="success-title">{successTitle}</h2>
+                    <p class="success-message">{successMessage}</p>
+                </div>
+            </div>
+        </template>
+    </div>
+</template>

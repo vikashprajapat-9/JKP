@@ -1,0 +1,34 @@
+<template>
+    <button
+        class="menu-toggle"
+        onclick={handleToggleClick}
+        aria-label={toggleAriaLabel}
+        aria-expanded={ariaExpanded}
+        aria-controls="portalSidebar"
+    >
+        <span class={bar1Class}></span>
+        <span class={bar2Class}></span>
+        <span class={bar3Class}></span>
+    </button>
+
+    <aside id="portalSidebar" class={sidebarClass} role="navigation" aria-label="Main menu">
+        <div class="sidebar-logo">
+            <img src={logoUrl} alt="John Keells Properties" class="logo-image" />
+        </div>
+
+        <nav class="sidebar-nav">
+            <ul class="menu-list">
+                <template for:each={menuItemsToRender} for:item="item">
+                    <li key={item.value} class={item.itemClass} data-value={item.value} onclick={handleItemClick}>
+                        <lightning-icon icon-name={item.icon} size="x-small" class="menu-icon"></lightning-icon>
+                        <span class="menu-label">{item.label}</span>
+                    </li>
+                </template>
+            </ul>
+        </nav>
+    </aside>
+
+    <template if:true={isMobileMenuOpen}>
+        <div class="sidebar-backdrop" onclick={closeMobileMenu}></div>
+    </template>
+</template>

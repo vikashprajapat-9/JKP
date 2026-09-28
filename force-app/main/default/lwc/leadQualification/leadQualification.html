@@ -1,0 +1,192 @@
+<template>
+    <lightning-quick-action-panel title="Lead Qualification Desk">
+        <template lwc:if={isSaving}>
+            <lightning-spinner alternative-text="Recording decision..." size="medium" variant="brand"></lightning-spinner>
+        </template>
+
+        <div class="modal-wrapper">
+            <!-- Brand Luxury Header -->
+            <div class="brand-header">
+                <div class="brand-header__left">
+                    <div class="brand-logo-container">
+                        <img src={logoWhite} alt="John Keells Properties" class="brand-logo" />
+                    </div>
+                    <div class="brand-header__titles">
+                        <div class="brand-trademark">
+                            <span class="brand-name">Lead Qualification</span>
+                            <!-- <span class="trademark-symbol">™</span> -->
+                        </div>
+                        <!-- <p class="brand-tagline">Creating New Worlds</p> -->
+                    </div>
+                </div>
+                <!-- <div class="brand-header__right">
+                    <span class="portal-badge">Executive Desk</span>
+                </div> -->
+            </div>
+
+            <!-- Gold Divider Line -->
+            <div class="gold-accent-bar"></div>
+
+            <div class="modal-body-content">
+                <!-- Lead Context Strip -->
+                <div class="lead-context-bar">
+                    <div class="lead-context__info">
+                        <div class="lead-avatar">
+                            <lightning-icon icon-name="standard:lead" size="small"></lightning-icon>
+                        </div>
+                        <div class="lead-details">
+                            <div class="lead-primary">
+                                <span class="lead-name">{leadName}</span>
+                                <template lwc:if={leadCompany}>
+                                    <span class="company-badge">{leadCompany}</span>
+                                </template>
+                            </div>
+                            <span class="lead-subtext">Lead Record</span>
+                        </div>
+                    </div>
+                    <div class="lead-status-tag">
+                        <span class="status-indicator-dot"></span>
+                        <span>Stage: <strong>{currentStatus}</strong></span>
+                    </div>
+                </div>
+
+                <!-- Non-Contacted Warning Safeguard -->
+                <template lwc:if={isNotContacted}>
+                    <div class="warning-banner" role="alert">
+                        <lightning-icon icon-name="utility:warning" size="small" class="warning-icon"></lightning-icon>
+                        <div class="warning-text">
+                            <strong>Action Restricted:</strong> Lead qualification is exclusively permitted for leads in <strong>Contacted</strong> stage. Current status is <strong>{currentStatus}</strong>.
+                        </div>
+                    </div>
+                </template>
+
+                <!-- Section 1: Qualification Decision -->
+                <fieldset class="form-section">
+                    <div class="section-title-row">
+                        <legend class="section-heading">
+                            <span class="step-badge">1</span>
+                            <span>Qualification Decision</span>
+                            <abbr class="slds-required" title="required">*</abbr>
+                        </legend>
+                        <span class="section-hint">Select disposition</span>
+                    </div>
+
+                    <div class="decision-grid">
+                        <template for:each={qualificationOptions} for:item="opt">
+                            <div key={opt.value} class="decision-option">
+                                <input
+                                    type="radio"
+                                    id={opt.value}
+                                    name="qualificationStatus"
+                                    value={opt.value}
+                                    data-value={opt.value}
+                                    disabled={isNotContacted}
+                                    onchange={handleStatusChange}
+                                    class="decision-radio-native" />
+                                <label for={opt.value} class={opt.labelClass}>
+                                    <div class="card-header">
+                                        <div class="card-title-group">
+                                            <span class="card-icon-wrap">
+                                                <lightning-icon icon-name={opt.iconName} size="xx-small"></lightning-icon>
+                                            </span>
+                                            <span class="card-title">{opt.label}</span>
+                                        </div>
+                                        <span class={opt.badgeClass}>{opt.badgeText}</span>
+                                    </div>
+                                    <p class="card-description">{opt.description}</p>
+                                    <div class="card-radio-indicator">
+                                        <span class="radio-inner-dot"></span>
+                                    </div>
+                                </label>
+                            </div>
+                        </template>
+                    </div>
+                    <template lwc:if={showStatusError}>
+                        <div class="error-pill">
+                            <lightning-icon icon-name="utility:error" size="x-small"></lightning-icon>
+                            <span>Please select whether this lead is Qualified or Not Qualified.</span>
+                        </div>
+                    </template>
+                </fieldset>
+
+                <!-- Dynamic Reason Tags / Smart Chips -->
+                <template lwc:if={activeReasonTags.length}>
+                    <div class="smart-chips-container">
+                        <div class="chips-label">
+                            <lightning-icon icon-name="utility:topic" size="xx-small"></lightning-icon>
+                            <span>Quick Reason Tags (click to add):</span>
+                        </div>
+                        <div class="chips-list">
+                            <template for:each={activeReasonTags} for:item="tag">
+                                <button
+                                    key={tag}
+                                    type="button"
+                                    class="chip-button"
+                                    data-tag={tag}
+                                    disabled={isNotContacted}
+                                    onclick={handleTagClick}>
+                                    + {tag}
+                                </button>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+
+                <!-- Section 2: Decision Rationale -->
+                <div class="form-section">
+                    <div class="section-title-row">
+                        <label class="section-heading" for="qualification-reason">
+                            <span class="step-badge">2</span>
+                            <span>Qualification Decision Rationale</span>
+                            <abbr class="slds-required" title="required">*</abbr>
+                        </label>
+                        <span class="char-count">{reasonLength} / 32,768</span>
+                    </div>
+
+                    <div class="textarea-container">
+                        <textarea
+                            id="qualification-reason"
+                            class={reasonClass}
+                            placeholder="Enter business justification, client feedback, budget verification notes, or click quick tags above..."
+                            rows="4"
+                            maxlength="32768"
+                            value={reason}
+                            disabled={isNotContacted}
+                            oninput={handleReasonChange}>
+                        </textarea>
+                    </div>
+                    <template lwc:if={showReasonError}>
+                        <div class="error-pill">
+                            <lightning-icon icon-name="utility:error" size="x-small"></lightning-icon>
+                            <span>Decision rationale is mandatory. Please provide details or select tags above.</span>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </div>
+
+        <div slot="footer" class="footer-container">
+            <div class="footer-trademark">
+                <span class="trademark-icon">🔒</span>
+                <span>John Keells Properties™ • All Rights Reserved</span>
+            </div>
+            <div class="footer-actions">
+                <lightning-button
+                    variant="neutral"
+                    label="Cancel"
+                    onclick={handleClose}
+                    disabled={isSaving}
+                    class="btn-cancel slds-m-right_x-small">
+                </lightning-button>
+                <lightning-button
+                    variant="brand"
+                    label={saveLabel}
+                    icon-name="utility:check"
+                    onclick={handleSave}
+                    disabled={isSaveDisabled}
+                    class="btn-confirm">
+                </lightning-button>
+            </div>
+        </div>
+    </lightning-quick-action-panel>
+</template>

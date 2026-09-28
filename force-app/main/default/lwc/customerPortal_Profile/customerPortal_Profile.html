@@ -1,0 +1,175 @@
+<template>
+    <div class="profile-page">
+
+        <template if:true={isLoading}>
+            <div class="profile-loading">
+                <lightning-spinner alternative-text="Loading profile" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template if:true={hasError}>
+            <div class="profile-error">
+                <lightning-icon icon-name="utility:error" size="medium" variant="error"></lightning-icon>
+                <p>We couldn't load your profile right now. Please try again in a moment.</p>
+            </div>
+        </template>
+
+        <template if:true={showProfile}>
+            <div class="profile-content">
+
+                <h1 class="profile-heading">Profile</h1>
+                <p class="profile-description">
+                    View and update your personal information, change your profile photo, and
+                    manage your account details including username and password. Keep your
+                    profile up-to-date to ensure smooth communication and access to all features
+                    provided by John Keels Properties . Stay current to make the most of your
+                    partnership and maximize your success.
+                </p>
+
+                <div class="profile-body">
+
+                    <div class="profile-left">
+                        <div class="profile-photo-wrapper">
+                            <div class="profile-photo">
+                                <template if:true={profileData.avatarUrl}>
+                                    <img src={profileData.avatarUrl} alt={profileData.fullName} class="profile-photo-image" />
+                                </template>
+                                <template if:false={profileData.avatarUrl}>
+                                    <lightning-icon icon-name="utility:user" size="large"
+                                        class="profile-photo-placeholder"></lightning-icon>
+                                </template>
+                            </div>
+                            <button
+                                class="profile-photo-add"
+                                title="Change profile photo"
+                                onclick={handleAddPhotoClick}
+                            >
+                                <lightning-icon icon-name="utility:add" size="x-small" variant="inverse"></lightning-icon>
+                            </button>
+                        </div>
+
+                        <p class="profile-name">{profileData.fullName}</p>
+
+                        <button class="save-profile-btn" onclick={handleSaveProfile}>
+                            Save Profile
+                        </button>
+                    </div>
+
+                    <div class="profile-right">
+
+                        <h2 class="section-heading">Personal Information</h2>
+
+                        <div class="field-row">
+                            <div class="field-group">
+                                <label class="field-label" for="firstName">First Name</label>
+                                <input
+                                    id="firstName"
+                                    type="text"
+                                    class="field-input"
+                                    value={profileData.firstName}
+                                    onchange={handleFieldChange}
+                                    data-field="firstName"
+                                />
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label" for="lastName">Last Name</label>
+                                <input
+                                    id="lastName"
+                                    type="text"
+                                    class="field-input"
+                                    value={profileData.lastName}
+                                    onchange={handleFieldChange}
+                                    data-field="lastName"
+                                />
+                            </div>
+                        </div>
+
+                        <div class="field-row">
+                            <div class="field-group">
+                                <label class="field-label" for="email">Email ID</label>
+                                <input
+                                    id="email"
+                                    type="email"
+                                    class="field-input"
+                                    value={profileData.email}
+                                    onchange={handleFieldChange}
+                                    data-field="email"
+                                />
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label" for="phoneNumber">Phone Number</label>
+                                <div class="phone-input">
+                                    <!-- <span class="phone-flag" title="Sri Lanka">🇱🇰</span>
+                                    <span class="phone-code">{profileData.phoneCountryCode}</span>
+                                    <span class="phone-divider"></span> -->
+                                    <input
+                                        id="phoneNumber"
+                                        type="tel"
+                                        class="phone-number-input"
+                                        value={profileData.phoneNumber}
+                                        onchange={handleFieldChange}
+                                        data-field="phoneNumber"
+                                    />
+                                </div>
+                            </div>
+                        </div>
+
+                        <div class="field-row">
+                            <div class="field-group">
+                                <label class="field-label" for="department">Department</label>
+                                <div class="select-wrapper">
+                                    <select
+                                        id="department"
+                                        class="field-select"
+                                        onchange={handleDepartmentChange}
+                                    >
+                                        <template for:each={departmentOptions} for:item="opt">
+                                            <option
+                                                key={opt.value}
+                                                value={opt.value}
+                                                selected={opt.isSelected}
+                                            >{opt.label}</option>
+                                        </template>
+                                    </select>
+                                    <lightning-icon icon-name="utility:chevrondown" size="xx-small"
+                                        class="select-chevron"></lightning-icon>
+                                </div>
+                            </div>
+                            <div class="field-group field-group_empty"></div>
+                        </div>
+
+                        <h2 class="section-heading section-heading_account">Account Details</h2>
+
+                        <div class="field-row">
+                            <div class="field-group">
+                                <label class="field-label" for="username">Username</label>
+                                <input
+                                    id="username"
+                                    type="text"
+                                    class="field-input"
+                                    value={profileData.username}
+                                    onchange={handleFieldChange}
+                                    data-field="username"
+                                />
+                            </div>
+                            <div class="field-group">
+                                <label class="field-label" for="password">Password</label>
+                                <div class="password-input">
+                                    <input
+                                        id="password"
+                                        type="password"
+                                        class="password-field"
+                                        value={profileData.password}
+                                        readonly
+                                    />
+                                    <button class="change-link" onclick={handleChangePassword}>Change</button>
+                                </div>
+                            </div>
+                        </div>
+
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+</template>

@@ -1,0 +1,146 @@
+<template>
+    <div class="docs-root">
+
+        <template if:true={isLoading}>
+            <div class="state-wrap">
+                <lightning-spinner alternative-text="Loading documents" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template if:true={hasError}>
+            <div class="state-wrap">
+                <lightning-icon icon-name="utility:error" size="medium" variant="error"></lightning-icon>
+                <p class="error-text">We couldn't load your documents right now. Please try again in a moment.</p>
+            </div>
+        </template>
+
+        <!-- ============ PROJECT LIST VIEW ============ -->
+        <template if:true={showListView}>
+            <h1 class="page-heading">{pageTitle}</h1>
+            <p class="page-description">{pageDescription}</p>
+
+            <div class="projects-grid">
+                <template for:each={displayedProjects} for:item="project">
+                    <div key={project.id} class="project-card">
+
+                        <div class="card-image-wrap">
+                            <img src={project.activeImageUrl} alt={project.name} class="card-image" />
+
+                            <template if:true={project.showArrows}>
+                                <button
+                                    class="carousel-arrow carousel-arrow_left"
+                                    data-id={project.id}
+                                    title="Previous image"
+                                    onclick={handleCardPrevImage}
+                                >
+                                    <lightning-icon icon-name="utility:chevronleft" size="x-small"></lightning-icon>
+                                </button>
+                                <button
+                                    class="carousel-arrow carousel-arrow_right"
+                                    data-id={project.id}
+                                    title="Next image"
+                                    onclick={handleCardNextImage}
+                                >
+                                    <lightning-icon icon-name="utility:chevronright" size="x-small"></lightning-icon>
+                                </button>
+                            </template>
+
+                            <template if:true={project.showDots}>
+                                <div class="carousel-dots">
+                                    <template for:each={project.dots} for:item="dot">
+                                        <span key={dot.key} class={dot.dotClass}></span>
+                                    </template>
+                                </div>
+                            </template>
+                        </div>
+
+                        <div class="card-body">
+                            <p class="card-name">{project.name}</p>
+                            <p class="card-address">{project.shortAddress}</p>
+                            <button
+                                class="view-details-btn"
+                                data-id={project.id}
+                                onclick={handleViewDetails}
+                            >View Details</button>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </template>
+
+        <template if:true={showDetailView}>
+            <div class="detail-top-row">
+                <button class="back-btn" title="Back to documents" onclick={handleBack}>
+                    <lightning-icon icon-name="utility:back" size="small"></lightning-icon>
+                </button>
+            </div>
+
+            <h1 class="page-heading">{pageTitle}</h1>
+            <p class="page-description">{pageDescription}</p>
+
+            <div class="tabs-row">
+                <template for:each={categoryTabs} for:item="tab">
+                    <button
+                        key={tab.key}
+                        class={tab.tabClass}
+                        data-key={tab.key}
+                        onclick={handleTabClick}
+                    >{tab.label}</button>
+                </template>
+            </div>
+            <div class="tabs-divider"></div>
+
+            <template if:true={hasActiveDocuments}>
+                <div class="documents-panel">
+                    <template for:each={activeDocuments} for:item="doc">
+                        <div key={doc.id} class="document-row">
+                            <span class="document-name">{doc.name}</span>
+                            <div class="document-actions">
+                                <button
+                                    class="doc-action-btn"
+                                    title="Preview"
+                                    data-id={doc.id}
+                                    onclick={handlePreview}
+                                >
+                                    <lightning-icon icon-name="utility:preview" size="x-small" variant="inverse"></lightning-icon>
+                                </button>
+                                <button
+                                    class="doc-action-btn"
+                                    title="Download"
+                                    data-id={doc.id}
+                                    onclick={handleDownload}
+                                >
+                                    <lightning-icon icon-name="utility:download" size="x-small" variant="inverse"></lightning-icon>
+                                </button>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </template>
+
+            <template if:false={hasActiveDocuments}>
+                <p class="empty-text">No documents available in this category yet.</p>
+            </template>
+        </template>
+
+        <template if:true={isPreviewOpen}>
+            <div class="preview-overlay" onclick={handleClosePreview}>
+                <div class="preview-modal" onclick={stopPropagation}>
+                    <div class="preview-header">
+                        <span class="preview-title">{previewDocName}</span>
+                        <button class="preview-close" title="Close" onclick={handleClosePreview}>
+                            <lightning-icon icon-name="utility:close" size="x-small"></lightning-icon>
+                        </button>
+                    </div>
+                    <div class="preview-body">
+                        <iframe
+                            src={previewDocUrl}
+                            title="Document preview"
+                            class="preview-iframe"
+                        ></iframe>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+</template>

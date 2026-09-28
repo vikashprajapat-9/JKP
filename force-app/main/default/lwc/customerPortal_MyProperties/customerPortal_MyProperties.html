@@ -1,0 +1,304 @@
+<template>
+    <div class="my-properties">
+        <template if:true={isLoading}>
+            <div class="mp-loading">
+                <lightning-spinner alternative-text="Loading properties" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template if:true={hasError}>
+            <div class="mp-error">
+                <lightning-icon icon-name="utility:error" size="medium" variant="error"></lightning-icon>
+                <p class="mp-error-text">We couldn't load My Properties right now. Please try again in a moment.</p>
+            </div>
+        </template>
+
+        <template if:true={showContent}>
+            <template if:true={isListView}>
+                <h1 class="mp-title">{pageData.pageTitle}</h1>
+                <p class="mp-description">{pageData.description}</p>
+
+                <div class="mp-filter-row">
+                    <div class="filter-dropdown-wrap">
+                        <button class="filter-btn" onclick={toggleFilterMenu}>
+                            <lightning-icon icon-name="utility:filterList" size="x-small" class="filter-icon"></lightning-icon>
+                            <span>{filterButtonLabel}</span>
+                            <span class={filterCaretClass}>▾</span>
+                        </button>
+
+                        <template if:true={isFilterMenuOpen}>
+                            <ul class="filter-menu">
+                                <li class={allProjectsOptionClass} data-value="" onclick={handleFilterSelect}>All
+                                    Projects</li>
+                                <template for:each={filterOptionsDecorated} for:item="opt">
+                                    <li key={opt.value} class={opt.itemClass} data-value={opt.value}
+                                        onclick={handleFilterSelect}>{opt.label}</li>
+                                </template>
+                            </ul>
+                        </template>
+                    </div>
+                </div>
+
+                <div class="mp-table-section">
+                    <table class="mp-table">
+                        <thead>
+                            <tr>
+                                <th class="col-sr">Sr.</th>
+                                <th>Description</th>
+                                <th>Unit Number</th>
+                                <th>No. of car parks:</th>
+                                <th>Type</th>
+                                <th class="col-action">Action</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={filteredProperties} for:item="prop" for:index="idx">
+                                <tr key={prop.id}>
+                                    <td class="col-sr">{prop.srNo}</td>
+                                    <td>{prop.projectName}</td>
+                                    <td>{prop.unitNumber}</td>
+                                    <td>{prop.carParks}</td>
+                                    <td>{prop.type}</td>
+                                    <td class="col-action">
+                                        <button
+                                            class="view-details-btn"
+                                            data-id={prop.id}
+                                            onclick={handleOpenDetails}
+                                        >View Details</button>
+                                    </td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+
+                    <template if:true={hasNoFilteredProperties}>
+                        <p class="mp-empty-text">No properties found for this project.</p>
+                    </template>
+                </div>
+            </template>
+            <template if:true={isDetailView}>
+                <div class="mp-detail-header">
+                    <button class="back-btn" onclick={handleBack} aria-label="Back">←</button>
+                    <h1 class="mp-title">{pageData.pageTitle}</h1>
+                </div>
+
+                <template if:true={selectedProperty}>
+                    <template for:each={selectedProperty.applicants} for:item="applicant">
+                        <div class="applicant-card" key={applicant.name}>
+                            <div class="applicant-card-top">
+                                <div class={applicant.avatarClass}>
+                                    <lightning-icon icon-name="utility:user" size="small" variant="inverse">
+                                    </lightning-icon>
+                                </div>
+                                <div class="applicant-heading">
+                                    <p class="applicant-name">{applicant.name}</p>
+                                    <p class="applicant-type">{applicant.applicantType}</p>
+                                </div>
+                            </div>
+
+                            <div class="applicant-info-grid">
+                                <template if:true={applicant.dateOfBirth}>
+                                    <div class="applicant-info-cell">
+                                        <p class="info-label">Date of Birth:</p>
+                                        <p class="info-value">{applicant.dateOfBirth}</p>
+                                    </div>
+                                </template>
+                                <template if:true={applicant.companyName}>
+                                    <div class="applicant-info-cell">
+                                        <p class="info-label">Company Name:</p>
+                                        <p class="info-value">{applicant.companyName}</p>
+                                    </div>
+                                </template>
+                                <div class="applicant-info-cell">
+                                    <p class="info-label">Mobile Number:</p>
+                                    <p class="info-value">{applicant.mobileNumber}</p>
+                                </div>
+                                <div class="applicant-info-cell">
+                                    <p class="info-label">Email ID:</p>
+                                    <p class="info-value">{applicant.email}</p>
+                                </div>
+                                <div class="applicant-info-cell">
+                                    <p class="info-label">Address:</p>
+                                    <p class="info-value">{applicant.address}</p>
+                                </div>
+                            </div>
+
+                            <div class="applicant-info-grid">
+                                <template if:true={applicant.nic}>
+                                    <div class="applicant-info-cell">
+                                        <p class="info-label">National Identity Card (NIC) Number:</p>
+                                        <p class="info-value">{applicant.nic}</p>
+                                    </div>
+                                </template>
+                                <template if:true={applicant.tin}>
+                                    <div class="applicant-info-cell">
+                                        <p class="info-label">Taxpayer Identification Number (TIN):</p>
+                                        <p class="info-value">{applicant.tin}</p>
+                                    </div>
+                                </template>
+                                <template if:true={applicant.passport}>
+                                    <div class="applicant-info-cell">
+                                        <p class="info-label">Passport Number :</p>
+                                        <p class="info-value">{applicant.passport}</p>
+                                    </div>
+                                </template>
+                                <template if:true={applicant.vatNumber}>
+                                    <div class="applicant-info-cell">
+                                        <p class="info-label">VAT Number (VAT):</p>
+                                        <p class="info-value">{applicant.vatNumber}</p>
+                                    </div>
+                                </template>
+                                <template if:true={applicant.businessRegistrationNumber}>
+                                    <div class="applicant-info-cell">
+                                        <p class="info-label">Business Registration Number:</p>
+                                        <p class="info-value">{applicant.businessRegistrationNumber}</p>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+                    </template>
+
+                    <div class="mp-tabs">
+                        <button class={bookingTabClass} onclick={handleShowBookingTab}>Booking Details</button>
+                        <button class={paymentTabClass} onclick={handleShowPaymentTab}>Payment Plan</button>
+                    </div>
+                    <div class="mp-tabs-divider"></div>
+
+                    <template if:true={isBookingTab}>
+                        <table class="mp-table">
+                            <thead>
+                                <tr>
+                                    <th class="col-sr">Sr.</th>
+                                    <th>Description</th>
+                                    <th>Unit Number</th>
+                                    <th>No. of car parks:</th>
+                                    <th>Type</th>
+                                    <th class="col-action">Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={bookingRows} for:item="row">
+                                    <tr key={row.key}>
+                                        <template if:false={row.isDetail}>
+                                            <td class="col-sr">{row.booking.srNo}</td>
+                                            <td>{row.booking.description}</td>
+                                            <td>{row.booking.unitNumber}</td>
+                                            <td>{row.booking.carParks}</td>
+                                            <td>{row.booking.type}</td>
+                                            <td class="col-action">
+                                                <button
+                                                    class="view-details-btn"
+                                                    data-id={row.booking.id}
+                                                    onclick={handleToggleBooking}
+                                                >View Details</button>
+                                            </td>
+                                        </template>
+                                        <template if:true={row.isDetail}>
+                                            <td colspan="6" class="expanded-row">
+                                                <div class="booking-detail-panel">
+                                                    <div class="panel-grid">
+                                                        <div class="panel-cell">
+                                                            <p class="info-label">SPA Date:</p>
+                                                            <p class="info-value">{row.booking.spaDate}</p>
+                                                        </div>
+                                                        <div class="panel-cell">
+                                                            <p class="info-label">Flat/Villa:</p>
+                                                            <p class="info-value">{row.booking.flatVilla}</p>
+                                                        </div>
+                                                        <div class="panel-cell">
+                                                            <p class="info-label">Tower/Block/Villa:</p>
+                                                            <p class="info-value">{row.booking.towerBlockVilla}</p>
+                                                        </div>
+                                                        <div class="panel-cell">
+                                                            <p class="info-label">Square Feet:</p>
+                                                            <p class="info-value">{row.booking.squareFeet}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="panel-grid">
+                                                        <div class="panel-cell">
+                                                            <p class="info-label">Purchased Price(inc. tax)</p>
+                                                            <p class="info-value">{row.booking.purchasedPrice}</p>
+                                                        </div>
+                                                        <div class="panel-cell">
+                                                            <p class="info-label">Unit Number:</p>
+                                                            <p class="info-value">{row.booking.unitNumber}</p>
+                                                        </div>
+                                                        <div class="panel-cell">
+                                                            <p class="info-label">Escrow Account No.:</p>
+                                                            <p class="info-value">{row.booking.escrowAccountNumber}</p>
+                                                        </div>
+                                                    </div>
+
+                                                    <div class="panel-divider"></div>
+
+                                                    <p class="panel-section-heading">Bank Details</p>
+                                                    <div class="panel-grid">
+                                                        <div class="panel-cell">
+                                                            <p class="info-label">Account Name:</p>
+                                                            <p class="info-value">{row.booking.bankDetails.accountName}
+                                                            </p>
+                                                        </div>
+                                                        <div class="panel-cell">
+                                                            <p class="info-label">Account No.:</p>
+                                                            <p class="info-value">{row.booking.bankDetails.accountNo}
+                                                            </p>
+                                                        </div>
+                                                        <div class="panel-cell">
+                                                            <p class="info-label">Bank Name:</p>
+                                                            <p class="info-value">{row.booking.bankDetails.bankName}</p>
+                                                        </div>
+                                                    </div>
+                                                    <div class="panel-grid">
+                                                        <div class="panel-cell">
+                                                            <p class="info-label">Branch Name:</p>
+                                                            <p class="info-value">{row.booking.bankDetails.branchName}
+                                                            </p>
+                                                        </div>
+                                                        <div class="panel-cell">
+                                                            <p class="info-label">Swift Code:</p>
+                                                            <p class="info-value">{row.booking.bankDetails.swiftCode}
+                                                            </p>
+                                                        </div>
+                                                    </div>
+                                                </div>
+                                            </td>
+                                        </template>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </template>
+
+                    <template if:true={isPaymentTab}>
+                        <table class="payment-table">
+                            <thead>
+                                <tr>
+                                    <th>Description</th>
+                                    <th class="col-center">%</th>
+                                    <th class="col-center">Tranche Date</th>
+                                    <th class="col-center">Amount(LKR)</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={selectedProperty.paymentPlan} for:item="row" for:index="idx">
+                                    <tr key={row.description}>
+                                        <td>{row.description}</td>
+                                        <td class="col-center">{row.percentage}</td>
+                                        <td class="col-center">{row.trancheDate}</td>
+                                        <td class="col-center">{row.amount}</td>
+                                    </tr>
+                                </template>
+                                <tr class="total-row">
+                                    <td>Total (Inclusive of taxes)</td>
+                                    <td class="col-center">100%</td>
+                                    <td class="col-center"></td>
+                                    <td class="col-center">{selectedProperty.paymentPlanTotal}</td>
+                                </tr>
+                            </tbody>
+                        </table>
+                    </template>
+                </template>
+            </template>
+        </template>
+    </div>
+</template>

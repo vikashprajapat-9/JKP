@@ -76,6 +76,12 @@
                 <identifier>RecordLaunch_Date_cField</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.Deposit_Collection_Threshold__c</fieldItem>
+                <identifier>RecordDeposit_Collection_Threshold__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-d9231257-5703-4d1f-9e9e-d24b20c9ff17</name>
         <type>Facet</type>
     </flexiPageRegions>

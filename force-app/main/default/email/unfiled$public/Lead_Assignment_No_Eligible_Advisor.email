@@ -1,0 +1,171 @@
+<table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin:0; padding:0; background-color:#eef2f6; font-family:Arial, Helvetica, sans-serif;">
+    <tr>
+        <td align="center" style="padding:35px 15px;">
+
+        <!-- Main Container -->
+        <table cellpadding="0" cellspacing="0" border="0" width="650" style="width:650px; max-width:650px; background-color:#ffffff; border:1px solid #d9e1e8;">
+
+            <!-- Header -->
+            <tr>
+                <td style="background-color:#163A5F; padding:28px 35px;">
+                    <table cellpadding="0" cellspacing="0" border="0" width="100%">
+                        <tr>
+                            <td>
+                                <div style="font-size:24px; line-height:30px; font-weight:bold; color:#ffffff;">
+                                    Lead Assignment Alert
+                                </div>
+
+                                <div style="font-size:14px; line-height:22px; color:#c9d8e7; margin-top:5px;">
+                                    Manual redistribution required
+                                </div>
+                            </td>
+                        </tr>
+                    </table>
+                </td>
+            </tr>
+
+            <!-- Content -->
+            <tr>
+                <td style="padding:35px;">
+
+                    <!-- Greeting -->
+                    <div style="font-size:15px; line-height:24px; color:#263746;">
+                        Dear {!User.FirstName},
+                    </div>
+
+                    <!-- Introduction -->
+                    <div style="font-size:14px; line-height:23px; color:#526273; margin-top:18px;">
+                        The following lead could not be automatically assigned because
+                        <strong style="color:#263746;">no eligible advisor is currently available</strong>
+                        based on the configured lead assignment rules.
+                    </div>
+
+
+                    <!-- Action Required -->
+                    <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-top:25px;">
+                        <tr>
+                            <td style="background-color:#edf4fa; border-left:4px solid #2f6f9f; padding:16px 18px;">
+
+                                <div style="font-size:14px; line-height:21px; font-weight:bold; color:#163A5F;">
+                                    Action Required
+                                </div>
+
+                                <div style="font-size:13px; line-height:21px; color:#526273; margin-top:4px;">
+                                    Please manually redistribute this lead to an appropriate advisor.
+                                </div>
+
+                            </td>
+                        </tr>
+                    </table>
+
+
+                    <!-- Lead Details Heading -->
+                    <div style="font-size:17px; line-height:24px; font-weight:bold; color:#163A5F; margin-top:30px; margin-bottom:12px;">
+                        Lead Details
+                    </div>
+
+
+                    <!-- Lead Details Table -->
+                    <table cellpadding="0" cellspacing="0" border="0" width="100%" style="border:1px solid #d9e1e8; border-collapse:collapse;">
+
+                        <!-- Lead Name -->
+                        <tr>
+                            <td width="38%" style="padding:13px 15px; background-color:#f3f6f9; border-bottom:1px solid #d9e1e8; font-size:13px; font-weight:bold; color:#526273;">
+                                Lead Name
+                            </td>
+
+                            <td width="62%" style="padding:13px 15px; background-color:#ffffff; border-bottom:1px solid #d9e1e8; font-size:13px; color:#263746;">
+                                {!Lead.Name}
+                            </td>
+                        </tr>
+
+
+                        <!-- Lead ID -->
+                        <tr>
+                            <td style="padding:13px 15px; background-color:#f3f6f9; border-bottom:1px solid #d9e1e8; font-size:13px; font-weight:bold; color:#526273;">
+                                Lead ID
+                            </td>
+
+                            <td style="padding:13px 15px; background-color:#ffffff; border-bottom:1px solid #d9e1e8; font-size:13px; color:#263746;">
+                                {!Lead.Id}
+                            </td>
+                        </tr>
+
+
+                        <!-- Classification -->
+                        <tr>
+                            <td style="padding:13px 15px; background-color:#f3f6f9; border-bottom:1px solid #d9e1e8; font-size:13px; font-weight:bold; color:#526273;">
+                                Classification
+                            </td>
+
+                            <td style="padding:13px 15px; background-color:#ffffff; border-bottom:1px solid #d9e1e8; font-size:13px; color:#263746;">
+                                {!Lead.Lead_Classification__c}
+                            </td>
+                        </tr>
+
+
+                        <!-- Status -->
+                        <tr>
+                            <td style="padding:13px 15px; background-color:#f3f6f9; border-bottom:1px solid #d9e1e8; font-size:13px; font-weight:bold; color:#526273;">
+                                Status
+                            </td>
+
+                            <td style="padding:13px 15px; background-color:#ffffff; border-bottom:1px solid #d9e1e8; font-size:13px; color:#263746;">
+                                {!Lead.Status}
+                            </td>
+                        </tr>
+
+
+                        <!-- Assignment Group -->
+                        <tr>
+                            <td style="padding:13px 15px; background-color:#f3f6f9; font-size:13px; font-weight:bold; color:#526273;">
+                                Assignment Group
+                            </td>
+
+                            <td style="padding:13px 15px; background-color:#ffffff; font-size:13px; color:#263746;">
+                                {!Lead.AG_Related_to__c}
+                            </td>
+                        </tr>
+
+                    </table>
+
+
+                    <!-- View Lead Button -->
+                    <table cellpadding="0" cellspacing="0" border="0" width="100%" style="margin-top:30px;">
+                        <tr>
+                            <td align="center">
+
+                                <a href="{!Lead.Link}"
+                                   style="display:inline-block; background-color:#1f5f8b; color:#ffffff; text-decoration:none; font-size:14px; font-weight:bold; padding:13px 32px; border-radius:4px;">
+                                    View Lead
+                                </a>
+
+                            </td>
+                        </tr>
+                    </table>
+
+                </td>
+            </tr>
+
+
+            <!-- Footer -->
+            <tr>
+                <td style="background-color:#eef2f6; border-top:1px solid #d9e1e8; padding:20px 35px; text-align:center;">
+
+                    <div style="font-size:12px; line-height:19px; color:#6b7b8c;">
+                        This is an automated notification from the Salesforce Lead Assignment System.
+                    </div>
+
+                    <div style="font-size:12px; line-height:19px; color:#8a98a6; margin-top:3px;">
+                        Please do not reply to this email.
+                    </div>
+
+                </td>
+            </tr>
+
+        </table>
+
+    </td>
+</tr>
+
+</table>

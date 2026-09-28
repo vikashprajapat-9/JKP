@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>UTF-8</encodingKey>
+    <name>Lead Assigned to Owner</name>
+    <style>none</style>
+    <subject>New Lead Assigned | {!Lead.Name} | John Keells Properties</subject>
+    <textOnly>New Lead Assigned | John Keells Properties
+
+PRE-SALES
+LEAD ASSIGNMENT
+
+A NEW OPPORTUNITY AWAITS
+A new lead has
+been assigned to you.
+Hello {!Lead.OwnerFullName},
+
+A new prospect has been assigned to you for follow-up. Please review the lead details below and connect with the prospect at the earliest opportunity.
+
+LEAD
+{!Lead.Name}
+
+STATUS
+{!Lead.Status}
+CLASSIFICATION
+{!Lead.Lead_Classification__c}
+
+YOUR NEXT STEP
+Review the lead, understand the prospect&apos;s requirements, and begin the follow-up process.
+
+VIEW LEAD   →
+Open the lead record in Salesforce to view complete details.
+
+Creating New Worlds
+Every conversation is an opportunity to create a new experience.
+
+This is an automated lead assignment notification.
+John Keells Properties</textOnly>
+    <type>custom</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

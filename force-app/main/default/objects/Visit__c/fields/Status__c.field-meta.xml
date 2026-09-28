@@ -10,9 +10,9 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>SV Completed</fullName>
+                <fullName>Completed</fullName>
                 <default>false</default>
-                <label>SV Completed</label>
+                <label>Completed</label>
             </value>
             <value>
                 <fullName>Upcoming</fullName>

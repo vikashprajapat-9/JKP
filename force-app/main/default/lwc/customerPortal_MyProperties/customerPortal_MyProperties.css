@@ -1,0 +1,435 @@
+:host {
+    --navy: #162653;
+    --navy-dark: #101c3e;
+    --border-gray: #e3e5ea;
+    --text-gray: #6b7280;
+    --light-panel: #f4f5f7;
+    display: block;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
+}
+
+.my-properties {
+    /* padding: 24px 24px 48px 24px; */
+    /* max-width: 1600px; */
+    /* margin: 0 auto; */
+     width: 100%;
+    box-sizing: border-box;
+}
+
+.mp-loading,
+.mp-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    padding: 60px 20px;
+    text-align: center;
+}
+
+.mp-error-text {
+    margin-top: 12px;
+    color: var(--text-gray);
+}
+
+/* ---------- Heading ---------- */
+
+.mp-title {
+    font-size: 30px;
+    font-weight: 700;
+    color: #102451;
+    margin: 0 0 10px 0;
+}
+
+.mp-description {
+    font-size: 14px;
+    line-height: 1.55;
+    color: var(--text-gray);
+    margin: 0 0 20px 0;
+    /* max-width: 900px; */
+    width: 100%;
+}
+
+/* ---------- Filter ---------- */
+
+.mp-filter-row {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 16px;
+    position: relative;
+}
+
+.filter-dropdown-wrap {
+    position: relative;
+}
+
+.filter-btn {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    background-color: #ffffff;
+    border: 1px solid var(--border-gray);
+    border-radius: 6px;
+    padding: 9px 14px;
+    font-size: 13px;
+    font-weight: 600;
+    color: #1a1a1a;
+    cursor: pointer;
+    min-width: 220px;
+    justify-content: space-between;
+}
+
+.filter-icon {
+    --sds-c-icon-color-foreground-default: #1a1a1a;
+    margin-right: 4px;
+}
+
+.filter-caret {
+    display: inline-block;
+    transition: transform 0.15s ease;
+    color: #666;
+}
+
+.filter-caret_open {
+    transform: rotate(180deg);
+}
+
+.filter-menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0;
+    background-color: #ffffff;
+    border: 1px solid var(--border-gray);
+    border-radius: 6px;
+    box-shadow: 0 8px 20px rgba(0, 0, 0, 0.08);
+    list-style: none;
+    margin: 0;
+    padding: 6px 0;
+    min-width: 220px;
+    z-index: 20;
+}
+
+.filter-menu-item {
+    padding: 8px 16px;
+    font-size: 13px;
+    color: #1a1a1a;
+    cursor: pointer;
+}
+
+.filter-menu-item:hover {
+    background-color: #f5f6f8;
+}
+
+.filter-menu-item_active {
+    font-weight: 700;
+    color: var(--navy);
+}
+
+/* ---------- Tables (shared by listing + booking details) ---------- */
+
+.mp-table-section {
+    overflow-x: auto;
+}
+
+.mp-table {
+    width: 100%;
+    border-collapse: collapse;
+    min-width: 680px;
+}
+
+.mp-table thead tr {
+    background-color: var(--navy);
+}
+
+.mp-table th {
+    color: #ffffff;
+    text-align: left;
+    font-size: 13px;
+    font-weight: 600;
+    padding: 12px 18px;
+}
+
+.mp-table th.col-sr {
+    width: 50px;
+}
+
+.mp-table th.col-action {
+    text-align: right;
+    width: 140px;
+}
+
+.mp-table td {
+    padding: 16px 18px;
+    font-size: 13px;
+    color: #1a1a1a;
+    border-bottom: 1px solid var(--border-gray);
+    vertical-align: middle;
+}
+
+.mp-table td.col-action {
+    text-align: right;
+}
+
+.mp-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.mp-empty-text {
+    padding: 24px 4px;
+    color: var(--text-gray);
+    font-size: 13px;
+}
+
+.view-details-btn {
+    background-color: var(--navy);
+    color: #ffffff;
+    border: none;
+    border-radius: 6px;
+    padding: 8px 16px;
+    font-size: 12.5px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+}
+
+.view-details-btn:hover {
+    background-color: var(--navy-dark);
+}
+
+/* ---------- Detail view header ---------- */
+
+.mp-detail-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+    margin-bottom: 20px;
+}
+
+.back-btn {
+    background: none;
+    border: none;
+    font-size: 40px;
+    line-height: 1;
+    color: #1a1a1a;
+    cursor: pointer;
+    padding: 4px;
+}
+
+.mp-detail-header .mp-title {
+    margin: 0;
+    font-size: 22px;
+}
+
+/* ---------- Applicant cards ---------- */
+
+.applicant-card {
+    background-color: #ffffff;
+    border: 1px solid var(--border-gray);
+    border-radius: 10px;
+    box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04);
+    padding: 18px 20px;
+    margin-bottom: 16px;
+}
+
+.applicant-card-top {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-bottom: 16px;
+}
+
+.applicant-avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    flex-shrink: 0;
+}
+
+.applicant-avatar_blue {
+    background-color: #4a90d9;
+}
+
+.applicant-avatar_orange {
+    background-color: #f0a531;
+}
+
+.applicant-name {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0;
+}
+
+.applicant-type {
+    font-size: 12px;
+    color: var(--text-gray);
+    margin: 2px 0 0 0;
+}
+
+.applicant-info-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 14px;
+}
+
+.applicant-info-grid:last-child {
+    margin-bottom: 0;
+}
+
+.applicant-info-cell {
+    min-width: 0;
+}
+
+.info-label {
+    font-size: 12px;
+    font-weight: 500;
+    color: #1b2231;
+    margin: 0 0 4px 0;
+}
+
+.info-value {
+    font-size: 13px;
+    color: #1a1a1a;
+    margin: 0;
+    word-break: break-word;
+}
+
+/* ---------- Tabs ---------- */
+
+.mp-tabs {
+    display: flex;
+    gap: 28px;
+    margin-top: 8px;
+}
+
+.mp-tab {
+    background: none;
+    border: none;
+    padding: 10px 2px 12px 2px;
+    font-size: 14px;
+    font-weight: 600;
+    color: #9aa0ab;
+    cursor: pointer;
+    border-bottom: 2px solid transparent;
+}
+
+.mp-tab_active {
+    color: #1a1a1a;
+    border-bottom-color: var(--navy);
+}
+
+.mp-tabs-divider {
+    border-bottom: 1px solid var(--border-gray);
+    margin-bottom: 18px;
+}
+
+/* ---------- Expanded booking panel ---------- */
+
+.expanded-row td {
+    padding: 0;
+    border-bottom: 1px solid var(--border-gray);
+}
+
+.booking-detail-panel {
+    background-color: var(--light-panel);
+    border-radius: 8px;
+    margin: 4px 12px 12px 12px;
+    padding: 18px 20px;
+}
+
+.panel-grid {
+    display: grid;
+    grid-template-columns: repeat(4, 1fr);
+    gap: 14px;
+    margin-bottom: 16px;
+}
+
+.panel-cell {
+    min-width: 0;
+}
+
+.panel-divider {
+    border-bottom: 1px solid var(--border-gray);
+    margin-bottom: 14px;
+}
+
+.panel-section-heading {
+    font-size: 13px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 0 0 12px 0;
+}
+
+/* ---------- Payment plan table ---------- */
+
+.payment-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.payment-table th,
+.payment-table td {
+    border: 1px solid var(--border-gray);
+    padding: 16px 18px;
+    font-size: 13px;
+    color: #1a1a1a;
+    text-align: left;
+}
+
+.payment-table th {
+    font-weight: 700;
+    text-align: center;
+    background-color: #ffffff;
+}
+
+.payment-table th:first-child,
+.payment-table td:first-child {
+    text-align: left;
+}
+
+.col-center {
+    text-align: center;
+}
+
+.total-row td {
+    font-weight: 700;
+}
+
+/* ---------- Responsive ---------- */
+
+@media (max-width: 900px) {
+    .applicant-info-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+
+    .panel-grid {
+        grid-template-columns: repeat(2, 1fr);
+    }
+}
+
+@media (max-width: 640px) {
+    .my-properties {
+        padding: 16px;
+    }
+
+    .mp-filter-row {
+        justify-content: flex-start;
+    }
+
+    .filter-btn {
+        min-width: 0;
+        width: 100%;
+    }
+
+    .applicant-info-grid,
+    .panel-grid {
+        grid-template-columns: 1fr;
+    }
+
+    .mp-table {
+        min-width: 560px;
+    }
+}

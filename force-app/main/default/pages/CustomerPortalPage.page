@@ -1,0 +1,53 @@
+<apex:page showHeader="false"
+           sidebar="false"
+           standardStylesheets="false"
+           applyHtmlTag="false"
+           applyBodyTag="false"
+           docType="html-5.0"
+           title="John Keells Properties - Customer Portal">
+
+    <html>
+    <head>
+        <apex:includeLightning />
+
+        <style>
+            html,
+            body {
+                margin: 0;
+                padding: 0;
+                height: 100%;
+            }
+
+            #lightningLocator {
+                height: 100vh;
+                width: 100%;
+            }
+        </style>
+    </head>
+
+    <body>
+        <div id="lightningLocator"></div>
+
+        <script>
+            $Lightning.use(
+                "c:customerAuraApp",
+                function () {
+
+                    $Lightning.createComponent(
+                        "c:customerPortalAura",
+                        {},
+                        "lightningLocator",
+                        function (cmp) {
+                            console.log(
+                                "Customer Portal loaded successfully"
+                            );
+                        }
+                    );
+
+                }
+            );
+        </script>
+    </body>
+    </html>
+
+</apex:page>

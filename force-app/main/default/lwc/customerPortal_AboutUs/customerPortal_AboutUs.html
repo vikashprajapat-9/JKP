@@ -1,0 +1,22 @@
+<template>
+    <div class="simple-page-root">
+
+        <template if:true={isLoading}>
+            <div class="state-wrap">
+                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template if:true={hasError}>
+            <div class="state-wrap">
+                <lightning-icon icon-name="utility:error" size="medium" variant="error"></lightning-icon>
+                <p class="error-text">We couldn't load this page right now. Please try again in a moment.</p>
+            </div>
+        </template>
+
+        <template if:true={showContent}>
+            <h1 class="page-heading">{pageTitle}</h1>
+            <p class="page-description">{pageDescription}</p>
+        </template>
+    </div>
+</template>

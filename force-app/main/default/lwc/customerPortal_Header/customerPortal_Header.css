@@ -1,0 +1,112 @@
+:host {
+    --jk-navy: #102451;
+    --jk-white: #ffffff;
+    --jk-text: #222222;
+    --jk-border: #e5e5e5;
+    --jk-green: #7cb82a;
+    display: block;
+    flex-shrink: 0;
+}
+
+.portal-header {
+    height: 88px;
+    background: var(--jk-white);
+    border-bottom: 1px solid var(--jk-border);
+    box-shadow: 0 1px 4px rgba(0, 0, 0, 0.06);
+    display: flex;
+    align-items: center;
+    padding: 0 24px;
+    font-family: Arial, Helvetica, sans-serif;
+}
+
+.hamburger-btn {
+    display: none;
+    background: none;
+    border: none;
+    cursor: pointer;
+    padding: 6px;
+    margin-right: 12px;
+}
+
+.header-spacer {
+    flex: 1 1 auto;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.notification-wrapper {
+    position: relative;
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+}
+
+.notification-icon {
+    --sds-c-icon-color-foreground-default: var(--jk-text);
+}
+
+.notification-badge {
+    position: absolute;
+    top: -6px;
+    right: -8px;
+    background: var(--jk-green);
+    color: var(--jk-white);
+    font-size: 10px;
+    font-weight: 700;
+    line-height: 1;
+    border-radius: 50%;
+    min-width: 16px;
+    height: 16px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 2px;
+}
+
+.user-profile {
+    display: flex;
+    align-items: center;
+    cursor: pointer;
+    border-radius: 50%;
+    transition: box-shadow 0.15s ease-in-out, transform 0.1s ease-in-out;
+}
+
+.user-profile:hover {
+    box-shadow: 0 0 0 3px var(--jk-active-bg, #f2f7f9);
+}
+
+.user-profile:active {
+    transform: scale(0.97);
+}
+
+.avatar-image {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+.avatar-placeholder {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    background: var(--jk-green);
+    color: var(--jk-white);
+    font-size: 14px;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+/* Mobile: show hamburger to toggle the sidebar drawer */
+@media (max-width: 768px) {
+    .hamburger-btn {
+        display: inline-flex;
+        align-items: center;
+    }
+}

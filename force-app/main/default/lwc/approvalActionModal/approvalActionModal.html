@@ -1,0 +1,47 @@
+<template>
+    <lightning-modal-header label="Approve or Reject Request"></lightning-modal-header>
+
+    <lightning-modal-body>
+        <p class="aab-modal-hint">Choose an action, then add a comment. A comment is required for both.</p>
+        <template if:true={processName}>
+            <p class="aab-process">{processName}</p>
+        </template>
+
+        <div class="aab-choices">
+            <button class={approveBtnClass} onclick={chooseApprove}>
+                <lightning-icon icon-name="utility:check" size="x-small"></lightning-icon>
+                <span>Approve</span>
+            </button>
+            <button class={rejectBtnClass} onclick={chooseReject}>
+                <lightning-icon icon-name="utility:close" size="x-small"></lightning-icon>
+                <span>Reject</span>
+            </button>
+        </div>
+
+        <template if:true={selectedAction}>
+            <div class="aab-comment">
+                <lightning-textarea
+                    label={commentLabel}
+                    value={comments}
+                    onchange={handleComment}
+                    required
+                    max-length="4000"
+                    placeholder="Enter your comments…">
+                </lightning-textarea>
+            </div>
+        </template>
+
+        <template if:true={commentError}>
+            <div class="aab-error">
+                <lightning-icon icon-name="utility:error" size="xx-small" variant="error"></lightning-icon>
+                <span>{commentError}</span>
+            </div>
+        </template>
+    </lightning-modal-body>
+
+    <lightning-modal-footer>
+        <lightning-button label="Cancel" onclick={handleCancel} disabled={isSaving}></lightning-button>
+        <lightning-button class="slds-m-left_x-small" variant={submitVariant} label={submitLabel}
+            onclick={handleSubmit} disabled={submitDisabled}></lightning-button>
+    </lightning-modal-footer>
+</template>

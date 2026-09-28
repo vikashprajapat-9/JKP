@@ -1,0 +1,88 @@
+<template>
+    <p>Welcome <strong>{userName}</strong>.</p>
+
+    <!-- ================= CAROUSEL BANNER ================= -->
+    <div class="banner-carousel">
+        <template for:each={bannerSlides} for:item="slide">
+            <div key={slide.key} class={slide.slideClass}>
+                <img src={slide.url} alt="Banner" class="banner-img" />
+            </div>
+        </template>
+
+        <button class="banner-nav prev"
+                onclick={handleBannerPrev}
+                type="button"
+                title="Previous">‹</button>
+
+        <button class="banner-nav next"
+                onclick={handleBannerNext}
+                type="button"
+                title="Next">›</button>
+
+        <div class="banner-dots">
+            <template for:each={bannerSlides} for:item="slide">
+                <button key={slide.key}
+                        class={slide.dotClass}
+                        data-index={slide.index}
+                        onclick={handleBannerDot}
+                        type="button">
+                </button>
+            </template>
+        </div>
+    </div>
+
+    <!-- ================= STATS BOXES ================= -->
+    <div class="slds-box slds-p-around_none slds-m-top_x-small slds-m-bottom_medium slds-m-horizontal_none">
+        <lightning-layout multiple-rows>
+
+            <lightning-layout-item size="12" small-device-size="12" medium-device-size="6" large-device-size="3" padding="around-small">
+                <div class="custom-box slds-box slds-p-around_medium slds-text-align_center">
+                    Total Lead <p><strong>{leadcount}</strong></p>
+                </div>
+            </lightning-layout-item>
+
+            <lightning-layout-item size="12" small-device-size="12" medium-device-size="6" large-device-size="3" padding="around-small">
+                <div class="custom-box slds-box slds-p-around_medium slds-text-align_center">
+                    Active Pipeline <p><strong>38</strong></p>
+                </div>
+            </lightning-layout-item>
+
+            <lightning-layout-item size="12" small-device-size="12" medium-device-size="6" large-device-size="3" padding="around-small">
+                <div class="custom-box slds-box slds-p-around_medium slds-text-align_center">
+                    Site Visits <p><strong>{visitcount}</strong></p>
+                </div>
+            </lightning-layout-item>
+
+            <lightning-layout-item size="12" small-device-size="12" medium-device-size="6" large-device-size="3" padding="around-small">
+                <div class="custom-box slds-box slds-p-around_medium slds-text-align_center">
+                    Bookings <p><strong>07</strong></p>
+                </div>
+            </lightning-layout-item>
+
+            <lightning-layout-item size="12" small-device-size="12" medium-device-size="6" large-device-size="3" padding="around-small">
+                <div class="custom-box slds-box slds-p-around_medium slds-text-align_center">
+                    Sales <p><strong>21</strong></p>
+                </div>
+            </lightning-layout-item>
+
+            <lightning-layout-item size="12" small-device-size="12" medium-device-size="6" large-device-size="3" padding="around-small">
+                <div class="custom-box slds-box slds-p-around_medium slds-text-align_center">
+                    Conversion Rate (Site visit to sales) <p><strong>78%</strong></p>
+                </div>
+            </lightning-layout-item>
+
+            <lightning-layout-item size="12" small-device-size="12" medium-device-size="6" large-device-size="3" padding="around-small">
+                <div class="custom-box slds-box slds-p-around_medium slds-text-align_center">
+                    Total Sales Revenue Generated <p><strong>LKR 5000</strong></p>
+                </div>
+            </lightning-layout-item>
+
+            <lightning-layout-item size="12" small-device-size="12" medium-device-size="6" large-device-size="3" padding="around-small">
+                <div class="custom-box slds-box slds-p-around_medium slds-text-align_center">
+                    Commission Income <p><strong>LKR 12,000</strong></p>
+                </div>
+            </lightning-layout-item>
+
+        </lightning-layout>
+    </div>
+</template>
