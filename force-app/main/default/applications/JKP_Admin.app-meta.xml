@@ -68,10 +68,7 @@
     <tabs>Company__c</tabs>
     <tabs>Project__c</tabs>
     <tabs>Pre_Sales_Admin_Panel</tabs>
-    <tabs>standard-report</tabs>
-    <tabs>standard-Dashboard</tabs>
     <tabs>Lead_Assignment_History__c</tabs>
-    <tabs>Customer_Portal</tabs>
     <tabs>Payment_Schedule_Master__c</tabs>
     <tabs>Pricing_Element_Master__c</tabs>
     <tabs>Tax_Master__c</tabs>
