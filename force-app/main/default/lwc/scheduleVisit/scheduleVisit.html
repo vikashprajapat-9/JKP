@@ -1,0 +1,98 @@
+<template>
+    <div class="visit-modal">
+        <!-- ================= HEADER ================= -->
+        <div class="modal-header">
+            <div class="logo-container">
+                <img src={logoWhite} alt="Logo" class="logo" />
+            </div>
+            <div class="header-title"> Schedule a Visit </div>
+        </div>
+        <!-- ================= EXISTING VISITS ================= -->
+        <template if:true={showVisitList}>
+            <div class="modal-body">
+                <div class="visit-section">
+                    <h2 class="section-title"> Existing Visits</h2>
+                    <div class="table-wrapper">
+                        <table class="visit-table">
+                            <thead>
+                                <tr>
+                                    <th>Visit Name</th>
+                                    <th>Visit Date</th>
+                                    <th>Visit Time</th>
+                                    <th>Requirement Type</th>
+                                    <th>Project</th>
+                                    <th>Status</th>
+                                    <th>Action</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={visits}  for:item="visit">
+                                    <tr key={visit.Id}>
+                                        <td> <a href={visit.VisitUrl} target="_blank" class="visit-link">{visit.Name} </a> </td>
+                                        <td> {visit.Visit_Date__c}  </td>
+                                        <td> {visit.Visit_Time__c}  </td>
+                                        <td>  {visit.Requirement_Type__c}  </td>
+                                        <td>  {visit.ProjectName} </td>
+                                        <td> {visit.Status__c} </td>
+                                        <td>
+                                            <template if:true={visit.showActions}>
+                                                <div class="action-buttons">
+                                                    <button class="action-btn completed-btn" data-id={visit.Id} onclick={handleCompleted}>Completed </button>
+                                                    <button class="action-btn cancelled-btn" data-id={visit.Id} onclick={handleCancelled}>Cancelled </button>
+                                                </div>
+                                            </template>
+                                            <template if:false={visit.showActions}>
+                                                <span class="no-action">—</span>
+                                            </template>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                    <!-- PAGINATION -->
+                    <template if:true={hasRecords}>
+                        <div class="pagination-container">
+                            <c-custom-pagination-comp list={allVisits} onpagechanged={handlePageChanged}> </c-custom-pagination-comp>
+                        </div>
+                    </template>
+                </div>
+            </div>
+            <!-- ================= FOOTER ================= -->
+            <div class="modal-footer">
+                <div class="footer-copyright">
+                    🔒 John Keells Properties™ • All Rights Reserved
+                </div>
+                <div class="footer-actions">
+                    <button class="footer-btn cancel-btn" onclick={handleCancel}> Cancel </button>
+                    <button class="footer-btn primary-btn" onclick={handleShowCreateVisit}>Schedule Visit </button>
+                </div>
+            </div>
+        </template>
+
+        <!-- ================= CREATE VISIT ================= -->
+        <template if:true={showCreateVisit}>
+            <div class="modal-body">
+                <div class="form-container">
+                    <lightning-input type="date" label="Visit Date" value={visitDate} onchange={handleVisitDateChange} required> </lightning-input>
+                    <lightning-input type="time" label="Visit Time" value={visitTime} onchange={handleVisitTimeChange} required></lightning-input>
+                    <lightning-textarea label="Remarks" value={remarks} onchange={handleRemarksChange}> </lightning-textarea>
+                    <lightning-combobox label="Requirement Type" value={requirementType} options={requirementTypeOptions} placeholder="Select an Option" onchange={handleRequirementTypeChange} required></lightning-combobox>
+                    <lightning-record-picker label="Project" placeholder="Search Project..." object-api-name="Project__c" value={projectId} onchange={handleProjectChange} required></lightning-record-picker>
+                </div>
+            </div>
+
+            <!-- ================= CREATE FOOTER ================= -->
+
+            <div class="modal-footer">
+                <div class="footer-copyright">
+                    🔒 John Keells Properties™ • All Rights Reserved
+                </div>
+                <div class="footer-actions">
+                <button class="footer-btn cancel-btn" onclick={handleCancel}> Cancel</button>
+                <button class="footer-btn primary-btn" onclick={handleCreateVisit}> Create Visit </button>
+            </div>
+            </div>
+        </template>
+    </div>
+</template>

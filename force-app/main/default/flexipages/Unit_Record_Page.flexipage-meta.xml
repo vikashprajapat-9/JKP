@@ -66,6 +66,22 @@
                 <identifier>RecordFloor_cField</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Super_Built_Up_Area_sq_ft__c</fieldItem>
+                <identifier>RecordSuper_Built_Up_Area_sq_ft__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.Floor_Rise__c</fieldItem>
+                <identifier>RecordFloor_Rise__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-8f5d5012-29eb-4d60-ad8b-7522904ad739</name>
         <type>Facet</type>
     </flexiPageRegions>

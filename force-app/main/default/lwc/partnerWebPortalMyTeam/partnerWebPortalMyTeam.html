@@ -1,0 +1,95 @@
+<template>
+    <div class="team-wrapper">
+
+        <!-- ================= HEADER ================= -->
+        <div class="team-header">
+            <h1 class="team-title">My Team</h1>
+
+            <button class="add-exec-btn"
+                    type="button"
+                    onclick={handleAddExecutive}>
+                <lightning-icon icon-name="utility:add" size="x-small"
+                                variant="inverse"></lightning-icon>
+                <span>Add Executive</span>
+            </button>
+        </div>
+
+        <p class="team-subtitle">
+            Explore the profiles of our expert agents at John Keels Properties who are
+            ready to assist you. Get to know their experience, areas of specialization,
+            and contact information to make your real estate journey smoother. Our
+            dedicated team is here to provide you with exceptional support and guidance
+            throughout your property search.
+        </p>
+
+        <!-- ================= HERO CARD ================= -->
+        <div class="hero-card">
+            <div class="hero-left">
+                <div class="hero-avatar">AM</div>
+                <div class="hero-info">
+                    <h2 class="hero-name">Arjun Mehta</h2>
+                    <p class="hero-role">Principal Partner •</p>
+                    <p class="hero-role">Channel Lead</p>
+                </div>
+            </div>
+
+            <div class="hero-stats">
+                <div class="stat-box">
+                    <span class="stat-label">TOTAL LEADS</span>
+                    <span class="stat-value">{stats.totalLeads}</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">BOOKINGS</span>
+                    <span class="stat-value">{stats.totalBookings}</span>
+                </div>
+                <div class="stat-box">
+                    <span class="stat-label">EXECUTIVES</span>
+                    <span class="stat-value">
+                        <template lwc:if={stats.totalExecutives}>
+                            {stats.totalExecutives}
+                        </template>
+                    </span>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= TEAM MEMBERS ================= -->
+        <h3 class="section-title">Team Members</h3>
+
+        <div class="members-grid">
+            <template for:each={members} for:item="member">
+                <div key={member.userId} class="member-card">
+
+                    <div class="member-header">
+                        <div class={member.avatarClass}>{member.initials}</div>
+                        <div class="member-info">
+                            <h4 class="member-name">{member.fullName}</h4>
+                            <p class="member-role">{member.role}</p>
+                        </div>
+                    </div>
+
+                    <div class="member-stats">
+                        <div class="mini-stat">
+                            <span class="mini-label">
+                                <lightning-icon icon-name="utility:people"
+                                                size="xx-small"></lightning-icon>
+                                Leads
+                            </span>
+                            <span class="mini-value">{member.leads}</span>
+                        </div>
+                        <div class="mini-stat">
+                            <span class="mini-label">
+                                <lightning-icon icon-name="utility:check"
+                                                size="xx-small"></lightning-icon>
+                                Bookings
+                            </span>
+                            <span class="mini-value">{member.bookings}</span>
+                        </div>
+                    </div>
+
+                </div>
+            </template>
+        </div>
+
+    </div>
+</template>

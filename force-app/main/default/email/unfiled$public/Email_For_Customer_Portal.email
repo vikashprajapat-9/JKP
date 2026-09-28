@@ -1,0 +1,504 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Customer Portal Access | John Keells Properties</title>
+</head>
+
+<body style="margin:0; padding:0; background-color:#eef1f5; font-family:Arial, Helvetica, sans-serif; color:#17233f;">
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0"
+       style="background-color:#eef1f5; padding:35px 12px;">
+
+    <tr>
+        <td align="center">
+
+            <!-- MAIN CONTAINER -->
+            <table width="650" cellpadding="0" cellspacing="0" border="0"
+                   style="width:100%; max-width:650px; background-color:#ffffff;">
+
+                <!-- BRAND HEADER -->
+                <tr>
+                    <td style="
+                        background-color:#101f3d;
+                        padding:30px 38px;
+                    ">
+
+                        <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                            <tr>
+
+                                <!-- JKP LOGO -->
+                                <td valign="middle">
+
+                                    <img src="{{JKP_LOGO_WHITE}}"
+                                         alt="John Keells Properties"
+                                         width="190"
+                                         style="
+                                            display:block;
+                                            width:190px;
+                                            max-width:190px;
+                                            height:auto;
+                                            border:0;
+                                            outline:none;
+                                            text-decoration:none;
+                                         ">
+
+                                </td>
+
+                                <!-- CUSTOMER PORTAL LABEL -->
+                                <td align="right" valign="middle">
+
+                                    <div style="
+                                        font-size:9px;
+                                        line-height:14px;
+                                        color:#b8c2d1;
+                                        letter-spacing:2px;
+                                        text-transform:uppercase;
+                                    ">
+                                        CUSTOMER EXPERIENCE
+                                    </div>
+
+                                    <div style="
+                                        font-size:12px;
+                                        line-height:18px;
+                                        color:#ffffff;
+                                        font-weight:bold;
+                                        letter-spacing:0.5px;
+                                        margin-top:3px;
+                                    ">
+                                        CUSTOMER PORTAL
+                                    </div>
+
+                                </td>
+
+                            </tr>
+                        </table>
+
+                    </td>
+                </tr>
+
+
+                <!-- GOLD ACCENT -->
+                <tr>
+                    <td style="
+                        background-color:#c6a15b;
+                        height:4px;
+                        font-size:0;
+                        line-height:0;
+                    ">
+                        &nbsp;
+                    </td>
+                </tr>
+
+
+                <!-- HERO SECTION -->
+                <tr>
+                    <td style="
+                        padding:44px 38px 30px 38px;
+                    ">
+
+                        <!-- EYEBROW -->
+                        <div style="
+                            font-size:10px;
+                            line-height:16px;
+                            color:#a18751;
+                            text-transform:uppercase;
+                            letter-spacing:2px;
+                            font-weight:bold;
+                        ">
+                            WELCOME TO YOUR CUSTOMER PORTAL
+                        </div>
+
+
+                        <!-- HEADING -->
+                        <div style="
+                            font-size:29px;
+                            line-height:38px;
+                            color:#101f3d;
+                            font-weight:bold;
+                            margin-top:8px;
+                        ">
+                            Your customer portal<br>
+                            access is ready.
+                        </div>
+
+
+                        <!-- INTRODUCTION -->
+                        <div style="
+                            font-size:15px;
+                            line-height:25px;
+                            color:#5d6878;
+                            margin-top:17px;
+                        ">
+
+                            Hello {!Contact.FirstName},
+
+                            <br><br>
+
+                            We are pleased to provide you with access to your
+                            John Keells Properties customer portal.
+
+                            <br><br>
+
+                            Through the portal, you can conveniently access
+                            your property-related information, documents,
+                            updates and other important details.
+
+                        </div>
+
+                    </td>
+                </tr>
+
+
+                <!-- CUSTOMER CARD -->
+                <tr>
+                    <td style="
+                        padding:0 38px 28px 38px;
+                    ">
+
+                        <table width="100%"
+                               cellpadding="0"
+                               cellspacing="0"
+                               border="0"
+                               style="
+                                    border:1px solid #dfe4ea;
+                                    background-color:#ffffff;
+                               ">
+
+                            <!-- CUSTOMER NAME -->
+                            <tr>
+                                <td style="
+                                    padding:22px 24px;
+                                    background-color:#f8f9fb;
+                                    border-bottom:1px solid #e2e6eb;
+                                ">
+
+                                    <div style="
+                                        font-size:9px;
+                                        line-height:14px;
+                                        color:#929daa;
+                                        text-transform:uppercase;
+                                        letter-spacing:1.8px;
+                                        font-weight:bold;
+                                    ">
+                                        CUSTOMER
+                                    </div>
+
+                                    <div style="
+                                        font-size:23px;
+                                        line-height:30px;
+                                        color:#101f3d;
+                                        font-weight:bold;
+                                        margin-top:6px;
+                                    ">
+                                        {!Contact.Name}
+                                    </div>
+
+                                </td>
+                            </tr>
+
+
+                            <!-- CUSTOMER DETAILS -->
+                            <tr>
+                                <td style="
+                                    padding:22px 24px;
+                                ">
+
+                                    <table width="100%"
+                                           cellpadding="0"
+                                           cellspacing="0"
+                                           border="0">
+
+                                        <tr>
+
+                                            <!-- EMAIL -->
+                                            <td width="50%"
+                                                valign="top"
+                                                style="padding-right:12px;">
+
+                                                <div style="
+                                                    font-size:9px;
+                                                    line-height:14px;
+                                                    color:#929daa;
+                                                    text-transform:uppercase;
+                                                    letter-spacing:1.5px;
+                                                    font-weight:bold;
+                                                ">
+                                                    EMAIL
+                                                </div>
+
+                                                <div style="
+                                                    font-size:14px;
+                                                    line-height:22px;
+                                                    color:#101f3d;
+                                                    font-weight:bold;
+                                                    margin-top:7px;
+                                                ">
+                                                    {!Contact.Email}
+                                                </div>
+
+                                            </td>
+
+
+                                            <!-- PORTAL ACCESS -->
+                                            <td width="50%"
+                                                valign="top"
+                                                style="padding-left:12px;">
+
+                                                <div style="
+                                                    font-size:9px;
+                                                    line-height:14px;
+                                                    color:#929daa;
+                                                    text-transform:uppercase;
+                                                    letter-spacing:1.5px;
+                                                    font-weight:bold;
+                                                ">
+                                                    PORTAL ACCESS
+                                                </div>
+
+                                                <div style="
+                                                    font-size:15px;
+                                                    line-height:22px;
+                                                    color:#101f3d;
+                                                    font-weight:bold;
+                                                    margin-top:7px;
+                                                ">
+                                                    Ready to Access
+                                                </div>
+
+                                            </td>
+
+                                        </tr>
+
+                                    </table>
+
+                                </td>
+                            </tr>
+
+                        </table>
+
+                    </td>
+                </tr>
+
+
+                <!-- ACTION STRIP -->
+                <tr>
+                    <td style="
+                        padding:0 38px 30px 38px;
+                    ">
+
+                        <table width="100%"
+                               cellpadding="0"
+                               cellspacing="0"
+                               border="0"
+                               style="
+                                    background-color:#f7f5ef;
+                               ">
+
+                            <tr>
+
+                                <!-- GOLD SIDE ACCENT -->
+                                <td width="4"
+                                    style="
+                                        background-color:#c6a15b;
+                                        font-size:0;
+                                    ">
+                                    &nbsp;
+                                </td>
+
+
+                                <!-- MESSAGE -->
+                                <td style="
+                                    padding:19px 21px;
+                                ">
+
+                                    <div style="
+                                        font-size:9px;
+                                        line-height:14px;
+                                        color:#9b8250;
+                                        text-transform:uppercase;
+                                        letter-spacing:1.7px;
+                                        font-weight:bold;
+                                    ">
+                                        GET STARTED
+                                    </div>
+
+
+                                    <div style="
+                                        font-size:13px;
+                                        line-height:21px;
+                                        color:#4d5968;
+                                        margin-top:6px;
+                                    ">
+
+                                        Click the button below to access your
+                                        customer portal. Please use your
+                                        registered email address to sign in.
+
+                                    </div>
+
+                                </td>
+
+                            </tr>
+
+                        </table>
+
+                    </td>
+                </tr>
+
+
+                <!-- CTA -->
+                <tr>
+                    <td align="center" style="
+                        padding:2px 38px 44px 38px;
+                    ">
+
+                        <a href="https://force-computing-5794--devthree.sandbox.my.site.com/"
+                           style="
+                                display:inline-block;
+                                background-color:#101f3d;
+                                color:#ffffff;
+                                text-decoration:none;
+                                font-size:13px;
+                                line-height:18px;
+                                font-weight:bold;
+                                letter-spacing:0.8px;
+                                padding:15px 35px;
+                           ">
+                            ACCESS CUSTOMER PORTAL &nbsp; →
+                        </a>
+
+
+                        <div style="
+                            font-size:10px;
+                            line-height:16px;
+                            color:#929baa;
+                            margin-top:12px;
+                        ">
+                            Use your registered email address to access your account.
+                        </div>
+
+                    </td>
+                </tr>
+
+
+                <!-- BRAND FOOTER -->
+                <tr>
+                    <td style="
+                        background-color:#101f3d;
+                        padding:32px 38px;
+                    ">
+
+                        <table width="100%"
+                               cellpadding="0"
+                               cellspacing="0"
+                               border="0">
+
+                            <tr>
+                                <td align="center">
+
+                                    <!-- BLUE LOGO -->
+                                    <div style="
+                                        background-color:#ffffff;
+                                        display:inline-block;
+                                        padding:10px 16px;
+                                    ">
+
+                                        <img src="{{JKP_LOGO_BLUE}}"
+                                             alt="John Keells Properties"
+                                             width="170"
+                                             style="
+                                                display:block;
+                                                width:170px;
+                                                max-width:170px;
+                                                height:auto;
+                                                border:0;
+                                             ">
+
+                                    </div>
+
+
+                                    <!-- TAGLINE -->
+                                    <div style="
+                                        font-size:17px;
+                                        line-height:24px;
+                                        color:#ffffff;
+                                        font-style:italic;
+                                        margin-top:16px;
+                                    ">
+                                        Creating New Worlds
+                                    </div>
+
+
+                                    <!-- GOLD DIVIDER -->
+                                    <div style="
+                                        font-size:0;
+                                        line-height:0;
+                                        margin-top:16px;
+                                    ">
+                                        <span style="
+                                            display:inline-block;
+                                            width:38px;
+                                            height:1px;
+                                            background-color:#c6a15b;
+                                        ">
+                                            &nbsp;
+                                        </span>
+                                    </div>
+
+
+                                    <!-- BRAND MESSAGE -->
+                                    <div style="
+                                        font-size:10px;
+                                        line-height:17px;
+                                        color:#aeb8c7;
+                                        margin-top:14px;
+                                    ">
+                                        Every conversation is an opportunity
+                                        to create a new experience.
+                                    </div>
+
+                                </td>
+                            </tr>
+
+                        </table>
+
+                    </td>
+                </tr>
+
+
+                <!-- SYSTEM FOOTER -->
+                <tr>
+                    <td style="
+                        background-color:#f7f8fa;
+                        padding:18px 25px;
+                    ">
+
+                        <div style="
+                            text-align:center;
+                            font-size:10px;
+                            line-height:17px;
+                            color:#929baa;
+                        ">
+
+                            This is an automated customer portal access email.
+
+                            <br>
+
+                            John Keells Properties
+
+                        </div>
+
+                    </td>
+                </tr>
+
+            </table>
+
+        </td>
+    </tr>
+
+</table>
+
+</body>
+</html>

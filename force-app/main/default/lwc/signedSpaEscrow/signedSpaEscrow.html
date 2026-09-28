@@ -1,0 +1,76 @@
+<template>
+    <div class="spa-header">
+                <div class="brand-section">
+                    <img src={logoUrl} alt="John Keells Properties"  class="company-logo"/>
+                    <div class="brand-text">
+                        <div class="company-name"> John Keells Properties </div>
+                        <div class="company-tagline"> Creating New Worlds</div>
+                    </div>
+                </div>
+            </div>
+    <lightning-card title="SPA & Escrow Documents" icon-name="standard:file">
+        <div class="container">
+            <div class="section">
+                <div class="section-header">
+                    <lightning-icon icon-name="standard:document"  size="small"> </lightning-icon>
+                    <h2>SPA</h2>
+                </div>
+                <div class="field-row">
+                    <lightning-input  type="date" label="SPA Signed Date" value={spaSignedDate} onchange={handleSpaDateChange} required>
+                    </lightning-input>
+                </div>
+
+                <!-- SPA Upload -->
+                <div class="upload-box">
+                    <div class="upload-header">
+                        <lightning-icon icon-name="utility:upload" size="small"> </lightning-icon>
+                        <span>Signed SPA Document</span>
+                    </div>
+
+                    <template if:true={spaFileName}>
+                        <div class="file-selected">
+                            <lightning-icon icon-name="doctype:pdf" size="small"></lightning-icon>
+                            <span>{spaFileName}</span>
+                            <lightning-button-icon icon-name="utility:close" alternative-text="Remove" title="Remove" onclick={removeSpaFile}></lightning-button-icon>
+                        </div>
+                    </template>
+                    <lightning-button  label="Upload SPA" icon-name="utility:upload" onclick={handleSpaUpload}></lightning-button>
+                    <input type="file" class="spa-file-input" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" onchange={handleSpaFileSelected}/>
+                </div>
+            </div>
+            <div class="section">
+                <div class="section-header">
+                    <lightning-icon icon-name="standard:contract" size="small"> </lightning-icon>
+                    <h2>Escrow</h2>
+                </div>
+                <div class="field-row">
+                    <lightning-input type="date" label="Escrow Signed Date" value={escrowSignedDate} onchange={handleEscrowDateChange} required> </lightning-input>
+                </div>
+                <!-- Escrow Upload -->
+                <div class="upload-box">
+                    <div class="upload-header">
+                        <lightning-icon icon-name="utility:upload" size="small"> </lightning-icon>
+                        <span>Signed Escrow Document</span>
+                    </div>
+                    <template if:true={escrowFileName}>
+                        <div class="file-selected">
+                            <lightning-icon  icon-name="doctype:pdf" size="small"></lightning-icon>
+                            <span>{escrowFileName}</span>
+                            <lightning-button-icon icon-name="utility:close" alternative-text="Remove" title="Remove" onclick={removeEscrowFile}></lightning-button-icon>
+                        </div>
+                    </template>
+                    <lightning-button label="Upload Escrow" icon-name="utility:upload" onclick={handleEscrowUpload}> </lightning-button>
+                    <input type="file" class="escrow-file-input" accept=".pdf,.doc,.docx,.jpg,.jpeg,.png" onchange={handleEscrowFileSelected} />
+                </div>
+            </div>
+            <div class="footer">
+                <lightning-button class="button"  label="Cancel" onclick={handleCancel}> </lightning-button>
+                <lightning-button  class="button" variant="brand" label="Complete" icon-name="utility:check"  onclick={handleComplete} disabled={isSaving}></lightning-button>
+            </div>
+        </div>
+        <!-- ==================== SPINNER ==================== -->
+        <template if:true={isSaving}>
+            <lightning-spinner alternative-text="Saving..." size="small"> </lightning-spinner>
+        </template>
+    </lightning-card>
+</template>

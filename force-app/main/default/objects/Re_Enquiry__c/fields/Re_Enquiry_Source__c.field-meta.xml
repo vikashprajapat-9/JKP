@@ -11,19 +11,19 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>Digital Source</fullName>
+                <fullName>Digital</fullName>
                 <default>false</default>
-                <label>Digital Source</label>
+                <label>Digital</label>
             </value>
             <value>
-                <fullName>Manual Source</fullName>
+                <fullName>Manual</fullName>
                 <default>false</default>
-                <label>Manual Source</label>
+                <label>Manual</label>
             </value>
             <value>
-                <fullName>Channel Partner Source</fullName>
+                <fullName>Channel Partner</fullName>
                 <default>false</default>
-                <label>Channel Partner Source</label>
+                <label>Channel Partner</label>
             </value>
             <value>
                 <fullName>Advertisement</fullName>

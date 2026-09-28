@@ -35,7 +35,7 @@ export default class LeadAssignmentAdminPanel extends LightningElement {
     selectedGroupId;
     selectedUserId;
 
-   selectedField = 'Designation__c';
+    selectedField;
    fieldTabs = [];
 
     memberAssignmentId;
@@ -323,6 +323,9 @@ export default class LeadAssignmentAdminPanel extends LightningElement {
                 };
             });
 
+            if (!this.selectedField || !this.scoreConfigs.some(item => item.fieldApiName === this.selectedField)) {
+                this.selectedField = this.scoreConfigs.length ? this.scoreConfigs[0].fieldApiName : null;
+            }
             this.scoreCurrentPage = 1;
             this.prepareTabs();
         })

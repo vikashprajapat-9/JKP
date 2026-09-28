@@ -1,0 +1,232 @@
+<template>
+
+    <!-- ============================================ -->
+    <!-- FORM VIEW                                     -->
+    <!-- ============================================ -->
+    <template lwc:if={isFormView}>
+        <div class="form-wrapper">
+
+            <!-- FORM HEADER -->
+            <div class="form-header">
+                <button class="back-btn" onclick={handleFormCancel} type="button" title="Back">
+                    <lightning-icon icon-name="utility:back" size="small"></lightning-icon>
+                </button>
+                <h2 class="form-title">Add Lead</h2>
+            </div>
+
+            <!-- CUSTOMER DETAILS -->
+            <h3 class="section-title">Customer Details</h3>
+
+            <div class="field">
+                <label for="fullName">Full Name (as per NIC)</label>
+                <input id="fullName"
+                       type="text"
+                       placeholder="e.g. John Thomas"
+                       data-field="fullName"
+                       onchange={handleFormChange} />
+            </div>
+
+            <div class="two-col">
+                <div class="field">
+                    <label for="phone">Mobile Number</label>
+                    <input id="phone"
+                           type="text"
+                           placeholder="Enter mobile number"
+                           data-field="phone"
+                           onchange={handleFormChange} />
+                </div>
+                <div class="field">
+                    <label for="email">Email ID</label>
+                    <input id="email"
+                           type="email"
+                           placeholder="john.smith@example.com"
+                           data-field="email"
+                           onchange={handleFormChange} />
+                </div>
+            </div>
+
+            <div class="two-col">
+                <div class="field">
+                    <label for="company">Company</label>
+                    <input id="company"
+                           type="text"
+                           placeholder="Company name"
+                           data-field="company"
+                           onchange={handleFormChange} />
+                </div>
+                <div class="field">
+                    <label for="address">Permanent Address</label>
+                    <input id="address"
+                           type="text"
+                           placeholder="No. 42, Galle Road, Colombo 03"
+                           data-field="address"
+                           onchange={handleFormChange} />
+                </div>
+            </div>
+
+            <!-- PROJECT INTEREST -->
+            <h3 class="section-title">Project Interest</h3>
+
+            <div class="two-col">
+                <!--
+                    Interested Project is a LOOKUP to Project__c.
+                    The static Project Id is set on the form state (form.project),
+                    so no dropdown is shown here.
+                -->
+                <div class="field">
+                    <label for="budget">Budget Aligned</label>
+                    <select id="budget" data-field="budget" onchange={handleFormChange}>
+                        <option value="">Select</option>
+                        <template for:each={budgetOptions} for:item="opt">
+                            <option key={opt.value} value={opt.value}>{opt.label}</option>
+                        </template>
+                    </select>
+                </div>
+            </div>
+
+            <!-- REMARKS -->
+            <h3 class="section-title">Additional Remarks</h3>
+
+            <div class="field">
+                <label for="description">Specific Requirements (Budget, Preferred Floor, Time of Visit)</label>
+                <textarea id="description"
+                          rows="4"
+                          placeholder="Mention any specific details..."
+                          data-field="description"
+                          onchange={handleFormChange}></textarea>
+            </div>
+
+            <!-- FORM FOOTER -->
+            <div class="form-footer">
+                <button class="cancel-btn" type="button" onclick={handleFormCancel}>
+                    Cancel
+                </button>
+                <button class="save-btn"
+                        type="button"
+                        onclick={handleRegisterLead}
+                        disabled={isSaving}>
+                    {saveButtonLabel}
+                </button>
+            </div>
+
+        </div>
+    </template>
+
+    <!-- ============================================ -->
+    <!-- LIST VIEW                                     -->
+    <!-- ============================================ -->
+    <template lwc:else>
+        <div class="container">
+
+            <!-- HEADER -->
+            <div class="slds-p-around_medium">
+                <p class="slds-text-heading_large"><strong>Leads</strong></p>
+                <p>
+                    Manage and add new leads effortlessly with our comprehensive tracking system.
+                    Access detailed information about each lead, including contact details, lead source,
+                    and current stage. Stay organized and ensure timely follow-ups to maximize your
+                    conversion rates with the support of John Keels Properties
+                </p>
+            </div>
+
+            <!-- ADD BUTTON -->
+            <button class="nav-item" onclick={handleNavigation} type="button">
+                <lightning-icon icon-name="utility:record_create" size="medium"></lightning-icon>
+                <p>Add New Lead</p>
+            </button>
+
+            <!-- DIVIDER -->
+            <div class="divider"></div>
+
+            <!-- TOOLBAR -->
+            <div class="toolbar">
+                <div class="search-wrapper">
+                    <lightning-icon
+                        icon-name="utility:search"
+                        size="x-small"
+                        class="search-icon">
+                    </lightning-icon>
+                    <input
+                        type="text"
+                        class="search-input"
+                        placeholder="Search.."
+                        oninput={handleSearch} />
+                </div>
+                <div class="action-buttons">
+                    <button class="btn-export" onclick={handleExport}>⬆ Export CSV</button>
+                    <button class="btn-apply" onclick={handleApplyFilter}>Apply Filter</button>
+                </div>
+            </div>
+
+            <!-- FILTER TABS -->
+            <div class="filter-tabs">
+                <template for:each={filterButtons} for:item="tab">
+                    <button
+                        key={tab.value}
+                        class={tab.className}
+                        data-value={tab.value}
+                        onclick={handleFilterClick}>
+                        {tab.label}
+                    </button>
+                </template>
+            </div>
+
+            <!-- TABLE -->
+            <div class="table-wrapper">
+                <table class="leads-table">
+                    <thead>
+                        <tr>
+                            <th>Sr.</th>
+                            <th>Lead Created Date</th>
+                            <th>Lead No.</th>
+                            <th>Lead Name</th>
+                            <th>Channel Partner/Company</th>
+                            <th>Lead Mobile No.</th>
+                            <th>Lead Stage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template if:true={hasLeads}>
+                            <template for:each={leads} for:item="lead">
+                                <tr key={lead.rowNo}>
+                                    <td>{lead.rowNo}</td>
+                                    <td>{lead.createdDate}</td>
+                                    <td>{lead.leadNo}</td>
+                                    <td>{lead.leadName}</td>
+                                    <td>{lead.partner}</td>
+                                    <td>{lead.mobile}</td>
+                                    <td><span class={lead.badgeClass}>{lead.stage}</span></td>
+                                </tr>
+                            </template>
+                        </template>
+
+                        <template if:true={noLeads}>
+                            <tr>
+                                <td colspan="7" class="no-data">No leads found</td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- PAGINATION -->
+            <div class="pagination">
+                <div class="entries-text">{entriesText}</div>
+                <div class="pagination-controls">
+                    <button class="page-arrow" onclick={handlePrev} disabled={isPrevDisabled}>← Prev</button>
+                    <template for:each={paginationButtons} for:item="p">
+                        <button
+                            key={p.value}
+                            class={p.className}
+                            data-value={p.value}
+                            onclick={handlePageClick}>
+                            {p.label}
+                        </button>
+                    </template>
+                    <button class="page-arrow" onclick={handleNext} disabled={isNextDisabled}>Next →</button>
+                </div>
+            </div>
+        </div>
+    </template>
+
+</template>

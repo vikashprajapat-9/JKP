@@ -1,0 +1,35 @@
+.about-wrapper {
+    font-family: 'Salesforce Sans', Arial, sans-serif;
+    padding: 24px;
+    background: #fff;
+    max-width: 1100px;
+}
+
+.about-title {
+    font-size: 34px;
+    font-weight: 800;
+    color: #1a237e;
+    margin: 0 0 24px;
+    line-height: 1.2;
+}
+
+.about-paragraph {
+    font-size: 15px;
+    color: #2b2b2b;
+    line-height: 1.65;
+    margin: 0 0 16px;
+}
+
+/* TABLET */
+@media (max-width: 1024px) {
+    .about-wrapper { padding: 20px; }
+    .about-title { font-size: 30px; }
+    .about-paragraph { font-size: 14.5px; }
+}
+
+/* MOBILE */
+@media (max-width: 640px) {
+    .about-wrapper { padding: 16px; }
+    .about-title { font-size: 26px; margin-bottom: 18px; }
+    .about-paragraph { font-size: 14px; line-height: 1.6; }
+}

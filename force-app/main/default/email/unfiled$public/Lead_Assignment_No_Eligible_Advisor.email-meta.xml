@@ -1,0 +1,31 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>UTF-8</encodingKey>
+    <name>Lead Assignment No Eligible Advisor</name>
+    <style>none</style>
+    <subject>Action Required: Lead Assignment Failed – Manual Redistribution Required</subject>
+    <textOnly>Lead Assignment Alert
+Manual redistribution required
+
+Dear {!User.FirstName},
+The following lead could not be automatically assigned because no eligible advisor is currently available.
+
+Action Required
+Please manually redistribute this lead to an appropriate advisor.
+
+Lead Details
+
+Lead Name    {!Lead.Name}
+Lead ID    {!Lead.Id}
+Classification    {!Lead.Lead_Classification__c}
+Status    {!Lead.Status}
+Assignment Group    {!Lead.AG_Related_to__c}
+
+View Lead
+
+This is an automated notification from the Salesforce Lead Assignment System.
+Please do not reply to this email.</textOnly>
+    <type>custom</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

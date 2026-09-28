@@ -1,0 +1,232 @@
+.team-wrapper {
+    font-family: 'Salesforce Sans', Arial, sans-serif;
+    padding: 24px;
+    background: #fff;
+    max-width: 1200px;
+}
+
+/* ================= HEADER ================= */
+.team-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    gap: 16px;
+    margin-bottom: 8px;
+    flex-wrap: wrap;
+}
+.team-title {
+    font-size: 34px;
+    font-weight: 800;
+    color: #1a237e;
+    margin: 0;
+}
+.add-exec-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 8px;
+    background: #1a237e;
+    color: #fff;
+    border: none;
+    padding: 12px 22px;
+    border-radius: 8px;
+    font-weight: 700;
+    font-size: 14px;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+.add-exec-btn:hover { background: #0f1656; }
+
+.team-subtitle {
+    font-size: 15px;
+    color: #333;
+    line-height: 1.6;
+    margin: 12px 0 26px;
+    max-width: 1050px;
+}
+
+/* ================= HERO CARD ================= */
+.hero-card {
+    display: grid;
+    grid-template-columns: 1fr auto;
+    gap: 24px;
+    align-items: center;
+    background: #f7f8fc;
+    border: 1px solid #e6e8f0;
+    border-radius: 14px;
+    padding: 22px 26px;
+    margin-bottom: 30px;
+}
+
+.hero-left {
+    display: flex;
+    align-items: center;
+    gap: 20px;
+}
+
+.hero-avatar {
+    width: 82px;
+    height: 82px;
+    border-radius: 14px;
+    background: #1a237e;
+    color: #fff;
+    font-size: 30px;
+    font-weight: 800;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: 1px;
+}
+
+.hero-info { display: flex; flex-direction: column; gap: 4px; }
+.hero-name {
+    font-size: 26px;
+    font-weight: 800;
+    color: #1a237e;
+    margin: 0;
+}
+.hero-role {
+    font-size: 14px;
+    color: #666;
+    margin: 0;
+    line-height: 1.4;
+}
+
+.hero-stats {
+    display: flex;
+    gap: 16px;
+}
+.stat-box {
+    min-width: 130px;
+    background: #e9ecf8;
+    border-radius: 12px;
+    padding: 14px 18px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+}
+.stat-label {
+    font-size: 11px;
+    font-weight: 700;
+    color: #1a237e;
+    letter-spacing: 0.6px;
+    text-align: center;
+    margin-bottom: 6px;
+}
+.stat-value {
+    font-size: 30px;
+    font-weight: 800;
+    color: #1a237e;
+    line-height: 1;
+}
+
+/* ================= MEMBERS ================= */
+.section-title {
+    font-size: 20px;
+    font-weight: 800;
+    color: #1a237e;
+    margin: 0 0 16px;
+}
+
+.members-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 20px;
+}
+
+.member-card {
+    background: #fff;
+    border: 1px solid #e6e8f0;
+    border-radius: 14px;
+    padding: 20px 22px;
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    transition: box-shadow 0.2s ease, transform 0.2s ease;
+}
+.member-card:hover {
+    box-shadow: 0 6px 16px rgba(26, 35, 126, 0.08);
+    transform: translateY(-2px);
+}
+
+.member-header {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+/* Avatar base */
+.avatar {
+    width: 56px;
+    height: 56px;
+    border-radius: 12px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 18px;
+    font-weight: 800;
+    letter-spacing: 0.5px;
+}
+.avatar-blue   { background: #e9ecf8; color: #1a237e; }
+.avatar-yellow { background: #fff2cc; color: #a05a00; }
+.avatar-green  { background: #e0f2e0; color: #1b5e20; }
+.avatar-purple { background: #ece1f7; color: #4a148c; }
+
+.member-info { display: flex; flex-direction: column; gap: 2px; }
+.member-name {
+    font-size: 17px;
+    font-weight: 800;
+    color: #1a1a1a;
+    margin: 0;
+}
+.member-role {
+    font-size: 13px;
+    color: #777;
+    margin: 0;
+}
+
+.member-stats {
+    display: grid;
+    grid-template-columns: 1fr 1fr;
+    gap: 12px;
+}
+.mini-stat {
+    background: #f7f8fc;
+    border-radius: 10px;
+    padding: 12px 14px;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+.mini-label {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 12px;
+    font-weight: 700;
+    color: #1a237e;
+    text-transform: none;
+}
+.mini-value {
+    font-size: 22px;
+    font-weight: 800;
+    color: #1a237e;
+    line-height: 1;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 1024px) {
+    .hero-card { grid-template-columns: 1fr; }
+    .hero-stats { flex-wrap: wrap; }
+    .members-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+
+@media (max-width: 640px) {
+    .team-wrapper { padding: 16px; }
+    .team-title { font-size: 26px; }
+    .members-grid { grid-template-columns: 1fr; }
+    .hero-name { font-size: 22px; }
+    .stat-value { font-size: 24px; }
+    .stat-box { min-width: 100px; padding: 10px 14px; }
+    .add-exec-btn { width: 100%; justify-content: center; }
+}

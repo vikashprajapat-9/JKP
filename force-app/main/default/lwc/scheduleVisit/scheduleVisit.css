@@ -1,0 +1,377 @@
+.visit-modal {
+    width: 100%;
+    background: #ffffff;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.20);
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.modal-header {
+    height: 96px;
+    background: #1f315f;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    border-bottom: 3px solid #d7a928;
+}
+
+
+/* Logo */
+
+.logo-container {
+    width: 174px;
+    height: 62px;
+    background: #1a274d;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 5px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-right: 20px;
+}
+
+.logo {
+    max-width: 155px;
+    max-height: 50px;
+    object-fit: contain;
+}
+
+
+/* Header title */
+
+.header-title {
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+
+/* =========================================================
+   BODY
+========================================================= */
+
+.modal-body {
+    background: #ffffff;
+    padding: 18px 20px;
+    min-height: 250px;
+}
+
+
+/* =========================================================
+   SECTION TITLE
+========================================================= */
+
+.section-title {
+    margin: 0 0 14px 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: #181818;
+}
+
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+
+    border: 1px solid #d8dde6;
+    border-radius: 5px;
+    background: #ffffff;
+}
+
+
+.visit-table {
+    width: 100%;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+
+.visit-table th {
+    background: #f3f3f3;
+    color: #181818;
+
+    padding: 10px 10px;
+
+    text-align: left;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    border-bottom: 1px solid #d8dde6;
+
+    white-space: nowrap;
+}
+
+
+.visit-table td {
+    padding: 10px;
+
+    color: #181818;
+
+    font-size: 12px;
+
+    border-bottom: 1px solid #e5e5e5;
+
+    vertical-align: middle;
+
+    word-wrap: break-word;
+}
+
+
+.visit-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+
+.visit-table tbody tr:hover {
+    background: #fafafa;
+}
+
+
+/* Column widths */
+
+.visit-table th:nth-child(1),
+.visit-table td:nth-child(1) {
+    width: 14%;
+}
+
+.visit-table th:nth-child(2),
+.visit-table td:nth-child(2) {
+    width: 12%;
+}
+
+.visit-table th:nth-child(3),
+.visit-table td:nth-child(3) {
+    width: 11%;
+}
+
+.visit-table th:nth-child(4),
+.visit-table td:nth-child(4) {
+    width: 17%;
+}
+
+.visit-table th:nth-child(5),
+.visit-table td:nth-child(5) {
+    width: 15%;
+}
+
+.visit-table th:nth-child(6),
+.visit-table td:nth-child(6) {
+    width: 10%;
+}
+
+.visit-table th:nth-child(7),
+.visit-table td:nth-child(7) {
+    width: 21%;
+}
+
+
+/* Visit link */
+
+.visit-link {
+    color: #1b5297;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.visit-link:hover {
+    text-decoration: underline;
+}
+
+
+/* =========================================================
+   ACTION BUTTONS
+========================================================= */
+
+.action-buttons {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    white-space: nowrap;
+}
+
+
+.action-btn {
+    border: 1px solid #c9c9c9;
+    background: #ffffff;
+
+    border-radius: 4px;
+
+    padding: 5px 9px;
+
+    font-size: 11px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+
+.action-btn:hover {
+    background: #f3f3f3;
+}
+
+
+.completed-btn {
+    color: #2e844a;
+}
+
+
+.cancelled-btn {
+    color: #ba0517;
+}
+
+
+.no-action {
+    color: #666666;
+}
+
+
+/* =========================================================
+   PAGINATION
+========================================================= */
+
+.pagination-container {
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 10px 0 2px 0;
+}
+
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.form-container {
+    padding: 4px 10px 10px 10px;
+}
+
+
+.form-container lightning-input,
+.form-container lightning-textarea,
+.form-container lightning-combobox,
+.form-container lightning-record-picker {
+    display: block;
+    margin-bottom: 16px;
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.modal-footer {
+    min-height: 68px;
+
+    background: #ffffff;
+
+    border-top: 1px solid #d8dde6;
+
+    display: flex;
+
+    justify-content: flex-end;
+    align-items: center;
+
+    padding: 0 20px;
+
+    gap: 12px;
+}
+
+
+/* =========================================================
+   FOOTER BUTTONS
+========================================================= */
+.modal-footer {
+    min-height: 68px;
+
+    /* Screenshot-like footer background */
+    background: #f3f3f3;
+
+    border-top: 1px solid #d8dde6;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 20px;
+}
+
+
+/* Copyright */
+
+.footer-copyright {
+    color: #1b5297;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+
+/* Footer buttons */
+
+.footer-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+
+.footer-btn {
+    min-width: 82px;
+    height: 36px;
+
+    padding: 0 18px;
+
+    border-radius: 4px;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+
+.cancel-btn {
+    background: #ffffff;
+    color: #181818;
+    border: 1px solid #c9c9c9;
+}
+
+
+.cancel-btn:hover {
+    background: #eaeaea;
+}
+
+
+.primary-btn {
+    background: #2f4f7f;
+    color: #ffffff;
+    border: 1px solid #2f4f7f;
+}
+
+
+.primary-btn:hover {
+    background: #243e65;
+}
+
+
+.primary-btn:disabled {
+    background: #c9c9c9;
+    border-color: #c9c9c9;
+    cursor: not-allowed;
+}

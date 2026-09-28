@@ -3,7 +3,7 @@
     <fullName>Business_Name__c</fullName>
     <externalId>false</externalId>
     <label>Business Name</label>
-    <length>255</length>
+    <length>50</length>
     <required>false</required>
     <trackFeedHistory>false</trackFeedHistory>
     <trackHistory>false</trackHistory>

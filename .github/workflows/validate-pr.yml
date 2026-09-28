@@ -1,0 +1,16 @@
+name: Validate Pull Request
+
+on:
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  validate:
+    uses: ./.github/workflows/salesforce-deploy.yml
+    with:
+      deployment_type: validate
+      target_org_alias: integration
+      send_notifications: false
+    secrets: inherit

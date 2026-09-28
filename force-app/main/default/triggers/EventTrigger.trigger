@@ -31,11 +31,35 @@ trigger EventTrigger on Lead_Duplicate_Event__e (after insert) {
         reEnquiries.add(enquiry);
 
         if (existingLead.LeadSource != e.New_Lead_Source__c) {
-            existingLead.Multi_Channel_Engaged__c = true;
-            leadsToUpdate.put(existingLead.Id, existingLead);
+            //existingLead.Multi_Channel_Engaged__c = true;
+             Lead leadToUpdate = new Lead( Id = existingLead.Id, Multi_Channel_Engaged__c = true );
+             System.debug('Multi Channel  ==> ' + existingLead.Multi_Channel_Engaged__c);
+           // leadsToUpdate.put(existingLead.Id, existingLead);
+            leadsToUpdate.put( leadToUpdate.Id, leadToUpdate );
         }
     }
 
-    if (!reEnquiries.isEmpty()) insert reEnquiries;
-    if (!leadsToUpdate.isEmpty()) update leadsToUpdate.values();
+    // if (!reEnquiries.isEmpty()) insert reEnquiries;
+    // if (!leadsToUpdate.isEmpty()) update leadsToUpdate.values();
+        if (!reEnquiries.isEmpty()) {
+        insert reEnquiries;
+        }
+
+        System.debug('LEADS TO UPDATE ==> ' + leadsToUpdate);
+
+        if (!leadsToUpdate.isEmpty()) {
+            try {
+                update leadsToUpdate.values();
+            } catch (DmlException ex) {
+                System.debug('========== LEAD UPDATE ERROR ==========');
+                System.debug('Error Message ==> ' + ex.getMessage());
+
+                for (Integer i = 0; i < ex.getNumDml(); i++) {
+                    System.debug('DML Error ==> ' + ex.getDmlMessage(i));
+                    System.debug('DML Fields ==> ' + ex.getDmlFields(i));
+                }
+
+                System.debug('Leads Being Updated ==> ' + leadsToUpdate);
+            }
+        }
 }

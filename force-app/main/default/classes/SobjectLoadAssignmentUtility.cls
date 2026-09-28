@@ -23,7 +23,7 @@ public class SobjectLoadAssignmentUtility {
     Public static  Map<id,Assignment_Group__c> GetassigmentGroup(){
         Map<id,Assignment_Group__c> mapofIdandAssingmentGroup = new Map<id,Assignment_Group__c>();
         // list<Assignment_Group__c> assigmentgroupList = [SELECT Case_Stage__c,Case_to_Assign_in_Single_Transaction__c,CreatedDate,Execution_SOQL__c,Id,isActive__c,Last_Allocated_RRid__c,Max_Sobject_Assignment_Count__c,Name,OwnerId,Round_Robin_Queue_Name__c FROM Assignment_Group__c Where isActive__c = True AND Type__c = 'Pre Sales'];
-        list<Assignment_Group__c> assigmentgroupList = [SELECT CreatedDate,Execution_SOQL__c,Id,isActive__c,Last_Allocated_RRid__c,Max_Sobject_Assignment_Count__c,Name,OwnerId,Round_Robin_Queue_Name__c FROM Assignment_Group__c Where isActive__c = True AND Type__c = 'Pre Sales'];
+        list<Assignment_Group__c> assigmentgroupList = [SELECT CreatedDate,Execution_SOQL__c,Id,isActive__c,Last_Allocated_RRid__c,Max_Sobject_Assignment_Count__c,Lead_Assignment_Time_Window__c,Name,Max_Lead_Assignment_Count__c,OwnerId,Round_Robin_Queue_Name__c, SLA1_Period__c,SLA1_Threshold_Percentage__c, SLA2_Period__c, SLA2_Threshold_Percentage__c FROM Assignment_Group__c Where isActive__c = True AND Type__c = 'Pre Sales'];
     
         system.debug('assigmentgroupList::>>' + assigmentgroupList);
         if(!assigmentgroupList.IsEmpty()){

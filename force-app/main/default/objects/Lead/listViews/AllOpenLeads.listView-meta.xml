@@ -11,10 +11,5 @@
     <columns>LEAD.CREATED_DATE</columns>
     <columns>CORE.USERS.ALIAS</columns>
     <filterScope>Everything</filterScope>
-    <filters>
-        <field>LEAD.STATUS</field>
-        <operation>notEqual</operation>
-        <value>Qualified</value>
-    </filters>
     <label>All Open Leads</label>
 </ListView>

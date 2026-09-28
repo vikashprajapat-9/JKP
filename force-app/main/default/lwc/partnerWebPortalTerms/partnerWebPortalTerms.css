@@ -1,0 +1,67 @@
+.terms-wrapper {
+    font-family: 'Salesforce Sans', Arial, sans-serif;
+    padding: 24px;
+    background: #fff;
+    max-width: 1100px;
+}
+
+.terms-title {
+    font-size: 34px;
+    font-weight: 800;
+    color: #1a237e;
+    margin: 0 0 24px;
+    line-height: 1.2;
+}
+
+.section-heading {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1a1a1a;
+    text-transform: uppercase;
+    letter-spacing: 0.4px;
+    margin: 26px 0 10px;
+}
+
+.sub-heading {
+    font-size: 15px;
+    font-weight: 700;
+    color: #1a1a1a;
+    margin: 20px 0 8px;
+}
+
+.terms-paragraph {
+    font-size: 15px;
+    color: #2b2b2b;
+    line-height: 1.65;
+    margin: 0 0 14px;
+}
+
+.terms-list {
+    margin: 0 0 16px 22px;
+    padding: 0;
+}
+
+.terms-list li {
+    font-size: 15px;
+    color: #2b2b2b;
+    line-height: 1.65;
+    margin-bottom: 6px;
+}
+
+/* TABLET */
+@media (max-width: 1024px) {
+    .terms-wrapper { padding: 20px; }
+    .terms-title { font-size: 30px; }
+    .terms-paragraph,
+    .terms-list li { font-size: 14.5px; }
+}
+
+/* MOBILE */
+@media (max-width: 640px) {
+    .terms-wrapper { padding: 16px; }
+    .terms-title { font-size: 26px; margin-bottom: 18px; }
+    .section-heading { font-size: 14px; }
+    .sub-heading { font-size: 14px; }
+    .terms-paragraph,
+    .terms-list li { font-size: 14px; line-height: 1.6; }
+}

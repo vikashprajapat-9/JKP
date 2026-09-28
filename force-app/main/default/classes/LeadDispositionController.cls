@@ -11,23 +11,7 @@ public with sharing class LeadDispositionController {
     }
 
     @AuraEnabled
-    public static Call_Disposition__c saveDisposition(
-        Id leadId,
-        String subject,
-        String description,
-        String disposition,
-        DateTime callDateTime,
-        DateTime followUpDateTime,
-        String lossReason,
-        String otherLossReason,
-        String purchasePurpose,
-        String unitType,
-        Integer unitSize,
-        String purchaseTimeline,
-        String assessBudget,
-        String assessFinanceReadiness
-    ) {
-
+    public static Call_Disposition__c saveDisposition(Id leadId,String subject,String description,String disposition,DateTime callDateTime, DateTime followUpDateTime,  String lossReason, String otherLossReason,String purchasePurpose,String unitType, Integer unitSize,String purchaseTimeline, String assessBudget,String assessFinanceReadiness) {
         Call_Disposition__c cd = new Call_Disposition__c();
         cd.Lead__c = leadId;
         cd.Subject__c = subject;
@@ -39,106 +23,22 @@ public with sharing class LeadDispositionController {
 
         insert cd;
 
-        
-        // Lead lead = [ SELECT Id, Status,OwnerId,Lead_Follow_Up_DateTime__c,Follow_Up_count__c,Lead_Assigned_Date_Time__c FROM Lead WHERE Id = :leadId ];
+        Lead lead = [ SELECT Id, Status,OwnerId,Lead_Follow_Up_DateTime__c,Follow_Up_count__c,Total_Follow_Up_count__c,Lead_Assigned_Date_Time__c FROM Lead WHERE Id = :leadId ];
 
-        //     Integer count = lead.Follow_Up_Count__c == null? 0 : Integer.valueOf(lead.Follow_Up_Count__c);
-        //     //Integer days = lead.Lead_Assigned_Date_Time__c.date().daysBetween(Date.today());
-        //     Integer days = 0;
-        //         if (lead.Lead_Assigned_Date_Time__c != null && callDateTime != null) {
-        //             days = lead.Lead_Assigned_Date_Time__c.date().daysBetween(callDateTime.date());
-        //         }
-        //         Datetime nextFollowUp;
-        //         Task taskToInsert;
-        //         if (disposition == 'In Discussion') {
-        //             count++;
-        //             lead.Follow_Up_Count__c = count;
-        //             lead.Status = 'In-Discussion';
-        //             lead.Lead_Follow_Up_DateTime__c = followUpDateTime;
-        //             taskToInsert = new Task();
-        //             taskToInsert.Subject = 'Lead Follow Up Call';
-        //             taskToInsert.Status = 'Not Started';
-        //             taskToInsert.Priority = 'Normal';
-        //             taskToInsert.OwnerId = lead.OwnerId;
-        //             taskToInsert.WhoId = lead.Id;
-        //             taskToInsert.ActivityDate = followUpDateTime.date();
-        //             taskToInsert.Description = 'Follow-up generated from Call Disposition.';
-
-        //         }
-        //         // else if (disposition == 'Not Reachable') {
-                //     lead.Status = 'Not Reachable';
-                //     if(days <= 7){
-                //         // Week  1
-                //         if(count >= 2){
-                //             //return cd; 
-            
-                //         }
-                //         count++;
-                //         if (lead.Lead_Follow_Up_DateTime__c != null) {
-                //             nextFollowUp = lead.Lead_Follow_Up_DateTime__c.addDays(1);
-                //         } else {
-                //             nextFollowUp = System.now().addDays(1); 
-                //         }
-                //         System.debug('Count=' + count);
-                //         System.debug('Days=' + days);
-                //     }
-                //     else if(days <= 21){
-                //         // Week 2-3
-                //         if(count >= 3){
-                //             return cd;
-                //         }
-                //         count++;
-                //         nextFollowUp =lead.Lead_Follow_Up_DateTime__c.addDays(1);
-                //         System.debug('Count=' + count);
-                //         System.debug('Days=' + days);
-                //     }
-                //     else if(days >= 28 && days <= 42){
-                //         // Week 5-6
-                //         if(count >= 4){
-                //             Group marketingQueue = [ SELECT Id FROM Group  WHERE Type='Queue' AND DeveloperName='Marketing_Queue' LIMIT 1 ];
-                //             lead.OwnerId = marketingQueue.Id;
-                //             update lead;
-                //         return cd;
-                //         }
-                //         count++;
-                //         nextFollowUp = lead.Lead_Follow_Up_DateTime__c.addDays(1);
-                //         System.debug('Count=' + count);
-                //         System.debug('Days=' + days);
-                //     }
-                //     else{
-                //         // No more automatic follow-ups
-                //         Group marketingQueue = [ SELECT Id FROM Group  WHERE Type='Queue' AND DeveloperName='Marketing_Queue' LIMIT 1 ];
-                //         lead.OwnerId = marketingQueue.Id;
-                //         update lead;
-                //         return cd;
-                //     }
-                //     lead.Follow_Up_Count__c = count;
-                //     lead.Lead_Follow_Up_DateTime__c = nextFollowUp;
-                //     taskToInsert = new Task();
-                //     taskToInsert.Subject = 'Lead Follow Up Call';
-                //     taskToInsert.Status = 'Not Started';
-                //     taskToInsert.Priority = 'Normal';
-                //     taskToInsert.OwnerId = lead.OwnerId;
-                //     taskToInsert.WhoId = lead.Id;
-                //     taskToInsert.ActivityDate = nextFollowUp.date();
-                //     taskToInsert.Description = 'Follow-up generated from Call Disposition.';
-                // }
-
-        Lead lead = [ SELECT Id, Status,OwnerId,Lead_Follow_Up_DateTime__c,Follow_Up_count__c,Lead_Assigned_Date_Time__c FROM Lead WHERE Id = :leadId ];
-
-            Integer count = lead.Follow_Up_Count__c == null? 0 : Integer.valueOf(lead.Follow_Up_Count__c);
+            Integer followUpCount  = lead.Follow_Up_Count__c == null? 0 : Integer.valueOf(lead.Follow_Up_Count__c);
+            Integer totalFollowUpCount  = lead.Total_Follow_Up_count__c == null? 0 : Integer.valueOf(lead.Total_Follow_Up_count__c);
+            totalFollowUpCount++;
+            lead.Total_Follow_Up_count__c = totalFollowUpCount;
             Integer diff = 0;
 
                 if (lead.Lead_Assigned_Date_Time__c != null &&
                     lead.Lead_Follow_Up_DateTime__c != null) {
-
-                    diff = lead.Lead_Assigned_Date_Time__c.date()
-                        .daysBetween(lead.Lead_Follow_Up_DateTime__c.date());
+                    diff = lead.Lead_Assigned_Date_Time__c.date().daysBetween(lead.Lead_Follow_Up_DateTime__c.date());
                 }
                 Task taskToInsert;
                 if (disposition == 'In Discussion') {
-                    count++;
-                    lead.Follow_Up_Count__c = count;
+                    // count++;
+                    // lead.Follow_Up_Count__c = count;
                     lead.Status = 'In-Discussion';
                     lead.Lead_Follow_Up_DateTime__c = followUpDateTime;
                     taskToInsert = new Task();
@@ -152,23 +52,23 @@ public with sharing class LeadDispositionController {
 
                 }
                 else if (disposition == 'Not Reachable') {
-                    if (count >= 4) {
+                    if (followUpCount >= 4) {
                         lead.Status = 'Not Reachable';
                         Group marketingQueue = [SELECT Id  FROM Group WHERE Type = 'Queue' AND DeveloperName = 'Marketing_Queue' LIMIT 1];
                         lead.OwnerId = marketingQueue.Id;
                     }
                     else {
-                        count++;
-                        lead.Follow_Up_Count__c = count;
+                        followUpCount++;
+                        lead.Follow_Up_Count__c = followUpCount;
                         lead.Status = 'Not Reachable';
                         Datetime nextFollowUp;
-                        if (count == 1) {
+                        if (followUpCount == 1) {
 
                             // First call itself is Not Reachable
                             nextFollowUp = System.now().addDays(1);
 
                         }
-                        else if (count == 2) {
+                        else if (followUpCount == 2) {
 
                             // If the lead already had a discussion follow-up (7+ days from assignment),
                             // then first Not Reachable should be next day.
@@ -181,7 +81,7 @@ public with sharing class LeadDispositionController {
                             }
 
                         }
-                        else if (count == 3) {
+                        else if (followUpCount == 3) {
 
                             if (diff >= 8 && diff < 21) {
                                 Date week5 = lead.Lead_Follow_Up_DateTime__c.date().addDays(1);
@@ -218,10 +118,7 @@ public with sharing class LeadDispositionController {
 
                 if (taskToInsert != null) {
                     insert taskToInsert;
-
             }
-
-
             if(disposition == 'Good Response') {
                 lead.Status = 'Contacted';
                 lead.Purchase_Purpose__c = purchasePurpose;
@@ -233,8 +130,8 @@ public with sharing class LeadDispositionController {
             }
             if(disposition == 'Not Interested') {
                 lead.Status = 'Not Interested';
-                Group distributionQueue = [SELECT Id  FROM Group WHERE Type = 'Queue' AND DeveloperName = 'Re_Distributin_Queue' LIMIT 1];
-                        lead.OwnerId = distributionQueue.Id;
+                Group marketingQueue = [SELECT Id  FROM Group WHERE Type = 'Queue' AND DeveloperName = 'Re_Marketing_Queue' LIMIT 1];
+                        lead.OwnerId = marketingQueue.Id;
             }
             if (lead.Status != null) {
                 update lead;

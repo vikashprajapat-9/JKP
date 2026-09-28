@@ -3,10 +3,6 @@
     <label><!-- Call Disposition --></label>
     <name>Call_Disposition__c</name>
     <picklistValues>
-        <masterLabel>Connected</masterLabel>
-        <translation><!-- Connected --></translation>
-    </picklistValues>
-    <picklistValues>
         <masterLabel>Good Response</masterLabel>
         <translation><!-- Good Response --></translation>
     </picklistValues>
@@ -16,7 +12,8 @@
     </picklistValues>
     <picklistValues>
         <masterLabel>Not Interested</masterLabel>
-        <translation><!-- Not Interested --></translation>
+        <translation><!-- Not
+            Interested --></translation>
     </picklistValues>
     <picklistValues>
         <masterLabel>Not Reachable</masterLabel>

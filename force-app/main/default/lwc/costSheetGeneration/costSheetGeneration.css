@@ -1,0 +1,213 @@
+.dropdown {
+    position: relative;
+    display: inline-block;
+    width: 100%; /* Take full width of the parent */
+}
+
+.dropdown-options {
+    position: absolute;
+    background: white;
+    border: 1px solid #ccc;
+    z-index: 10;
+    width: 100%; /* Ensure dropdown options also take full width */
+    max-height: 160px; /* Limit to show up to 4 items */
+    overflow-y: auto;  /* Enable vertical scrolling */
+    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.2); /* Optional: add shadow for better visibility */
+}
+
+.dropdown-option {
+    padding: 0.5rem;
+    cursor: pointer;
+}
+
+.dropdown-option:hover {
+    background-color: #f0f0f0;
+}
+
+.slds-table {
+    margin-top: 1rem;
+    margin-bottom: 1rem;
+}
+
+.slds-text-align_center {
+    font-size: 1.2rem;
+    color: var(--lwc-colorTextWeak);
+    margin-top: 1rem;
+}
+
+.slds-card {
+    background: linear-gradient(135deg, #f4f6f9, #ffffff);
+    border-radius: 8px;
+}
+
+.slds-card__header {
+    font-weight: bold;
+    font-size: 1.3rem;
+}
+
+.slds-table th,
+.slds-table td {
+    text-align: center;
+    padding: 0.75rem;
+}
+.slds-table th {
+    background-color: #f3f4f6;
+    color: #181818;
+    font-weight: 600;
+    font-size: 0.75rem;
+    text-align: center;
+    vertical-align: middle;
+    padding: 0.55rem 0.65rem;
+    white-space: nowrap;
+    border-bottom: 1px solid #c9c9c9;
+}
+
+.slds-table td {
+    text-align: center;
+    vertical-align: middle;
+    padding: 0.55rem 0.65rem;
+    font-size: 0.75rem;
+    white-space: nowrap;
+}
+.slds-table tbody tr {
+    height: 42px;
+}
+
+.slds-table tbody tr:hover {
+    background-color: #f8f9fa;
+}
+
+.table-container {
+    width: 100%;
+    overflow-x: auto;
+    margin-top: 0.5rem;
+    margin-bottom: 0.75rem;
+    border-radius: 4px;
+}
+/* Actual Amount column */
+.slds-table th:last-child,
+.slds-table td:last-child {
+    width: 140px;
+    min-width: 140px;
+    max-width: 140px;
+    text-align: center !important;
+    vertical-align: middle;
+}
+
+/* Actual Amount header */
+.slds-table th:last-child {
+    font-weight: 600;
+    text-align: center !important;
+}
+
+/* Actual Amount value */
+.slds-table td:last-child {
+    text-align: center !important;
+    padding-left: 0.5rem;
+    padding-right: 0.5rem;
+}
+
+/* Fix the lightning card on the left side */
+.fixed-card {
+    position: sticky;
+    top: 0; /* Keep the card at the top when scrolling */
+    z-index: 10; /* Ensure it stays on top of other content */
+    background-color: #fff; /* Optional, add background color if needed */
+    border-radius: 5px;
+}
+
+/* Circle styling */
+.amount-circle {
+
+    width: 100px;
+    height: 100px;
+    background-color: #a63232;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    color: white;
+    font-size: 18px;
+    font-weight: bold;
+    margin: auto;
+}
+
+.amount-text {
+    text-align: center;
+}
+
+.slds-button_brand {
+    font-size: 16px;
+    padding: 0.5rem 1rem;
+}
+
+/* Scrollable container below the fixed card */
+.scrollable-container {
+    max-height: 100%; /* Set your desired max height */
+    overflow-y: auto; /* Enable vertical scroll */
+    padding: 10px;
+    background-color: #f4f6f9; /* Optional, add a background color */
+}
+
+
+
+
+.slds-table {
+    width: 100%;
+    margin: 0;
+    border-collapse: collapse;
+    table-layout: auto;
+}
+
+.lightning-combobox {
+    min-width: 100px;
+}
+
+.button-group {
+    display: flex; 
+    gap: 8px; 
+    justify-content: center; 
+    align-items: center; 
+}
+
+.next-button-container {
+    display: flex; /* Enable flexbox */
+    justify-content: flex-end; /* Align the button to the right */
+    margin-right: 10px; /* Move slightly to the left */
+    margin-bottom: 15px; /* Add spacing at the bottom */
+}
+
+.styled-container {
+    background-color: #eafbea; /* Light green background */
+    padding: 15px; /* Add some padding */
+    border-radius: 8px; /* Rounded corners for better appearance */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow for depth */
+}
+
+.styled-text {
+    color: #2a9d8f; /* Green text color */
+    font-size: 16px; /* Adjust font size */
+    font-weight: 500; /* Medium weight for better readability */
+    text-align: left; /* Align text to the left */
+    margin-bottom: 5px; /* Space between items */
+}
+
+.next-button-container1 {
+    display: flex;
+    justify-content: space-between; /* Pushes buttons to opposite ends */
+    align-items: center;
+    width: 100%;
+    padding: 10px 0;
+}
+
+.left-button {
+    flex: 1;
+    text-align: left;
+    margin-left: 30px;
+}
+
+.right-button1 {
+    flex: 1;
+    text-align: right;
+    margin-right: 40px;
+}

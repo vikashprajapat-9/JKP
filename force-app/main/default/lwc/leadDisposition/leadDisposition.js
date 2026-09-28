@@ -3,7 +3,7 @@ import { LightningElement, api, wire, track } from 'lwc';
 import getDispositions from '@salesforce/apex/LeadDispositionController.getDispositions';
 import saveDisposition from '@salesforce/apex/LeadDispositionController.saveDisposition';
 import getPicklistValues from '@salesforce/apex/Utility.getPicklistValues';
-
+import { notifyRecordUpdateAvailable } from 'lightning/uiRecordApi';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { refreshApex } from '@salesforce/apex';
 
@@ -242,7 +242,7 @@ export default class LeadDisposition extends LightningElement {
         this.assessBudget = null;
         this.assessFinanceReadiness = null;
     }
-    saveDisposition() {
+    async saveDisposition() {
         const allValid = [...this.template.querySelectorAll(
                 'lightning-input, lightning-combobox'
             )].reduce((validSoFar, field) => {
@@ -254,7 +254,7 @@ export default class LeadDisposition extends LightningElement {
                 return;
             }
 
-        saveDisposition({
+        await saveDisposition({
             leadId: this.recordId,
             subject: this.subject,
             description: this.description,
@@ -285,9 +285,7 @@ export default class LeadDisposition extends LightningElement {
             this.subject = '';
             this.description = '';
             this.disposition = '';
-
             refreshApex(this.wiredResult);
-
         })
         .catch(error => {
             this.dispatchEvent(
@@ -297,7 +295,9 @@ export default class LeadDisposition extends LightningElement {
                     variant: 'error'
                 })
             );
-
         });
+        await notifyRecordUpdateAvailable([
+            { recordId: this.recordId }
+        ]);
     }
 }

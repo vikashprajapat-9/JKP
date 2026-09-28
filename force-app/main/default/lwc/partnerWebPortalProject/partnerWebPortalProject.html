@@ -1,0 +1,113 @@
+<template>
+    <div class="marketing-wrapper">
+
+        <!-- HEADER -->
+        <div class="marketing-header">
+            <h1 class="marketing-title">Projects </h1>
+            <p class="marketing-subtitle">
+                Leverage our comprehensive marketing resources to boost your sales
+                efforts. Access exclusive promotional materials, campaign strategies,
+                and market insights tailored to help you succeed. Empower your business
+                with the tools and support from John Keels Properties. Stay ahead of
+                the competition with our expert marketing guidance.
+            </p>
+        </div>
+
+        <!-- ERROR -->
+        <template lwc:if={error}>
+            <div class="error-msg">{error}</div>
+        </template>
+
+        <!-- GRID -->
+        <div class="marketing-grid">
+            <template for:each={projects} for:item="project">
+                <div key={project.id} class="project-tile">
+
+                    <!-- CAROUSEL -->
+                    <div class="carousel">
+                        <template for:each={project.carouselImages} for:item="slide">
+                            <div key={slide.key} class={slide.slideClass}>
+                                <img src={slide.url} alt={project.name} class="carousel-img" />
+                            </div>
+                        </template>
+
+                        <template lwc:if={project.hasMultipleImages}>
+                            <button class="carousel-nav prev"
+                                    data-id={project.id}
+                                    onclick={handlePrev}
+                                    type="button"
+                                    title="Previous">‹</button>
+
+                            <button class="carousel-nav next"
+                                    data-id={project.id}
+                                    onclick={handleNext}
+                                    type="button"
+                                    title="Next">›</button>
+
+                            <div class="carousel-dots">
+                                <template for:each={project.dots} for:item="dot">
+                                    <button key={dot.key}
+                                            class={dot.dotClass}
+                                            data-id={project.id}
+                                            data-index={dot.index}
+                                            onclick={handleDotClick}
+                                            type="button">
+                                    </button>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- INFO -->
+                    <div class="project-info">
+                        <h2 class="project-name">{project.name}</h2>
+                        <p class="project-location">{project.location}</p>
+
+                        <button class="view-details-btn"
+                                data-id={project.id}
+                                onclick={handleViewDetails}
+                                type="button">
+                            View Details
+                        </button>
+                    </div>
+
+                </div>
+            </template>
+        </div>
+
+        <!-- ================= DETAIL MODAL ================= -->
+        <template lwc:if={isModalOpen}>
+            <div class="modal-backdrop"
+                 data-backdrop="true"
+                 onclick={handleBackdropClick}>
+
+                <div class="modal-card" role="dialog" aria-modal="true">
+                    <button class="modal-close"
+                            onclick={handleCloseModal}
+                            type="button"
+                            title="Close">
+                        <lightning-icon icon-name="utility:close" size="x-small"></lightning-icon>
+                    </button>
+
+                    <h2 class="modal-title">{selectedProject.name}</h2>
+
+                    <p class="modal-location">
+                        <lightning-icon icon-name="utility:location"
+                                        size="xx-small"></lightning-icon>
+                        <span>{selectedProject.location}</span>
+                    </p>
+
+                    <div class="modal-footer">
+                        <button class="modal-close-btn"
+                                onclick={handleCloseModal}
+                                type="button">
+                            Close
+                        </button>
+                    </div>
+                </div>
+
+            </div>
+        </template>
+
+    </div>
+</template>

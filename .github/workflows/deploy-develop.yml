@@ -1,0 +1,24 @@
+name: Deploy Delta - Develop to Main Sandbox
+
+on:
+  push:
+    branches:
+      - develop
+
+concurrency:
+  group: deploy-develop
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/salesforce-deploy.yml
+    with:
+      deployment_type: delta
+      target_org_alias: dev
+      from_sha: ${{ github.event.before }}
+      to_sha: ${{ github.sha }}
+      send_notifications: true
+    secrets: inherit

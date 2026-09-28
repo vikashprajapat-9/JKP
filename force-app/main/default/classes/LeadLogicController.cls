@@ -4,19 +4,20 @@ public class LeadLogicController {
         if(leads.isEmpty()){
             return;
         }
+        List<Lead_Score_Field__mdt> fieldConfigs = [
+            SELECT Field_API_Name__c
+            FROM Lead_Score_Field__mdt
+            WHERE Active__c = true
+            ORDER BY Display_Order__c ASC NULLS LAST
+        ];
         Set<String> values = new Set<String>();
         for(Lead l : leads){
-            if(String.isNotBlank(l.Designation__c))
-                values.add(l.Designation__c);
-
-            if(String.isNotBlank(l.Purchase_Type__c))
-                values.add(l.Purchase_Type__c);
-
-            if(String.isNotBlank(l.Time_to_Purchase__c))
-                values.add(l.Time_to_Purchase__c);
-
-            if(String.isNotBlank(l.Budget_Aligned__c))
-                values.add(l.Budget_Aligned__c);
+            for (Lead_Score_Field__mdt fieldConfig : fieldConfigs) {
+                Object fieldValue = l.get(fieldConfig.Field_API_Name__c);
+                if (fieldValue != null && String.isNotBlank(String.valueOf(fieldValue))) {
+                    values.add(String.valueOf(fieldValue));
+                }
+            }
         }
         Map<String, Decimal> scoreMap = new Map<String, Decimal>();
 		List<Lead_Priority_Configs__c> priorityConfigs = [
@@ -31,26 +32,35 @@ public class LeadLogicController {
                                         WHERE Active__c = true 
                                         AND Picklist_Value__c IN :values
                                         ]){
+            if (String.isBlank(cfg.Field_API_Name__c) || String.isBlank(cfg.Picklist_Value__c)) {
+                continue;
+            }
             String key = cfg.Field_API_Name__c + '-' + cfg.Picklist_Value__c;
             scoreMap.put(key,cfg.Score__c);
         }
         for(Lead l : leads){			 
-			if (l.Lead_Sub_Source__c == 'Website Forms') {
+			if (l.LeadSource == 'Digital' && (l.Lead_Sub_Source__c == 'Website Forms' || l.Lead_Sub_Source__c == 'LinkedIn Ads')) {
 				l.Lead_Classification__c = 'Hot';
 			}
 			
-            Decimal totalScore = 0;
-            totalScore += getScore(scoreMap,'Designation__c',l.Designation__c);
-            totalScore += getScore(scoreMap,'Purchase_Type__c',l.Purchase_Type__c);
-            totalScore += getScore(scoreMap,'Time_to_Purchase__c',l.Time_to_Purchase__c);
-            totalScore += getScore(scoreMap,'Budget_Aligned__c',l.Budget_Aligned__c);
-            l.Lead_Score__c = totalScore;
-			for (Lead_Priority_Configs__c cfg : priorityConfigs) {
-				if (totalScore >= cfg.Min_Score__c && totalScore <= cfg.Max_Score__c) {
-					l.Lead_Classification__c = cfg.Priority__c;
-					break;
-				}
-			}
+            if(l.LeadSource == 'Digital' && (l.Lead_Sub_Source__c == 'Meta Form Ads' || l.Lead_Sub_Source__c == 'Meta Lead Ads')){
+                Decimal totalScore = 0;
+                for (Lead_Score_Field__mdt fieldConfig : fieldConfigs) {
+                    Object fieldValue = l.get(fieldConfig.Field_API_Name__c);
+                    totalScore += getScore(
+                        scoreMap,
+                        fieldConfig.Field_API_Name__c,
+                        fieldValue == null ? null : String.valueOf(fieldValue)
+                    );
+                }
+                l.Lead_Score__c = totalScore;
+                for (Lead_Priority_Configs__c cfg : priorityConfigs) {
+                    if (totalScore >= cfg.Min_Score__c && totalScore <= cfg.Max_Score__c) {
+                        l.Lead_Classification__c = cfg.Priority__c;
+                        break;
+                    }
+                }
+            }
         }
     }
 
@@ -179,7 +189,7 @@ public class LeadLogicController {
     }
     
     private static Boolean isChannelPartner(String source){
-    return source != null && source.equalsIgnoreCase('Channel Partner Source');
+        return source != null && source.equalsIgnoreCase('Channel Partner Source');
     }
 
     private static Boolean isSameSource(Lead existingLead, Lead newLead){
@@ -270,4 +280,199 @@ public class LeadLogicController {
         }
     }
 
+    public static void sendEmailToLeadOwnerOnAssignment(List<Lead> leadsToSendmail) {
+        if (leadsToSendmail == null || leadsToSendmail.isEmpty()) {
+            return;
+        }
+        Set<Id> leadIdSet = new Set<Id>();
+        for (Lead lead : leadsToSendmail) {
+            if (lead.Id != null) {
+                leadIdSet.add(lead.Id);
+            }
+        }
+        if (leadIdSet.isEmpty()) {
+            return;
+        }
+        List<Lead> leads = [
+            SELECT
+                Id, Name, FirstName, LastName, Status, Lead_Classification__c, OwnerId, Lead_Assigned_Date_Time__c
+            FROM Lead
+            WHERE Id IN :leadIdSet
+        ];
+        if (leads.isEmpty()) {
+            return;
+        }
+        List<Task> tasksToInsert = new List<Task>();
+        List<Messaging.SingleEmailMessage> emailsToSend = new List<Messaging.SingleEmailMessage>();
+        Set<Id> userIdSet = new Set<Id>();
+        for (Lead lead : leads) {
+            if (lead.OwnerId != null) {
+                userIdSet.add(lead.OwnerId);
+            }
+        }
+        if (userIdSet.isEmpty()) {
+            return;
+        }
+        List<EmailTemplate> template = [
+            SELECT Subject, HtmlValue
+            FROM EmailTemplate
+            WHERE DeveloperName = 'Lead_Assigned_to_Owner'
+            LIMIT 1
+        ];
+        if (template.isEmpty()) {
+            return;
+        }
+        List<OrgWideEmailAddress> oweaList = [
+            SELECT Id
+            FROM OrgWideEmailAddress
+            ORDER BY CreatedDate DESC
+            LIMIT 1
+        ];
+        Map<Id, User> usersMap = new Map<Id, User>([
+            SELECT Id, Name, Email
+            FROM User
+            WHERE Id IN :userIdSet
+        ]);
+        if (usersMap.isEmpty()) {
+            return;
+        }
+        Map<String, ContentAsset> logoAssetsMap = new Map<String, ContentAsset>();
+        for (ContentAsset asset : [
+            SELECT
+                Id,
+                DeveloperName,
+                MasterLabel,
+                ContentDocumentId,
+                IsVisibleByExternalUsers
+            FROM ContentAsset
+            WHERE DeveloperName IN ('Logo_White', 'Logo_Blue')
+        ]) {
+            logoAssetsMap.put(asset.DeveloperName, asset);
+        }
+        String orgId = UserInfo.getOrganizationId();
+        String orgDomainUrl = URL.getOrgDomainUrl().toExternalForm();
+        String jkpWhiteLogoUrl = '';
+        String jkpBlueLogoUrl = '';
+        if (logoAssetsMap.containsKey('Logo_White')) {
+            ContentAsset whiteLogo = logoAssetsMap.get('Logo_White');
+            jkpWhiteLogoUrl = orgDomainUrl + '/file-asset-public/' + whiteLogo.DeveloperName + '?oid=' + orgId;
+        }
+        if (logoAssetsMap.containsKey('Logo_Blue')) {
+            ContentAsset blueLogo = logoAssetsMap.get('Logo_Blue');
+            jkpBlueLogoUrl = orgDomainUrl + '/file-asset-public/' + blueLogo.DeveloperName + '?oid=' + orgId;
+        }
+        for (Lead l : leads) {
+            if (l.OwnerId == null || !usersMap.containsKey(l.OwnerId)) {
+                continue;
+            }
+            User owner = usersMap.get(l.OwnerId);
+            if (String.isBlank(owner.Email)) {
+                continue;
+            }
+            String body = template[0].HtmlValue;
+            body = body.replace('{!Lead.Name}', String.isBlank(l.Name) ? '' : l.Name);
+            body = body.replace('{!Lead.Status}', String.isBlank(l.Status) ? '' : l.Status);
+            body = body.replace('{!Lead.Lead_Classification__c}', String.isBlank(l.Lead_Classification__c) ? '' : l.Lead_Classification__c);
+            body = body.replace('{!Lead.OwnerFullName}', String.isBlank(owner.Name) ? '' : owner.Name);
+            String leadUrl = orgDomainUrl + '/' + l.Id;
+            body = body.replace('{!Lead.Link}', leadUrl);
+            body = body.replace('{{JKP_LOGO_WHITE}}', jkpWhiteLogoUrl);
+            body = body.replace('{{JKP_LOGO_BLUE}}', jkpBlueLogoUrl);
+            String subject = template[0].Subject;
+            subject = subject.replace('{!Lead.Name}', String.isBlank(l.Name) ? '' : l.Name);
+            Messaging.SingleEmailMessage mail = new Messaging.SingleEmailMessage();
+            if(l.Lead_Classification__c == 'Hot') {
+                Task tk = new Task();
+                tk.Subject = 'Contact the lead within 1 hr';
+                tk.Status = 'Not Started';
+                tk.Priority = 'Normal';
+                tk.OwnerId = l.OwnerId;
+                tk.WhoId = l.Id;
+                tk.ActivityDate = l.Lead_Assigned_Date_Time__c.date();
+                tk.Description = 'Follow-up generated after Lead Assignment.';
+                tasksToInsert.add(tk);
+            } else {
+                Task tk = new Task();
+                tk.Subject = 'Contact the lead within 4 hrs';
+                tk.Status = 'Not Started';
+                tk.Priority = 'Normal';
+                tk.OwnerId = l.OwnerId;
+                tk.WhoId = l.Id;
+                tk.ActivityDate = l.Lead_Assigned_Date_Time__c.date();
+                tk.Description = 'Follow-up generated after Lead Assignment.';
+                tasksToInsert.add(tk);
+            }
+            mail.setToAddresses(new String[] { owner.Email });
+            if (!oweaList.isEmpty()) {
+                mail.setOrgWideEmailAddressId(
+                    oweaList[0].Id
+                );
+            }
+            mail.setSaveAsActivity(false);
+            mail.setHtmlBody(body);
+            mail.setSubject(subject);
+            emailsToSend.add(mail);
+        }
+        if(!tasksToInsert.isEmpty()) {
+            insert tasksToInsert;
+        }
+        if (!emailsToSend.isEmpty()) {
+            Messaging.sendEmail(emailsToSend);
+        }
+    }
+
+    /**
+     * Qualify or disqualify a Lead from the Lead Record Page.
+     * Can only be called when the Lead is in "Contacted" status.
+     *
+     * @param leadId  – Id of the Lead to update
+     * @param status  – "Qualified" or "Not Qualified"
+     * @param reason  – Mandatory reason for the qualification decision
+     */
+    @AuraEnabled
+    public static void qualifyLead(Id leadId, String status, String reason) {
+        if (leadId == null) {
+            throw new AuraHandledException('Lead ID is required.');
+        }
+        if (String.isBlank(status) ||
+            (status != 'Qualified' && status != 'Not Qualified')) {
+            throw new AuraHandledException(
+                'Invalid qualification status. Allowed values: "Qualified" or "Not Qualified".'
+            );
+        }
+        if (String.isBlank(reason)) {
+            throw new AuraHandledException(
+                'Qualification Status Reason is mandatory.'
+            );
+        }
+
+        Lead lead;
+        try {
+            lead = [
+                SELECT Id, Status
+                FROM Lead
+                WHERE Id = :leadId
+                LIMIT 1
+            ];
+        } catch (QueryException e) {
+            throw new AuraHandledException('Lead record not found.');
+        }
+
+        if (lead.Status != 'Contacted') {
+            throw new AuraHandledException(
+                'Lead must be in "Contacted" status to qualify. Current status: ' + lead.Status
+            );
+        }
+
+        lead.Status = status;
+        lead.Qualification_Status_Reason__c = reason;
+
+        try {
+            update lead;
+        } catch (DmlException e) {
+            throw new AuraHandledException(
+                'Failed to update the Lead: ' + e.getMessage()
+            );
+        }
+    }
 }

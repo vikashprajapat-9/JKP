@@ -23,6 +23,7 @@
             <value>
                 <fullName>Cold</fullName>
                 <default>false</default>
+                <isActive>false</isActive>
                 <label>Cold</label>
             </value>
         </valueSetDefinition>

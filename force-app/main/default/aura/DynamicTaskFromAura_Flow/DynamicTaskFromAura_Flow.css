@@ -1,0 +1,149 @@
+.THIS {
+    display: block;
+    background: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+    font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+}
+
+
+.THIS .jkp-status-card {
+    background: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0 4px 20px rgba(0, 0, 0, 0.08);
+}
+
+.THIS .jkp-card-header {
+    background: linear-gradient(135deg, #101633 0%, #1A2149 55%, #264470 100%);
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #ffffff;
+}
+
+.THIS .jkp-header-brand {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.THIS .jkp-logo-img {
+    max-height: 28px;
+    width: auto;
+    object-fit: contain;
+    background: rgba(255, 255, 255, 0.08);
+    padding: 3px 8px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.THIS .jkp-brand-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.THIS .jkp-brand-title {
+    font-size: 0.95rem;
+    font-weight: 700;
+    color: #ffffff;
+    letter-spacing: 0.03em;
+}
+
+.THIS .jkp-tm {
+    color: #D4AF37;
+    font-size: 0.65rem;
+    vertical-align: super;
+    margin-left: 2px;
+}
+
+.THIS .jkp-brand-tagline {
+    font-size: 0.7rem;
+    color: #C5A880;
+    font-style: italic;
+    letter-spacing: 0.05em;
+    margin-top: 1px;
+}
+
+.THIS .jkp-close-btn-icon {
+    background: rgba(255, 255, 255, 0.1);
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    color: #ffffff;
+    width: 28px;
+    height: 28px;
+    border-radius: 50%;
+    cursor: pointer;
+    font-size: 0.85rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.THIS .jkp-close-btn-icon:hover {
+    background: rgba(255, 255, 255, 0.25);
+    color: #ffffff;
+}
+
+.THIS .jkp-gold-bar {
+    height: 3px;
+    background: linear-gradient(90deg, #D4AF37 0%, #F5E5A4 50%, #C5A880 100%);
+    width: 100%;
+}
+
+.THIS .jkp-card-body {
+    padding: 32px 24px;
+    text-align: center;
+    background: #ffffff;
+}
+
+.THIS .jkp-icon-circle {
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: #eff6ff;
+    border: 2px solid #bfdbfe;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    margin-bottom: 16px;
+    --sds-c-icon-color-foreground-default: #264470;
+}
+
+.THIS .jkp-status-heading {
+    font-size: 1.15rem;
+    font-weight: 700;
+    color: #1e293b;
+    margin: 0 0 10px 0;
+}
+
+.THIS .jkp-status-message {
+    font-size: 0.92rem;
+    color: #475569;
+    line-height: 1.5;
+    margin: 0 auto 24px auto;
+    max-width: 440px;
+}
+
+.THIS .jkp-action-row {
+    display: flex;
+    justify-content: center;
+}
+
+.THIS .jkp-primary-btn {
+    --sds-c-button-brand-color-background: #264470;
+    --sds-c-button-brand-color-background-hover: #1A2149;
+    --sds-c-button-brand-color-border: #264470;
+    --sds-c-button-brand-color-border-hover: #1A2149;
+}
+
+.THIS .jkp-card-footer {
+    padding: 10px 20px;
+    background: #f8fafc;
+    border-top: 1px solid #e2e8f0;
+    text-align: center;
+    font-size: 0.72rem;
+    color: #94a3b8;
+    font-weight: 500;
+}

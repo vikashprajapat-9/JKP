@@ -1,0 +1,27 @@
+<apex:page standardController="Cost_Scheme_Linking__c" standardStylesheets="true" showHeader="false">
+    <apex:includeLightning />
+    
+
+    <script>
+    document.addEventListener('lightning__showtoast', event => {
+        sforce.one.showToast(event.toastAttributes);
+    });
+        console.log('Initializing Lightning component...');
+        debugger;
+		 var recordId = '{!Cost_Scheme_Linking__c.Id}';
+
+        $Lightning.use("c:costSheetLinkiing", function() {
+            // Creating the LWC component
+            $Lightning.createComponent("c:PaymentSchemeCostSheetLinking",
+            {
+                note: 'Hello',
+                recordId: recordId 
+            },
+            "costSheetTemplate",  
+            function(cmp) {
+                console.log('LWC Component has been loaded successfully.');
+            });
+        });
+    </script>
+    <div id="costSheetTemplate"></div>
+</apex:page>

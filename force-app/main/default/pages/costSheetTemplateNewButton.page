@@ -1,0 +1,19 @@
+<apex:page standardController="Cost_Sheet_Template__c" standardStylesheets="true" showHeader="false">
+<apex:includeLightning />    
+<div id="costSheetTemplate" />
+<script>
+    document.addEventListener('lightning__showtoast', event => {
+        sforce.one.showToast(event.toastAttributes);
+    });
+        $Lightning.use("c:costSheetTemplateApp", function() {
+        $Lightning.createComponent("c:costSheetTemplate",
+        {
+            recordId : '{!$CurrentPage.parameters.id}'
+        },
+        "costSheetTemplate", 
+        function(cmp) {
+            console.log('Calling the LWC Component');
+        });
+    });
+</script>
+</apex:page>

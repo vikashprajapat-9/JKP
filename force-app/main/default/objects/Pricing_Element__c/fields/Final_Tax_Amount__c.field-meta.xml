@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Final_Tax_Amount__c</fullName>
+    <formula>IF(
+  MOD(
+    IF( 
+      IGST_Tax_Amount__c = 0, 
+      SGST_Tax_Amount__c + CGST_Tax_Amount__c, 
+      IGST_Tax_Amount__c
+    ), 
+    1
+  ) = 0,
+  IF( 
+    IGST_Tax_Amount__c = 0, 
+    SGST_Tax_Amount__c + CGST_Tax_Amount__c, 
+    IGST_Tax_Amount__c
+  ),
+  CEILING(
+    IF( 
+      IGST_Tax_Amount__c = 0, 
+      SGST_Tax_Amount__c + CGST_Tax_Amount__c, 
+      IGST_Tax_Amount__c
+    )
+  )
+)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <label>Final Tax Amount</label>
+    <precision>18</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Currency</type>
+</CustomField>

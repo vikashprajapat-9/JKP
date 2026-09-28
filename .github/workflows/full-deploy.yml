@@ -1,0 +1,20 @@
+name: Full Deploy - Main Sandbox
+
+on:
+  workflow_dispatch:
+
+concurrency:
+  group: full-deploy-main-sandbox
+  cancel-in-progress: false
+
+permissions:
+  contents: read
+
+jobs:
+  deploy:
+    uses: ./.github/workflows/salesforce-deploy.yml
+    with:
+      deployment_type: full
+      target_org_alias: dev
+      send_notifications: true
+    secrets: inherit
