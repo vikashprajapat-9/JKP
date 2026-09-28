@@ -1,0 +1,272 @@
+<template>
+	<div class="mainDiv">
+		<lightning-layout multiple-rows>
+		<lightning-layout-item size="12" small-device-size="12" medium-device-size="8" large-device-size="3.3"
+			padding="horizontal-small">
+			<div class="custom-box">
+				<lightning-combobox name="projectName" label="Project Name" value={selectedProjectName} required
+					placeholder="Select Project" options={optionsprojectName} onchange={ProjecthandleChange}>
+				</lightning-combobox>
+			</div>
+		</lightning-layout-item>
+		<div class="slds-col slds-size_2-of-12" style=" margin: 2px; padding-top: 23px;">
+			<button class="slds-button slds-button_brand" style="width: 84px;" onclick={SearchUnits}>Search</button>
+			&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;
+			<button class="slds-button slds-button_brand" style="width: 84px;" onclick={ClearUnits}>Clear</button>
+		</div>
+
+	</lightning-layout>
+
+
+	<div class="container">
+		<div class="unitscategorysection">
+			<div class="unitcatdivsection availunitcatcolsection">
+				<div class="unitcatfontstylesection unitcatfontsmallsizeesection">Available for Sale</div>
+				<div class=" unitcatfontstylesection unitcatfontmediumsizeesection">{AvailableForSaleCount}</div>	
+			</div>
+			<!-- <div class="unitcatdivsection awaitunitcatcolsection">
+				<div class="unitcatfontstylesection unitcatfontsmallsizeesection">Awaiting Payment Confirmation</div>
+				<div class=" unitcatfontstylesection unitcatfontmediumsizeesection">{waitingPaymentConfirmationCount}</div>
+			</div> -->
+			<div class="unitcatdivsection soldunitcatcolsection">
+				<div class="unitcatfontstylesection unitcatfontsmallsizeesection">Sold</div>
+				<div class=" unitcatfontstylesection unitcatfontmediumsizeesection">{SoldCount}</div>
+			</div>
+			<template if:true={diasbleButton}>
+				<div class="unitcatdivsection manageblockunitcatcolsection">
+				<div class="unitcatfontstylesection unitcatfontsmallsizeesection">Management Blocked</div>
+				<div class=" unitcatfontstylesection unitcatfontmediumsizeesection">{ManagementBlockedCount}</div>
+			</div>
+			<div class="unitcatdivsection undcustdiscusnitcatcolsection">
+				<div class="unitcatfontstylesection unitcatfontsmallsizeesection">Land Lord</div>
+				<div class=" unitcatfontstylesection unitcatfontmediumsizeesection">{UnderCustomerDiscussionCount}</div>
+			</div>
+			<div class="unitcatdivsection manageblocknotreleasedunitcatcolsection">
+				<div class="unitcatfontstylesection unitcatfontsmallsizeesection">Mortgage</div>
+				<div class=" unitcatfontstylesection unitcatfontmediumsizeesection">{NotReleasedbyManagementCount}</div>
+			</div>
+
+			</template>
+			
+			<!-- <div class="unitcatdivsection firesafetyunitcatcolsection">
+				<div class="unitcatfontstylesection unitcatfontsmallsizeesection">Blocked - For Fire/Safety Clearance</div>
+				<div class=" unitcatfontstylesection unitcatfontmediumsizeesection">{BlockedforSafetyClearanceCount}</div>
+			</div> -->
+		</div>
+
+		<div class="unitselectionSec">
+			<div class="slds-grid slds-wrap">
+				<div class="slds-col slds-size_10-of-12">
+					<div style="margin: 5px;">
+						<div class="slds-grid slds-wrap" style="height: 45px;">
+							<div class="slds-col slds-size_1-of-12" style=" height: 41px;background: #D9D9D9;">
+								<p class="FloorHeader">
+									Floor No
+								</p>
+							</div>
+							<div class="slds-col slds-size_11-of-12" style="background: #D9D9D9; height: 41px;">
+								<p class="FloorHeader">
+									Total Number of Units : {totalunits}
+								</p>
+							</div>
+
+							<div class="slds-col slds-size_12-of-12" style=" background-color: white;padding-bottom:4.5%;min-height:1000px;">
+								<div style="margin: 5px;">
+									<template if:true={floorUnitMapArray}>
+										<template for:each={floorUnitMapArray} for:item="floorDetails">
+											<div key={floorDetails.floorNumber}>
+												<div class="slds-grid slds-wrap" style="margin-top: 18px;margin-bottom: 15px; ">
+													<div class="slds-col slds-size_1-of-12" style="background: #D9D9D9; text-align:center;border-radius:5px;">
+														<p class="button">
+															{floorDetails.floorNumber}
+														</p>
+													</div>
+													<div class="slds-col slds-size_11-of-12">
+														<div class="slds-grid slds-wrap">
+															<template if:true={floorDetails.units}>
+																<template for:each={floorDetails.units} for:item="unit">
+																	<div key={unit.Id} style="background: white; margin-bottom: 15px; padding: 10px;" class="tooltip">
+																		<p class={unit.newClass} onclick={handleDivClick} data-event-id={unit.Id} data-id={unit.Id} style="white-space:pre-line;">
+																			{unit.Unit_Name_Code__c}
+																			<span class="tooltiptext">
+																				Name: {unit.Name}<br>
+																				Unit Type: {unit.Unit_Type__c}<br>
+																				Unit Name: {unit.Unit_Name_Code__c}<br>
+																				Floor No: {unit.Floor__r.Floor_No__c}<br>
+																				Status: {unit.Status__c}<br>
+																			</span>
+																		</p>
+																	</div>
+																</template>
+															</template>
+														</div>
+													</div>
+												</div>
+											</div>
+										</template>
+									</template>
+								</div>
+							</div>
+							
+						</div>
+					</div>
+				</div>
+
+				<div class="slds-col slds-size_2-of-12">
+					<div class="towersection">
+						<div>
+							<center><b> Tower</b></center>
+						</div>
+						<template if:true={towerpicarray}>
+							<template for:each={towerpicarray} for:item="Tower">
+								<div key={Tower.Id} class="Towervisibilty" style="margin-left:10px;">
+									<div class="slds-grid slds-wrap childtower" style="width: 90px;text-align:center">
+										<div class="slds-col slds-size_8-of-12">
+											<img src={towerimageurl} class="towerimagesec" />
+										</div>
+										<div class="slds-col slds-size_8-of-12 ">
+											<div class="towertextfont">
+												{Tower.value}
+											</div>
+										</div>
+										<div class="slds-col slds-size_8-of-12 " style="padding-left:3px">
+											<div class="button towerbutton" data-event-id={Tower.id}
+												onclick={handletowerselection}>
+												{Tower.towerselection}
+											</div>
+										</div>
+									</div>
+								</div>
+							</template>
+						</template>
+					</div>
+					
+
+					<div class="slds-col slds-size_12-of-12" style="text-align:center">
+						
+						 <div style="background: white !important; border-radius: 5px; margin-right: 4px; margin-left: 4px;">
+							
+							<div
+								style="display: grid; align-items: center; grid-template-columns: 1fr 1fr 1fr; column-gap: 5px; background: white; margin-right: 4px; margin-left: 20px; margin-bottom: 18px;">
+								<div class="image">
+									<img src={onebhk} />
+								</div>
+								<div class="text" style="margin-left: 30px;">
+									<b style="margin-left: 0px;">Studio</b>
+									<div class="buttonBHK" style="background-color: #D6D6D6;" data-event-id="Studio"
+										onclick={handleBHKClick}>
+										Select
+									</div>
+								</div>
+							</div>
+							
+							<div
+								style="display: grid; align-items: center; grid-template-columns: 1fr 1fr 1fr; column-gap: 5px; background: white; margin-right: 4px; margin-left: 20px; margin-bottom: 18px;">
+								<div class="image">
+									<img src={onebhk} />
+								</div>
+								<div class="text" style="margin-left: 30px;">
+									<b style="margin-left: 0px;">1 BR</b>
+									<div class="buttonBHK" style="background-color: #D6D6D6;" data-event-id="1 BR"
+										onclick={handleBHKClick}>
+										Select
+									</div>
+								</div>
+							</div>
+					
+							<div style="display: grid; align-items: center; grid-template-columns: 1fr 1fr 1fr; column-gap: 5px; background: white; margin-right: 4px; margin-left: 20px; margin-bottom: 18px;">
+								<div class="image">
+									<img src={twobhk} />
+								</div>
+								<div class="text" style="margin-left: 30px;">
+									<b style="margin-left: 0px;">2 BR</b>
+									<div class="buttonBHK" style="background-color: #D6D6D6;" data-event-id="2 BR"
+										onclick={handleBHKClick}>
+										Select
+									</div>
+								</div>
+							</div>
+
+							<div
+								style="display: grid; align-items: center; grid-template-columns: 1fr 1fr 1fr; column-gap: 5px; background: white; margin-right: 4px; margin-left: 20px; margin-bottom: 18px;">
+								<div class="image">
+									<img src={threebhk} />
+								</div>
+								<div class="text" style="margin-left: 30px;">
+									<b style="margin-left: 0px;">3 BR</b>
+									<div class="buttonBHK" style="background-color: #D6D6D6;" data-event-id="3 BR"
+										onclick={handleBHKClick}>
+										Select
+									</div>
+								</div>
+							</div>
+
+							<div
+								style="display: grid; align-items: center; grid-template-columns: 1fr 1fr 1fr; column-gap: 5px; background: white; margin-right: 4px; margin-left: 20px; margin-bottom: 18px;">
+								<div class="image">
+									<img src={threebhk} />
+								</div>
+								<div class="text" style="margin-left: 30px;">
+									<b style="margin-left: 0px;">4 BR</b>
+									<div class="buttonBHK" style="background-color: #D6D6D6;" data-event-id="4 BR"
+										onclick={handleBHKClick}>
+										Select
+									</div>
+								</div>
+							</div>
+						</div> 
+
+
+                       
+
+					</div>
+				</div>
+			</div>
+		</div>
+	</div>
+
+	<template if:true={unitBoolean}>
+		<section role="dialog" tabindex="-1" aria-modal="true" aria-labelledby="modal-heading-01"
+			class="slds-modal slds-fade-in-open">
+			<div class="slds-modal__container">
+				<button class="slds-button slds-button_icon slds-modal__close slds-button_icon-inverse">
+					<svg class="slds-button__icon slds-button__icon_large" aria-hidden="true">
+						<use xlink:href="/assets/icons/utility-sprite/svg/symbols.svg#close"></use>
+					</svg>
+					<span class="slds-assistive-text">Cancel and close</span>
+				</button>
+				<div class="slds-modal__header">
+					<h1 id="modal-heading-01" class="slds-modal__title slds-hyphenate" tabindex="-1">Unit Details</h1>
+				</div>
+				<div class="slds-modal__content slds-p-around_medium" id="modal-content-id-1">
+					<div class="custom-container slds-grid slds-wrap">
+						<div class="custom-column slds-col slds-size_1-of-2">
+							<p class="custom-heading">Name:&nbsp;&nbsp;<span>{unitRecord.Name}</span></p>
+							<p class="custom-heading">Unit Name:&nbsp;&nbsp;<span>{unitRecord.Unit_Name_Code__c}</span></p>
+							<p class="custom-heading">Status:&nbsp;&nbsp;<span>{unitRecord.Status__c}</span></p>
+							<p class="custom-heading">Project:&nbsp;&nbsp;<span>{unitRecord.Project__r.Name}</span></p>
+							<p class="custom-heading">Slab:&nbsp;&nbsp;<span>{unitRecord.Furnishing__c}</span></p>
+						</div>
+						<div class="custom-column slds-col slds-size_1-of-2">
+							<p class="custom-heading">Floor
+								No:&nbsp;&nbsp;<span>{unitRecord.Floor__r.Floor_No__c}</span>
+							</p>
+							<p class="custom-heading">Tower:&nbsp;&nbsp;<span>{unitRecord.Tower__c}</span></p>
+							<p class="custom-heading">Unit Type:&nbsp;&nbsp;<span>{unitRecord.Unit_Type__c}</span></p>
+						</div>
+
+					</div>
+
+				</div>
+				<div class="slds-modal__footer">
+					<button class="slds-button slds-button_neutral" aria-label="Cancel and close"
+						onclick={handleClose}>Cancel</button>
+
+				</div>
+			</div>
+		</section>
+		<div class="slds-backdrop slds-backdrop_open" role="presentation"></div>
+
+	</template>
+	</div>
+</template>

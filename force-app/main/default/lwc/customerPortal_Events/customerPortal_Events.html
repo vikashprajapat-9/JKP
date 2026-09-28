@@ -1,0 +1,55 @@
+<template>
+    <div class="events-container">
+
+        <template if:true={isLoading}>
+            <div class="loading-wrap">
+                <div class="spinner"></div>
+                <p class="loading-text">Loading events...</p>
+            </div>
+        </template>
+
+        <template if:true={hasError}>
+            <div class="error-wrap">
+                <p class="error-text">Something went wrong while loading events. Please try again.</p>
+                <button type="button" class="btn-retry" onclick={handleRetry}>Retry</button>
+            </div>
+        </template>
+
+        <template if:true={showContent}>
+
+            <template if:true={hasNoEvents}>
+                <p class="empty-text">No upcoming events available.</p>
+            </template>
+
+            <div class="events-grid">
+                <template for:each={eventCards} for:item="event">
+                    <div class="event-card" key={event.id}>
+                        <div class="event-top">
+                            <img src={event.iconUrl} alt={event.title} class="event-image" loading="lazy" />
+                            <div class="event-text">
+                                <p class="event-title" title={event.title}>{event.title}</p>
+                                <p class="event-description">{event.description}</p>
+                            </div>
+                        </div>
+
+                        <div class="event-meta">
+                            <p class="meta-row">
+                                <lightning-icon icon-name="utility:event" size="xx-small" class="meta-icon"></lightning-icon>
+                                <span class="meta-date">{event.eventDate}</span>
+                                <span class="meta-time">{event.timeRange}</span>
+                            </p>
+                            <p class="meta-row">
+                                <lightning-icon icon-name="utility:location" size="xx-small" class="meta-icon"></lightning-icon>
+                                <span class="meta-location">{event.location}</span>
+                            </p>
+                        </div>
+
+                        <button type="button" class={event.buttonClass} data-event-id={event.id} disabled={event.isDisabled} onclick={handleRegister}>
+                            {event.buttonLabel}
+                        </button>
+                    </div>
+                </template>
+            </div>
+        </template>
+    </div>
+</template>

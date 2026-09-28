@@ -1,0 +1,41 @@
+<template>
+    <header class="portal-header">
+        <button
+            class="hamburger-btn"
+            title="Toggle menu"
+            onclick={handleHamburgerClick}
+        >
+            <lightning-icon icon-name="utility:rows" size="x-small"></lightning-icon>
+        </button>
+
+        <div class="header-spacer"></div>
+
+        <div class="header-actions">
+            <div class="notification-wrapper">
+                <lightning-icon
+                    icon-name="utility:notification"
+                    size="small"
+                    class="notification-icon"
+                ></lightning-icon>
+                <template if:true={hasNotifications}>
+                    <span class="notification-badge">{notificationCount}</span>
+                </template>
+            </div>
+
+            <div
+                class="user-profile"
+                onclick={handleProfileClick}
+                role="button"
+                tabindex="0"
+                title="View profile"
+            >
+                <template if:true={avatarUrl}>
+                    <img src={avatarUrl} alt={userName} class="avatar-image" />
+                </template>
+                <template if:false={avatarUrl}>
+                    <div class="avatar-placeholder">{userInitials}</div>
+                </template>
+            </div>
+        </div>
+    </header>
+</template>

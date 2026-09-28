@@ -1,0 +1,178 @@
+:host {
+    --jk-navy: #102451;
+    --jk-white: #ffffff;
+    --jk-active-bg: #f2f7f9;
+    --jk-text: #222222;
+    --jk-border: #e5e5e5;
+    --jk-green: #7cb82a;
+    --portal-height: 100vh;
+    display: block;
+    width: 100%;
+    max-width: 100%;
+    font-family: Arial, Helvetica, sans-serif;
+    color: var(--jk-text);
+    box-sizing: border-box;
+}
+
+/* Modern mobile browsers: dvh excludes the collapsing URL bar */
+@supports (height: 100dvh) {
+    :host {
+        --portal-height: 100dvh;
+    }
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+/* ---------- Layout: flex row, sidebar reserves its own width ---------- */
+.portal-container {
+    position: relative;
+    display: flex;
+    align-items: stretch;
+    width: 100%;
+    max-width: 100%;
+    height: var(--portal-height);
+    overflow: hidden;
+    background: #f7f8fa;
+}
+
+/* Sidebar host must not be squeezed by flex on desktop */
+c-customer-portal_-sidebar {
+    flex: 0 0 auto;
+}
+
+.portal-main {
+    flex: 1 1 auto;
+    min-width: 0;
+    max-width: 100%;
+    height: var(--portal-height);
+    display: flex;
+    flex-direction: column;
+}
+
+c-customer-portal_-header {
+    display: block;
+    flex: 0 0 auto;
+    min-width: 0;
+    max-width: 100%;
+}
+
+.portal-content {
+    flex: 1 1 auto;
+    min-height: 0;
+    min-width: 0;
+    overflow-y: auto;
+    overflow-x: hidden;
+    -webkit-overflow-scrolling: touch;
+    overscroll-behavior: contain;
+    padding: 40px 60px;
+}
+
+/* Let every page component use the available width and shrink */
+.portal-content > * {
+    display: block;
+    min-width: 0;
+    max-width: 100%;
+}
+
+/* ---------- Loading / error ---------- */
+.portal-loading {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: var(--portal-height);
+}
+
+.portal-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    width: 100%;
+    height: var(--portal-height);
+    padding: 24px;
+    text-align: center;
+}
+
+.portal-error-text {
+    max-width: 320px;
+    margin: 0;
+    color: var(--jk-text);
+    font-size: 14px;
+    overflow-wrap: anywhere;
+}
+
+/* ---------- Mobile drawer backdrop (hidden on desktop/tablet) ---------- */
+.portal-backdrop {
+    display: none;
+}
+
+/* ---------- Logout overlay: full-viewport layer above everything ---------- */
+c-customer-portal_-logout {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    left: 0;
+    z-index: 2000;
+    display: block;
+    max-width: 100vw;
+    overflow-y: auto;
+}
+
+/* ---------- Breakpoints ---------- */
+@media (max-width: 1024px) {
+    .portal-content {
+        padding: 24px 32px;
+    }
+}
+
+/* Sidebar becomes a drawer at this width (handled by the sidebar component) */
+@media (max-width: 768px) {
+    c-customer-portal_-sidebar {
+        position: relative; /* stacking context above backdrop */
+        z-index: 1000;
+        flex: 0 0 0;
+        width: 0;
+        min-width: 0;
+    }
+
+    .portal-backdrop {
+        display: block;
+        position: fixed;
+        top: 0;
+        right: 0;
+        bottom: 0;
+        left: 0;
+        z-index: 999;
+        background: rgba(16, 36, 81, 0.5);
+    }
+
+    .portal-content {
+        padding: 16px;
+        padding-left: max(16px, env(safe-area-inset-left));
+        padding-right: max(16px, env(safe-area-inset-right));
+        padding-bottom: max(16px, env(safe-area-inset-bottom));
+    }
+}
+
+@media (max-width: 480px) {
+    .portal-error {
+        padding: 16px;
+    }
+}
+
+@media (max-width: 375px) {
+    .portal-content {
+        padding: 12px;
+        padding-left: max(12px, env(safe-area-inset-left));
+        padding-right: max(12px, env(safe-area-inset-right));
+        padding-bottom: max(12px, env(safe-area-inset-bottom));
+    }
+}

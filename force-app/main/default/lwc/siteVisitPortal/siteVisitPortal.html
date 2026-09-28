@@ -1,0 +1,178 @@
+<template>
+    <lightning-card title="Site Visit Portal" icon-name="standard:visit_templates">
+        <div class="slds-p-around_large">
+            <!-- Search -->
+            <div class="slds-grid slds-wrap slds-gutters">
+                <div class="slds-col slds-size_10-of-12">
+                    <lightning-input
+                        type="text"
+                        label="Email / Phone"
+                        placeholder="Enter Email or Phone"
+                        value={searchKey}
+                        onchange={handleSearchChange}>
+                    </lightning-input>
+                </div>
+                <div class="slds-col slds-size_2-of-12 slds-align-bottom">
+                    <lightning-button
+                        variant="brand"
+                        label="Search"
+                        onclick={searchRecords}>
+                    </lightning-button>
+                </div>
+            </div>
+        </div>
+        <!-- Spinner -->
+        <template if:true={isLoading}>
+            <lightning-spinner
+                alternative-text="Loading"
+                size="medium">
+            </lightning-spinner>
+        </template>
+        <!-- Results -->
+        <template if:true={showResults}>
+            <div class="slds-p-around_large">
+                <!-- Leads -->
+                <template if:true={leads.length}>
+                    <h2 class="slds-text-heading_medium slds-m-bottom_medium">
+                        Leads
+                    </h2>
+                    <template for:each={leads} for:item="lead">
+                        <lightning-card
+                            key={lead.Id}
+                            class="slds-m-bottom_medium">
+                            <div class="slds-p-around_medium">
+                                <p>
+                                    <b>Name :</b> {lead.Name}
+                                </p>
+                                <p>
+                                    <b>Email :</b> {lead.Email}
+                                </p>
+                                <p>
+                                    <b>Phone :</b> {lead.Phone}
+                                </p>
+                                <p>
+                                    <b>Status :</b> {lead.Status}
+                                </p>
+                                <div class="slds-m-top_medium">
+                                    <lightning-button
+                                        variant="brand"
+                                        label="Create Visit"
+                                        data-id={lead.Id}
+                                        data-type="Lead"
+                                        onclick={openVisitModal}>
+                                    </lightning-button>
+                                </div>
+                            </div>
+                        </lightning-card>
+                    </template>
+                </template>
+                <!-- Opportunities -->
+                <template if:true={opportunities.length}>
+                    <h2 class="slds-text-heading_medium slds-m-top_large slds-m-bottom_medium">
+                        Opportunities
+                    </h2>
+                    <template for:each={opportunities} for:item="opp">
+                        <lightning-card
+                            key={opp.Id}
+                            class="slds-m-bottom_medium">
+                            <div class="slds-p-around_medium">
+                                <p>
+                                    <b>Name :</b>
+                                    {opp.Name}
+                                </p>
+                                <p>
+                                    <b>Email :</b>
+                                    {opp.Email__c}
+                                </p>
+                                <p>
+                                    <b>Phone :</b>
+                                    {opp.Phone__c}
+                                </p>
+                                <p>
+                                    <b>Stage :</b>
+                                    {opp.StageName}
+                                </p>
+                                <p>
+                                    <b>Owner :</b>
+                                    {opp.Owner.Name}
+                                </p>
+                                <div class="slds-m-top_medium">
+                                    <lightning-button
+                                        variant="brand"
+                                        label="Create Visit"
+                                        data-id={opp.Id}
+                                        data-type="Opportunity"
+                                        onclick={openVisitModal}>
+                                    </lightning-button>
+                                </div>
+                            </div>
+                        </lightning-card>
+                    </template>
+                </template>
+                <!-- No Result -->
+                <template if:true={showNoRecords}>
+                    <div class="slds-align_absolute-center slds-p-around_large">
+                        <h2 class="slds-text-heading_medium">
+                            No Records Found
+                        </h2>
+                    </div>
+                </template>
+            </div>
+        </template>
+    </lightning-card>
+    <!-- Modal -->
+    <template if:true={showVisitModal}>
+        <section
+            role="dialog"
+            tabindex="-1"
+            class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+                <header class="slds-modal__header">
+                    <h2 class="slds-text-heading_medium">
+                        Create Visit
+                    </h2>
+                </header>
+                <div class="slds-modal__content slds-p-around_large">
+                    <lightning-input
+                        type="date"
+                        name="Actual_Visit_Date__c"
+                        label="Visit Date"
+                        onchange={handleVisitChange}>
+                    </lightning-input>
+                    <lightning-input
+                        label="Remarks"
+                        name="Remarks__c"
+                        onchange={handleVisitChange}>
+                    </lightning-input>
+                    <lightning-combobox
+                        label="Requirement Type"
+                        name="Requirement_Type__c"
+                        value={visit.Requirement_Type__c}
+                        options={requirementOptions}
+                        onchange={handleVisitChange}>
+                    </lightning-combobox>
+                    <lightning-combobox
+                        label="Project"
+                        name="Project_Name__c"
+                        value={visit.Project_Name__c}
+                        options={projectOptions}
+                        onchange={handleVisitChange}>
+                    </lightning-combobox>
+                </div>
+                <footer class="slds-modal__footer">
+                    <lightning-button
+                        label="Cancel"
+                        onclick={closeVisitModal}>
+                    </lightning-button>
+                    <lightning-button
+                        class="slds-m-left_small"
+                        variant="brand"
+                        label="Save Visit"
+                        onclick={saveVisit}>
+                    </lightning-button>
+                </footer>
+            </div>
+        </section>
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>

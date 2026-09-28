@@ -1,0 +1,19 @@
+<template>
+    <div class="overlay">
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="logoutTitle" aria-describedby="logoutMsg">
+            <h2 id="logoutTitle" class="title">Logout?</h2>
+            <p id="logoutMsg" class="message">
+                You are about to log out of your John Keels Properties
+                account. Thank you for using our portal, and we look
+                forward to your return.
+            </p>
+            <div class="illustration">
+                <img src={logoutImage} alt="" />
+            </div>
+            <div class="buttons">
+                <button type="button" class="btn cancel" onclick={handleCancel}>Cancel</button>
+                <button type="button" class="btn confirm" onclick={handleLogout}>Log Out</button>
+            </div>
+        </div>
+    </div>
+</template>

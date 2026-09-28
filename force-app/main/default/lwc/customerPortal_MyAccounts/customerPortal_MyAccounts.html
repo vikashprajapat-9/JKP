@@ -1,0 +1,208 @@
+<template>
+    <div class="myaccounts-container">
+
+        <template if:true={isLoading}>
+            <div class="loading-wrap">
+                <div class="spinner"></div>
+                <p class="loading-text">Loading your accounts...</p>
+            </div>
+        </template>
+
+        <template if:true={hasError}>
+            <div class="error-wrap">
+                <p class="error-text">Something went wrong while loading your accounts. Please try again later.</p>
+                <button type="button" class="btn-retry" onclick={handleRetry}>Retry</button>
+            </div>
+        </template>
+
+        <template if:true={showListView}>
+            <div class="page-header">
+                <h1 class="page-title">Accounts</h1>
+                <p class="page-description">{pageDescription}</p>
+            </div>
+
+            <div class="toolbar">
+                <div class="filter-wrap">
+                    <button type="button" class="filter-btn" aria-haspopup="true" aria-expanded={isFilterMenuOpen} onclick={toggleFilterMenu}>
+                        <lightning-icon icon-name="utility:filterList" size="x-small" class="filter-icon"></lightning-icon>
+                        <span class="filter-label">{selectedFilterLabel}</span>
+                        <lightning-icon icon-name="utility:chevrondown" size="x-small" class="filter-chevron"></lightning-icon>
+                    </button>
+                    <template if:true={isFilterMenuOpen}>
+                        <ul class="filter-menu" role="menu">
+                            <template for:each={filterOptions} for:item="option">
+                                <li key={option.value}
+                                    class={option.itemClass}
+                                    role="menuitem"
+                                    tabindex="0"
+                                    data-value={option.value}
+                                    onclick={handleFilterSelect}
+                                    onkeydown={handleFilterKeydown}>
+                                    {option.label}
+                                </li>
+                            </template>
+                        </ul>
+                    </template>
+                </div>
+            </div>
+
+            <template if:true={hasNoAccounts}>
+                <p class="empty-text">No accounts found for this project.</p>
+            </template>
+
+            <div class="cards-grid">
+                <template for:each={displayedAccounts} for:item="account">
+                    <div class="account-card" key={account.id}>
+                        <div class="card-image-wrap"
+                             data-account-id={account.id}
+                             ontouchstart={handleCardTouchStart}
+                             ontouchend={handleCardTouchEnd}>
+                            <img src={account.activeImageUrl} alt={account.projectName} class="card-image" loading="lazy" />
+
+                            <template if:true={account.showArrows}>
+                                <button type="button" class="carousel-arrow carousel-arrow-left"
+                                        data-account-id={account.id}
+                                        onclick={handlePrevImage}
+                                        aria-label="Previous image">
+                                    <lightning-icon icon-name="utility:chevronleft" size="x-small"></lightning-icon>
+                                </button>
+                                <button type="button" class="carousel-arrow carousel-arrow-right"
+                                        data-account-id={account.id}
+                                        onclick={handleNextImage}
+                                        aria-label="Next image">
+                                    <lightning-icon icon-name="utility:chevronright" size="x-small"></lightning-icon>
+                                </button>
+                            </template>
+
+                            <template if:true={account.showDots}>
+                                <div class="carousel-dots">
+                                    <template for:each={account.images} for:item="image">
+                                        <span key={image.key}
+                                              class={image.dotClass}
+                                              data-account-id={account.id}
+                                              data-index={image.index}
+                                              onclick={handleDotClick}>
+                                        </span>
+                                    </template>
+                                </div>
+                            </template>
+                        </div>
+
+                        <div class="card-body">
+                            <p class="card-project-name">{account.projectName}</p>
+                            <p class="card-unit-number">{account.unitNumber}</p>
+                            <button type="button" class="btn-view-details" data-account-id={account.id} onclick={handleViewDetails}>
+                                View Details
+                            </button>
+                        </div>
+                    </div>
+                </template>
+            </div>
+        </template>
+
+        <template if:true={showDetailView}>
+            <div class="detail-header-row">
+                <button type="button" class="back-button" onclick={handleBack} aria-label="Back to accounts">
+                    <lightning-icon icon-name="utility:back" size="x-small"></lightning-icon>
+                </button>
+            </div>
+
+            <div class="page-header">
+                <h1 class="page-title">Accounts</h1>
+                <p class="page-description">{pageDescription}</p>
+            </div>
+
+            <div class="tabs-row" role="tablist">
+                <button type="button" role="tab" aria-selected={isMyAccountTab} class={myAccountTabClass} onclick={handleShowMyAccount}>My Account</button>
+                <button type="button" role="tab" aria-selected={isMyPayablesTab} class={myPayablesTabClass} onclick={handleShowMyPayables}>My Payables</button>
+            </div>
+            <div class="tabs-divider"></div>
+
+            <template if:true={isDetailLoading}>
+                <div class="loading-wrap">
+                    <div class="spinner"></div>
+                    <p class="loading-text">Loading account details...</p>
+                </div>
+            </template>
+
+            <template if:false={isDetailLoading}>
+                <template if:true={isMyAccountTab}>
+                    <div class="summary-card">
+                        <h2 class="summary-title">{accountDetails.projectName}</h2>
+
+                        <div class="summary-body">
+                            <div class="summary-column">
+                                <div class="summary-item">
+                                    <p class="summary-label">Total Value Billed</p>
+                                    <p class="summary-value">{accountDetails.accountSummary.totalValueBilled}</p>
+                                </div>
+                                <div class="summary-item">
+                                    <p class="summary-label">Total Amount Due</p>
+                                    <p class="summary-value">{accountDetails.accountSummary.totalAmountDue}</p>
+                                </div>
+                                <div class="summary-item">
+                                    <p class="summary-label">Total Interest Accumulated</p>
+                                    <p class="summary-value">{accountDetails.accountSummary.totalInterestAccumulated}</p>
+                                </div>
+                            </div>
+
+                            <div class="summary-column">
+                                <div class="summary-item">
+                                    <p class="summary-label">Total Amount Paid</p>
+                                    <p class="summary-value">{accountDetails.accountSummary.totalAmountPaid}</p>
+                                </div>
+                                <div class="summary-item">
+                                    <p class="summary-label">Percentage Paid</p>
+                                    <p class="summary-value">{accountDetails.accountSummary.percentagePaid}</p>
+                                </div>
+                                <div class="summary-item">
+                                    <p class="summary-label">Customisation Charges</p>
+                                    <p class="summary-value">{accountDetails.accountSummary.customisationCharges}</p>
+                                </div>
+                            </div>
+
+                            <div class="summary-divider"></div>
+
+                            <div class="summary-right">
+                                <div class="summary-item summary-item-right">
+                                    <p class="summary-label">Purchased Price(Incl Tax)</p>
+                                    <p class="summary-value">{accountDetails.accountSummary.purchasedPrice}</p>
+                                </div>
+
+                                <div class="payable-box">
+                                    <p class="payable-box-label">Total Payable</p>
+                                    <p class="payable-box-value">{accountDetails.accountSummary.totalPayable}</p>
+                                    <p class="payable-box-note">Includes due amount, applicable interest, and customization charges.</p>
+                                </div>
+
+                                <button type="button" class="btn-download" onclick={handleDownloadSummary}>
+                                    Download Account Summary
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </template>
+
+                <template if:true={isMyPayablesTab}>
+                    <div class="payables-list">
+                        <template for:each={payableRows} for:item="payable">
+                            <div class="payable-row" key={payable.id}>
+                                <button type="button" class="payable-header" data-payable-id={payable.id} aria-expanded={payable.isExpanded} onclick={handlePayableToggle}>
+                                    <span class="payable-title">{payable.type} : {payable.amount}</span>
+                                    <lightning-icon icon-name={payable.chevronIcon} size="x-small" class="payable-chevron"></lightning-icon>
+                                </button>
+                                <!-- <template if:true={payable.isExpanded}>
+                                    <div class="payable-details">
+                                        <p class="payable-detail-line"><strong>Status:</strong> {payable.status}</p>
+                                        <p class="payable-detail-line"><strong>Due Date:</strong> {payable.dueDate}</p>
+                                        <p class="payable-detail-line">{payable.description}</p>
+                                    </div>
+                                </template> -->
+                            </div>
+                        </template>
+                    </div>
+                </template>
+            </template>
+        </template>
+    </div>
+</template>

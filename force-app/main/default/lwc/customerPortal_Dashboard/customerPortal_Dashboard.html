@@ -1,0 +1,207 @@
+<template>
+    <div class="portal">
+
+        <template lwc:if={isLoading}>
+            <div class="loader" role="status" aria-live="polite">
+                <div class="loader-ring"></div>
+                <span class="loader-text">Loading…</span>
+            </div>
+        </template>
+
+        <template lwc:elseif={isHandoverView}>
+            <section class="handover">
+                <div class="ho-head">
+                    <button class="back-btn" onclick={handleBack} aria-label="Back to dashboard">
+                        <svg viewBox="0 0 24 24" width="26" height="26" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M20 12H4M10 5l-7 7 7 7"/></svg>
+                    </button>
+                    <h1 class="ho-title">{handoverTitle}</h1>
+                </div>
+
+                <template lwc:if={isHandoverLoading}>
+                    <div class="loader small" role="status">
+                        <div class="loader-ring"></div>
+                    </div>
+                </template>
+                <template lwc:else>
+                    <label class="ho-label" for="propertySelect">Select Property</label>
+                    <div class="select-wrap">
+                        <select id="propertySelect" class="ho-select" onchange={handlePropertyChange}>
+                            <template for:each={propertyOptions} for:item="opt">
+                                <option key={opt.id} value={opt.id} selected={opt.selected}>{opt.name}</option>
+                            </template>
+                        </select>
+                        <svg class="select-chevron" viewBox="0 0 24 24" width="18" height="18" fill="none" stroke="#111" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M5 9l7 7 7-7"/></svg>
+                    </div>
+
+                    <template lwc:if={selectedProperty}>
+                        <div class="prop-card">
+                            <img class="prop-img" src={selectedProperty.imageUrl} alt={selectedProperty.name} />
+                            <div class="prop-info">
+                                <div class="prop-name">{selectedProperty.name}</div>
+                                <div class="prop-units">{selectedProperty.unitTypes}</div>
+                                <div class="prop-sub">Project Name: {selectedProperty.projectName}</div>
+                            </div>
+                        </div>
+                    </template>
+
+                    <div class="ho-cards">
+                        <template for:each={decoratedCards} for:item="card">
+                            <div key={card.id} class="ho-card-wrap">
+                                <button class={card.cardClass} data-id={card.id} onclick={handleCardClick} aria-expanded={card.isOpen}>
+                                    <div class="ho-card-body">
+                                        <div class="ho-card-title">{card.title}</div>
+                                        <div class="ho-card-desc">{card.description}</div>
+                                        <span class={card.pillClass}>{card.status}</span>
+                                    </div>
+                                    <svg class="ho-card-art" viewBox="0 0 60 56" aria-hidden="true">
+                                        <rect x="10" y="2" width="40" height="52" rx="4" fill="#eef1f6"/>
+                                        <rect x="10" y="2" width="6" height="52" rx="3" fill="#2f6fed"/>
+                                        <circle cx="26" cy="14" r="4" fill="#1f9d4a"/>
+                                        <path d="M24.3 14l1.3 1.3 2.5-2.6" stroke="#fff" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <rect x="33" y="12.5" width="12" height="3" rx="1.5" fill="#c7cedb"/>
+                                        <circle cx="26" cy="27" r="4" fill="#1f9d4a"/>
+                                        <path d="M24.3 27l1.3 1.3 2.5-2.6" stroke="#fff" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <rect x="33" y="25.5" width="12" height="3" rx="1.5" fill="#c7cedb"/>
+                                        <circle cx="26" cy="40" r="4" fill="#1f9d4a"/>
+                                        <path d="M24.3 40l1.3 1.3 2.5-2.6" stroke="#fff" stroke-width="1.3" fill="none" stroke-linecap="round" stroke-linejoin="round"/>
+                                        <rect x="33" y="38.5" width="12" height="3" rx="1.5" fill="#c7cedb"/>
+                                    </svg>
+                                </button>
+
+                                <template lwc:if={card.isOpen}>
+                                    <div class="table-scroll">
+                                        <div class="tbl">
+                                            <div class="tr th">
+                                                <div class="td">Sr.</div>
+                                                <div class="td">Activity</div>
+                                                <div class="td">Description</div>
+                                                <div class="td">Status</div>
+                                                <div class="td">Remarks</div>
+                                            </div>
+                                            <template for:each={card.items} for:item="item">
+                                                <div key={item.id} class="tr row">
+                                                    <div class="td">{item.srNo}</div>
+                                                    <div class="td">{item.activity}</div>
+                                                    <div class="td">{item.description}</div>
+                                                    <div class="td">
+                                                        <span class={item.rowPillClass}>{item.status}</span>
+                                                    </div>
+                                                    <div class="td">
+                                                        <span class="remarks-text">{item.remarks}</span>
+                                                    </div>
+                                                </div>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+            </section>
+        </template>
+
+        <template lwc:elseif={dashboard}>
+            <section class="dash">
+                <h1 class="welcome">Welcome {dashboard.customerName}!</h1>
+                <div class="cust-line">Customer ID {dashboard.customerId} <span class="sep">|</span> {dashboard.dashboardDate}</div>
+
+                <div class="hero" onmouseenter={pauseAutoplay} onmouseleave={startAutoplay}>
+                    <template for:each={heroSlides} for:item="slide">
+                        <div key={slide.id} class={slide.slideClass} aria-hidden={slide.ariaHidden}>
+                            <img class="hero-img" src={slide.imageUrl} alt={slide.title} />
+                        </div>
+                    </template>
+                    <div class="hero-shade"></div>
+                    <template lwc:if={activeSlide}>
+                        <div class="hero-caption">
+                            <div class="hero-title">{activeSlide.title}</div>
+                            <div class="hero-sub">{activeSlide.subtitle}</div>
+                        </div>
+                    </template>
+                </div>
+                <div class="dots" role="tablist">
+                    <template for:each={heroSlides} for:item="slide">
+                        <button key={slide.id} class={slide.dotClass} data-index={slide.index}
+                                role="tab" aria-label={slide.dotLabel} onclick={handleDotClick}></button>
+                    </template>
+                </div>
+
+                <div class="grid">
+                    <div class="card quick">
+                        <template for:each={quickLinks} for:item="link">
+                            <button key={link.page} class="ql-item" data-page={link.page} onclick={handleNavigate}>
+                                <span class="ql-icon">
+                                    <template lwc:if={link.isProperties}>
+                                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#1B2440" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M3 10.5L12 3l9 7.5V20a1 1 0 01-1 1H4a1 1 0 01-1-1z"/><path d="M8.5 13.5l2.5 2.5 4.5-4.5"/></svg>
+                                    </template>
+                                    <template lwc:elseif={link.isConstruction}>
+                                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#1B2440" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M4 21V9h5v12M4 3h16M17 3v9M17 12l-2 3h4z"/><path d="M4 13h5M4 17h5M12 21h8"/></svg>
+                                    </template>
+                                    <template lwc:elseif={link.isDocuments}>
+                                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#1B2440" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><path d="M6 3h8l4 4v14H6z"/><path d="M14 3v4h4M9 12h6M9 16h6"/></svg>
+                                    </template>
+                                    <template lwc:else>
+                                        <svg viewBox="0 0 24 24" width="22" height="22" fill="none" stroke="#1B2440" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="3.5"/><path d="M5 20c0-4 3-6 7-6s7 2 7 6z"/></svg>
+                                    </template>
+                                </span>
+                                <span class="ql-label">{link.label}</span>
+                            </button>
+                        </template>
+                    </div>
+
+                    <div class="card refer">
+                        <div class="refer-text">
+                            <p>You love JK Properties, your friends are going to love us too.</p>
+                            <button class="btn-navy pill" data-page="referrals" onclick={handleNavigate}>Refer &amp; Earn Now</button>
+                        </div>
+                        <img class="refer-img" src={referEarnImage} alt="Refer and earn" />
+                    </div>
+
+                    <div class="card stat">
+                        <div class="stat-title">Support</div>
+                        <div class="ring">
+                            <svg viewBox="0 0 100 100" class="ring-svg">
+                                <circle class="ring-bg" cx="50" cy="50" r="42"></circle>
+                                <circle class="ring-fg orange" cx="50" cy="50" r="42" stroke-dasharray={supportDash}></circle>
+                            </svg>
+                            <div class="ring-text">
+                                <span class="ring-num">{dashboard.supportData.pendingCount}</span>
+                                <span class="ring-status">{dashboard.supportData.status}</span>
+                            </div>
+                        </div>
+                        <button class="btn-navy view" data-page="support" onclick={handleNavigate}>View</button>
+                    </div>
+
+                    <div class="card stat">
+                        <div class="stat-title">Handover</div>
+                        <div class="ring">
+                            <svg viewBox="0 0 100 100" class="ring-svg">
+                                <circle class="ring-bg" cx="50" cy="50" r="42"></circle>
+                                <circle class="ring-fg green" cx="50" cy="50" r="42" stroke-dasharray={handoverDash}></circle>
+                            </svg>
+                            <div class="ring-text">
+                                <span class="ring-num">{dashboard.handoverData.percentage}%</span>
+                                <span class="ring-status">{dashboard.handoverData.status}</span>
+                            </div>
+                        </div>
+                        <button class="btn-navy view" onclick={handleOpenHandover}>View</button>
+                    </div>
+
+                    <button class="card faq" data-page="faqs" onclick={handleNavigate}>
+                        <div class="faq-text">
+                            <div class="faq-title">FAQs</div>
+                            <div class="faq-sub">Billing, Agreement, Home Loan, etc.</div>
+                        </div>
+                        <svg class="faq-art" viewBox="0 0 80 56" aria-hidden="true">
+                            <path d="M6 24h34a3 3 0 013 3v14a3 3 0 01-3 3H24l-9 8v-8H6a3 3 0 01-3-3V27a3 3 0 013-3z" fill="#FFC928"/>
+                            <path d="M12 32h24M12 38h16" stroke="#E5A800" stroke-width="2" stroke-linecap="round"/>
+                            <path d="M32 3h40a4 4 0 014 4v20a4 4 0 01-4 4h-6v9l-11-9H32a4 4 0 01-4-4V7a4 4 0 014-4z" fill="#4A97F5"/>
+                            <text x="52" y="21" text-anchor="middle" font-size="12" font-weight="700" fill="#fff" font-family="Arial, sans-serif">FAQ</text>
+                        </svg>
+                    </button>
+                </div>
+            </section>
+        </template>
+    </div>
+</template>

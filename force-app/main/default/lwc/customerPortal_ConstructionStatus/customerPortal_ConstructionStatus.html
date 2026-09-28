@@ -1,0 +1,209 @@
+<template>
+    <div class="cs-root">
+
+        <template if:true={isLoading}>
+            <div class="cs-loading">
+                <lightning-spinner alternative-text="Loading construction status" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template if:true={hasError}>
+            <div class="cs-error">
+                <lightning-icon icon-name="utility:error" size="medium" variant="error"></lightning-icon>
+                <p class="cs-error-text">We couldn't load Construction Status right now. Please try again in a moment.</p>
+            </div>
+        </template>
+
+        <template if:true={showContent}>
+
+            <template if:true={isListView}>
+                <h1 class="cs-title">{pageData.title}</h1>
+                <p class="cs-description">{pageData.description}</p>
+
+                <div class="cs-project-grid">
+                    <template for:each={decoratedProjects} for:item="project">
+                        <div class="cs-project-card" key={project.id}>
+                            <div class="cs-project-image-wrap">
+                                <img class="cs-project-image" src={project.currentImageUrl} alt={project.name} loading="lazy" />
+                                <template if:true={project.hasMultipleImages}>
+                                    <button
+                                        type="button"
+                                        class="cs-image-nav cs-image-nav_prev"
+                                        data-id={project.id}
+                                        onclick={handlePrevProjectImage}
+                                        aria-label="Previous image"
+                                    >‹</button>
+                                    <button
+                                        type="button"
+                                        class="cs-image-nav cs-image-nav_next"
+                                        data-id={project.id}
+                                        onclick={handleNextProjectImage}
+                                        aria-label="Next image"
+                                    >›</button>
+                                    <div class="cs-image-dots">
+                                        <template for:each={project.dots} for:item="dot">
+                                            <span key={dot.key} class={dot.dotClass}></span>
+                                        </template>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <div class="cs-project-body">
+                                <div class="cs-project-heading-row">
+                                    <div class="cs-project-heading-text">
+                                        <p class="cs-project-name">{project.name}</p>
+                                        <p class="cs-project-unit">{project.unitNumber}</p>
+                                    </div>
+                                    <lightning-icon icon-name="utility:share" size="x-small" class="cs-share-icon"></lightning-icon>
+                                </div>
+
+                                <div class="cs-progress-row">
+                                    <span class="cs-progress-label">Construction Progress</span>
+                                    <span class="cs-progress-value">{project.progress}%</span>
+                                </div>
+                                <div class="cs-progress-track">
+                                    <div class="cs-progress-fill" style={project.progressBarStyle}></div>
+                                </div>
+
+                                <button
+                                    type="button"
+                                    class="cs-view-updates-btn"
+                                    data-id={project.id}
+                                    onclick={handleOpenProject}
+                                >View Project Updates</button>
+                            </div>
+                        </div>
+                    </template>
+                </div>
+            </template>
+
+            <template if:true={isDetailView}>
+                <template if:true={selectedProject}>
+                    <div class="cs-detail-header">
+                        <button type="button" class="cs-back-btn" onclick={handleBack} aria-label="Back">←</button>
+                        <h1 class="cs-title">{selectedProject.name}</h1>
+                    </div>
+
+                    <div class="cs-progress-row cs-progress-row_detail">
+                        <span class="cs-progress-label">Construction Progress</span>
+                        <span class="cs-progress-value">{selectedProject.progress}%</span>
+                    </div>
+                    <div class="cs-progress-track cs-progress-track_detail">
+                        <div class="cs-progress-fill" style={selectedProject.progressBarStyle}></div>
+                    </div>
+
+                    <div class="cs-accordion">
+                        <template for:each={decoratedUpdates} for:item="update">
+                            <div class="cs-accordion-item" key={update.id}>
+                                <button
+                                    type="button"
+                                    class={update.headerClass}
+                                    data-id={update.id}
+                                    aria-expanded={update.isActive}
+                                    onclick={handleToggleUpdate}
+                                >
+                                    <span class="cs-accordion-label">{update.monthLabel}</span>
+                                    <lightning-icon icon-name={update.arrowIcon} size="x-small" class="cs-accordion-arrow"></lightning-icon>
+                                </button>
+
+                                <template if:true={update.isActive}>
+                                    <div class="cs-accordion-panel">
+
+                                        <template if:true={update.hasImages}>
+                                            <p class="cs-panel-heading">Images</p>
+                                            <div class="cs-image-row">
+                                                <template for:each={update.displayImages} for:item="img">
+                                                    <div
+                                                        class="cs-thumb"
+                                                        key={img.id}
+                                                        role="button"
+                                                        tabindex="0"
+                                                        aria-label="Open image"
+                                                        data-update-id={update.id}
+                                                        data-image-id={img.id}
+                                                        onclick={handleImageClick}
+                                                        onkeydown={handleThumbKeydown}
+                                                    >
+                                                        <img class="cs-thumb-img" src={img.imageUrl} alt="Construction update" loading="lazy" />
+                                                        <template if:true={img.showOverlay}>
+                                                            <div class="cs-thumb-overlay">
+                                                                <span>{img.overlayLabel}</span>
+                                                            </div>
+                                                        </template>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </template>
+
+                                        <template if:true={update.hasVideos}>
+                                            <p class="cs-panel-heading">Videos</p>
+                                            <div class="cs-video-row">
+                                                <template for:each={update.videos} for:item="vid">
+                                                    <div
+                                                        class="cs-video-thumb"
+                                                        key={vid.id}
+                                                        role="button"
+                                                        tabindex="0"
+                                                        aria-label="Play video"
+                                                        data-update-id={update.id}
+                                                        data-video-id={vid.id}
+                                                        onclick={handleVideoClick}
+                                                        onkeydown={handleThumbKeydown}
+                                                    >
+                                                        <img class="cs-thumb-img" src={vid.thumbnailUrl} alt="Video thumbnail" loading="lazy" />
+                                                        <div class="cs-play-icon">
+                                                            <lightning-icon icon-name="utility:play" size="small" variant="inverse"></lightning-icon>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                            </div>
+                                        </template>
+
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+            </template>
+
+        </template>
+
+        <template if:true={isImageModalOpen}>
+            <div class="cs-modal-overlay" role="dialog" aria-modal="true" aria-label="Image viewer" onclick={handleCloseImageModal}>
+                <button type="button" class="cs-modal-close" onclick={handleCloseImageModal} aria-label="Close">✕</button>
+
+                <div
+                    class="cs-image-modal"
+                    onclick={stopPropagation}
+                    ontouchstart={handleModalTouchStart}
+                    ontouchend={handleModalTouchEnd}
+                >
+                    <button type="button" class="cs-modal-arrow cs-modal-arrow_prev" onclick={handlePrevImage} aria-label="Previous">‹</button>
+
+                    <img class="cs-modal-image" src={currentModalImage.imageUrl} alt="Construction update" />
+
+                    <button type="button" class="cs-modal-arrow cs-modal-arrow_next" onclick={handleNextImage} aria-label="Next">›</button>
+                </div>
+
+                <div class="cs-modal-dots">
+                    <template for:each={decoratedModalDots} for:item="dot">
+                        <span key={dot.key} class={dot.dotClass}></span>
+                    </template>
+                </div>
+            </div>
+        </template>
+
+        <template if:true={isVideoModalOpen}>
+            <div class="cs-modal-overlay" role="dialog" aria-modal="true" aria-label="Video player" onclick={handleCloseVideoModal}>
+                <button type="button" class="cs-modal-close" onclick={handleCloseVideoModal} aria-label="Close">✕</button>
+
+                <div class="cs-video-modal" onclick={stopPropagation}>
+                    <video class="cs-modal-video" src={selectedVideo.videoUrl} controls autoplay playsinline>
+                    </video>
+                </div>
+            </div>
+        </template>
+
+    </div>
+</template>

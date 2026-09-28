@@ -1,0 +1,124 @@
+<template>
+    <lightning-card>
+        <div class="admin-wrapper">
+
+            <div class="header">
+                <div>
+                    <h1>Lead Assignment Admin Panel</h1>
+                    <p>Configure lead assignment group and assignment members</p>
+                </div>
+            </div>
+<!-- 
+            <lightning-tabset variant="scoped">
+                
+
+                <lightning-tab label="Configure Lead Scoring"> -->
+
+
+                <!-- Field Navigation -->
+            <div class="field-tabs-container">
+                <div class="field-tabs">
+
+                    <template for:each={fieldTabs} for:item="tab">
+
+                        <div key={tab.apiName} class={tab.cssClass}  data-field={tab.apiName} onclick={handleFieldTabClick}>
+                            <span>{tab.label}</span>
+                            <span class="count-badge"> {tab.count} </span>
+                        </div>
+                    </template>
+                </div>
+            </div>
+            <div class="section-card">
+            <h2>Picklist Score Configuration</h2>
+
+            <!-- <template for:each={paginatedScoreConfigs} for:item="cfg"> -->
+         <template for:each={filteredPaginatedScoreConfigs} for:item="cfg">
+            <div key={cfg.uniqueKey} class="score-row">
+                <div class="sr-no">
+                    {cfg.serialNumber}
+                </div>
+                <div class="score-field">
+                    <strong>{cfg.fieldLabel}</strong>
+                    <span>{cfg.picklistValue}</span>
+                </div>
+                <lightning-input type="number" label="Score"  value={cfg.score} data-index={cfg.originalIndex} onchange={handleScoreChange}>
+                </lightning-input>
+                <lightning-input type="checkbox" label="Active" checked={cfg.active} data-index={cfg.originalIndex} onchange={handleScoreActiveChange}>
+                </lightning-input>
+            </div>
+        </template>
+            <!-- Add pagination here -->
+            <div class="pagination-bar">
+                <lightning-button label="Previous"  onclick={handlePreviousScorePage}  disabled={isFirstScorePage}>
+                </lightning-button>
+                <span>{scorePageInfo}</span>
+                <lightning-button label="Next"  onclick={handleNextScorePage} disabled={isLastScorePage}>
+                </lightning-button>
+            </div>
+            <div class="button-row">
+                <lightning-button  label="Save Score Configuration" variant="brand" onclick={saveScoreConfig}>  </lightning-button>
+            </div>
+        </div>
+            <div class="section-card">
+                <h2>Priority Matrix</h2>
+                <div class="priority-grid heading">
+                    <div>Min Score</div>
+                    <div>Max Score</div>
+                    <div>Priority</div>
+                    <div>Active</div>
+                    <div>Action</div>
+                </div>
+
+                <template for:each={priorityConfigs} for:item="priority" for:index="index">
+                    <div key={priority.tempKey} class="priority-grid">
+
+                        <lightning-input  type="number" value={priority.Min_Score__c} data-index={index} data-field="Min_Score__c" onchange={handlePriorityChange}>  </lightning-input>
+                        <lightning-input type="number"  value={priority.Max_Score__c}  data-index={index} data-field="Max_Score__c"  onchange={handlePriorityChange}> </lightning-input>
+                        <lightning-combobox  label="Priority" variant="label-hidden"  value={priority.Priority__c} options={leadPriorityOptions} data-index={index} data-field="Priority__c"
+                         onchange={handlePriorityChange}   required>  </lightning-combobox>
+                        <lightning-input type="checkbox" checked={priority.Active__c}    data-index={index}   onchange={handlePriorityActiveChange}>   </lightning-input>
+                        <lightning-button-icon  icon-name="utility:delete"  alternative-text="Delete" data-id={priority.Id}  data-index={index} onclick={removePriorityRow}> </lightning-button-icon>
+
+                    </div>
+                </template>
+
+                <div class="button-row">
+                    <lightning-button  label="Add Priority Row" onclick={addPriorityRow}  class="slds-m-right_small">  </lightning-button>
+                    <lightning-button  label="Save Priority Matrix"  variant="brand"  onclick={savePriorityConfig}  class="slds-m-left_small"> </lightning-button>
+                </div>
+            </div>
+<!-- 
+    </lightning-tab>
+            </lightning-tabset> -->
+        </div>
+    </lightning-card>
+
+    <template if:true={showMemberModal}>
+        <section role="dialog" class="slds-modal slds-fade-in-open">
+            <div class="slds-modal__container">
+
+                <header class="slds-modal__header modal-header">
+                    <h2>Add Assignment Group Member</h2>
+                </header>
+
+                <div class="slds-modal__content slds-p-around_medium">
+
+                    <lightning-record-picker label="Group Member" object-api-name="User" value={selectedUserId} onchange={handleUserChange}>  </lightning-record-picker>
+                    <lightning-input type="number" label="Assignment Id"  value={memberAssignmentId}  onchange={handleMemberAssignmentId}>  </lightning-input>
+                    <!-- <lightning-input   type="number"  label="Max Case Per Day"  value={memberMaxCasePerDay} onchange={handleMemberMaxCase}> </lightning-input> -->
+                    <lightning-input type="number"  label="Max Sobject Assignment Count"  value={memberMaxAssignmentCount} onchange={handleMemberMaxAssignment}>   </lightning-input>
+                    <lightning-input  type="checkbox"  label="Active" checked={memberActive} onchange={handleMemberActive}>  </lightning-input>
+
+                </div>
+
+                <footer class="slds-modal__footer">
+                    <lightning-button label="Cancel" onclick={closeMemberModal}></lightning-button>
+                    <lightning-button label="Save Member" variant="brand" onclick={saveMember}></lightning-button>
+                </footer>
+
+            </div>
+        </section>
+
+        <div class="slds-backdrop slds-backdrop_open"></div>
+    </template>
+</template>

@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Purchase_Purpose__c</fullName>
+    <label>Purchase Purpose</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Investment</fullName>
+                <default>false</default>
+                <label>Investment</label>
+            </value>
+            <value>
+                <fullName>Residential (Self Use)</fullName>
+                <default>false</default>
+                <label>Residential (Self Use)</label>
+            </value>
+            <value>
+                <fullName>Second Home</fullName>
+                <default>false</default>
+                <label>Second Home</label>
+            </value>
+            <value>
+                <fullName>Rental Income</fullName>
+                <default>false</default>
+                <label>Rental Income</label>
+            </value>
+            <value>
+                <fullName>Commercial Investment</fullName>
+                <default>false</default>
+                <label>Commercial Investment</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

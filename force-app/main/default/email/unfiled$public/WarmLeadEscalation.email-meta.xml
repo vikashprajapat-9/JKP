@@ -1,0 +1,34 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>UTF-8</encodingKey>
+    <name>WarmLeadEscalation</name>
+    <style>none</style>
+    <subject>SLA Breach: Warm Lead Not Contacted Within 4 Hour</subject>
+    <textOnly>Lead Escalation
+
+Lead Escalation Alert
+
+Dear Marketing Head,
+
+This is an automated notification to inform you that a Warm Lead has not been contacted within 4 hour of assignment, resulting in an SLA breach.
+
+⚠ Action Required:
+Please review the lead immediately and ensure timely customer engagement.
+
+Lead Name {!Lead.Name}
+Lead Number {!Lead.Lead_Number__c}
+Phone {!Lead.Phone}
+Project {!Lead.Project__r}
+Classification {!Lead.Classification__c}
+Assigned To {!Lead.OwnerFullName}
+Assigned On {!Lead.Lead_Assigned_Date_Time__c}
+Current Status   {!Lead.Status}
+
+Kindly review this lead and take the necessary action to ensure compliance with the defined SLA.
+
+Salesforce CRM
+This is an automated notification. Please do not reply to this email.</textOnly>
+    <type>custom</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

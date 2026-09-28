@@ -1,0 +1,29 @@
+<template>
+    <lightning-card>
+        <div class="slds-grid slds-wrap">
+            <section class="slds-col slds-size_1-of-2 slds-p-around_medium">
+                <div class="slds-text-align_center">
+                    <img src={hourGlassPic} alt="Hour Glass" class="static-resource-img slds-icon slds-icon_medium" />
+                </div>
+                <div class="slds-text-align_center slds-m-top_medium">
+                    <lightning-button label="Check In" onclick={handleCheckin} class="slds-m-right_small" disabled={isCheckinDisabled}  variant="brand"></lightning-button>
+                   <div style="margin-top:3%;"><lightning-button label="Check Out" onclick={handleCheckout} disabled={isCheckoutDisabled}  variant="brand"></lightning-button></div>
+                </div>
+            </section>
+            <section class="slds-col slds-size_1-of-2 slds-p-around_medium">
+                <div class="slds-text-align_center">
+                    <img src={timeBreak} alt="Time Break" class="static-resource-img slds-icon slds-icon_medium" />
+                </div>
+                <div class="slds-text-align_center slds-m-top_medium">
+                    <lightning-button label="Break In" onclick={handleBreakin} class="slds-m-right_small" disabled={isBreakinDisabled}  variant="brand"></lightning-button>
+                    <div style="margin-top:3%;"><lightning-button label="Break Out" onclick={handleBreakout} disabled={isBreakoutDisabled}  variant="brand" ></lightning-button></div>
+                </div>
+            </section>
+            <template if:true={showBreakTimer}>
+                <div class="slds-align_absolute-center slds-m-top_medium">
+                    <p style="font-size:15px;font-weight:600;">Break Timer: {formattedTimer}</p>
+                </div>
+            </template>
+        </div>
+    </lightning-card>
+</template>

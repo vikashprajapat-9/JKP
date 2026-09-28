@@ -1,0 +1,118 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Lead Escalation</title>
+</head>
+
+<body style="margin:0;padding:0;background:#f4f6f9;font-family:Arial,Helvetica,sans-serif;">
+
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f6f9;padding:30px 0;">
+    <tr>
+        <td align="center">
+
+            <table width="650" cellpadding="0" cellspacing="0" style="background:#ffffff;border-radius:8px;overflow:hidden;box-shadow:0 3px 8px rgba(0,0,0,.15);">
+
+                <!-- Header -->
+                <tr>
+                    <td style="background:#d32f2f;padding:22px;text-align:center;">
+                        <h1 style="color:#ffffff;margin:0;font-size:26px;">
+                            Lead Escalation Alert
+                        </h1>
+                    </td>
+                </tr>
+
+                <!-- Content -->
+                <tr>
+                    <td style="padding:30px;">
+
+                        <p style="font-size:16px;color:#333333;">
+                            Dear <strong>Marketing Head,</strong>
+                        </p>
+
+                        <p style="font-size:15px;color:#555555;line-height:24px;">
+                            This is an automated notification to inform you that a
+                            <strong>Hot Lead</strong> has <strong>not been contacted within
+                            1 hour of assignment</strong>, resulting in an SLA breach.
+                        </p>
+
+                        <!-- Warning Box -->
+                        <table width="100%" cellpadding="12" cellspacing="0"
+                               style="background:#fff4e5;border-left:5px solid #ff9800;margin:25px 0;">
+                            <tr>
+                                <td style="font-size:15px;color:#6b4f00;">
+                                    <strong>⚠ Action Required:</strong><br>
+                                    Please review the lead immediately and ensure timely customer engagement.
+                                </td>
+                            </tr>
+                        </table>
+
+                        <!-- Lead Details -->
+                        <table width="100%" cellpadding="10" cellspacing="0"
+                               style="border-collapse:collapse;border:1px solid #dddddd;">
+
+                            <tr style="background:#f8f9fa;">
+                                <th align="left" style="border:1px solid #dddddd;">Lead Name</th>
+                                <td style="border:1px solid #dddddd;">{!Lead.Name}</td>
+                            </tr>
+
+
+                            <tr style="background:#f8f9fa;">
+                                <th align="left" style="border:1px solid #dddddd;">Phone</th>
+                                <td style="border:1px solid #dddddd;">{!Lead.Phone}</td>
+                            </tr>
+
+                            <tr>
+                                <th align="left" style="border:1px solid #dddddd;">Project</th>
+                                <td style="border:1px solid #dddddd;">{!Lead.Project__r}</td>
+                            </tr>
+
+                            <tr style="background:#f8f9fa;">
+                                <th align="left" style="border:1px solid #dddddd;">Classification</th>
+                                <td style="border:1px solid #dddddd;">{!Lead.Classification__c}</td>
+                            </tr>
+
+                            <tr>
+                                <th align="left" style="border:1px solid #dddddd;">Assigned To</th>
+                                <td style="border:1px solid #dddddd;">{!Lead.OwnerFullName}</td>
+                            </tr>
+
+                            <tr style="background:#f8f9fa;">
+                                <th align="left" style="border:1px solid #dddddd;">Assigned On</th>
+                                <td style="border:1px solid #dddddd;">{!Lead.Lead_Assigned_Date_Time__c}</td>
+                            </tr>
+
+                            <tr>
+                                <th align="left" style="border:1px solid #dddddd;">Current Status</th>
+                                <td style="border:1px solid #dddddd;">
+                                    <span style="background:#d32f2f;color:#ffffff;padding:5px 10px;border-radius:4px;">
+                                        {!Lead.Status}
+                                    </span>
+                                </td>
+                            </tr>
+
+                        </table>
+
+                        <p style="margin-top:30px;font-size:15px;color:#555555;">
+                            Kindly review this lead and take the necessary action to ensure compliance with the defined SLA.
+                        </p>
+
+                    </td>
+                </tr>
+
+                <!-- Footer -->
+                <tr>
+                    <td style="background:#f5f5f5;padding:20px;text-align:center;color:#777777;font-size:12px;">
+                        <strong>Salesforce CRM</strong><br>
+                        This is an automated notification. Please do not reply to this email.
+                    </td>
+                </tr>
+
+            </table>
+
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>

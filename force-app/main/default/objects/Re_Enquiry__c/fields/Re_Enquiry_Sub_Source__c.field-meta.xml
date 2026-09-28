@@ -1,0 +1,60 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Re_Enquiry_Sub_Source__c</fullName>
+    <label>Re-Enquiry Sub Source</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Meta Form Ads</fullName>
+                <default>false</default>
+                <label>Meta Form Ads</label>
+            </value>
+            <value>
+                <fullName>Meta Lead Ads</fullName>
+                <default>false</default>
+                <label>Meta Lead Ads</label>
+            </value>
+            <value>
+                <fullName>Website Forms</fullName>
+                <default>false</default>
+                <label>Website Forms</label>
+            </value>
+            <value>
+                <fullName>LinkedIn Ads</fullName>
+                <default>false</default>
+                <label>LinkedIn Ads</label>
+            </value>
+            <value>
+                <fullName>Channel Partner</fullName>
+                <default>false</default>
+                <label>Channel Partner</label>
+            </value>
+            <value>
+                <fullName>Partner – Offline Form</fullName>
+                <default>false</default>
+                <label>Partner – Offline Form</label>
+            </value>
+            <value>
+                <fullName>Direct Lead</fullName>
+                <default>false</default>
+                <label>Direct Lead</label>
+            </value>
+            <value>
+                <fullName>Hotline Calls</fullName>
+                <default>false</default>
+                <label>Hotline Calls</label>
+            </value>
+            <value>
+                <fullName>Others</fullName>
+                <default>false</default>
+                <label>Others</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

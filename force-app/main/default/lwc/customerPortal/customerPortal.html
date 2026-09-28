@@ -1,0 +1,111 @@
+<template>
+    <div class="portal-container">
+
+        <template if:true={isLoading}>
+            <div class="portal-loading">
+                <lightning-spinner alternative-text="Loading portal" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template if:true={hasError}>
+            <div class="portal-error">
+                <lightning-icon icon-name="utility:error" size="medium" variant="error"></lightning-icon>
+                <p class="portal-error-text">
+                    We couldn't load the portal right now. Please try again in a moment.
+                </p>
+            </div>
+        </template>
+
+        <template if:true={showPortal}>
+            <c-customer-portal_-sidebar
+                menu-items={portalData.menuItems}
+                active-page={activePage}
+                is-open={isMobileSidebarOpen}
+                onmenuselect={handleMenuSelect}
+                onclosemobilemenu={handleCloseMobileMenu}
+            ></c-customer-portal_-sidebar>
+
+            <!-- Mobile drawer backdrop (only displayed <=768px via CSS) -->
+            <template if:true={isMobileSidebarOpen}>
+                <div class="portal-backdrop" aria-hidden="true" onclick={handleCloseMobileMenu}></div>
+            </template>
+
+            <div class="portal-main">
+
+                <c-customer-portal_-header
+                    header-data={portalData.headerData}
+                    ontogglesidebar={handleToggleSidebar}
+                    onprofileclick={handleProfileClick}
+                ></c-customer-portal_-header>
+
+                <main class="portal-content">
+                    <template if:true={isProfilePage}>
+                        <c-customer-portal_-profile></c-customer-portal_-profile>
+                    </template>
+
+                    <template if:true={isDashboardPage}>
+                        <c-customer-portal_-dashboard onnavigate={handleDashboardNavigation}></c-customer-portal_-dashboard>
+                    </template>
+
+                    <template if:true={isReferralsPage}>
+                        <c-customer-portal_-referral></c-customer-portal_-referral>
+                    </template>
+
+                    <template if:true={isProjectsPage}>
+                        <c-customer-portal_-project></c-customer-portal_-project>
+                    </template>
+
+                    <template if:true={isMyPropertiesPage}>
+                        <c-customer-portal_-my-properties></c-customer-portal_-my-properties>
+                    </template>
+
+                    <template if:true={isConstructionStatusView}>
+                        <c-customer-portal_-construction-status></c-customer-portal_-construction-status>
+                    </template>
+
+                    <template if:true={isMyAccountsPage}>
+                        <c-customer-portal_-my-accounts></c-customer-portal_-my-accounts>
+                    </template>
+
+                    <template if:true={isMyVisitsPage}>
+                        <c-customer-portal_-my-visits></c-customer-portal_-my-visits>
+                    </template>
+
+                    <template if:true={isSupportPage}>
+                        <c-customer-portal_-support></c-customer-portal_-support>
+                    </template>
+
+                    <template if:true={isEventsPage}>
+                        <c-customer-portal_-events></c-customer-portal_-events>
+                    </template>
+
+                    <template if:true={isFaqsPage}>
+                        <c-customer-portal_-f-a-qs></c-customer-portal_-f-a-qs>
+                    </template>
+
+                    <template if:true={isMyDocumentsPage}>
+                        <c-customer-portal_-my-documents></c-customer-portal_-my-documents>
+                    </template>
+
+                    <template if:true={isAboutUsPage}>
+                        <c-customer-portal_-about-us></c-customer-portal_-about-us>
+                    </template>
+
+                    <template if:true={isTermsConditionsPage}>
+                        <c-customer-portal_-terms-conditions></c-customer-portal_-terms-conditions>
+                    </template>
+
+                    <template if:true={isLetsTalkPage}>
+                        <c-customer-portal_-lets-talk></c-customer-portal_-lets-talk>
+                    </template>
+                </main>
+            </div>
+
+            <!-- Moved out of the scrolling <main> so the overlay is never clipped by it.
+                 Same component, same events. -->
+            <template if:true={isLogoutModalOpen}>
+                <c-customer-portal_-logout onclose={handleLogoutModalClose} onlogout={handleLogout}></c-customer-portal_-logout>
+            </template>
+        </template>
+    </div>
+</template>

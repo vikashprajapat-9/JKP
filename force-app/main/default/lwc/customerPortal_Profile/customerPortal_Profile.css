@@ -1,0 +1,352 @@
+:host {
+    --jk-navy: #102451;
+    --jk-white: #ffffff;
+    --jk-text: #222222;
+    --jk-border: #d9d9d9;
+    --jk-green: #6b9322;
+    --jk-active-bg: #f2f7f9;
+    display: block;
+    font-family: Arial, Helvetica, sans-serif;
+    color: var(--jk-text);
+}
+
+.profile-page {
+    display: flex;
+    flex-direction: column;
+}
+
+/* ---------- Loading / error ---------- */
+.profile-loading,
+.profile-error {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    padding: 60px 24px;
+    text-align: center;
+}
+
+/* ---------- Main profile content ---------- */
+.profile-content {
+    max-width: 950px;
+}
+
+.profile-heading {
+    margin: 0 0 12px 0;
+    font-size: 30px;
+    font-weight: 700;
+    color: var(--jk-navy);
+    line-height: 1.2;
+}
+
+.profile-description {
+    margin: 0 0 32px 0;
+    font-size: 14px;
+    line-height: 1.6;
+    color: var(--jk-text);
+    max-width: 900px;
+}
+
+.profile-body {
+    display: flex;
+    gap: 48px;
+    align-items: flex-start;
+}
+
+/* ---------- Left column ---------- */
+.profile-left {
+    flex: 0 0 200px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.profile-photo-wrapper {
+    position: relative;
+    width: 160px;
+    height: 160px;
+}
+
+.profile-photo {
+    width: 160px;
+    height: 160px;
+    border-radius: 50%;
+    background: var(--jk-green);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.profile-photo-image {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.profile-photo-placeholder {
+    --sds-c-icon-color-foreground-default: var(--jk-white);
+    transform: scale(2.4);
+}
+
+.profile-photo-add {
+    position: absolute;
+    bottom: 4px;
+    right: 4px;
+    width: 36px;
+    height: 36px;
+    border-radius: 50%;
+    background: var(--jk-navy);
+    border: 3px solid var(--jk-white);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    cursor: pointer;
+    padding: 0;
+    transition: background 0.15s ease-in-out, transform 0.1s ease-in-out;
+}
+
+.profile-photo-add:hover {
+    background: #16326e;
+}
+
+.profile-photo-add:active {
+    transform: scale(0.94);
+}
+
+.profile-name {
+    margin: 16px 0 16px 0;
+    font-size: 28px;
+    font-weight: 700;
+    color: var(--jk-text);
+    line-height: 1.2;
+}
+
+.save-profile-btn {
+    width: 110px;
+    height: 32px;
+    background: var(--jk-navy);
+    color: var(--jk-white);
+    border: none;
+    border-radius: 7px;
+    font-size: 13px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    transition: background 0.15s ease-in-out;
+}
+
+.save-profile-btn:hover {
+    background: #16326e;
+}
+
+/* ---------- Right column ---------- */
+.profile-right {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.section-heading {
+    margin: 0 0 20px 0;
+    font-size: 18px;
+    font-weight: 700;
+    color: var(--jk-navy);
+}
+
+.section-heading_account {
+    margin-top: 12px;
+}
+
+.field-row {
+    display: flex;
+    gap: 32px;
+    margin-bottom: 20px;
+}
+
+.field-group {
+    flex: 1 1 0;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+}
+
+.field-group_empty {
+    visibility: hidden;
+}
+
+.field-label {
+    font-size: 13px;
+    font-weight: 600;
+    color: var(--jk-text);
+    margin-bottom: 8px;
+}
+
+.field-input,
+.field-select,
+.phone-number-input,
+.password-field {
+    height: 44px;
+    border: 1px solid var(--jk-border);
+    border-radius: 7px;
+    padding: 0 14px;
+    font-size: 14px;
+    font-family: inherit;
+    color: var(--jk-text);
+    background: var(--jk-white);
+    box-sizing: border-box;
+    width: 100%;
+}
+
+.field-input:focus,
+.field-select:focus,
+.phone-number-input:focus,
+.password-field:focus {
+    outline: none;
+    border-color: var(--jk-navy);
+}
+
+/* Dropdown */
+.select-wrapper {
+    position: relative;
+}
+
+.field-select {
+    appearance: none;
+    -webkit-appearance: none;
+    -moz-appearance: none;
+    cursor: pointer;
+}
+
+.select-chevron {
+    position: absolute;
+    right: 14px;
+    top: 50%;
+    transform: translateY(-50%);
+    --sds-c-icon-color-foreground-default: var(--jk-text);
+    pointer-events: none;
+}
+
+/* Phone number */
+.phone-input {
+    display: flex;
+    align-items: center;
+    height: 44px;
+    border: 1px solid var(--jk-border);
+    border-radius: 7px;
+    padding: 0 14px;
+    gap: 8px;
+    background: var(--jk-white);
+}
+
+.phone-flag {
+    font-size: 16px;
+    line-height: 1;
+}
+
+.phone-code {
+    font-size: 14px;
+    color: var(--jk-text);
+}
+
+.phone-divider {
+    width: 1px;
+    height: 20px;
+    background: var(--jk-border);
+    margin-right: 4px;
+}
+
+.phone-number-input {
+    border: none;
+    padding: 0;
+    height: auto;
+    flex: 1 1 auto;
+}
+
+/* Password */
+.password-input {
+    display: flex;
+    align-items: center;
+    height: 44px;
+    border: 1px solid var(--jk-border);
+    border-radius: 7px;
+    padding: 0 14px;
+    background: var(--jk-white);
+}
+
+.password-field {
+    border: none;
+    padding: 0;
+    height: auto;
+    flex: 1 1 auto;
+    background: transparent;
+}
+
+.change-link {
+    background: none;
+    border: none;
+    color: var(--jk-navy);
+    font-size: 13px;
+    font-weight: 600;
+    font-family: inherit;
+    cursor: pointer;
+    padding: 0;
+    white-space: nowrap;
+}
+
+.change-link:hover {
+    text-decoration: underline;
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1024px) {
+    .profile-body {
+        gap: 32px;
+    }
+
+    .field-row {
+        gap: 20px;
+    }
+}
+
+@media (max-width: 768px) {
+    .profile-body {
+        flex-direction: column;
+        align-items: center;
+    }
+
+    .profile-left {
+        flex: none;
+    }
+
+    .profile-right {
+        width: 100%;
+    }
+
+    .field-row {
+        flex-direction: column;
+        gap: 16px;
+        margin-bottom: 16px;
+    }
+
+    .field-group_empty {
+        display: none;
+    }
+}
+
+@media (max-width: 480px) {
+    .profile-heading {
+        font-size: 24px;
+    }
+
+    .profile-name {
+        font-size: 22px;
+    }
+
+    .profile-photo,
+    .profile-photo-wrapper {
+        width: 130px;
+        height: 130px;
+    }
+}
