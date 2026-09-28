@@ -3,6 +3,7 @@ import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 import searchRecords from '@salesforce/apex/SiteVisitController.searchRecords';
 import createVisit from '@salesforce/apex/SiteVisitController.createVisit';
+import getPicklistValues from '@salesforce/apex/Utility.getPicklistValues';
 
 export default class SiteVisitPortal extends LightningElement {
     searchKey = '';
@@ -15,18 +16,29 @@ export default class SiteVisitPortal extends LightningElement {
     selectedLeadId;
     selectedOpportunityId;
     visit = {};
-    requirementOptions = [
-        { label: 'Residential', value: 'Residential' },
-        { label: 'Commercial', value: 'Commercial' }
-    ];
-    projectOptions = [
-        { label: 'Project A', value: 'Project A' },
-        { label: 'Project B', value: 'Project B' }
-    ];
+    requirementOptions = [];
 
-    //===================================
-    // Search Box
-    //===================================
+    connectedCallback() {
+        debugger;
+        this.loadPicklist('Visit__c', 'Requirement_Type__c', 'requirementOptions');
+    }
+
+    loadPicklist(objectApiName, fieldApiName, propertyName) {
+
+        getPicklistValues({
+            objectApiName: objectApiName,
+            fieldApiName: fieldApiName
+        })
+        .then(result => {
+            this[propertyName] = result;
+        })
+        .catch(error => {
+            console.error(
+                'Error loading ' + fieldApiName,
+                error
+            );
+        });
+    }
 
     handleSearchChange(event){
         this.searchKey = event.target.value;
@@ -120,8 +132,8 @@ export default class SiteVisitPortal extends LightningElement {
                     this.visit.Remarks__c,
                 Requirement_Type__c:
                     this.visit.Requirement_Type__c,
-                Project_Name__c:
-                    this.visit.Project_Name__c
+                Project__c:
+                    this.visit.Project__c
             };
             await createVisit({
                 leadId : this.selectedLeadId,

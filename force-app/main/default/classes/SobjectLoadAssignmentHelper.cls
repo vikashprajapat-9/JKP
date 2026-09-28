@@ -1,5 +1,4 @@
 public class SobjectLoadAssignmentHelper {
-    // LAKSHMI
     Public Static Map<Id, Assignment_Group__c> rv_MapOfAGIdByAG = new Map<Id, Assignment_Group__c>();
     Public Static Map<Id, List<Assignment_Group_Member__c>> rv_MapOfAGIDByASMList = new Map<Id, List<Assignment_Group_Member__c>>();
       //MAIN ASSIGNMENT METHOD
@@ -8,6 +7,23 @@ public class SobjectLoadAssignmentHelper {
         System.debug('GroupId ==> ' + GroupId);
         System.debug('QueueId ==> ' + queueId);
         System.debug('sObjectList ==> ' + sObjectList);
+        
+         // CHECK BUSINESS HOURS
+        BusinessHours defaultBH = [SELECT Id, TimeZoneSidKey FROM BusinessHours WHERE IsDefault = true LIMIT 1];
+        Datetime currentTime = System.now();
+        Boolean isWithinBusinessHours = BusinessHours.isWithin(defaultBH.Id, currentTime);
+        System.debug('========== BUSINESS HOURS CHECK ==========');
+        System.debug('Current GMT Time ==> ' + currentTime);
+        System.debug('Business Hours Id ==> ' + defaultBH.Id);
+        System.debug('Business Hours Time Zone ==> ' + defaultBH.TimeZoneSidKey);
+        System.debug('Is Within Business Hours ==> ' + isWithinBusinessHours);
+    
+        if (!isWithinBusinessHours) {
+            System.debug( 'OUTSIDE BUSINESS HOURS ==> LEAD ASSIGNMENT SKIPPED');
+            return;
+        }
+        System.debug('INSIDE BUSINESS HOURS ==> LEAD ASSIGNMENT CONTINUES' );    
+        System.debug('================ ASSIGNMENT START ================');
 
       //  Reassign_Lead__c reassignSetting =  Reassign_Lead__c.getInstance();
        // Boolean isRedistributionEnabled =   reassignSetting.Re_Distribute_Lead__c == true;
@@ -16,6 +32,7 @@ public class SobjectLoadAssignmentHelper {
         //GET PREVIOUS OWNERS
         
         Map<Id, Set<Id>> previousOwnersByLead = new Map<Id, Set<Id>>();
+        Set<Id> leadsRequiringManualRedistribution = new Set<Id>();
         if (isRedistributionEnabled) {
             Set<Id> leadIds =  new Set<Id>();
             for (SObject objectRec : sObjectList) {
@@ -42,7 +59,7 @@ public class SobjectLoadAssignmentHelper {
 
         rv_MapOfAGIdByAG = SobjectLoadAssignmentUtility.GetassigmentGroup();
         System.debug( 'rv_MapOfAGIdByAG ==> ' + rv_MapOfAGIdByAG );
-        SobjectLoadAssignment.GetAssignMentGroupMemberAndAssignmentGroup();
+       // SobjectLoadAssignment.GetAssignMentGroupMemberAndAssignmentGroup();
     
         Map<Id, List<Assignment_Group_Member__c>> assignmentGroupMembers =  SobjectLoadAssignmentUtility.assignmentGroupMembers();
         if (  assignmentGroupMembers.containsKey(GroupId) &&
@@ -72,7 +89,33 @@ public class SobjectLoadAssignmentHelper {
         if (groupMembers != null) { 
             totalMembers = groupMembers.size();
         }
-        System.debug(  'Total Members ==> ' +  totalMembers  );
+        System.debug(  'Total Members ==> ' +  totalMembers  );    
+        Assignment_Group__c currentAssignmentGroup = rv_MapOfAGIdByAG.get(GroupId);
+      
+        Integer leadAssignmentTimeWindow = 30;
+        Integer maxLeadAssignmentCount = 10;     
+        if (currentAssignmentGroup != null) {
+            if (currentAssignmentGroup.Lead_Assignment_Time_Window__c != null) {
+                leadAssignmentTimeWindow =Integer.valueOf(String.valueOf( currentAssignmentGroup.Lead_Assignment_Time_Window__c));
+            }      
+            if (currentAssignmentGroup.Max_Lead_Assignment_Count__c != null) {
+                maxLeadAssignmentCount =Integer.valueOf(String.valueOf(currentAssignmentGroup.Max_Lead_Assignment_Count__c));
+            }
+        }
+        
+        System.debug('Lead Assignment Time Window ==> ' +leadAssignmentTimeWindow +' minutes');      
+        System.debug('Max Lead Assignment Count ==> ' + maxLeadAssignmentCount  );
+        Set<Id> memberUserIds = new Set<Id>();
+        if (groupMembers != null) {        
+            for (Assignment_Group_Member__c agm : groupMembers) {        
+                if (agm.Group_Member__c != null) {
+                    memberUserIds.add(agm.Group_Member__c);
+                }
+            }
+        }
+        
+        Map<Id, Integer> recentAssignmentCountByUser = getRecentLeadAssignmentCount(memberUserIds,leadAssignmentTimeWindow );
+        System.debug( 'Recent Lead Assignment Count ==> ' + recentAssignmentCountByUser);
 
         Map<Id, Integer> caseCounts = SobjectLoadAssignmentUtility.getCaseCount(GroupId);
         Map<Id, Integer> inDisLeadCounts = SobjectLoadAssignmentUtility.getInDiscussionLeadsCount(GroupId);
@@ -126,8 +169,10 @@ public class SobjectLoadAssignmentHelper {
                         if ( inDisLeadCounts.containsKey( agm.Id ) ) {
                             inDiscussionCount = inDisLeadCounts.get( agm.Id );
                         }
-                        Boolean hasHotLeadThres = (isHot &&  agm.In_Discussion_Lead_Threshold__c != null &&
-                                agm.In_Discussion_Lead_Threshold__c >inDiscussionCount  )  ||  !isHot;
+                       // Boolean hasHotLeadThres = (isHot &&  agm.In_Discussion_Lead_Threshold__c != null &&
+                                //agm.In_Discussion_Lead_Threshold__c >inDiscussionCount  )  ||  !isHot;
+                        Boolean hasHotLeadThres = !isHot || agm.In_Discussion_Lead_Threshold__c == null ||
+                                agm.In_Discussion_Lead_Threshold__c > inDiscussionCount;
                         
                         // SLA1 STATUS                    
                         Boolean agmSLA1Breached = false;
@@ -145,11 +190,20 @@ public class SobjectLoadAssignmentHelper {
                         if (isHot && (agmSLA1Breached ||sla2Breached)) {
                             slaEligible = false;
                         }
+                        //
+                        Integer recentAssignmentCount = 0;                        
+                        if (agm.Group_Member__c != null &&
+                            recentAssignmentCountByUser.containsKey(agm.Group_Member__c)) {                     
+                            recentAssignmentCount =recentAssignmentCountByUser.get(agm.Group_Member__c);
+                        }                        
+                        Boolean leadAssignmentLimitAvailable = recentAssignmentCount < maxLeadAssignmentCount;                       
+                        System.debug( '30 MIN LEAD LIMIT ==> ' +'AGM=' + agm.Id +', User=' + agm.Group_Member__c + ', Assigned In Window=' + recentAssignmentCount + ', Max Allowed=' + maxLeadAssignmentCount +', Eligible=' + leadAssignmentLimitAvailable);
+                       
                         //STATUS CHECK
                         Boolean basicEligible =  agm.Max_Sobject_Assignment_Count__c != null &&
                             agm.Max_Sobject_Assignment_Count__c > caseCounts.get(agm.Id)  &&
                             agm.BreakTime_Started__c == false  &&
-                            !agm.Out_Of_Office__c  && agm.Active__c == true  &&  hasHotLeadThres;
+                            !agm.Out_Of_Office__c  && agm.Active__c == true  &&  hasHotLeadThres && leadAssignmentLimitAvailable;
                             
                             //REDISTRIBUTION CHECK
                         Boolean alreadyAssignedToThisUser =false;
@@ -179,13 +233,14 @@ public class SobjectLoadAssignmentHelper {
                     }
                     if (eligibleAGMs.isEmpty()) {
                         System.debug( 'NO ELIGIBLE AGM ==> Lead remains in Queue. ' +  'Lead=' + objectRec.get('Id') +  ', Classification=' + leadStatus );
+                        leadsRequiringManualRedistribution.add((Id)objectRec.get('Id'));
                         continue;
                     }
                     System.debug( 'Eligible AGM Count ==> ' + eligibleAGMs.size() );
                     
                     Assignment_Group_Member__c selectedAGM = findNextEligibleAGM( eligibleAGMs,lastAllocatedId, numbers );
                     if (selectedAGM == null) {
-                        System.debug('NO ROUND ROBIN AGM FOUND ==> ' +  'Lead remains in Queue. Lead=' + objectRec.get('Id')  );
+                        System.debug('NO ROUND ROBIN AGM FOUND ==> ' +  'Lead remains in Queue. Lead=' + objectRec.get('Id'));
                         continue;
                     }
 
@@ -205,7 +260,16 @@ public class SobjectLoadAssignmentHelper {
                         if (  objectRec.get('Status') == 'New' ||objectRec.get('Status') == null ) {
                             objectRec.put('Status','Assigned' );
                         }
-                        objectRec.put( 'Lead_Assigned_Date_Time__c',  Datetime.now()  );
+                        objectRec.put( 'Lead_Assigned_Date_Time__c',  Datetime.now());
+                        Id selectedUserId = selectedAGM.Group_Member__c;                    
+                        if (selectedUserId != null) {                   
+                            if (!recentAssignmentCountByUser.containsKey(selectedUserId)) {                    
+                                recentAssignmentCountByUser.put(selectedUserId, 0);
+                            }                    
+                            recentAssignmentCountByUser.put(selectedUserId, recentAssignmentCountByUser.get(selectedUserId) + 1);                    
+                            System.debug( 'UPDATED RECENT COUNT ==> ' + 'User=' + selectedUserId +', Count=' + recentAssignmentCountByUser.get(selectedUserId ));
+                        }
+
                         totalCaseCount++;
                         caseCounts.put(  selectedAGM.Id, caseCounts.get( selectedAGM.Id ) + 1  );
                         lastRId =(Integer)selectedAGM.Assignment_Id__c;
@@ -240,6 +304,10 @@ public class SobjectLoadAssignmentHelper {
                             }
                         }
                     }
+                }
+                if (!leadsRequiringManualRedistribution.isEmpty()) {
+                      System.debug('Leads requiring manual redistribution ==> ' +  leadsRequiringManualRedistribution );
+                    notifySSMForUnassignedLeads( leadsRequiringManualRedistribution);
                 }
 
             } else {
@@ -303,7 +371,116 @@ public class SobjectLoadAssignmentHelper {
         }
         return sortedIds[0];
     }
-
+    
+   /* private static Map<Id, Integer> getRecentLeadAssignmentCount(Set<Id> userIds,Integer timeWindowMinutes) {  
+        Map<Id, Integer> recentCountByUser = new Map<Id, Integer>();
+        if (userIds == null || userIds.isEmpty() || timeWindowMinutes == null || timeWindowMinutes <= 0) {
+            return recentCountByUser;
+        }
+        //Datetime windowStart = Datetime.now().addMinutes(-timeWindowMinutes);
+        BusinessHours defaultBH = [ SELECT Id, TimeZoneSidKey FROM BusinessHours WHERE IsDefault = true LIMIT 1 ];
+        Datetime nowTime = System.now();
+        // Convert current time to Business Hours timezone
+        String localDateTimeString =nowTime.format('yyyy-MM-dd HH:mm:ss',defaultBH.TimeZoneSidKey  );
+        Datetime localNow = Datetime.valueOf(localDateTimeString);
+        Integer currentMinute = localNow.minute();
+    
+        Integer slotMinute;
+    
+        if (currentMinute < 30) {
+            slotMinute = 0;
+        } else {
+            slotMinute = 30;
+        }
+    
+        Datetime localSlotStart = Datetime.newInstance( localNow.date(),Time.newInstance( localNow.hour(),slotMinute, 0,0) );
+        Datetime localSlotEnd = localSlotStart.addMinutes(timeWindowMinutes);
+        // Convert local slot times back to GMT
+        Long startOffset = TimeZone.getTimeZone(defaultBH.TimeZoneSidKey) .getOffset(nowTime);
+        Datetime slotStart = localSlotStart.addMilliseconds(-startOffset);
+        Datetime slotEnd =localSlotEnd.addMilliseconds(-startOffset);
+            
+        System.debug('========== 30 MIN LEAD ASSIGNMENT CHECK ==========');
+        System.debug('Current GMT Time ==> ' + nowTime);
+        System.debug('Business Hours Time Zone ==> ' + defaultBH.TimeZoneSidKey);
+        System.debug('Local Business Time ==> ' + localNow);
+        System.debug( 'Current Minute ==> ' + currentMinute);
+        System.debug( 'Slot Start Local ==> ' + localSlotStart );
+        System.debug( 'Slot End Local ==> ' + localSlotEnd );    
+        System.debug('Slot Start GMT ==> ' + slotStart  );
+        System.debug( 'Slot End GMT ==> ' +slotEnd );    
+        System.debug( 'Users Being Checked ==> ' + userIds );
+        for (Lead_Assignment_History__c historyRec : [
+            SELECT Id,Lead_Assigned_To__c,CreatedDate
+            FROM Lead_Assignment_History__c
+            WHERE Lead_Assigned_To__c IN :userIds
+            AND CreatedDate >= :slotStart
+            AND CreatedDate < :slotEnd
+        ]) {
+            Id userId = historyRec.Lead_Assigned_To__c;
+            if (!recentCountByUser.containsKey(userId)) {
+                recentCountByUser.put(userId, 0);
+            }
+            recentCountByUser.put(userId,recentCountByUser.get(userId) + 1);
+            System.debug('HISTORY FOUND ==> User=' + userId +', HistoryId=' + historyRec.Id +', CreatedDate=' + historyRec.CreatedDate);
+        }
+        System.debug('FINAL 30 MIN ASSIGNMENT COUNTS ==> ' +  recentCountByUser);
+        return recentCountByUser;
+    }*/
+    private static Map<Id, Integer> getRecentLeadAssignmentCount( Set<Id> userIds, Integer timeWindowMinutes) {
+        Map<Id, Integer> assignmentCountByUser = new Map<Id, Integer>();
+        if ( userIds == null || userIds.isEmpty() ||timeWindowMinutes == null || timeWindowMinutes <= 0) {
+            return assignmentCountByUser;
+        }
+        BusinessHours defaultBH = [  SELECT Id, TimeZoneSidKey FROM BusinessHours  WHERE IsDefault = true LIMIT 1 ];
+        Datetime nowTime = System.now();
+        String localDateTimeString = nowTime.format(  'yyyy-MM-dd HH:mm:ss', defaultBH.TimeZoneSidKey );
+        Datetime localNow = Datetime.valueOfGmt(localDateTimeString);
+        Integer currentMinute = localNow.minute();
+        Integer slotMinute = currentMinute < 30 ? 0 : 30;
+        Datetime localSlotStart = Datetime.newInstance(localNow.date(),  Time.newInstance(localNow.hour(),  slotMinute,0, 0 ));
+        Datetime localSlotEnd =localSlotStart.addMinutes(timeWindowMinutes);
+        TimeZone businessTimeZone = TimeZone.getTimeZone(defaultBH.TimeZoneSidKey);
+        Long offsetMillis = businessTimeZone.getOffset(nowTime);
+        Integer offsetSeconds = Integer.valueOf(offsetMillis / 1000);
+        Datetime slotStart = localSlotStart.addSeconds(-offsetSeconds);
+        Datetime slotEnd = localSlotEnd.addSeconds(-offsetSeconds);
+    
+        System.debug( '========== 30 MIN LEAD ASSIGNMENT CHECK =========='  );
+        System.debug( 'Current UTC Time ==> ' + nowTime );
+        System.debug( 'Business Hours Time Zone ==> ' +  defaultBH.TimeZoneSidKey );
+        System.debug( 'Business Hours Offset Seconds ==> ' +  offsetSeconds  );
+        System.debug( 'Local Business Time ==> ' +  localDateTimeString );
+        System.debug(  'Current Minute ==> ' +currentMinute);
+        System.debug( 'Slot Start Local ==> ' + localSlotStart  );
+        System.debug(  'Slot End Local ==> ' +localSlotEnd );
+        System.debug( 'Slot Start UTC ==> ' +slotStart  );
+        System.debug( 'Slot End UTC ==> ' +  slotEnd  );
+        System.debug( 'Users Being Checked ==> ' +  userIds);
+    
+        for (Lead leadRec : [ SELECT Id, AGM_Related_to__c,Lead_Assigned_Date_Time__c,Pre_Sales_Team_Member__c FROM Lead
+            WHERE Pre_Sales_Team_Member__c IN :userIds
+            AND Lead_Assigned_Date_Time__c >= :slotStart
+            AND Lead_Assigned_Date_Time__c < :slotEnd
+        ]) {
+             System.debug(leadRec.Id + ' | ' + leadRec.Lead_Assigned_Date_Time__c);
+            Id userId = leadRec.Pre_Sales_Team_Member__c;
+            if (userId == null) {
+                continue;
+            }
+            Integer currentCount =assignmentCountByUser.containsKey(userId)? assignmentCountByUser.get(userId)  : 0;
+            currentCount++;
+            assignmentCountByUser.put( userId, currentCount );
+            System.debug('LEAD FOUND IN CURRENT SLOT ==> ' + 'Lead=' + leadRec.Id + ', User=' + userId +  ', AssignedTime=' + leadRec.Lead_Assigned_Date_Time__c );
+        }
+        for (Id userId : userIds) {
+            if (!assignmentCountByUser.containsKey(userId)) {
+                assignmentCountByUser.put(userId, 0);
+            }
+        }
+        System.debug( 'FINAL 30 MIN ASSIGNMENT COUNTS ==> ' + assignmentCountByUser );
+        return assignmentCountByUser;
+    }
     private static Map<Id, Boolean> getAGMSLA1BreachStatus(String GroupId ) {
         Map<Id, Boolean> agmSLA1BreachMap = new Map<Id, Boolean>();
         List<Assignment_Group_Member__c> agmList = SobjectLoadAssignment.rv_MapOfAGIDByASMList.get(GroupId);
@@ -323,12 +500,11 @@ public class SobjectLoadAssignmentHelper {
             }
         }
        //Default SLA1 period = 1 month
-        Integer periodMonths = 1;
-        for (   Assignment_Group_Member__c agm :  agmList ) {
-            if (  agm.SLA1_Period__c != null  ) {
-                periodMonths =Integer.valueOf( String.valueOf(agm.SLA1_Period__c)  );
-                break;
-            }
+        Integer periodMonths = 1;       
+        Assignment_Group__c assignmentGroup =rv_MapOfAGIdByAG.get(GroupId);        
+        if (assignmentGroup != null &&
+            assignmentGroup.SLA1_Period__c != null) {        
+            periodMonths = Integer.valueOf(String.valueOf(assignmentGroup.SLA1_Period__c));
         }
         Date periodStartDate =  Date.today().addMonths(-periodMonths);
         Datetime periodStartDateTime = Datetime.newInstance(periodStartDate,Time.newInstance(0,0,0, 0) );
@@ -358,7 +534,10 @@ public class SobjectLoadAssignmentHelper {
             Integer breached = sla1BreachedByAGM.containsKey( agm.Id  )? sla1BreachedByAGM.get(agm.Id)  : 0;
             Boolean sla1Breached = false;
             if (totalAssigned > 0) {
-                Decimal thresholdPercentage = agm.SLA1_Threshold_Percentage__c != null ?  agm.SLA1_Threshold_Percentage__c : 10;
+               Decimal thresholdPercentage = 10;
+                if (assignmentGroup != null && assignmentGroup.SLA1_Threshold_Percentage__c != null) {                
+                    thresholdPercentage = assignmentGroup.SLA1_Threshold_Percentage__c;
+                }
                 Decimal breachPercentage = (Decimal.valueOf(breached) / Decimal.valueOf(totalAssigned))* 100;
                 sla1Breached =  breachPercentage >= thresholdPercentage;
 
@@ -397,12 +576,10 @@ public class SobjectLoadAssignmentHelper {
         }
        //SLA2 period = 2 months
     
-        Integer sla2PeriodMonths = 2;
-        for ( Assignment_Group_Member__c agm : agmList ) {
-            if (  agm.SLA2_Period__c != null ) {
-                sla2PeriodMonths = Integer.valueOf( String.valueOf(   agm.SLA2_Period__c   )   );
-                break;
-            }
+        Integer sla2PeriodMonths = 2;            
+        Assignment_Group__c assignmentGroup = rv_MapOfAGIdByAG.get(GroupId);            
+        if (assignmentGroup != null & assignmentGroup.SLA2_Period__c != null) {           
+            sla2PeriodMonths =Integer.valueOf(String.valueOf( assignmentGroup.SLA2_Period__c));
         }
         Date periodStartDate = Date.today().addMonths(-sla2PeriodMonths  );
         Datetime periodStartDateTime = Datetime.newInstance( periodStartDate,Time.newInstance( 0,  0, 0,0  ) );
@@ -440,7 +617,10 @@ public class SobjectLoadAssignmentHelper {
             Boolean sla2Breached = false;
 
             if (totalAssigned > 0) {
-                Decimal thresholdPercentage = agm.SLA2_Threshold_Percentage__c != null ? agm.SLA2_Threshold_Percentage__c: 10;
+                Decimal thresholdPercentage = 10;                
+                if (assignmentGroup != null && assignmentGroup.SLA2_Threshold_Percentage__c != null) {                
+                    thresholdPercentage = assignmentGroup.SLA2_Threshold_Percentage__c;
+                }
                 Decimal breachPercentage = (Decimal.valueOf( breached ) / Decimal.valueOf(totalAssigned) ) * 100;
 
                 sla2Breached = breachPercentage >= thresholdPercentage;
@@ -460,5 +640,180 @@ public class SobjectLoadAssignmentHelper {
             sla2BreachMap.put(agm.Id,sla2Breached);
         }
         return sla2BreachMap;
+    }
+
+    // private static void notifySSMForUnassignedLeads(Set<Id> leadIds) {
+    //     if (leadIds == null || leadIds.isEmpty()) {
+    //         return;
+    //     }
+    //     List<Lead> leads = [SELECT Id, Name, Lead_Classification__c, Status, AG_Related_to__c FROM Lead WHERE Id IN :leadIds];
+    //     if (leads.isEmpty()) {
+    //         return;
+    //     }
+    //     EmailTemplate emailTemplate = [ SELECT Id, Subject, HtmlValue, Body FROM EmailTemplate WHERE DeveloperName = 'Lead_Assignment_No_Eligible_Advisor' LIMIT 1 ];
+    //     List<User> ssmUsers = [SELECT Id, FirstName, LastName, Email FROM User  WHERE IsActive = true AND UserRole.Name = 'SSM' ];
+    //     if (ssmUsers.isEmpty()) {
+    //         System.debug('No active SSM users found.');
+    //         return;
+    //     }
+    //     List<Messaging.SingleEmailMessage> emails = new List<Messaging.SingleEmailMessage>();
+    //     List<Messaging.CustomNotification> notifications =new List<Messaging.CustomNotification>();
+    //     String baseUrl = URL.getSalesforceBaseUrl().toExternalForm();
+    //     for (Lead leadRec : leads) {
+    //         String leadUrl = baseUrl + '/' + leadRec.Id;
+    //         for (User ssm : ssmUsers) {
+    //             if (String.isBlank(ssm.Email)) {
+    //                 continue;
+    //             }
+    //             String subject = emailTemplate.Subject;
+    //             subject = subject.replace('{!Lead.Name}',leadRec.Name != null ? leadRec.Name : '' );
+    //             String body = emailTemplate.HtmlValue;
+    //             if (String.isBlank(body)) {
+    //                 body = emailTemplate.Body;
+    //             }
+
+    //             body = body.replace('{!User.FirstName}', ssm.FirstName != null ? ssm.FirstName : '' );
+    //             body = body.replace('{!Lead.Name}',leadRec.Name != null ? leadRec.Name : '');
+    //             body = body.replace('{!Lead.Id}', String.valueOf(leadRec.Id));
+    //             body = body.replace('{!Lead.Lead_Classification__c}', leadRec.Lead_Classification__c != null ? leadRec.Lead_Classification__c : '' );
+    //             body = body.replace('{!Lead.Status}', leadRec.Status != null? leadRec.Status : '' );
+    //             body = body.replace('{!Lead.AG_Related_to__c}',leadRec.AG_Related_to__c != null ? String.valueOf(leadRec.AG_Related_to__c)  : '' );
+    //             body = body.replace( '{!Lead.Link}', '<a href="' + leadUrl + '">View Lead</a>'  );
+
+    //             Messaging.SingleEmailMessage email =  new Messaging.SingleEmailMessage();
+    //             email.setToAddresses(  new List<String>{ ssm.Email });
+    //             email.setSubject(subject);
+    //             email.setHtmlBody(body);
+    //             emails.add(email);
+    //         }
+    //     }
+    //     if (!emails.isEmpty()) {
+    //         Messaging.sendEmail(emails);
+    //     }
+    // }
+
+    private static void notifySSMForUnassignedLeads(Set<Id> leadIds) {
+        if (leadIds == null || leadIds.isEmpty()) {
+            return;
+        }
+        Id ssmUserId = '005f6000004dGI1AAM';
+        User ssmUser = [ SELECT Id, FirstName, LastName, Email, IsActive FROM User WHERE Id = :ssmUserId  AND IsActive = true  LIMIT 1 ];
+        if (String.isBlank(ssmUser.Email)) {
+            System.debug( 'SSM does not have an email address. UserId=' + ssmUserId );
+            return;
+        }
+        EmailTemplate template = [ SELECT Id, DeveloperName, Subject, Body, HtmlValue
+            FROM EmailTemplate
+            WHERE DeveloperName = 'Lead_Assignment_No_Eligible_Advisor'
+            LIMIT 1 ];
+
+        List<Lead> leads = [ SELECT Id, Name, Lead_Classification__c, Status, AG_Related_to__c FROM Lead WHERE Id IN :leadIds ];
+        Id notificationTypeId;
+        try {
+            notificationTypeId = [ SELECT Id FROM CustomNotificationType  WHERE DeveloperName = 'Lead_Assignment_Alert' LIMIT 1  ].Id;
+        } catch (Exception e) {
+            System.debug( 'Custom Notification is not available. ' + 'Email notification will still be sent. Error=' + e.getMessage());
+        }
+        List<Messaging.SingleEmailMessage> emailMessages = new List<Messaging.SingleEmailMessage>();
+        for (Lead leadRec : leads) {
+            String leadUrl = URL.getOrgDomainUrl().toExternalForm() +  '/' + leadRec.Id;
+            String body;
+            if (!String.isBlank(template.HtmlValue)) {
+                body = template.HtmlValue;
+            } else {
+                body = template.Body;
+            }
+            body = body.replace('{!User.FirstName}', ssmUser.FirstName == null ? '' : ssmUser.FirstName);
+            body = body.replace('{!Lead.Name}', leadRec.Name == null ? '' : leadRec.Name);
+            body = body.replace('{!Lead.Id}',String.valueOf(leadRec.Id));
+            body = body.replace( '{!Lead.Lead_Classification__c}', leadRec.Lead_Classification__c == null ? ''
+                    : leadRec.Lead_Classification__c);
+            body = body.replace('{!Lead.Status}', leadRec.Status == null ? '' : leadRec.Status);
+            body = body.replace('{!Lead.AG_Related_to__c}',leadRec.AG_Related_to__c == null ? '': leadRec.AG_Related_to__c );
+            body = body.replace('{!Lead.Link}','<a href="' + leadUrl + '">View Lead</a>');
+
+            String subject = template.Subject;
+            if (String.isBlank(subject)) {
+                subject = 'Lead Assignment Requires Manual Action';
+            }
+            subject = subject.replace( '{!User.FirstName}',ssmUser.FirstName == null ? '' : ssmUser.FirstName );
+            subject = subject.replace( '{!Lead.Name}', leadRec.Name == null ? '' : leadRec.Name  );
+            
+            Messaging.SingleEmailMessage email = new Messaging.SingleEmailMessage();
+            email.setToAddresses( new List<String>{ ssmUser.Email});
+            email.setSubject(subject);
+            email.setHtmlBody(body);
+            emailMessages.add(email);
+
+            if (notificationTypeId != null) {
+                try {
+                    Messaging.CustomNotification notification = new Messaging.CustomNotification();
+                    notification.setNotificationTypeId(notificationTypeId );
+                    notification.setTitle( 'Lead Assignment Requires Manual Action' );
+                    notification.setBody('No eligible advisor was found for Lead ' + leadRec.Name +
+                        '. Please manually redistribute this lead.' );
+                    notification.setTargetId(leadRec.Id);
+                    //notification.setRecipientIds( new Set<String>{String.valueOf(ssmUserId)});
+                    notification.send(new Set<String>{ssmUserId});
+                    System.debug('Custom notification sent for Lead=' + leadRec.Id);
+
+                } catch (Exception e) {
+                    System.debug('Custom notification failed for Lead=' + leadRec.Id + '. Error=' + e.getMessage());
+                }
+            }
+        }
+        if (!emailMessages.isEmpty()) {
+            Messaging.SendEmailResult[] results = Messaging.sendEmail(emailMessages, false);
+            for (Integer i = 0; i < results.size(); i++) {
+                if (!results[i].isSuccess()) {
+                    for ( Messaging.SendEmailError err : results[i].getErrors()  ) {
+                        System.debug( 'SSM email failed: ' + err.getMessage());
+                    }
+                } else {
+                    System.debug('SSM email sent successfully.');
+                }
+            }
+        }
+    }
+    public static void executeOpportunityAssignment(List<Opportunity> opportunities, String groupId) {
+        if (opportunities == null || opportunities.isEmpty()) {
+            return;
+        }
+        Assignment_Group__c assignmentGroup = [SELECT Id, Last_Allocated_RRid__c FROM Assignment_Group__c WHERE Id = :groupId LIMIT 1];
+        List<Assignment_Group_Member__c> members = [SELECT Id,Assignment_Group__c,Assignment_Id__c,Group_Member__c,Active__c,Out_Of_Office__c,BreakTime_Started__c
+            FROM Assignment_Group_Member__c WHERE Assignment_Group__c = :groupId AND Active__c = true AND Out_Of_Office__c = false AND BreakTime_Started__c = false ORDER BY Assignment_Id__c];
+        if (members.isEmpty()) {
+            return;
+        }
+        Integer lastRRId = assignmentGroup.Last_Allocated_RRid__c == null ? 0 : Integer.valueOf(String.valueOf(assignmentGroup.Last_Allocated_RRid__c));
+        Integer memberIndex = 0;
+        for (Integer i = 0; i < members.size(); i++) {
+            Integer assignmentId = Integer.valueOf(
+                String.valueOf( members[i].Assignment_Id__c));
+            if (assignmentId > lastRRId) {
+                memberIndex = i;
+                break;
+            }
+        }
+        for (Opportunity opp : opportunities) {
+            if (opp.StageName != 'SPA Creation') {
+                continue;
+            }
+            Assignment_Group_Member__c selectedMember = members[memberIndex];
+            if (selectedMember.Group_Member__c == null) {
+                continue;
+            }
+            Id csUserId = selectedMember.Group_Member__c;
+            opp.OwnerId = csUserId;
+            opp.CS_Member__c = csUserId;
+            memberIndex++;
+            if (memberIndex >= members.size()) {
+                memberIndex = 0;
+            }
+            lastRRId = Integer.valueOf(String.valueOf(selectedMember.Assignment_Id__c));
+        }
+        assignmentGroup.Last_Allocated_RRid__c = lastRRId;
+        update assignmentGroup;
+        //update opportunities;
     }
 }

@@ -1,0 +1,362 @@
+<template>
+    <template if:true={firstScreen}>
+        <template if:true={showErrorBlock}>
+            <div style="color: red; font-size: 20px; font-weight: 600; background: #b8860b38; padding: 80px;"
+                class="slds-align_absolute-center">
+                ERROR : Please Check for Units and Cost Sheet Templates
+            </div>
+        </template>
+        <template if:false={showErrorBlock}>
+            <template if:true={isDataLoaded}>
+                <div class="slds-p-around_medium">
+
+                    <h2 style="padding: 12px; background-color:#252f4d;color:white; border-radius:5px;margin-bottom:2%;"
+                        class="slds-text-heading_medium slds-text-align_center">Generate Cost Sheet</h2>
+                    <!-- <h1 class="slds-text-heading_medium slds-text-align_center slds-p-bottom_medium">
+                    Generate Cost Sheet
+                </h1> -->
+                    <template if:false={defaultUnit}>
+                        <c-resusable-lookup label="Select Unit" selected-icon-name="custom:custom64" object-label="Unit"
+                            object-api-name="Unit__c" field-api-name="Unit_Name_Code__c" other-field-api-name="Name"
+                            onvalueselected={handleChangeUnit} value={selectedUnitId} disabled={isUnitDisabled}>
+                        </c-resusable-lookup>
+                    </template>
+
+                    <template if:true={defaultUnit}>
+                        <lightning-record-picker label="Select Unit" value={selectedUnitId} record-id-field="Id"
+                            object-api-name="Unit__c" onchange={handleChangeUnit} disabled={isUnitDisabled}>
+                        </lightning-record-picker>
+                    </template>
+
+                    <!--  -->
+
+                    <div class="dropdown">
+                        <lightning-input label="Cost Sheet Template" placeholder="Type to search..." value={searchKey}
+                            onchange={handleSearchChange} onclick={toggleDropdown}></lightning-input>
+
+                        <template if:true={isDropdownOpen}>
+                            <div class="dropdown-options">
+                                <template for:each={filteredTemplateOptions} for:item="option">
+                                    <div key={option.value} class="dropdown-option" onclick={handleOptionClick}
+                                        data-value={option.value}>
+                                        {option.label}
+                                    </div>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+
+                    <div class="slds-grid slds-grid_align-end slds-p-top_medium">
+                        <lightning-button variant="brand" disabled={isNextDisabled} label="Next" onclick={handleNext}>
+                        </lightning-button>
+                    </div>
+                </div>
+            </template>
+
+            <!-- <template if:false={isDataLoaded}>
+            <div class="slds-p-around_medium slds-text-align_center">
+                <lightning-spinner alternative-text="Loading..." size="large"></lightning-spinner>
+            </div>
+        </template> -->
+        </template>
+    </template>
+
+    <template if:true={secondScreen}>
+        <div class="slds-grid slds-wrap slds-align_absolute-center slds-p-around_medium">
+            <!-- Pricing Elements Card -->
+            <div class="slds-col slds-size_1-of-1 slds-large-size_2-of-4 slds-p-horizontal_small">
+                <div class="slds-p-around_medium">
+            <div class="slds-form-element styled-container">
+            <lightning-radio-group name="discountApplicable"
+                label="Is discount applicable on this?"
+                options={discountOptions}
+                value={discountApplicable}
+                type="radio"
+                onchange={handleDiscountApplicable}>
+            </lightning-radio-group>
+        </div>
+
+        <template if:true={isDiscountApplicable}>
+            <div class="slds-grid slds-wrap slds-m-top_medium styled-container">
+                <div class="styled-text">Enter Discount Amount or Discount Percentage. The other field will be calculated automatically. </div>
+                <!-- Discount Amount -->
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-right_small">
+                    <lightning-input  type="number" name="discountAmount" label="Discount Amount" value={discountAmount}  min="0" max={realAmountNumeric}   step="0.01"  onchange={handleDiscountAmountChange}></lightning-input>
+                </div>
+                <!-- Discount Percentage -->
+                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-left_small">
+                    <lightning-input  type="number"  name="discountPercent" label="Discount Percentage (%)" value={discountPercent} min="0"   max="100"  step="0.01" onchange={handleDiscountPercentChange}>
+                    </lightning-input>
+                </div>
+            </div>
+        </template>
+        </div>
+            </div>
+
+            <!-- Amount Circle -->
+            <div class="slds-col slds-size_1-of-1 slds-large-size_2-of-4 slds-p-horizontal_small styled-container">
+            <div class="styled-text">
+                Total Amount Exclusive of Taxes: <b>{realAmount}</b>
+            </div>
+
+            <template if:true={isDiscountApplicable}>
+                <div class="styled-text">
+                    Discounted Amount ({discountPercent}%):
+                    <b>{formattedDiscountAmount}</b>
+                </div>
+            </template>
+
+            <div class="styled-text">
+                Total Tax Amount: <b>{taxAmount}</b>
+            </div>
+
+            <div class="styled-text">
+                Total Amount Inclusive of Taxes:
+                <b>{formattedTotalAmount}</b>
+            </div>
+
+            <template if:true={isDiscountApplicable}>
+                <div class="styled-text">
+                    Total Amount Inclusive of Discount:
+                    <b>{formattedDiscountedTotalAmount}</b>
+                </div>
+            </template>
+            </div>
+        </div>
+
+        <template if:true={isLoading}>
+            <div class="slds-align_absolute-center">
+                <lightning-spinner alternative-text="Loading"></lightning-spinner>
+            </div>
+        </template>
+
+        <template if:true={pricingElements}>
+            <lightning-card title="Pricing Elements" icon-name="custom:custom63" class="fixed-card"></lightning-card>
+            <div class="table-container">
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+                    <thead style="background-color: #906a09;">
+                        <tr>
+                            <th>Pricing Element</th>
+                            <th>Quantity</th>
+                            <th>Rate</th>
+                            <th>Unit</th>
+                            <th>PE Type</th>
+                            <th>Amount</th>
+                            <!-- <th>Discount Amount</th>
+                            <th>Discount %</th> -->
+                            <th>Actual Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template for:each={pricingElements} for:item="element" for:index="index">
+                            <tr key={element.Id}>
+                                <td>{element.Pricing_Element_Master__r.Name}</td>
+                                <td>{element.Quantity__c}</td>
+                                <td>{element.Rate__c}</td>
+                                <td>{element.Unit__c}</td>
+                                <td>{element.PE_Type__c}</td>
+                                <td>{element.Amount__c}</td>
+                                <!-- <td>
+                                    <template if:true={element.edit}>
+                                        <lightning-input type="number" value={element.Discount_Amount__c}
+                                            data-field="Discount_Amount__c" data-index={index}
+                                            onchange={handleDiscountChange}>
+                                        </lightning-input>
+                                    </template>
+                                    <span style="color: red;">{element.limitExceed}</span>
+                                </td> -->
+                                <!-- <td>{element.Discount__c}</td> -->
+                                <td>{element.ActualAmount}</td>
+                                <!-- <td>{element.formattedDiscountedTotalAmount}</td> -->
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+
+            <div class="next-button-container">
+                <lightning-button label="Next" onclick={handleThirdScreen} variant="brand">
+                </lightning-button>
+            </div>
+
+        </template>
+
+        <template if:false={pricingElements}>
+            <p class="slds-text-align_center">No Pricing Elements found.</p>
+        </template>
+
+    </template>
+
+    <template if:true={thirdScreen}>
+
+
+        <lightning-card title="Add Parking Details" icon-name="custom:custom63"></lightning-card>
+
+        <div class="slds-grid slds-align_absolute-center slds-p-around_small">
+            <div class="slds-col slds-text-heading_medium slds-p-right_medium">
+                "Do you want to add parking details?"
+            </div>
+            <div class="slds-col">
+                <button class="slds-button slds-button_brand" onclick={handleParking}>Add Parking Details</button>
+            </div>
+        </div>
+
+        <template if:true={parkingDetailTable}>
+
+             <div style="margin-left: 20px;" class="slds-col slds-size_1-of-1 slds-large-size_2-of-4 slds-p-horizontal_small styled-container">
+
+                <div class="styled-text">Total Available Open Parking: <b>{availableOpenParking}</b></div>
+
+                <div class="styled-text">Total Available Dependant Parking: <b>{availableDependantParking}</b></div>
+
+                <div class="styled-text">Total Available Independant Parking: <b>{availableIndependantParking}</b></div>
+
+            </div>
+
+            <!-- Table Section -->
+            <div class="slds-scrollable_y" style="max-height: 400px;">
+                <table class="slds-table slds-table_bordered slds-table_cell-buffer">
+                    <thead>
+                        <tr>
+                            <th scope="col" style="width: 200px;">Parking Type</th>
+                            <th scope="col" style="width: 300px;">Rate</th>
+                            <th scope="col" style="width: 150px;">Quantity</th>
+                            <th scope="col" style="width: 150px;">Tax Percentage</th>
+                            <th scope="col" style="width: 150px;">Actual Amount</th>
+                            <th scope="col" style="width: 150px;">Tax Amount</th>
+                            <th scope="col">Add</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template for:each={rows} for:item="row" for:index="index">
+                            <tr key={row.id}>
+                                <!-- Parking Type Combobox -->
+                                <td>
+                                    <lightning-combobox name="parkingType" placeholder="Select Parking Type" data-id={row.id}
+                                        value={row.type} options={parkingType} data-index={index}
+                                        onchange={handleParkingTypeChange}>
+                                    </lightning-combobox>
+                                </td>
+
+                                <!-- Amount (Readonly) -->
+                                <td>{row.amount} </td>
+                                <td><lightning-input name="quantity" value={row.quantity} data-id={row.id} data-index={index} onchange={handleParkingTypeChange}></lightning-input></td>
+                                <td>
+                                    CGST: {row.carCGSTtax}%</br>
+                                    SGST: {row.carSGSTtax}%
+                                </td>
+                                <td>{row.finalAmount} </td>
+                                <td>{row.taxAmt} </td>
+
+                                <!-- Add Button -->
+                                <td>
+                                    <div class="button-group">
+                                        <lightning-button-icon icon-name="utility:add" variant="brand"
+                                            alternative-text="Add" data-index={index} onclick={handleAddRow}>
+                                        </lightning-button-icon>
+
+                                        <lightning-button-icon icon-name="utility:delete" variant="brand"
+                                            alternative-text="delete" data-index={index} onclick={handleDeleteRow}>
+                                        </lightning-button-icon>
+                                    </div>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+
+        </template>
+        <template if:true={noParkingDetails}>
+
+            <p style="color:#a63232; padding-left:20px;"><b>No Parking Details Available for this Unit!!!!</b></p>
+
+        </template>
+
+        <div class="next-button-container">
+            <div class="left-button">
+                <lightning-button label="Back" onclick={handleFourthScreenBack} variant="brand">
+                </lightning-button>
+            </div>
+            <div class="right-button">
+                <lightning-button label="Next" disabled={isFourthNextDisabled} onclick={handleFouth} variant="brand">
+                </lightning-button>
+            </div>
+        </div>
+    </template>
+
+    <template if:true={fourthScreen}>
+
+        <div class="slds-grid slds-wrap slds-align_absolute-center slds-p-around_medium">
+            <!-- Pricing Elements Card -->
+            <div class="slds-col slds-size_1-of-1 slds-large-size_2-of-4 slds-p-horizontal_small">
+                <lightning-card title="All Pricing Elements" icon-name="custom:custom64"
+                    class="fixed-card"></lightning-card>
+            </div>
+
+            <!-- Amount Circle -->
+            <div
+                class="slds-col slds-size_1-of-1 slds-large-size_1-of-4 slds-text-align_center slds-p-horizontal_small">
+                <div class="amount-circle">
+                    <span class="amount-text">{formattedDiscountedTotalAmount}</span>
+                </div>
+            </div>
+
+
+        </diV>
+        <!-- <lightning-card title="All Pricing Elements" icon-name="custom:custom64"></lightning-card> -->
+
+        <template if:true={pricingElements}>
+            <div class="table-container">
+                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+                    <thead style="background-color: #906a09;">
+                        <tr>
+                            <th>Pricing Element</th>
+                            <th>Quantity</th>
+                            <th>Rate</th>
+                            <th>Unit</th>
+                            <th>PE Type</th>
+                            <th>Amount</th>
+                            <!-- <th>Discount Amount</th>
+                            <th>Discount %</th> -->
+                            <th>Actual Amount</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template for:each={pricingElements} for:item="element" for:index="index">
+                            <tr key={element.Id}>
+                                <td>{element.Pricing_Element_Master__r.Name}</td>
+                                <td>{element.Quantity__c}</td>
+                                <td>{element.Rate__c}</td>
+                                <td>{element.Unit__c}</td>
+                                <td>{element.PE_Type__c}</td>
+                                <td>{element.Amount__c}</td>
+                                <!-- <td>{element.Discount_Amount__c}</td>
+                                <td>{element.Discount__c}</td> -->
+                                <td>{element.ActualAmount}</td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+        </template>
+
+        <div class="next-button-container1">
+            <div class="left-button">
+                <lightning-button label="Back" onclick={handleBack} variant="brand">
+                </lightning-button>
+            </div>
+            <div class="right-button">
+                <template if:true={discountAdded}>
+                    <lightning-button label="Save" disabled={isFianlSaveDisabled} onclick={handleFinalSave} variant="brand">
+                    </lightning-button>
+                </template>
+                <template if:false={discountAdded}>
+                    <lightning-button class="slds-m-right_large" label="Save" disabled={isFianlSaveDisabled} onclick={handleFinalSave} variant="brand">
+                    </lightning-button>
+                </template>
+            </div>
+        </div>
+
+    </template>
+</template>

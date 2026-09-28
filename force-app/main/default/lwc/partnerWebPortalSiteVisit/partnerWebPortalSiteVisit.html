@@ -1,0 +1,180 @@
+<template>
+
+    <!-- ============================================ -->
+    <!-- FORM VIEW                                     -->
+    <!-- ============================================ -->
+    <template lwc:if={isFormView}>
+        <div class="form-wrapper">
+
+            <div class="form-header">
+                <button class="back-btn" onclick={handleFormCancel} type="button" title="Back">
+                    <lightning-icon icon-name="utility:back" size="small"></lightning-icon>
+                </button>
+                <h2 class="form-title">Add Site Visit</h2>
+            </div>
+
+            <h3 class="section-title">Visit Details</h3>
+
+            <div class="field">
+                <label for="visitName">Visit Name</label>
+                <input id="visitName"
+                       type="text"
+                       placeholder="Enter visit name"
+                       data-field="visitName"
+                       onchange={handleFormChange} />
+            </div>
+
+            <div class="two-col">
+                <div class="field">
+                    <label for="channelPartnerId">Channel Partner Id</label>
+                    <input id="channelPartnerId"
+                           type="text"
+                           placeholder="e.g. 001XXXXXXXXXXXXXXX"
+                           data-field="channelPartnerId"
+                           onchange={handleFormChange} />
+                </div>
+                <div class="field">
+                    <label for="opportunityId">Opportunity Id</label>
+                    <input id="opportunityId"
+                           type="text"
+                           placeholder="e.g. 006XXXXXXXXXXXXXXX"
+                           data-field="opportunityId"
+                           onchange={handleFormChange} />
+                </div>
+            </div>
+
+            <div class="field">
+                <label for="reason">Reason / Remarks</label>
+                <textarea id="reason"
+                          rows="4"
+                          placeholder="Mention any specific details..."
+                          data-field="reason"
+                          onchange={handleFormChange}></textarea>
+            </div>
+
+            <div class="form-footer">
+                <button class="cancel-btn" type="button" onclick={handleFormCancel}>
+                    Cancel
+                </button>
+                <button class="save-btn"
+                        type="button"
+                        onclick={handleRegisterVisit}
+                        disabled={isSaving}>
+                    {saveButtonLabel}
+                </button>
+            </div>
+
+        </div>
+    </template>
+
+    <!-- ============================================ -->
+    <!-- LIST VIEW                                     -->
+    <!-- ============================================ -->
+    <template lwc:else>
+        <div class="container">
+
+            <!-- HEADER -->
+            <div class="slds-p-around_medium">
+                <p class="slds-text-heading_large"><strong>Site Visits</strong></p>
+                <p>
+                    Manage site visits effortlessly with our comprehensive tracking system.
+                    Access detailed information about each visit, including contact details,
+                    source, and current stage. Stay organized and ensure timely follow-ups
+                    to maximize your conversion rates with the support of John Keels Properties
+                </p>
+            </div>
+
+            <!-- ADD BUTTON -->
+            <button class="nav-item" onclick={handleNavigation} type="button">
+                <lightning-icon icon-name="utility:record_create" size="medium"></lightning-icon>
+                <p>Add Site Visit</p>
+            </button>
+
+            <div class="divider"></div>
+
+            <!-- TOOLBAR -->
+            <div class="toolbar">
+                <div class="search-wrapper">
+                    <lightning-icon icon-name="utility:search" size="x-small" class="search-icon"></lightning-icon>
+                    <input type="text"
+                           class="search-input"
+                           placeholder="Search.."
+                           oninput={handleSearch} />
+                </div>
+                <div class="action-buttons">
+                    <button class="btn-export" onclick={handleExport}>⬆ Export CSV</button>
+                    <button class="btn-apply" onclick={handleApplyFilter}>Apply Filter</button>
+                </div>
+            </div>
+
+            <!-- FILTER TABS -->
+            <div class="filter-tabs">
+                <template for:each={filterButtons} for:item="tab">
+                    <button key={tab.value}
+                            class={tab.className}
+                            data-value={tab.value}
+                            onclick={handleFilterClick}>
+                        {tab.label}
+                    </button>
+                </template>
+            </div>
+
+            <!-- TABLE -->
+            <div class="table-wrapper">
+                <table class="visits-table">
+                    <thead>
+                        <tr>
+                            <th>Sr.</th>
+                            <th>Visit Created Date</th>
+                            <th>Visit Name</th>
+                            <th>Channel Partner</th>
+                            <th>Opportunity Name</th>
+                            <th>Opportunity Mobile No.</th>
+                            <th>Opportunity Stage</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template if:true={hasVisits}>
+                            <template for:each={visits} for:item="visit">
+                                <tr key={visit.Id}>
+                                    <td>{visit.rowNo}</td>
+                                    <td>{visit.formattedDate}</td>
+                                    <td>{visit.Name}</td>
+                                    <td>{visit.channelPartnerName}</td>
+                                    <td>{visit.opportunityName}</td>
+                                    <td>{visit.opportunityPhone}</td>
+                                    <td><span class={visit.badgeClass}>{visit.opportunityStage}</span></td>
+                                </tr>
+                            </template>
+                        </template>
+
+                        <template if:false={hasVisits}>
+                            <tr>
+                                <td colspan="7" class="no-data">No site visits found</td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+
+            <!-- PAGINATION -->
+            <div class="pagination">
+                <div class="entries-text">{entriesText}</div>
+                <div class="pagination-controls">
+                    <button class="page-arrow" onclick={handlePrev} disabled={isPrevDisabled}>← Prev</button>
+                    <template for:each={paginationButtons} for:item="p">
+                        <button key={p.value}
+                                class={p.className}
+                                data-value={p.value}
+                                onclick={handlePageClick}>
+                            {p.label}
+                        </button>
+                    </template>
+                    <button class="page-arrow" onclick={handleNext} disabled={isNextDisabled}>Next →</button>
+                </div>
+            </div>
+
+        </div>
+    </template>
+
+</template>

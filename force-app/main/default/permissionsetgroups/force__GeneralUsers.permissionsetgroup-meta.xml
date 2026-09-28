@@ -3,7 +3,7 @@
     <hasActivationRequired>false</hasActivationRequired>
     <label>GeneralUsers</label>
     <permissionSets>force__CallCoachingUserPsl</permissionSets>
-    <permissionSets>force__PaymentsAdministrator</permissionSets>
+    <permissionSets>force__EasyProductWithPriceUser</permissionSets>
     <permissionSets>force__SalesEngagementBasicUser</permissionSets>
     <permissionSets>force__ServiceLightningKnowledgeManager</permissionSets>
     <permissionSets>force__StarterMarketingAppOverview</permissionSets>

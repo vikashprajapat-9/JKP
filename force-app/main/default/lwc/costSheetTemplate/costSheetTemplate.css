@@ -1,0 +1,113 @@
+.header{
+	background-color: #252f4d;
+	color: white;
+	font-size: 16px;
+	font-weight: 600;
+	padding: 12px;
+	text-align: center;
+	border-radius: 5px;
+}
+.mainDiv{
+	background-color: white;
+}
+.buttonsDiv{
+	padding-top: 30px;
+	padding-bottom: 15px;
+}
+.sectionName{
+	background-color:#2B4167;
+	color: white;
+	border-radius: 3px;
+}
+.sectionName:hover{
+	background-color:#2B4167;
+	color: white;
+	border-radius: 3px;
+}
+.cancelButton{
+    --slds-c-button-brand-color-background : #white;
+    --slds-c-button-brand-color-border : #4d4d4d;
+    --slds-c-button-brand-text-color : #4d4d4d;
+}
+.cancelButton:hover{
+    --slds-c-button-brand-color-border : #4d4d4d;
+    --slds-c-button-brand-text-color : #4d4d4d;
+    --slds-c-button-brand-color-background : #white;
+}
+.newButtonCss{
+	--slds-c-button-brand-color-background : #4d4d4d;
+    --slds-c-button-brand-color-border : #4d4d4d;
+    --slds-c-button-brand-text-color : white;
+}
+.newButtonCss:hover{
+	--slds-c-button-brand-color-background : #4d4d4d;
+    --slds-c-button-brand-color-border : #4d4d4d;
+    --slds-c-button-brand-text-color : white;
+}
+.widthCss{
+	width: 100px;
+}
+.widthCss200{
+	width: 150px;
+}
+.customButtonCss{
+	background-color: white;
+    border: 1px solid black;
+    border-radius: 4px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+    padding-right: 15px;
+    padding-left: 15px;
+}
+.customButtonCss:hover{
+	cursor: pointer;
+}
+
+.tableHeaderCss {
+    background-color: #595959 !important;
+    color: white !important;
+}
+
+.tblehaeder{
+	background-color: darkgray !important;
+    color: white !important;
+}
+.red-utility-icon {
+	--sds-c-icon-color-foreground-default: white;
+	border: 1px solid white;
+	padding: 2px;
+}
+.red-utility-icon:hover{
+	cursor: pointer;
+}
+table, th, td {
+	border: 1px solid white;
+  }
+  tr:nth-child(even) {
+	background-color: #f4f4f4;
+  }
+
+  .colCss{
+	vertical-align: text-top !important;
+  }
+  :host {
+    display: block;
+    position: relative;
+}
+
+.slds-combobox__menu {
+    position: absolute !important;
+    max-height: 300px !important; /* Adjust this as needed */
+    overflow-y: auto !important;
+    z-index: 9999 !important;
+}
+.searchPricing{
+    width: 250px;
+    padding: 0 0 8px 0;
+}
+@media(min-width:1680px){
+    .searchPricing{
+        width: 350px;
+        padding: 0 0 8px 0;
+    }
+}

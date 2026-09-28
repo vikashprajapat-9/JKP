@@ -1,0 +1,258 @@
+<template>
+    <lightning-card>
+        <template if:false={showSpinner}>
+        <div class="header-container slds-m-around_medium" style=" background-color: #252f4d;border-radius: 5px;">
+            <h1 class="header  " style="color:white;">New Payment Scheme</h1>
+        </div>
+        <template if:false={edit1}>
+            <div style="display: flex; justify-content: flex-end; align-items: center;">
+                <span class="custom-button" onclick={openPopup}>
+                    Create Installment
+                </span>
+            </div>
+            
+        </template>
+
+        <template if:true={isModalOpen}>
+            <section role="dialog" tabindex="-1" class="slds-modal slds-fade-in-open">
+                <div class="slds-modal__container">
+                    <!-- Modal/Popup Header -->
+                    <header class="slds-modal__header">
+                        <button class="slds-button slds-button_icon slds-modal__close" title="Close" onclick={closePopup}>
+                            <lightning-icon icon-name="utility:close" alternative-text="close" size="small"></lightning-icon>
+                        </button>
+                        <h2 class="slds-text-heading_medium">Enter Installment Details</h2>
+                    </header>
+    
+                    <!-- Modal/Popup Body -->
+                    <div class="slds-modal__content slds-p-around_medium">
+                        <lightning-input label="Name" value={name} onchange={handleInputChange} data-id="name" required></lightning-input>
+                        <lightning-input label="Installment Code" value={installmentCode} onchange={handleInputChange} data-id="installmentCode" required></lightning-input>
+                        <lightning-input label="Installment Sequence" value={installmentSequence} onchange={handleInputChange} data-id="installmentSequence" required></lightning-input>
+                    </div>
+    
+                    <!-- Modal/Popup Footer -->
+                    <footer class="slds-modal__footer">
+                        <lightning-button variant="neutral" label="Cancel" onclick={closePopup}></lightning-button>
+                        <lightning-button variant="brand" label="Submit" onclick={handleSubmit1}></lightning-button>
+                    </footer>
+                </div>
+            </section>
+            <div class="slds-backdrop slds-backdrop_open"></div>
+        </template>
+
+        
+        <div class="slds-p-around_medium  slds-grid slds-wrap slds-gutters">
+              <div class="slds-col slds-size_1-of-2">
+            <lightning-combobox 
+                label="Company" 
+                value={selectedCompany} 
+                onchange={handleCompanyChange} 
+                placeholder="Select Company"
+                options={companyOptions}
+                 disabled={approval}
+                required>
+            </lightning-combobox>
+              </div>
+              <div class="slds-col slds-size_1-of-2">
+            <lightning-combobox 
+                label="Project" 
+                value={selectedProject} 
+                onchange={handleProjectChange} 
+                placeholder="Select Project" 
+                options={projectOptions}
+                disabled={approval}
+                required>
+            </lightning-combobox>
+              </div>
+            <div class="slds-col slds-size_1-of-2">
+            <!-- <lightning-combobox 
+                label="Tower" 
+                value={selectedBlock} 
+                onchange={handleBlockChange} 
+                placeholder="Select Tower" 
+                options={blockOptions}
+                disabled={approval}
+                required>
+            </lightning-combobox> -->
+
+             <lightning-dual-listbox
+                label="Tower"
+                source-label="Available Tower"
+                selected-label="Selected Tower"
+                field-level-help="Select one or more Tower."
+                options={blockOptions}
+                onchange={handleBlockChange}
+                required
+                disabled={approval}
+                name="blockSelection"
+                value={selectedBlock}>
+            </lightning-dual-listbox>
+
+
+            </div>
+              <div class="slds-col slds-size_1-of-2">
+            <lightning-input 
+                label="Payment Scheme Name" 
+                value={name} 
+                onchange={handleNameChange}
+                disabled={approval}
+                required>
+            </lightning-input>
+              </div>
+               <div class="slds-col slds-size_2-of-2">
+            <lightning-input 
+                type="number" 
+                label="Token Amount" 
+                value={tokenAmount} 
+                onchange={handleTokenAmountChange}
+                disabled={approval}
+                required>
+            </lightning-input>
+               </div>
+                <div class="slds-col slds-size_1-of-2">
+            <lightning-input 
+            class="date"
+                type="date" 
+                label="From Date" 
+                value={fromDate} 
+                onchange={handleFromDateChange}
+                disabled={approval}
+                required>
+            </lightning-input>
+                </div>
+                 <div class="slds-col slds-size_1-of-2">
+            <lightning-input 
+            class="date"
+                type="date" 
+                label="To Date" 
+                value={toDate} 
+                onchange={handleToDateChange}
+                disabled={approval}
+                required>
+            </lightning-input>
+                 </div>
+            <template if:true={isLoading}>
+                <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+            </template>
+             </div>
+
+             <template if:true={nextButton}>
+            <div class="slds-grid slds-grid_align-end slds-m-top_medium" style=" display: flex; justify-content: center;">
+                <!-- <lightning-button 
+                    variant="brand"
+                    label="Next" 
+                    onclick={handleNext}>
+                </lightning-button> -->
+                <div class="cstm_btn" onclick={handleNext}>Next</div>
+            </div>
+            </template>
+       
+        
+        <template if:true={showTable}>
+            <div class="custom-table-container">
+                <table class="custom-table">
+                    <thead>
+                        <tr class="custom-header-row">
+                            <th class="custom-header-cell">#</th>
+                             <th class="custom-header-cell">Schedule Installment &nbsp;<span class="required-text">(Required)</span></th>
+                            <th class="custom-header-cell">Type <span class="required-text">(Required)</span></th>
+                           
+                            <th class="custom-header-cell">% Installment <span class="required-text">(Required)</span></th>
+                            <th class="custom-header-cell">Display Order <span class="required-text">(Required)</span></th>
+                            <th class="custom-header-cell">Actions</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template for:each={renderedRows} for:item="row">
+                            <tr class="custom-row" key={row.id}>
+                                <td class="custom-cell">{row.index}</td>
+                                <td class="custom-cell">
+                                    <lightning-combobox
+                                        value={row.selectedSchedule}
+                                        options={paymentSchedules}
+                                        onchange={handleScheduleChange}
+                                        data-id={row.id}
+                                        disabled={approval}
+                                        >
+                                    </lightning-combobox>
+                                </td>
+                                 <td class="custom-cell">
+                                    <lightning-combobox
+                                        value={row.type}
+                                        options={typeOption}
+                                        onchange={handleTypeChange}
+                                        data-id={row.id}
+                                        disabled={approval}
+                                        >
+                                    </lightning-combobox>
+                                </td>
+                                <td class="custom-cell">
+                                    <lightning-input type="number"
+                                                     value={row.percentInstallment}
+                                                     onchange={handlePercentChange}
+                                                     data-id={row.id}
+                                                     data-field="percentInstallment"
+                                                     disabled={approval}
+                                                     step="0.01"
+                                                     formatter="decimal"
+                                                     >
+                                    </lightning-input>
+                                </td>
+                                <td class="custom-cell">
+                                    <lightning-input type="number" 
+                                                     value={row.displayOrder} 
+                                                     onchange={handleDisplayOrderChange} 
+                                                     data-id={row.id} 
+                                                     data-field="displayOrder"
+                                                     disabled={approval}
+                                                     >
+                                    </lightning-input>
+                                </td>
+                                <td class="custom-cell">
+                                    <lightning-button-icon 
+                                        icon-name="utility:delete" 
+                                        alternative-text="Delete" 
+                                        title="Delete" 
+                                        onclick={handleDeleteRow} 
+                                        data-id={row.id} 
+                                        disabled ={isButton}
+                                        class="delete-button">
+                                    </lightning-button-icon>
+                                    <lightning-button-icon 
+                                        icon-name="utility:add" 
+                                        alternative-text="Add" 
+                                         variant="brand" 
+                                        title="Add" 
+                                        onclick={handleAddRow} 
+                                         disabled ={isButton}
+                                        class="add-button slds-m-left_small">
+                                    </lightning-button-icon>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+
+        <template if:true={saveButton}>
+            <div class="" style="display: flex; justify-content: center;">
+                <lightning-button 
+                    variant="brand" 
+                    label="Save" 
+                    onclick={handleSubmit}>
+                    disabled={isDisabled}
+                </lightning-button>
+            </div>
+        </template>
+        </template>
+
+
+    </template>
+            <template if:true={showSpinner}>
+        <div style="height: 500px;">
+            <c-custom-spinner message="Payment scheme created successfully"></c-custom-spinner>
+        </div>
+    </template>
+    </lightning-card>
+</template>

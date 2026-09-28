@@ -1,0 +1,32 @@
+<apex:page standardController="Payment_Scheme__c" standardStylesheets="true" showHeader="false">
+    <apex:includeLightning />    
+    <div id="newPaymentScheme"></div> 
+
+    <script>
+    document.addEventListener('lightning__showtoast', event => {
+        sforce.one.showToast(event.toastAttributes);
+    });
+        // Ensure the Lightning namespace is used correctly
+        console.log('Initializing Lightning component...');
+        var recordId = '{!Payment_Scheme__c.Id}'; 
+        
+        $Lightning.use("c:paymentSchemeNewButton", function() {
+            debugger;
+            console.log('Lightning namespace loaded.');
+            
+
+            $Lightning.createComponent("c:newPaymentSchemeButton",
+            {
+                 recordId: recordId,
+            },
+            "newPaymentScheme", 
+            function(cmp, status) {
+                if (status === "SUCCESS") {
+                    console.log('LWC Component created successfully:', cmp);
+                } else {
+                    console.error('Error creating LWC Component. Status:', status);
+                }
+            });
+        });
+    </script>
+</apex:page>

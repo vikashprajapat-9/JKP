@@ -58,39 +58,39 @@
             </value>
         </valueSetDefinition>
         <valueSettings>
-            <controllingFieldValue>Digital Source</controllingFieldValue>
+            <controllingFieldValue>Digital</controllingFieldValue>
             <valueName>Meta Form Ads</valueName>
         </valueSettings>
         <valueSettings>
-            <controllingFieldValue>Digital Source</controllingFieldValue>
+            <controllingFieldValue>Digital</controllingFieldValue>
             <valueName>Meta Lead Ads</valueName>
         </valueSettings>
         <valueSettings>
-            <controllingFieldValue>Digital Source</controllingFieldValue>
+            <controllingFieldValue>Digital</controllingFieldValue>
             <valueName>Website Forms</valueName>
         </valueSettings>
         <valueSettings>
-            <controllingFieldValue>Digital Source</controllingFieldValue>
+            <controllingFieldValue>Digital</controllingFieldValue>
             <valueName>LinkedIn Ads</valueName>
         </valueSettings>
         <valueSettings>
-            <controllingFieldValue>Channel Partner Source</controllingFieldValue>
+            <controllingFieldValue>Channel Partner</controllingFieldValue>
             <valueName>Channel Partner</valueName>
         </valueSettings>
         <valueSettings>
-            <controllingFieldValue>Manual Source</controllingFieldValue>
+            <controllingFieldValue>Manual</controllingFieldValue>
             <valueName>Partner – Offline Form</valueName>
         </valueSettings>
         <valueSettings>
-            <controllingFieldValue>Manual Source</controllingFieldValue>
+            <controllingFieldValue>Manual</controllingFieldValue>
             <valueName>Direct Lead</valueName>
         </valueSettings>
         <valueSettings>
-            <controllingFieldValue>Manual Source</controllingFieldValue>
+            <controllingFieldValue>Manual</controllingFieldValue>
             <valueName>Hotline Calls</valueName>
         </valueSettings>
         <valueSettings>
-            <controllingFieldValue>Manual Source</controllingFieldValue>
+            <controllingFieldValue>Manual</controllingFieldValue>
             <valueName>Others</valueName>
         </valueSettings>
     </valueSet>

@@ -1,0 +1,18 @@
+<template>
+    <div class="slds-grid slds-m-top_small slds-align_absolute-center slds-gutters_xx-smal ">
+
+        <lightning-button label="&#9668;&#9668;" class='slds-border_left slds-m-right_xxx-small'
+            disabled={disablePrev} onclick={handleFirst} style="font-family: sans-serif;"></lightning-button>
+        <lightning-button label="&#9668;" class='slds-m-right_xxx-small' disabled={disablePrev} onclick={handlePrev}
+            style="font-family: sans-serif;margin-left:3%;"></lightning-button>
+            
+        <p class='showText'>Showing {pageParam} of {totalRecords} rows</p>
+
+     
+        <lightning-button label="&#9654;" class='slds-m-right_xxx-small' disabled={disableNext} onclick={handleNext}
+            style="font-family: sans-serif;"></lightning-button>
+        <lightning-button label="&#9654;&#9654;" class='slds-m-right_xxx-small slds-border_right '
+            disabled={disableNext} onclick={handleLast} style="font-family: sans-serif;margin-left:3%;"></lightning-button>
+       
+    </div>
+</template>

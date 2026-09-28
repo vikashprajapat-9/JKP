@@ -86,6 +86,12 @@
                 <identifier>RecordTower_Location__cField</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.Base_Price_of_Unit_per_sqft__c</fieldItem>
+                <identifier>RecordBase_Price_of_Unit_per_sqft__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-d7a671c2-1f6b-408d-b833-7cb3cdcd3812</name>
         <type>Facet</type>
     </flexiPageRegions>

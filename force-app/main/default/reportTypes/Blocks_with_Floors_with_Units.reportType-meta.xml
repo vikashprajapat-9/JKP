@@ -144,6 +144,11 @@
             <field>CRM_Code__c</field>
             <table>Block__c</table>
         </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Base_Price_of_Unit_per_sqft__c</field>
+            <table>Block__c</table>
+        </columns>
         <masterLabel>Blocks</masterLabel>
     </sections>
     <sections>
@@ -403,6 +408,16 @@
         <columns>
             <checkedByDefault>false</checkedByDefault>
             <field>CRM_Code__c</field>
+            <table>Block__c.Floors__r.Units__r</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Super_Built_Up_Area_sq_ft__c</field>
+            <table>Block__c.Floors__r.Units__r</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Floor_Rise__c</field>
             <table>Block__c.Floors__r.Units__r</table>
         </columns>
         <masterLabel>Units</masterLabel>

@@ -151,13 +151,14 @@
                         options={requirementOptions}
                         onchange={handleVisitChange}>
                     </lightning-combobox>
-                    <lightning-combobox
+                    <lightning-record-picker
                         label="Project"
-                        name="Project_Name__c"
-                        value={visit.Project_Name__c}
-                        options={projectOptions}
+                        placeholder="Choose Project..."
+                        name="Project__c"
+                        value={visit.Project__c}
+                        object-api-name="Account"
                         onchange={handleVisitChange}>
-                    </lightning-combobox>
+                    </lightning-record-picker>
                 </div>
                 <footer class="slds-modal__footer">
                     <lightning-button

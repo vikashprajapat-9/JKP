@@ -49,7 +49,7 @@ public class LeadEscalationHelper {
             System.debug( 'SLA1 already TRUE for warm lead: ' + leadId);
             return;
         }
-        sendEmail(leadId, 'WarmLeadEscalation');
+       // sendEmail(leadId, 'WarmLeadEscalation');
         sendNotification(leadId, 'Warm_Lead_Escalation',
             'Warm Lead Escalation',
             'A Warm Lead has not been contacted within 4 hours of assignment.');

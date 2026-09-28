@@ -102,8 +102,28 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Max_Sobject_Assignment_Count__c</fieldItem>
-                <identifier>RecordMax_Sobject_Assignment_Count_cField</identifier>
+                <fieldItem>Record.SLA1_Period__c</fieldItem>
+                <identifier>RecordSLA1_Period__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.SLA2_Period__c</fieldItem>
+                <identifier>RecordSLA2_Period__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Lead_Assignment_Time_Window__c</fieldItem>
+                <identifier>RecordLead_Assignment_Time_Window__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-588ccce7-a02a-46fd-8d25-c80e33eca64e</name>
@@ -156,8 +176,48 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
+                <fieldItem>Record.Max_Sobject_Assignment_Count__c</fieldItem>
+                <identifier>RecordMax_Sobject_Assignment_Count_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
                 <fieldItem>Record.Type__c</fieldItem>
                 <identifier>RecordType_cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.SLA1_Threshold_Percentage__c</fieldItem>
+                <identifier>RecordSLA1_Threshold_Percentage__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.SLA2_Threshold_Percentage__c</fieldItem>
+                <identifier>RecordSLA2_Threshold_Percentage__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldInstanceProperties>
+                    <name>uiBehavior</name>
+                    <value>none</value>
+                </fieldInstanceProperties>
+                <fieldItem>Record.Max_Lead_Assignment_Count__c</fieldItem>
+                <identifier>RecordMax_Lead_Assignment_Count__cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-02bd0239-100f-48ef-aa8d-f5416b6924c1</name>

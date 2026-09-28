@@ -1,0 +1,159 @@
+.container {
+    padding: 20px;
+}
+
+.section {
+    border: 1px solid #dddbda;
+    border-radius: 8px;
+    padding: 18px;
+    margin-bottom: 20px;
+    background: #ffffff;
+}
+
+.section-header {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-bottom: 18px;
+}
+
+.section-header h2 {
+    font-size: 17px;
+    font-weight: 600;
+    margin: 0;
+}
+
+.optional-label {
+    font-size: 12px;
+    padding: 3px 8px;
+    border-radius: 12px;
+    background: #f3f3f3;
+    color: #666666;
+}
+
+.field-row {
+    margin-bottom: 18px;
+}
+
+.upload-box {
+    border: 1px dashed #c9c7c5;
+    border-radius: 6px;
+    padding: 15px;
+    background: #fafafa;
+}
+
+.upload-header {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-weight: 600;
+    margin-bottom: 8px;
+}
+
+.upload-placeholder {
+    font-size: 13px;
+    color: #706e6b;
+    margin: 5px 0 12px;
+}
+
+.completion-section {
+    display: flex;
+    align-items: flex-start;
+    gap: 10px;
+    padding: 14px;
+    border-radius: 6px;
+    background: #f3f6f9;
+    margin-bottom: 20px;
+}
+
+.completion-section strong {
+    display: block;
+    margin-bottom: 4px;
+}
+
+.completion-section p {
+    margin: 0;
+    font-size: 13px;
+    color: #5c5c5c;
+}
+
+.footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #dddbda;
+}
+.spa-file-input,
+.escrow-file-input {
+    display: none;
+}
+
+.file-selected {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 10px;
+    margin-bottom: 12px;
+    border: 1px solid #dddbda;
+    border-radius: 6px;
+    background: #ffffff;
+}
+
+.file-selected span {
+    flex: 1;
+    font-size: 13px;
+    font-weight: 500;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+/*header*/
+
+.spa-header {
+    background: #1f3f70;
+    min-height: 64px;
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    border-bottom: 3px solid #f2c94c;
+}
+
+.brand-section {
+    display: flex;
+    align-items: center;
+}
+
+.company-logo {
+    width: 58px;
+    max-height: 42px;
+    object-fit: contain;
+    margin-right: 12px;
+}
+
+.brand-text {
+    display: flex;
+    flex-direction: column;
+}
+
+.company-name {
+    color: #ffffff;
+    font-size: 16px;
+    font-weight: 700;
+    line-height: 20px;
+}
+
+.company-tagline {
+    color: #f2c94c;
+    font-size: 11px;
+    font-style: italic;
+    margin-top: 1px;
+}
+.button {
+    font-size: 16px;
+}
+
+.button lightning-button {
+    --slds-c-button-font-size: 16px;
+    --slds-c-button-line-height: 2rem;
+}

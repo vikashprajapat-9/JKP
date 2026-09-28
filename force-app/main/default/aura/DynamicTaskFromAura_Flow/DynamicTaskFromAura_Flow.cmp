@@ -1,0 +1,72 @@
+<aura:component
+    controller="DynamicTaskHelper" 
+    implements="force:lightningQuickActionWithoutHeader,force:appHostable,lightning:actionOverride,flexipage:availableForAllPageTypes,flexipage:availableForRecordHome,force:hasRecordId,forceCommunity:availableForAllPageTypes" 
+    access="global" >
+    <ltng:require styles="{!$Resource.DynamicTaskModalStyle}" />
+    <lightning:navigation aura:id="navService" />
+    
+    <aura:handler name="init" value="{!this}" action="{!c.doInit}"/>
+       
+    <aura:attribute name="TaskStatus" type="String" />
+    <aura:attribute name="recordId" type="String" />
+    <aura:attribute name="hasError" type="Boolean" default="false"/>
+    <aura:attribute name="actionType" type="String"/>
+    <aura:attribute name="statusMessage" type="String" /> 
+    <aura:attribute name="isLoading" type="Boolean" default="true" />
+    
+    <!-- Loading State -->
+    <aura:if isTrue="{!v.isLoading}">
+        <div class="slds-p-around_xx-large slds-align_absolute-center slds-is-relative" style="min-height: 200px; background: #ffffff;">
+            <lightning:spinner alternativeText="Loading Task action..." size="medium" variant="brand"/>
+            <div class="slds-text-align_center" style="margin-top: 50px;">
+                <p style="color: #264470; font-weight: 600; font-size: 0.9rem; margin: 0;">Initializing Task Action...</p>
+                <p style="color: #64748b; font-size: 0.72rem; margin-top: 4px;">John Keells Properties™</p>
+            </div>
+        </div>
+    </aura:if>
+
+    <!-- Content: Flow or Dynamic Component -->
+    <div>
+        <aura:if isTrue="{!v.actionType =='Flow'}">
+            <lightning:flow aura:id="OnOpenStatus" onstatuschange="{!c.statusChange}" />
+        </aura:if>
+        <aura:if isTrue="{!v.actionType =='Component'}">
+            {!v.body}
+        </aura:if>
+    </div>
+
+    <!-- Branded Status Notice Modal -->
+    <aura:if isTrue="{!and(!v.isLoading, v.statusMessage)}">
+        <div class="jkp-status-card">
+            <!-- Brand Luxury Header -->
+            <div class="jkp-card-header">
+                <div class="jkp-header-brand">
+                    <img src="{!$Resource.Logo_White}" alt="John Keells Properties" class="jkp-logo-img" />
+                    <div class="jkp-brand-details">
+                        <div class="jkp-brand-title">John Keells Properties<span class="jkp-tm">™</span></div>
+                        <div class="jkp-brand-tagline">Creating New Worlds</div>
+                    </div>
+                </div>
+                <button class="jkp-close-btn-icon" onclick="{!c.handleClose}" title="Close">✕</button>
+            </div>
+            
+            <div class="jkp-gold-bar"></div>
+
+            <div class="jkp-card-body">
+                <div class="jkp-icon-circle">
+                    <lightning:icon iconName="utility:info_alt" size="medium" alternativeText="Information"/>
+                </div>
+                <h2 class="jkp-status-heading">Task Notification</h2>
+                <p class="jkp-status-message">{!v.statusMessage}</p>
+                
+                <div class="jkp-action-row">
+                    <lightning:button variant="brand" label="Close Window" onclick="{!c.handleClose}" class="jkp-primary-btn"/>
+                </div>
+            </div>
+
+            <div class="jkp-card-footer">
+                <span>John Keells Properties™ • Action Desk</span>
+            </div>
+        </div>
+    </aura:if>
+</aura:component>

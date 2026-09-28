@@ -57,6 +57,10 @@
                 <behavior>Edit</behavior>
                 <field>CRM_Code__c</field>
             </layoutItems>
+            <layoutItems>
+                <behavior>Edit</behavior>
+                <field>Base_Price_of_Unit_per_sqft__c</field>
+            </layoutItems>
         </layoutColumns>
         <layoutColumns>
             <layoutItems>

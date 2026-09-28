@@ -1,0 +1,555 @@
+:host {
+    display: block;
+    --brand-navy: #1A2149;
+    --brand-blue: #264470;
+    --brand-blue-hover: #1e365b;
+    --brand-gold: #D4AF37;
+    --brand-gold-light: #F5E5A4;
+    --brand-champagne: #C5A880;
+    --success-emerald: #059669;
+    --success-bg: #ecfdf5;
+    --danger-ruby: #dc2626;
+    --danger-bg: #fef2f2;
+    --text-primary: #1e293b;
+    --text-secondary: #64748b;
+    --border-color: #e2e8f0;
+}
+
+/* ─── Modal Wrapper ───────────────────────────────────────────── */
+.modal-wrapper {
+    background: #ffffff;
+    border-radius: 8px;
+    overflow: hidden;
+}
+
+/* ─── Brand Luxury Header ─────────────────────────────────────── */
+.brand-header {
+    background: linear-gradient(135deg, #101633 0%, #1A2149 55%, #264470 100%);
+    padding: 16px 20px;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    color: #ffffff;
+}
+
+.brand-header__left {
+    display: flex;
+    align-items: center;
+    gap: 14px;
+}
+
+.brand-logo-container {
+    display: flex;
+    align-items: center;
+    background: rgba(255, 255, 255, 0.08);
+    padding: 6px 14px;
+    border-radius: 6px;
+    border: 1px solid rgba(255, 255, 255, 0.12);
+}
+
+.brand-logo {
+    max-height: 48px;
+    width: auto;
+    object-fit: contain;
+    display: block;
+}
+
+.brand-header__titles {
+    display: flex;
+    flex-direction: column;
+}
+
+.brand-trademark {
+    display: flex;
+    align-items: baseline;
+    gap: 2px;
+}
+
+.brand-name {
+    font-size: 0.96rem;
+    font-weight: 700;
+    letter-spacing: 0.03em;
+    color: #ffffff;
+}
+
+.trademark-symbol {
+    font-size: 0.65rem;
+    font-weight: 700;
+    color: var(--brand-gold);
+}
+
+.brand-tagline {
+    font-size: 0.7rem;
+    color: var(--brand-champagne);
+    font-style: italic;
+    letter-spacing: 0.05em;
+    margin: 0;
+}
+
+.portal-badge {
+    background: rgba(212, 175, 55, 0.15);
+    border: 1px solid rgba(212, 175, 55, 0.4);
+    color: #fef08a;
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.06em;
+    padding: 3px 10px;
+    border-radius: 20px;
+}
+
+/* ─── Gold Divider Accent ─────────────────────────────────────── */
+.gold-accent-bar {
+    height: 3px;
+    background: linear-gradient(90deg, #D4AF37 0%, #F5E5A4 50%, #C5A880 100%);
+    width: 100%;
+}
+
+/* ─── Content Body ────────────────────────────────────────────── */
+.modal-body-content {
+    padding: 16px 20px;
+    background: #ffffff;
+}
+
+/* ─── Lead Context Strip ──────────────────────────────────────── */
+.lead-context-bar {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 16px;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.02);
+}
+
+.lead-context__info {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+}
+
+.lead-avatar {
+    width: 32px;
+    height: 32px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 6px;
+    background: #e2e8f0;
+}
+
+.lead-details {
+    display: flex;
+    flex-direction: column;
+}
+
+.lead-primary {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.lead-name {
+    font-weight: 700;
+    font-size: 0.92rem;
+    color: var(--text-primary);
+}
+
+.company-badge {
+    background: #e0f2fe;
+    color: #0369a1;
+    font-size: 0.72rem;
+    font-weight: 600;
+    padding: 1px 7px;
+    border-radius: 10px;
+    border: 1px solid #bae6fd;
+}
+
+.lead-subtext {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+}
+
+.lead-status-tag {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.78rem;
+    color: var(--text-primary);
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    padding: 4px 10px;
+    border-radius: 14px;
+}
+
+.status-indicator-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #22c55e;
+    box-shadow: 0 0 0 2px rgba(34, 197, 94, 0.2);
+}
+
+/* ─── Safeguard Warning ───────────────────────────────────────── */
+.warning-banner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    background: #fffbeb;
+    border: 1px solid #fde68a;
+    color: #92400e;
+    border-radius: 8px;
+    padding: 10px 14px;
+    margin-bottom: 16px;
+}
+
+.warning-icon {
+    --sds-c-icon-color-foreground-default: #d97706;
+}
+
+.warning-text {
+    font-size: 0.84rem;
+    line-height: 1.35;
+}
+
+/* ─── Section Typography ──────────────────────────────────────── */
+.form-section {
+    margin-bottom: 16px;
+    border: none;
+    padding: 0;
+}
+
+.section-title-row {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 10px;
+}
+
+.section-heading {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    font-size: 0.88rem;
+    font-weight: 700;
+    color: var(--text-primary);
+    margin: 0;
+}
+
+.step-badge {
+    width: 20px;
+    height: 20px;
+    border-radius: 50%;
+    background: var(--brand-blue);
+    color: #ffffff;
+    font-size: 0.7rem;
+    font-weight: 700;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.section-hint {
+    font-size: 0.75rem;
+    color: var(--text-secondary);
+}
+
+.slds-required {
+    color: var(--danger-ruby);
+    margin-left: 2px;
+}
+
+/* ─── Decision Cards Grid ─────────────────────────────────────── */
+.decision-grid {
+    display: flex;
+    gap: 14px;
+    flex-wrap: wrap;
+}
+
+.decision-option {
+    flex: 1;
+    min-width: 170px;
+    display: flex;
+}
+
+.decision-radio-native {
+    display: none;
+}
+
+.decision-card {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+    width: 100%;
+    padding: 14px 16px;
+    border: 2px solid var(--border-color);
+    border-radius: 10px;
+    background: #ffffff;
+    cursor: pointer;
+    transition: all 0.25s cubic-bezier(0.4, 0, 0.2, 1);
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.04);
+    position: relative;
+    user-select: none;
+}
+
+.decision-card:hover {
+    border-color: #93c5fd;
+    transform: translateY(-2px);
+    box-shadow: 0 6px 16px rgba(38, 68, 112, 0.08);
+}
+
+.card-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 8px;
+}
+
+.card-title-group {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+}
+
+.card-icon-wrap {
+    width: 26px;
+    height: 26px;
+    border-radius: 50%;
+    background: #f1f5f9;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.card-title {
+    font-weight: 700;
+    font-size: 0.94rem;
+    color: var(--text-primary);
+}
+
+.card-description {
+    font-size: 0.78rem;
+    color: var(--text-secondary);
+    line-height: 1.35;
+    margin: 0 0 10px 0;
+}
+
+.decision-badge {
+    font-size: 0.68rem;
+    font-weight: 700;
+    text-transform: uppercase;
+    padding: 2px 8px;
+    border-radius: 12px;
+    letter-spacing: 0.03em;
+}
+
+.decision-badge--qualified {
+    background: #dcfce7;
+    color: #15803d;
+    border: 1px solid #bbf7d0;
+}
+
+.decision-badge--not-qualified {
+    background: #fee2e2;
+    color: #b91c1c;
+    border: 1px solid #fecaca;
+}
+
+.card-radio-indicator {
+    width: 18px;
+    height: 18px;
+    border-radius: 50%;
+    border: 2px solid #cbd5e1;
+    align-self: flex-end;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    transition: all 0.2s ease;
+}
+
+.radio-inner-dot {
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: transparent;
+    transition: all 0.2s ease;
+}
+
+/* ─── Active / Checked Card States ────────────────────────────── */
+.decision-radio-native:checked + .decision-card--qualified {
+    border-color: var(--success-emerald);
+    background: linear-gradient(180deg, var(--success-bg) 0%, #ffffff 100%);
+    box-shadow: 0 0 0 1px var(--success-emerald), 0 6px 18px rgba(5, 150, 105, 0.12);
+}
+
+.decision-radio-native:checked + .decision-card--qualified .card-icon-wrap {
+    background: var(--success-emerald);
+    --sds-c-icon-color-foreground-default: #ffffff;
+}
+
+.decision-radio-native:checked + .decision-card--qualified .card-radio-indicator {
+    border-color: var(--success-emerald);
+}
+
+.decision-radio-native:checked + .decision-card--qualified .radio-inner-dot {
+    background: var(--success-emerald);
+}
+
+.decision-radio-native:checked + .decision-card--not-qualified {
+    border-color: var(--danger-ruby);
+    background: linear-gradient(180deg, var(--danger-bg) 0%, #ffffff 100%);
+    box-shadow: 0 0 0 1px var(--danger-ruby), 0 6px 18px rgba(220, 38, 38, 0.12);
+}
+
+.decision-radio-native:checked + .decision-card--not-qualified .card-icon-wrap {
+    background: var(--danger-ruby);
+    --sds-c-icon-color-foreground-default: #ffffff;
+}
+
+.decision-radio-native:checked + .decision-card--not-qualified .card-radio-indicator {
+    border-color: var(--danger-ruby);
+}
+
+.decision-radio-native:checked + .decision-card--not-qualified .radio-inner-dot {
+    background: var(--danger-ruby);
+}
+
+/* ─── Smart Chips ─────────────────────────────────────────────── */
+.smart-chips-container {
+    background: #f8fafc;
+    border: 1px solid #e2e8f0;
+    border-radius: 8px;
+    padding: 10px 12px;
+    margin-bottom: 16px;
+    animation: fadeIn 0.25s ease-out;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+.chips-label {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.74rem;
+    font-weight: 600;
+    color: var(--text-secondary);
+    margin-bottom: 8px;
+}
+
+.chips-list {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 6px;
+}
+
+.chip-button {
+    background: #ffffff;
+    border: 1px solid #cbd5e1;
+    border-radius: 16px;
+    padding: 4px 10px;
+    font-size: 0.75rem;
+    color: var(--text-primary);
+    cursor: pointer;
+    transition: all 0.2s ease;
+    font-weight: 500;
+    font-family: inherit;
+    box-shadow: 0 1px 2px rgba(0, 0, 0, 0.03);
+}
+
+.chip-button:hover:not(:disabled) {
+    background: var(--brand-blue);
+    color: #ffffff;
+    border-color: var(--brand-blue);
+    transform: translateY(-1px);
+    box-shadow: 0 3px 6px rgba(38, 68, 112, 0.15);
+}
+
+/* ─── Textarea & Counter ──────────────────────────────────────── */
+.textarea-container {
+    width: 100%;
+}
+
+.char-count {
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.reason-textarea {
+    width: 100%;
+    border: 2px solid var(--border-color);
+    border-radius: 8px;
+    padding: 10px 12px;
+    font-size: 0.88rem;
+    font-family: inherit;
+    color: var(--text-primary);
+    resize: vertical;
+    min-height: 100px;
+    transition: border-color 0.2s, box-shadow 0.2s;
+    background: #ffffff;
+    box-sizing: border-box;
+    line-height: 1.4;
+}
+
+.reason-textarea:focus {
+    outline: none;
+    border-color: var(--brand-blue);
+    box-shadow: 0 0 0 3px rgba(38, 68, 112, 0.15);
+}
+
+.textarea-error {
+    border-color: var(--danger-ruby) !important;
+    box-shadow: 0 0 0 3px rgba(220, 38, 38, 0.12) !important;
+}
+
+/* ─── Error Notification ──────────────────────────────────────── */
+.error-pill {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    color: var(--danger-ruby);
+    font-size: 0.78rem;
+    font-weight: 600;
+    margin-top: 6px;
+    --sds-c-icon-color-foreground-default: var(--danger-ruby);
+}
+
+/* ─── Footer Styling ──────────────────────────────────────────── */
+.footer-container {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+}
+
+.footer-trademark {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    font-size: 0.72rem;
+    color: var(--text-secondary);
+    font-weight: 500;
+}
+
+.trademark-icon {
+    font-size: 0.75rem;
+}
+
+.footer-actions {
+    display: flex;
+    align-items: center;
+}
+
+.btn-confirm {
+    --sds-c-button-brand-color-background: var(--brand-blue);
+    --sds-c-button-brand-color-background-hover: var(--brand-blue-hover);
+    --sds-c-button-brand-color-border: var(--brand-blue);
+    --sds-c-button-brand-color-border-hover: var(--brand-blue-hover);
+}
+

@@ -32,6 +32,7 @@
             <value>
                 <fullName>Connected</fullName>
                 <default>false</default>
+                <isActive>false</isActive>
                 <label>Connected</label>
             </value>
         </valueSetDefinition>
