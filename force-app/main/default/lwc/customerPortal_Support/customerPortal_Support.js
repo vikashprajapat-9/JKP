@@ -2,8 +2,8 @@ import { LightningElement, wire } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { refreshApex } from '@salesforce/apex';
 import SUCCESS_ILLUSTRATION from '@salesforce/resourceUrl/SuccessReferralImage';
-import getSupportPageData from '@salesforce/apex/customerPortalController.getSupportPageData';
-import createServiceRequest from '@salesforce/apex/customerPortalController.createServiceRequest';
+import getSupportPageData from '@salesforce/apex/CustomerPortalController.getSupportPageData';
+import createServiceRequest from '@salesforce/apex/CustomerPortalController.createServiceRequest';
 
 const EMPTY_FORM = { issue: '', property: '', unitNumber: '', otherDetails: '', description: '' };
 

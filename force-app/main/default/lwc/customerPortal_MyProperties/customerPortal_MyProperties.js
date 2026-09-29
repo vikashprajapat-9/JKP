@@ -1,5 +1,6 @@
 import { LightningElement } from 'lwc';
-import getMyProperties from '@salesforce/apex/customerPortalController.getMyProperties';
+import getMyProperties from '@salesforce/apex/CustomerPortalController.getMyProperties';
+import getMyPropertyDetails from '@salesforce/apex/CustomerPortalController.getMyPropertyDetails';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 const VIEW_LIST = 'LIST_VIEW';
@@ -13,7 +14,8 @@ export default class CustomerPortal_MyProperties extends LightningElement {
     pageData;
     isLoading = true;
     hasError = false;
-
+    propertyDetails;         
+    isDetailsLoading = false;
     currentView = VIEW_LIST;
     activeTab = TAB_BOOKING;
 
@@ -91,11 +93,17 @@ export default class CustomerPortal_MyProperties extends LightningElement {
         return this.isPaymentTab ? 'mp-tab mp-tab_active' : 'mp-tab';
     }
 
+    // get filterButtonLabel() {
+    //     if (!this.selectedProjectFilter) {
+    //         return 'Filter By Projects';
+    //     }
+    //     return this.selectedProjectFilter;
+    // }
+
     get filterButtonLabel() {
-        if (!this.selectedProjectFilter) {
-            return 'Filter By Projects';
-        }
-        return this.selectedProjectFilter;
+        const opt = (this.pageData?.projectFilters || [])
+            .find(o => o.value === this.selectedProjectFilter);
+        return opt ? opt.label : 'Filter By Projects';
     }
 
     get filterCaretClass() {
@@ -130,28 +138,49 @@ export default class CustomerPortal_MyProperties extends LightningElement {
         this.isFilterMenuOpen = false;
     }
 
+    // get filteredProperties() {
+    //     if (!this.pageData || !this.pageData.properties) {
+    //         return [];
+    //     }
+    //     const all = this.selectedProjectFilter
+    //         ? this.pageData.properties.filter((p) => p.projectName === this.selectedProjectFilter)
+    //         : this.pageData.properties;
+
+    //     return all.map((p, idx) => {
+    //         return { ...p, srNo: idx + 1 };
+    //     });
+    // }
     get filteredProperties() {
         if (!this.pageData || !this.pageData.properties) {
             return [];
         }
         const all = this.selectedProjectFilter
-            ? this.pageData.properties.filter((p) => p.projectName === this.selectedProjectFilter)
+            ? this.pageData.properties.filter((p) => p.projectId === this.selectedProjectFilter)
             : this.pageData.properties;
 
         return all.map((p, idx) => {
             return { ...p, srNo: idx + 1 };
         });
     }
-
     get hasNoFilteredProperties() {
         return this.filteredProperties.length === 0;
     }
 
-    handleOpenDetails(event) {
+    async handleOpenDetails(event) {
         this.selectedPropertyId = event.currentTarget.dataset.id;
         this.currentView = VIEW_DETAIL;
         this.activeTab = TAB_BOOKING;
         this.expandedBookingId = null;
+        this.propertyDetails = null;
+        this.isDetailsLoading = true;
+        try {
+            this.propertyDetails = await getMyPropertyDetails({ propertyId: this.selectedPropertyId });
+        } catch (e) {
+            this.dispatchEvent(new ShowToastEvent({
+                title: 'Error', message: 'Unable to load property details.', variant: 'error' }));
+        } finally {
+            this.isDetailsLoading = false;
+        }
     }
 
     handleBack() {
@@ -160,29 +189,55 @@ export default class CustomerPortal_MyProperties extends LightningElement {
         this.expandedBookingId = null;
     }
 
-    get selectedProperty() {
-        if (!this.pageData || !this.pageData.properties || !this.selectedPropertyId) {
-            return null;
-        }
-        const prop = this.pageData.properties.find((p) => p.id === this.selectedPropertyId);
-        if (!prop) {
-            return null;
-        }
+    // get selectedProperty() {
+    //     if (!this.pageData || !this.pageData.properties || !this.selectedPropertyId) {
+    //         return null;
+    //     }
+    //     const prop = this.pageData.properties.find((p) => p.id === this.selectedPropertyId);
+    //     if (!prop) {
+    //         return null;
+    //     }
 
-        const total = (prop.paymentPlan || []).reduce((sum, row) => {
-            const numeric = parseFloat((row.amount || '').replace(/[^0-9.]/g, ''));
-            return sum + (isNaN(numeric) ? 0 : numeric);
+    //     const total = (prop.paymentPlan || []).reduce((sum, row) => {
+    //         const numeric = parseFloat((row.amount || '').replace(/[^0-9.]/g, ''));
+    //         return sum + (isNaN(numeric) ? 0 : numeric);
+    //     }, 0);
+
+    //     return {
+    //         ...prop,
+    //         applicants: (prop.applicants || []).map((a, idx) => {
+    //             return {
+    //                 ...a,
+    //                 avatarClass: idx === 0 ? 'applicant-avatar applicant-avatar_blue' : 'applicant-avatar applicant-avatar_orange'
+    //             };
+    //         }),
+    //         paymentPlanTotal: prop.paymentPlanTotal || this.formatCurrency(total)
+    //     };
+    // }
+
+    get selectedProperty() {
+        const d = this.propertyDetails;
+        if (!d) return null;
+
+        const paymentPlan = (d.paymentPlan || []).map((row, i) => ({
+            ...row,
+            key: 'pp-' + i
+        }));
+
+        const totalPct = paymentPlan.reduce((sum, row) => {
+            const n = parseFloat(row.percentage);
+            return sum + (isNaN(n) ? 0 : n);
         }, 0);
 
         return {
-            ...prop,
-            applicants: (prop.applicants || []).map((a, idx) => {
-                return {
-                    ...a,
-                    avatarClass: idx === 0 ? 'applicant-avatar applicant-avatar_blue' : 'applicant-avatar applicant-avatar_orange'
-                };
-            }),
-            paymentPlanTotal: prop.paymentPlanTotal || this.formatCurrency(total)
+            ...d,
+            paymentPlan,
+            paymentPlanTotalPercentage: Math.round(totalPct * 100) / 100 + '%',
+            applicants: (d.applicants || []).map((a, i) => ({
+                ...a,
+                avatarClass: i === 0 ? 'applicant-avatar applicant-avatar_blue'
+                                    : 'applicant-avatar applicant-avatar_orange'
+            }))
         };
     }
 

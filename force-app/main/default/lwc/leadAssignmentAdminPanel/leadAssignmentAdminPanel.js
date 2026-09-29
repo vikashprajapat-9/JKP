@@ -186,6 +186,7 @@ export default class LeadAssignmentAdminPanel extends LightningElement {
         this.scoreCurrentPage = 1;
         this.prepareTabs();
     }
+
     resetGroupForm() {
         this.selectedProjectId = null;
         this.selectedProjectName = null;

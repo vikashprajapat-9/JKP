@@ -1,5 +1,5 @@
 import { LightningElement } from 'lwc';
-import getConstructionStatus from '@salesforce/apex/customerPortalController.getConstructionStatus';
+import getConstructionStatus from '@salesforce/apex/CustomerPortalController.getConstructionStatus';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 
 const VIEW_LIST = 'LIST_VIEW';

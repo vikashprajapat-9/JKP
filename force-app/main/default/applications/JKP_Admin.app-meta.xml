@@ -68,7 +68,6 @@
     <tabs>Company__c</tabs>
     <tabs>Project__c</tabs>
     <tabs>Pre_Sales_Admin_Panel</tabs>
-    <tabs>Lead_Assignment_History__c</tabs>
     <tabs>Payment_Schedule_Master__c</tabs>
     <tabs>Pricing_Element_Master__c</tabs>
     <tabs>Tax_Master__c</tabs>
@@ -86,6 +85,13 @@
     <tabs>Receipt_Log__c</tabs>
     <tabs>SAP_Receipt__c</tabs>
     <tabs>Escrow_Account__c</tabs>
+    <tabs>QC_Request__c</tabs>
+    <tabs>Sub_Document__c</tabs>
+    <tabs>Applicant__c</tabs>
+    <tabs>Amenties__c</tabs>
+    <tabs>Receipt_Payment_Schedule_Link__c</tabs>
+    <tabs>Project_Updates__c</tabs>
+    <tabs>Discount_Master__c</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>JKP_Admin_UtilityBar</utilityBar>
 </CustomApplication>

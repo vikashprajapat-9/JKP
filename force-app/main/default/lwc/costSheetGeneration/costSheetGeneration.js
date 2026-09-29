@@ -4,7 +4,7 @@ import getOnLoadData from '@salesforce/apex/CostSheetGenerationController.getOnL
 import saveCostSheet from '@salesforce/apex/CostSheetGenerationController.saveCostSheet';
 import getPricingElements from '@salesforce/apex/CostSheetGenerationController.getPricingElements';
 import getParkingRecords from '@salesforce/apex/CostSheetGenerationController.getParkingRecords';
-//import createparkingElements from '@salesforce/apex/CostSheetGenerationController.createparkingElements';
+import createparkingElements from '@salesforce/apex/CostSheetGenerationController.createparkingElements';
 //import updatePricingElements from '@salesforce/apex/CostSheetGenerationController.updatePricingElements';
 import submitCostSheetForApproval from '@salesforce/apex/CostSheetGenerationController.submitCostSheetForApproval';
 //import checkAccess from '@salesforce/apex/CostSheetGenerationController.checkAccess';
@@ -588,7 +588,7 @@ export default class CostSheetGeneration extends NavigationMixin(LightningElemen
     handleThirdScreen() {
         debugger;
         this.secondScreen = false;
-        // this.thirdScreen = true;
+        this.thirdScreen = true;
         this.handleFouth();
     }
 
@@ -617,7 +617,7 @@ export default class CostSheetGeneration extends NavigationMixin(LightningElemen
                 if (result && Array.isArray(result) && result.length > 0) {
                     this.parkingDetails = result;
                     this.parkingDetails.forEach(item => {
-                        this.availableOpenParking = item.Parking_Type__c == 'Open' ? item.Available_Parking__c : this.availableOpenParking;
+                        this.availableOpenParking = item.Parking_Type__c == 'open' ? item.Available_Parking__c : this.availableOpenParking;
                         this.availableDependantParking = item.Parking_Type__c == 'Dependent' ? item.Available_Parking__c : this.availableDependantParking;
                         this.availableIndependantParking = item.Parking_Type__c == 'Independent' ? item.Available_Parking__c : this.availableIndependantParking;
                     });
@@ -662,8 +662,8 @@ export default class CostSheetGeneration extends NavigationMixin(LightningElemen
         }
         console.log('Updated Rows:', JSON.stringify(currentRow));
 
-        var amount = parkingDetail != null ? parkingDetail.Amount__c : 0;
-        var finalAmount = currentRow.quantity != '' && name != 'quantity' ? parkingDetail.Amount__c * currentRow.quantity : name == 'quantity' && selectedType != null ? parkingDetail.Amount__c * selectedType : 0;
+        var amount = parkingDetail != null ? parkingDetail.Amount_Per_Parking__c : 0;
+        var finalAmount = currentRow.quantity != '' && name != 'quantity' ? parkingDetail.Amount_Per_Parking__c * currentRow.quantity : name == 'quantity' && selectedType != null ? parkingDetail.Amount_Per_Parking__c * selectedType : 0;
 
         // const amount = parkingDetail ? (parkingDetail.Amount__c) : 0;
         `  console.log('Found Parking Detail:', parkingDetail);
@@ -753,61 +753,61 @@ export default class CostSheetGeneration extends NavigationMixin(LightningElemen
         this.updateAvailableOptions();
     }
 
-   // @track discountAdded = false;
-   // @track discountByPricingMap = [];
-    // handleFouth() {
-    //     debugger;
-    //     console.log('this.rows==>' + this.rows);
+@track discountAdded = false;
+@track discountByPricingMap = [];
+    handleFouth() {
+        debugger;
+        console.log('this.rows==>' + this.rows);
 
-    //     if (this.rows && this.rows.length > 0) {
-    //         this.isFourthNextDisabled = true;
-    //         createparkingElements({ parkingElements: this.rows, costId: this.newCostSheetId })
-    //             .then(result => {
-    //                 console.log('Apex result:', result);
-    //                 console.log('pricingElemets==>' + this.pricingElements);
-    //                 this.pricingElements = this.pricingElements.filter(element =>
-    //                     !element.parking_Element__c
-    //                 );
+        if (this.rows && this.rows.length > 0) {
+            this.isFourthNextDisabled = true;
+            createparkingElements({ parkingElements: this.rows, costId: this.newCostSheetId })
+                .then(result => {
+                    console.log('Apex result:', result);
+                    console.log('pricingElemets==>' + this.pricingElements);
+                    this.pricingElements = this.pricingElements.filter(element =>
+                        !element.parking_Element__c
+                    );
 
 
-    //                 this.pricingElements = [...this.pricingElements, ...result].map(item => ({
-    //                     ...item,
-    //                     ActualAmount: item.Amount__c
-    //                 }));
+                    this.pricingElements = [...this.pricingElements, ...result].map(item => ({
+                        ...item,
+                        ActualAmount: item.Amount__c
+                    }));
 
-    //                 console.log('Updated pricingElements:', this.pricingElements);
+                    console.log('Updated pricingElements:', this.pricingElements);
 
-    //                 this.secondScreen = false;
-    //                 this.fourthScreen = true;
-    //                 this.isFourthNextDisabled = false;
-    //             })
-    //             .catch(error => {
-    //                 console.error('Error during Apex call:', error);
-    //                 this.isFourthNextDisabled = false;
-    //             });
-    //     } else {
-    //         console.log('No parking element records to send.');
-    //     }
+                    this.secondScreen = false;
+                    this.fourthScreen = true;
+                    this.isFourthNextDisabled = false;
+                })
+                .catch(error => {
+                    console.error('Error during Apex call:', error);
+                    this.isFourthNextDisabled = false;
+                });
+        } else {
+            console.log('No parking element records to send.');
+        }
 
-    //     this.pricingElements = this.pricingElements.map(item => ({
-    //         ...item,
-    //         ActualAmount: item.Amount__c
-    //     }));
-    //     //this.discountAdded = this.pricingElements.some(item => item.Discount_Amount__c != null);
+        this.pricingElements = this.pricingElements.map(item => ({
+            ...item,
+            ActualAmount: item.Amount__c
+        }));
+        //this.discountAdded = this.pricingElements.some(item => item.Discount_Amount__c != null);
 
-    //     // this.discountByPricingMap = [];
-    //     // this.pricingElements.forEach(item => {
-    //     //     if (item.Discount_Amount__c != null) {
-    //     //         this.discountByPricingMap.push({
-    //     //             discountAmount: item.Discount_Amount__c,
-    //     //             id: item.Pricing_Element_Master__c
-    //     //         });
-    //     //     }
-    //     // });
+        // this.discountByPricingMap = [];
+        // this.pricingElements.forEach(item => {
+        //     if (item.Discount_Amount__c != null) {
+        //         this.discountByPricingMap.push({
+        //             discountAmount: item.Discount_Amount__c,
+        //             id: item.Pricing_Element_Master__c
+        //         });
+        //     }
+        // });
         
-    //     this.thirdScreen = false;
-    //     this.fourthScreen = true;
-    // }
+        this.thirdScreen = false;
+        this.fourthScreen = true;
+    }
 
     handleFouth() {
         debugger;
@@ -826,6 +826,13 @@ export default class CostSheetGeneration extends NavigationMixin(LightningElemen
         this.thirdScreen = false;
         this.fourthScreen = false;
         this.secondScreen = true;
+    }
+    handleBack1() {
+        debugger;
+        this.thirdScreen = false;
+        this.fourthScreen = false;
+        this.secondScreen = false;
+        this.firstScreen = true;
     }
 
     // handleFinalSave() {

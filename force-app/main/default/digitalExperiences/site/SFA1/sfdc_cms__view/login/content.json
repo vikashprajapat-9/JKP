@@ -14,7 +14,7 @@
             "layoutDirectionTablet" : "column",
             "maxContentWidth" : "",
             "sectionColumnGutterWidth" : "",
-            "sectionConfig" : "{\"UUID\":\"8069eeb7-1ddc-4c87-b5e1-95557420afc0\",\"columns\":[{\"UUID\":\"d91c2a90-75cc-4ce1-ae3a-c54acf7585b4\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":null}]}",
+            "sectionConfig" : "{\"UUID\":\"fcd00bf3-962c-4e00-83af-7dd151ca6e8a\",\"columns\":[{\"UUID\":\"090c4e4b-3b6c-4883-bb4f-a36481df9a4a\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":null}]}",
             "sectionMinHeight" : "",
             "sectionVerticalAlign" : "flex-start"
           },
@@ -27,7 +27,7 @@
                 "logoWidth" : 250
               },
               "definition" : "dxp_content_layout:siteLogo",
-              "id" : "83095d06-9a6b-4787-bde4-429af20b1268",
+              "id" : "e352a4d7-85db-4e89-86fa-a76e84ffb60a",
               "type" : "component"
             }, {
               "attributes" : {
@@ -41,26 +41,26 @@
                 "usernameLabel" : "Username"
               },
               "definition" : "community_login:loginForm",
-              "id" : "eaa939ba-05bb-43a9-98e5-9e3240b3b414",
+              "id" : "6f0e3df7-9dd1-45a8-8036-22efaeadd03b",
               "type" : "component"
             }, {
               "attributes" : {
                 "employeeLoginLinkLabel" : "Are you an employee? Log in"
               },
               "definition" : "community_login:employeeLoginLink",
-              "id" : "004c7f9c-0468-4ed7-a070-d4861b85c814",
+              "id" : "f7f570c9-ef16-4d67-a947-3a6ede74935c",
               "type" : "component"
             } ],
-            "id" : "d91c2a90-75cc-4ce1-ae3a-c54acf7585b4",
+            "id" : "090c4e4b-3b6c-4883-bb4f-a36481df9a4a",
             "name" : "col1",
             "title" : "Column 1",
             "type" : "region"
           } ],
           "definition" : "community_layout:section",
-          "id" : "8069eeb7-1ddc-4c87-b5e1-95557420afc0",
+          "id" : "fcd00bf3-962c-4e00-83af-7dd151ca6e8a",
           "type" : "component"
         } ],
-        "id" : "22e0f40f-2c6d-4950-a811-9b48aff319d6",
+        "id" : "9c549f87-8ecf-4652-9f8a-d9933b415334",
         "name" : "content",
         "title" : "Content",
         "type" : "region"
@@ -73,16 +73,16 @@
             "recordId" : "{!recordId}"
           },
           "definition" : "community_builder:seoAssistant",
-          "id" : "1340ef7f-9c46-4af9-ad4a-8f5e66e6dc26",
+          "id" : "4e75da4f-0f03-4186-8ed4-c5fedee72e93",
           "type" : "component"
         } ],
-        "id" : "3ecfa6f1-3a8d-4930-bb34-3aad318ae318",
+        "id" : "c2ba5de3-c0fe-4c0f-ac6f-a2e2beecd4c8",
         "name" : "sfdcHiddenRegion",
         "title" : "sfdcHiddenRegion",
         "type" : "region"
       } ],
       "definition" : "community_layout:sldsFlexibleLayout",
-      "id" : "5b4e7ac4-bba1-41d8-a691-6dab45548cb8",
+      "id" : "b30b4666-2d38-4161-9789-a22029ec2b2c",
       "type" : "component"
     },
     "dataProviders" : [ ],

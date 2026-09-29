@@ -210,4 +210,3 @@ export default class LeadQualification extends LightningElement {
         }
     }
 }
-

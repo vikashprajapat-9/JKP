@@ -26,16 +26,23 @@ public class TaskTriggerHandler {
                 opportunityIds.add(task.WhatId);
             }
         }
-
         if (opportunityIds.isEmpty()) {
             return;
         }
-        List<Opportunity> opportunitiesToUpdate = new List<Opportunity>();
-        for (Opportunity opp : [SELECT Id, StageName FROM Opportunity WHERE Id IN :opportunityIds]) {
-            if (opp.StageName == 'SPA Signing') {
-                opp.StageName = 'Tranche Payment';
-                opportunitiesToUpdate.add(opp);
+
+        List<Opportunity> opportunitiesToUpdate =new List<Opportunity>();
+        for (Opportunity opp : [SELECT Id, StageName, Unit__c, Unit__r.Internal_QC__c FROM Opportunity WHERE Id IN :opportunityIds
+        ]) {
+            if (opp.StageName != 'SPA Signing') {
+                continue;
             }
+            if (opp.Unit__c != null && opp.Unit__r.Internal_QC__c == true) {
+                opp.StageName = 'Internal QC';
+
+            } else {
+                opp.StageName = 'Tranche Payment';
+            }
+            opportunitiesToUpdate.add(opp);
         }
         if (!opportunitiesToUpdate.isEmpty()) {
             update opportunitiesToUpdate;

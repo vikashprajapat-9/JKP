@@ -9,24 +9,38 @@ public without sharing class partnerWebPortalSiteVisit {
     }
 
     public class VisitRow {
-        @AuraEnabled public Integer rowNo           { get; set; }
-        @AuraEnabled public String createdDate      { get; set; }
-        @AuraEnabled public String visitName        { get; set; }
-        @AuraEnabled public String leadName         { get; set; }
-        @AuraEnabled public String projectName      { get; set; }
-        @AuraEnabled public String opportunityStage { get; set; }
+        @AuraEnabled public Integer rowNo       { get; set; }
+        @AuraEnabled public String createdDate  { get; set; }
+        @AuraEnabled public String visitName    { get; set; }
+        @AuraEnabled public String leadName     { get; set; }
+        @AuraEnabled public String projectName  { get; set; }
+        @AuraEnabled public String status       { get; set; }
     }
 
     // =========================================================
-    // 1. GET CUSTOMER OPTIONS (From Lead Object)
+    // 1. GET CUSTOMER OPTIONS (Only Logged-in Partner's Leads)
     // =========================================================
     @AuraEnabled(cacheable=true)
     public static List<Map<String, String>> getCustomerOptions() {
         List<Map<String, String>> options = new List<Map<String, String>>();
+        Id currentUserId = UserInfo.getUserId();
+        
+        Set<Id> visitedLeadIds = new Set<Id>();
+        for (Visit__c v : [
+            SELECT Lead__c 
+            FROM Visit__c 
+            WHERE Lead__c != null 
+            AND (Lead__r.OwnerId = :currentUserId OR OwnerId = :currentUserId)
+        ]) {
+            visitedLeadIds.add(v.Lead__c);
+        }
+
         for (Lead l : [
             SELECT Id, Name, Project__c 
             FROM Lead 
             WHERE IsConverted = false 
+            AND OwnerId = :currentUserId
+            AND Id NOT IN :visitedLeadIds
             ORDER BY Name ASC 
             LIMIT 500
         ]) {
@@ -40,17 +54,12 @@ public without sharing class partnerWebPortalSiteVisit {
     }
 
     // =========================================================
-    // 2. GET PROJECT OPTIONS (From Project__c Object)
+    // 2. GET PROJECT OPTIONS
     // =========================================================
     @AuraEnabled(cacheable=true)
     public static List<Map<String, String>> getProjectOptions() {
         List<Map<String, String>> options = new List<Map<String, String>>();
-        for (Project__c p : [
-            SELECT Id, Name 
-            FROM Project__c 
-            ORDER BY Name ASC 
-            LIMIT 200
-        ]) {
+        for (Project__c p : [SELECT Id, Name FROM Project__c WITH SYSTEM_MODE ORDER BY Name ASC LIMIT 200]) {
             options.add(new Map<String, String>{
                 'label' => p.Name,
                 'value' => String.valueOf(p.Id)
@@ -60,7 +69,7 @@ public without sharing class partnerWebPortalSiteVisit {
     }
 
     // =========================================================
-    // 3. FETCH VISITS (Includes Lead__r.Name & Project__r.Name)
+    // 3. FETCH VISITS (Includes Project Name & Status__c)
     // =========================================================
     @AuraEnabled(cacheable=true)
     public static SiteVisitsResponse getSiteVisit(
@@ -73,31 +82,30 @@ public without sharing class partnerWebPortalSiteVisit {
         response.pageNumber = (pageNumber == null || pageNumber < 1) ? 1 : pageNumber;
         response.pageSize   = (pageSize   == null || pageSize   < 1) ? 10 : pageSize;
 
-        List<String> conditions = new List<String>();
-        String likeKey = String.isNotBlank(searchKey) ? '%' + searchKey.trim() + '%' : null;
+        Id currentUserId = UserInfo.getUserId();
+        List<String> conditions = new List<String>{ '(Lead__r.OwnerId = :currentUserId OR CreatedById = :currentUserId OR OwnerId = :currentUserId)' };
 
         if (String.isNotBlank(stageFilter) && stageFilter != 'All') {
-            conditions.add('Opportunity__r.StageName = :stageFilter');
+            conditions.add('Status__c = :stageFilter');
         }
-        if (likeKey != null) {
+
+        String likeKey;
+        if (String.isNotBlank(searchKey)) {
+            likeKey = '%' + searchKey.trim() + '%';
             conditions.add('(Name LIKE :likeKey OR Lead__r.Name LIKE :likeKey OR Project__r.Name LIKE :likeKey)');
         }
 
-        String whereClause = conditions.isEmpty()
-            ? ''
-            : ' WHERE ' + String.join(conditions, ' AND ');
+        String whereClause = ' WHERE ' + String.join(conditions, ' AND ');
 
-        Integer totalRecords = Database.countQuery(
-            'SELECT COUNT() FROM Visit__c' + whereClause
-        );
+        Integer totalRecords = Database.countQuery('SELECT COUNT() FROM Visit__c' + whereClause);
         response.totalRecords = totalRecords;
-        response.totalPages = (Integer) Math.ceil((Decimal) totalRecords / response.pageSize);
+        response.totalPages   = (Integer) Math.ceil((Decimal) totalRecords / response.pageSize);
 
         Integer offset = (response.pageNumber - 1) * response.pageSize;
-
         List<Visit__c> visits = Database.query(
-            'SELECT Id, Name, CreatedDate, ' +
-            'Lead__r.Name, Project__r.Name, Opportunity__r.StageName ' +
+            'SELECT Id, Name, CreatedDate, Status__c, ' +
+            'Lead__r.Name, Lead__r.Project__c, Lead__r.Project__r.Name, ' +
+            'Project__r.Name ' +
             'FROM Visit__c' + whereClause +
             ' ORDER BY CreatedDate DESC LIMIT :pageSize OFFSET :offset'
         );
@@ -107,13 +115,22 @@ public without sharing class partnerWebPortalSiteVisit {
 
         for (Visit__c v : visits) {
             VisitRow r = new VisitRow();
-            r.rowNo            = rowCounter++;
-            r.createdDate      = v.CreatedDate != null ? v.CreatedDate.format('dd MMM yyyy') : '';
-            r.visitName        = String.isNotBlank(v.Name) ? v.Name : '-';
-            r.leadName         = v.Lead__r != null ? v.Lead__r.Name : '-';
-            r.projectName      = v.Project__r != null ? v.Project__r.Name : '-';
-            r.opportunityStage = (v.Opportunity__r != null && String.isNotBlank(v.Opportunity__r.StageName))
-                ? v.Opportunity__r.StageName : '-';
+            r.rowNo       = rowCounter++;
+            r.createdDate = v.CreatedDate != null ? v.CreatedDate.format('dd MMM yyyy') : '';
+            r.visitName   = String.isNotBlank(v.Name) ? v.Name : '-';
+            r.leadName    = (v.Lead__r != null && String.isNotBlank(v.Lead__r.Name)) ? v.Lead__r.Name : '-';
+            
+            // ✅ Read Project from Visit__r.Project__r OR Lead__r.Project__r
+            if (v.Project__r != null && String.isNotBlank(v.Project__r.Name)) {
+                r.projectName = v.Project__r.Name;
+            } else if (v.Lead__r != null && v.Lead__r.Project__r != null && String.isNotBlank(v.Lead__r.Project__r.Name)) {
+                r.projectName = v.Lead__r.Project__r.Name;
+            } else {
+                r.projectName = '-';
+            }
+
+            // ✅ Visit Status
+            r.status = String.isNotBlank(v.Status__c) ? v.Status__c : 'Upcoming';
             rows.add(r);
         }
 
@@ -122,12 +139,12 @@ public without sharing class partnerWebPortalSiteVisit {
     }
 
     // =========================================================
-    // 4. STAGE PICKLIST OPTIONS
+    // 4. STATUS FILTER TABS (From Visit__c.Status__c)
     // =========================================================
     @AuraEnabled(cacheable=true)
     public static List<String> getStageOptions() {
         List<String> options = new List<String>{ 'All' };
-        for (Schema.PicklistEntry entry : Opportunity.StageName.getDescribe().getPicklistValues()) {
+        for (Schema.PicklistEntry entry : Visit__c.Status__c.getDescribe().getPicklistValues()) {
             if (entry.isActive()) {
                 options.add(entry.getLabel());
             }
@@ -140,40 +157,41 @@ public without sharing class partnerWebPortalSiteVisit {
     // =========================================================
     @AuraEnabled
     public static String exportCSV(String stageFilter, String searchKey) {
-        List<String> conditions = new List<String>();
-        String likeKey = String.isNotBlank(searchKey) ? '%' + searchKey.trim() + '%' : null;
+        Id currentUserId = UserInfo.getUserId();
+        List<String> conditions = new List<String>{ '(Lead__r.OwnerId = :currentUserId OR CreatedById = :currentUserId OR OwnerId = :currentUserId)' };
 
         if (String.isNotBlank(stageFilter) && stageFilter != 'All') {
-            conditions.add('Opportunity__r.StageName = :stageFilter');
+            conditions.add('Status__c = :stageFilter');
         }
-        if (likeKey != null) {
+
+        String likeKey;
+        if (String.isNotBlank(searchKey)) {
+            likeKey = '%' + searchKey.trim() + '%';
             conditions.add('(Name LIKE :likeKey OR Lead__r.Name LIKE :likeKey OR Project__r.Name LIKE :likeKey)');
         }
 
-        String whereClause = conditions.isEmpty()
-            ? ''
-            : ' WHERE ' + String.join(conditions, ' AND ');
-
+        String whereClause = ' WHERE ' + String.join(conditions, ' AND ');
         List<Visit__c> visits = Database.query(
-            'SELECT Id, Name, CreatedDate, ' +
-            'Lead__r.Name, Project__r.Name, Opportunity__r.StageName ' +
-            'FROM Visit__c' + whereClause +
-            ' ORDER BY CreatedDate DESC LIMIT 1000'
+            'SELECT Id, Name, CreatedDate, Status__c, Lead__r.Name, Project__r.Name, Lead__r.Project__r.Name FROM Visit__c' + whereClause + ' ORDER BY CreatedDate DESC LIMIT 1000'
         );
 
-        String csv = 'Visit Name,Customer (Lead),Project,Stage,Created Date\n';
+        String csv = 'Visit Name,Customer (Lead),Project,Visit Status,Created Date\n';
         for (Visit__c v : visits) {
+            String projName = (v.Project__r != null) ? v.Project__r.Name : ((v.Lead__r != null && v.Lead__r.Project__r != null) ? v.Lead__r.Project__r.Name : '');
+            String custName = (v.Lead__r != null) ? v.Lead__r.Name : '';
+            String stat     = String.isNotBlank(v.Status__c) ? v.Status__c : 'Upcoming';
+
             csv += '"' + (String.isNotBlank(v.Name) ? v.Name : '') + '",'
-                 + '"' + (v.Lead__r != null ? v.Lead__r.Name : '') + '",'
-                 + '"' + (v.Project__r != null ? v.Project__r.Name : '') + '",'
-                 + '"' + (v.Opportunity__r != null && String.isNotBlank(v.Opportunity__r.StageName) ? v.Opportunity__r.StageName : '') + '",'
+                 + '"' + custName + '",'
+                 + '"' + projName + '",'
+                 + '"' + stat + '",'
                  + '"' + (v.CreatedDate != null ? v.CreatedDate.format('dd MMM yyyy') : '') + '"\n';
         }
         return EncodingUtil.base64Encode(Blob.valueOf(csv));
     }
 
     // =========================================================
-    // 6. CREATE SITE VISIT
+    // 6. CREATE SITE VISIT (Stamps OwnerId & Links Project)
     // =========================================================
     @AuraEnabled
     public static Id createSiteVisit(
@@ -184,44 +202,60 @@ public without sharing class partnerWebPortalSiteVisit {
         String description
     ) {
         if (String.isBlank(leadId)) {
-            throw new AuraHandledException('Customer (Lead) is required');
+            throw createHandledException('Customer (Lead) is required');
         }
 
         Visit__c newVisit = new Visit__c();
-        
-        // Link to Lead
+        newVisit.OwnerId  = UserInfo.getUserId();
+
+        // Assign Lead Lookup
         try {
-            newVisit.Lead__c = (Id) leadId;
+            newVisit.Lead__c = (Id) leadId.trim();
         } catch (Exception e) {
             System.debug('>>> Invalid Lead Id: ' + leadId);
         }
 
-        // Link to Project (if field exists on Visit__c)
+        // Assign Project Lookup
         if (String.isNotBlank(projectId)) {
             try {
-                newVisit.Project__c = (Id) projectId;
+                newVisit.Project__c = (Id) projectId.trim();
             } catch (Exception e) {
                 System.debug('>>> Invalid Project Id: ' + projectId);
             }
         }
 
-        // Description / Reason
         if (String.isNotBlank(description)) {
-            newVisit.Reason_of_Reschedule__c = description;
+            newVisit.Reason_of_Reschedule__c = description.trim();
         }
 
-        // Visit Date
-        if (visitDate != null) {
-            // newVisit.Visit_Date__c = visitDate; // Uncomment if your object has Visit_Date__c
-        }
+        // Default Status if blank
+        newVisit.Status__c = 'Upcoming';
+
+        Database.DMLOptions dml = new Database.DMLOptions();
+        dml.DuplicateRuleHeader.allowSave = true;
+        dml.DuplicateRuleHeader.runAsCurrentUser = true;
+        dml.optAllOrNone = true;
 
         try {
-            insert newVisit;
-            System.debug('>>> Site Visit Created ID: ' + newVisit.Id);
+            Database.SaveResult sr = Database.insert(newVisit, dml, AccessLevel.SYSTEM_MODE);
+            if (sr.isSuccess()) {
+                System.debug('>>> [SiteVisit] Created ID: ' + sr.getId());
+                return sr.getId();
+            } else {
+                String errorMsg = '';
+                for (Database.Error err : sr.getErrors()) errorMsg += err.getMessage() + ' ';
+                throw createHandledException(errorMsg);
+            }
         } catch (DmlException e) {
-            throw new AuraHandledException(e.getDmlMessage(0));
+            throw createHandledException(e.getDmlMessage(0));
+        } catch (Exception e) {
+            throw createHandledException(e.getMessage());
         }
+    }
 
-        return newVisit.Id;
+    private static AuraHandledException createHandledException(String message) {
+        AuraHandledException ex = new AuraHandledException(message);
+        ex.setMessage(message);
+        return ex;
     }
 }

@@ -1,5 +1,5 @@
 import { LightningElement } from 'lwc';
-import getProjects from '@salesforce/apex/customerPortalController.getProjects';
+import getProjects from '@salesforce/apex/CustomerPortalController.getProjects';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 const VIEW_LIST = 'PROJECT_LIST';
 const VIEW_DETAILS = 'PROJECT_DETAILS';

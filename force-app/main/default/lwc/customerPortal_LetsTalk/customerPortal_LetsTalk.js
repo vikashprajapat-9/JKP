@@ -1,5 +1,5 @@
 import { LightningElement } from 'lwc';
-import getLetsTalkPageData from '@salesforce/apex/customerPortalController.getLetsTalkPageData';
+import getLetsTalkPageData from '@salesforce/apex/CustomerPortalController.getLetsTalkPageData';
 
 export default class CustomerPortal_LetsTalk extends LightningElement {
     isLoading = true;

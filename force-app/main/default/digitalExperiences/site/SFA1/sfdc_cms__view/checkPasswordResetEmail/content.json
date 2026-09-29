@@ -14,7 +14,7 @@
             "layoutDirectionTablet" : "column",
             "maxContentWidth" : "",
             "sectionColumnGutterWidth" : "",
-            "sectionConfig" : "{\"UUID\":\"e03e7977-e6f0-4a9d-9923-5de2d704372f\",\"columns\":[{\"UUID\":\"47659c3d-5316-4d58-a1cc-a3cc04db2a7a\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":null}]}",
+            "sectionConfig" : "{\"UUID\":\"51954025-4d0f-4003-8fbc-f81bdd83e8cb\",\"columns\":[{\"UUID\":\"40a06819-329d-4dc0-bafe-6a78b6825238\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":null}]}",
             "sectionMinHeight" : "",
             "sectionVerticalAlign" : "flex-start"
           },
@@ -27,7 +27,7 @@
                 "logoWidth" : 250
               },
               "definition" : "dxp_content_layout:siteLogo",
-              "id" : "937bb164-00d0-4787-9b7c-d817bb548877",
+              "id" : "37029836-a5d7-4eba-93b8-d9f9204931a8",
               "type" : "component"
             }, {
               "attributes" : {
@@ -36,19 +36,19 @@
                 "titleLabel" : "Now check your email"
               },
               "definition" : "community_login:checkEmail",
-              "id" : "b789f938-56f3-4a53-9d41-5935e7bae658",
+              "id" : "df458cbb-c163-4ba0-b552-3676096ab6c8",
               "type" : "component"
             } ],
-            "id" : "47659c3d-5316-4d58-a1cc-a3cc04db2a7a",
+            "id" : "40a06819-329d-4dc0-bafe-6a78b6825238",
             "name" : "col1",
             "title" : "Column 1",
             "type" : "region"
           } ],
           "definition" : "community_layout:section",
-          "id" : "e03e7977-e6f0-4a9d-9923-5de2d704372f",
+          "id" : "51954025-4d0f-4003-8fbc-f81bdd83e8cb",
           "type" : "component"
         } ],
-        "id" : "7eb7e3f7-ec93-4e0a-aedf-6430b832632e",
+        "id" : "e30bf490-76c4-4907-89c5-8944cc1cd40d",
         "name" : "content",
         "title" : "Content",
         "type" : "region"
@@ -61,16 +61,16 @@
             "recordId" : "{!recordId}"
           },
           "definition" : "community_builder:seoAssistant",
-          "id" : "235151a4-b2d3-45f7-b906-88e1e81c3f60",
+          "id" : "bcf039cd-fe2d-41cc-815b-8ac1426f9d3e",
           "type" : "component"
         } ],
-        "id" : "0402f701-2299-4164-8ee1-f0bff192d186",
+        "id" : "0e0f525b-7d2d-4d4a-bbc9-7062430c5116",
         "name" : "sfdcHiddenRegion",
         "title" : "sfdcHiddenRegion",
         "type" : "region"
       } ],
       "definition" : "community_layout:sldsFlexibleLayout",
-      "id" : "b295ef0c-00d9-433c-a46b-0cb76cf3dba6",
+      "id" : "8b23202f-ef99-424c-b6b2-1e0f5e48b01f",
       "type" : "component"
     },
     "dataProviders" : [ ],

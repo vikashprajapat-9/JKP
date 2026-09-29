@@ -97,18 +97,18 @@
                             </div>
 
                             <div class="applicant-info-grid">
-                                <template if:true={applicant.dateOfBirth}>
+                                <!-- <template if:true={applicant.dateOfBirth}> -->
                                     <div class="applicant-info-cell">
                                         <p class="info-label">Date of Birth:</p>
                                         <p class="info-value">{applicant.dateOfBirth}</p>
                                     </div>
-                                </template>
-                                <template if:true={applicant.companyName}>
+                                <!-- </template> -->
+                                <!-- <template if:true={applicant.companyName}> -->
                                     <div class="applicant-info-cell">
                                         <p class="info-label">Company Name:</p>
                                         <p class="info-value">{applicant.companyName}</p>
                                     </div>
-                                </template>
+                                <!-- </template> -->
                                 <div class="applicant-info-cell">
                                     <p class="info-label">Mobile Number:</p>
                                     <p class="info-value">{applicant.mobileNumber}</p>
@@ -124,36 +124,36 @@
                             </div>
 
                             <div class="applicant-info-grid">
-                                <template if:true={applicant.nic}>
+                                <!-- <template if:true={applicant.nic}> -->
                                     <div class="applicant-info-cell">
                                         <p class="info-label">National Identity Card (NIC) Number:</p>
                                         <p class="info-value">{applicant.nic}</p>
                                     </div>
-                                </template>
-                                <template if:true={applicant.tin}>
+                                <!-- </template> -->
+                                <!-- <template if:true={applicant.tin}> -->
                                     <div class="applicant-info-cell">
                                         <p class="info-label">Taxpayer Identification Number (TIN):</p>
                                         <p class="info-value">{applicant.tin}</p>
                                     </div>
-                                </template>
-                                <template if:true={applicant.passport}>
+                                <!-- </template> -->
+                                <!-- <template if:true={applicant.passport}> -->
                                     <div class="applicant-info-cell">
                                         <p class="info-label">Passport Number :</p>
                                         <p class="info-value">{applicant.passport}</p>
                                     </div>
-                                </template>
-                                <template if:true={applicant.vatNumber}>
+                                <!-- </template> -->
+                                <!-- <template if:true={applicant.vatNumber}> -->
                                     <div class="applicant-info-cell">
                                         <p class="info-label">VAT Number (VAT):</p>
                                         <p class="info-value">{applicant.vatNumber}</p>
                                     </div>
-                                </template>
-                                <template if:true={applicant.businessRegistrationNumber}>
+                                <!-- </template> -->
+                                <!-- <template if:true={applicant.businessRegistrationNumber}> -->
                                     <div class="applicant-info-cell">
                                         <p class="info-label">Business Registration Number:</p>
                                         <p class="info-value">{applicant.businessRegistrationNumber}</p>
                                     </div>
-                                </template>
+                                <!-- </template> -->
                             </div>
                         </div>
                     </template>
@@ -280,8 +280,8 @@
                                 </tr>
                             </thead>
                             <tbody>
-                                <template for:each={selectedProperty.paymentPlan} for:item="row" for:index="idx">
-                                    <tr key={row.description}>
+                                <template for:each={selectedProperty.paymentPlan} for:item="row">
+                                    <tr key={row.key}>
                                         <td>{row.description}</td>
                                         <td class="col-center">{row.percentage}</td>
                                         <td class="col-center">{row.trancheDate}</td>
@@ -290,7 +290,7 @@
                                 </template>
                                 <tr class="total-row">
                                     <td>Total (Inclusive of taxes)</td>
-                                    <td class="col-center">100%</td>
+                                    <td class="col-center">{selectedProperty.paymentPlanTotalPercentage}</td>
                                     <td class="col-center"></td>
                                     <td class="col-center">{selectedProperty.paymentPlanTotal}</td>
                                 </tr>

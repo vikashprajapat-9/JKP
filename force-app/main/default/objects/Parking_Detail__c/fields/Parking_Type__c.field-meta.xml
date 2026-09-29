@@ -35,6 +35,21 @@
                 <default>false</default>
                 <label>Truck</label>
             </value>
+            <value>
+                <fullName>Dependent</fullName>
+                <default>false</default>
+                <label>Dependent</label>
+            </value>
+            <value>
+                <fullName>Independent</fullName>
+                <default>false</default>
+                <label>Independent</label>
+            </value>
+            <value>
+                <fullName>open</fullName>
+                <default>false</default>
+                <label>open</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

@@ -1,8 +1,8 @@
 import { LightningElement, wire } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { refreshApex } from '@salesforce/apex';
-import getEvents from '@salesforce/apex/customerPortalController.getEvents';
-import registerForEvent from '@salesforce/apex/customerPortalController.registerForEvent';
+import getEvents from '@salesforce/apex/CustomerPortalController.getEvents';
+import registerForEvent from '@salesforce/apex/CustomerPortalController.registerForEvent';
 
 export default class CustomerPortal_Events extends LightningElement {
     isLoading = true;

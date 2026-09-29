@@ -1,69 +1,144 @@
 <template>
 
     <!-- ============================================ -->
-    <!-- FORM VIEW                                     -->
+    <!-- FORM VIEW: SCHEDULE SITE VISIT               -->
     <!-- ============================================ -->
     <template lwc:if={isFormView}>
-        <div class="form-wrapper">
+        <div class="form-page">
 
-            <div class="form-header">
-                <button class="back-btn" onclick={handleFormCancel} type="button" title="Back">
-                    <lightning-icon icon-name="utility:back" size="small"></lightning-icon>
+            <!-- HEADER -->
+            <div class="schedule-header">
+                <button class="back-icon-btn" onclick={handleFormCancel} type="button" title="Back" aria-label="Back">
+                    <lightning-icon icon-name="utility:back" size="small" class="back-icon"></lightning-icon>
                 </button>
-                <h2 class="form-title">Add Site Visit</h2>
+                <h2 class="schedule-title">Schedule Visit</h2>
             </div>
 
-            <h3 class="section-title">Visit Details</h3>
+            <div class="schedule-visit-card">
 
-            <div class="field">
-                <label for="visitName">Visit Name</label>
-                <input id="visitName"
-                       type="text"
-                       placeholder="Enter visit name"
-                       data-field="visitName"
-                       onchange={handleFormChange} />
-            </div>
+                <!-- INLINE ERROR BANNER -->
+                <template lwc:if={errorMessage}>
+                    <div class="alert-banner error-banner" role="alert">
+                        <lightning-icon icon-name="utility:error" size="x-small" class="alert-icon error-icon"></lightning-icon>
+                        <span class="alert-text">{errorMessage}</span>
+                        <button class="banner-close-btn" onclick={handleCloseError} type="button" aria-label="Close">✕</button>
+                    </div>
+                </template>
 
-            <div class="two-col">
-                <div class="field">
-                    <label for="channelPartnerId">Channel Partner Id</label>
-                    <input id="channelPartnerId"
-                           type="text"
-                           placeholder="e.g. 001XXXXXXXXXXXXXXX"
-                           data-field="channelPartnerId"
-                           onchange={handleFormChange} />
+                <!-- ROW 1: CUSTOMER & PROJECT -->
+                <div class="form-grid-2">
+                    <div class="form-field">
+                        <label for="customerSelect">Customer <span class="required-star">*</span></label>
+                        <div class="select-wrap">
+                            <select id="customerSelect"
+                                    class="form-control"
+                                    data-field="leadId"
+                                    value={form.leadId}
+                                    onchange={handleCustomerChange}>
+                                <option value="">Select lead name</option>
+                                <template for:each={customerOptions} for:item="cust">
+                                    <option key={cust.value} value={cust.value}>{cust.label}</option>
+                                </template>
+                            </select>
+                        </div>
+                        <span class="field-subtext">From accepted leads only.</span>
+                    </div>
+
+                    <div class="form-field">
+                        <label for="projectSelect">Project</label>
+                        <div class="select-wrap">
+                            <select id="projectSelect"
+                                    class="form-control"
+                                    data-field="projectId"
+                                    value={form.projectId}
+                                    onchange={handleFormChange}>
+                                <option value="">Select Project</option>
+                                <template for:each={projectOptions} for:item="proj">
+                                    <option key={proj.value} value={proj.value}>{proj.label}</option>
+                                </template>
+                            </select>
+                        </div>
+                    </div>
                 </div>
-                <div class="field">
-                    <label for="opportunityId">Opportunity Id</label>
-                    <input id="opportunityId"
-                           type="text"
-                           placeholder="e.g. 006XXXXXXXXXXXXXXX"
-                           data-field="opportunityId"
-                           onchange={handleFormChange} />
+
+                <!-- ROW 2: DATE & VISIT TIME -->
+                <div class="form-grid-2">
+                    <div class="form-field">
+                        <label for="visitDate">Date</label>
+                        <input id="visitDate"
+                               class="form-control"
+                               type="date"
+                               data-field="visitDate"
+                               value={form.visitDate}
+                               onchange={handleFormChange} />
+                    </div>
+
+                    <div class="form-field">
+                        <label>Visit Time</label>
+                        <div class="time-picker-box">
+                            <input type="text"
+                                   class="time-num-input"
+                                   maxlength="2"
+                                   placeholder="10"
+                                   aria-label="Hours"
+                                   value={timeHours}
+                                   oninput={handleHourChange} />
+                            <span class="time-colon">:</span>
+                            <input type="text"
+                                   class="time-num-input"
+                                   maxlength="2"
+                                   placeholder="00"
+                                   aria-label="Minutes"
+                                   value={timeMinutes}
+                                   oninput={handleMinuteChange} />
+
+                            <div class="am-pm-toggle">
+                                <button type="button"
+                                        class={amButtonClass}
+                                        onclick={handleSelectAM}>AM</button>
+                                <button type="button"
+                                        class={pmButtonClass}
+                                        onclick={handleSelectPM}>PM</button>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-            </div>
 
-            <div class="field">
-                <label for="reason">Reason / Remarks</label>
-                <textarea id="reason"
-                          rows="4"
-                          placeholder="Mention any specific details..."
-                          data-field="reason"
-                          onchange={handleFormChange}></textarea>
-            </div>
+                <!-- ROW 3: DESCRIPTION -->
+                <div class="form-field full-width">
+                    <label for="description">Description</label>
+                    <textarea id="description"
+                              class="form-control form-textarea"
+                              rows="4"
+                              placeholder="Family of 4, 3.5BHK preference, looking for higher floors..."
+                              data-field="description"
+                              value={form.description}
+                              oninput={handleFormChange}
+                              onchange={handleFormChange}></textarea>
+                </div>
 
-            <div class="form-footer">
-                <button class="cancel-btn" type="button" onclick={handleFormCancel}>
-                    Cancel
-                </button>
-                <button class="save-btn"
-                        type="button"
-                        onclick={handleRegisterVisit}
-                        disabled={isSaving}>
-                    {saveButtonLabel}
-                </button>
-            </div>
+                <!-- NOTIFICATION ALERT BANNER -->
+                <div class="notification-alert-box">
+                    <lightning-icon icon-name="utility:notification" size="x-small" class="alert-bell-icon"></lightning-icon>
+                    <p class="notification-text">
+                        <strong>Notification Alert:</strong> Customer, Sales (Arjuna R.) and RM will be notified about this site visit immediately via SMS and Portal Dashboard.
+                    </p>
+                </div>
 
+                <!-- FOOTER BUTTONS -->
+                <div class="schedule-form-footer">
+                    <button class="btn-cancel" type="button" onclick={handleFormCancel}>
+                        Cancel
+                    </button>
+                    <button class="btn-confirm"
+                            type="button"
+                            onclick={handleRegisterVisit}
+                            disabled={isConfirmDisabled}>
+                        {saveButtonLabel}
+                    </button>
+                </div>
+
+            </div>
         </div>
     </template>
 
@@ -74,23 +149,36 @@
         <div class="container">
 
             <!-- HEADER -->
-            <div class="slds-p-around_medium">
-                <p class="slds-text-heading_large"><strong>Site Visits</strong></p>
-                <p>
+            <div class="page-header">
+                <h1 class="page-title">Site Visits</h1>
+                <p class="page-description">
                     Manage site visits effortlessly with our comprehensive tracking system.
-                    Access detailed information about each visit, including contact details,
-                    source, and current stage. Stay organized and ensure timely follow-ups
-                    to maximize your conversion rates with the support of John Keels Properties
+                    Access detailed information about each visit, including visitor details,
+                    visit source, and current status. Stay organized and ensure timely follow-ups
+                    to maximize your conversion rates with the support of John Keells Properties.
                 </p>
             </div>
 
-            <!-- ADD BUTTON -->
-            <button class="nav-item" onclick={handleNavigation} type="button">
-                <lightning-icon icon-name="utility:record_create" size="medium"></lightning-icon>
-                <p>Add Site Visit</p>
-            </button>
+            <!-- ACTION + STAT TILES -->
+            <div class="tile-row">
+                <button class="tile tile-action" onclick={handleNavigation} type="button">
+                    <lightning-icon icon-name="utility:add" size="medium" class="tile-add-icon"></lightning-icon>
+                    <span class="tile-action-label">Add Site Visits</span>
+                </button>
+                <div class="tile tile-stat">
+                    <span class="tile-stat-value">{totalRecords}</span>
+                    <span class="tile-stat-label">No of Site Visits</span>
+                </div>
+            </div>
 
-            <div class="divider"></div>
+            <!-- INLINE ERROR BANNER (e.g. export failure) -->
+            <template lwc:if={errorMessage}>
+                <div class="alert-banner error-banner list-banner" role="alert">
+                    <lightning-icon icon-name="utility:error" size="x-small" class="alert-icon error-icon"></lightning-icon>
+                    <span class="alert-text">{errorMessage}</span>
+                    <button class="banner-close-btn" onclick={handleCloseError} type="button" aria-label="Close">✕</button>
+                </div>
+            </template>
 
             <!-- TOOLBAR -->
             <div class="toolbar">
@@ -99,18 +187,22 @@
                     <input type="text"
                            class="search-input"
                            placeholder="Search.."
+                           aria-label="Search site visits"
                            oninput={handleSearch} />
                 </div>
                 <div class="action-buttons">
-                    <button class="btn-export" onclick={handleExport}>⬆ Export CSV</button>
-                    <button class="btn-apply" onclick={handleApplyFilter}>Apply Filter</button>
+                    <button class="btn-export" type="button" onclick={handleExport}>
+                        <lightning-icon icon-name="utility:upload" size="x-small" class="export-icon"></lightning-icon>
+                        <span>Export CSV</span>
+                    </button>
                 </div>
             </div>
 
-            <!-- FILTER TABS -->
+            <!-- FILTER CHIPS -->
             <div class="filter-tabs">
                 <template for:each={filterButtons} for:item="tab">
                     <button key={tab.value}
+                            type="button"
                             class={tab.className}
                             data-value={tab.value}
                             onclick={handleFilterClick}>
@@ -124,33 +216,30 @@
                 <table class="visits-table">
                     <thead>
                         <tr>
-                            <th>Sr.</th>
+                            <th class="col-sr">Sr.</th>
                             <th>Visit Created Date</th>
                             <th>Visit Name</th>
-                            <th>Channel Partner</th>
-                            <th>Opportunity Name</th>
-                            <th>Opportunity Mobile No.</th>
-                            <th>Opportunity Stage</th>
+                            <th>Customer (Lead)</th>
+                            <th>Project</th>
+                            <th class="col-status">Visit Status</th>
                         </tr>
                     </thead>
                     <tbody>
-                        <template if:true={hasVisits}>
+                        <template lwc:if={hasVisits}>
                             <template for:each={visits} for:item="visit">
                                 <tr key={visit.Id}>
-                                    <td>{visit.rowNo}</td>
+                                    <td class="col-sr">{visit.rowNo}</td>
                                     <td>{visit.formattedDate}</td>
                                     <td>{visit.Name}</td>
-                                    <td>{visit.channelPartnerName}</td>
-                                    <td>{visit.opportunityName}</td>
-                                    <td>{visit.opportunityPhone}</td>
-                                    <td><span class={visit.badgeClass}>{visit.opportunityStage}</span></td>
+                                    <td>{visit.leadName}</td>
+                                    <td>{visit.projectName}</td>
+                                    <td class="col-status"><span class={visit.badgeClass}>{visit.status}</span></td>
                                 </tr>
                             </template>
                         </template>
-
-                        <template if:false={hasVisits}>
+                        <template lwc:else>
                             <tr>
-                                <td colspan="7" class="no-data">No site visits found</td>
+                                <td colspan="6" class="no-data">No site visits found</td>
                             </tr>
                         </template>
                     </tbody>
@@ -161,19 +250,55 @@
             <div class="pagination">
                 <div class="entries-text">{entriesText}</div>
                 <div class="pagination-controls">
-                    <button class="page-arrow" onclick={handlePrev} disabled={isPrevDisabled}>← Prev</button>
+                    <button class="page-arrow" type="button" onclick={handlePrev} disabled={isPrevDisabled}>
+                        <lightning-icon icon-name="utility:back" size="x-small" class="arrow-icon"></lightning-icon>
+                        <span>Prev</span>
+                    </button>
                     <template for:each={paginationButtons} for:item="p">
                         <button key={p.value}
+                                type="button"
                                 class={p.className}
                                 data-value={p.value}
                                 onclick={handlePageClick}>
                             {p.label}
                         </button>
                     </template>
-                    <button class="page-arrow" onclick={handleNext} disabled={isNextDisabled}>Next →</button>
+                    <button class="page-arrow page-arrow-next" type="button" onclick={handleNext} disabled={isNextDisabled}>
+                        <span>Next</span>
+                        <lightning-icon icon-name="utility:forward" size="x-small" class="arrow-icon"></lightning-icon>
+                    </button>
                 </div>
             </div>
 
+        </div>
+    </template>
+
+    <!-- ============================================ -->
+    <!-- SUCCESS MODAL: SITE VISIT SCHEDULED           -->
+    <!-- ============================================ -->
+    <template lwc:if={showSuccessModal}>
+        <div class="modal-backdrop" onclick={handleCloseSuccess}></div>
+        <div class="success-modal" role="dialog" aria-modal="true" aria-labelledby="successTitle">
+            <button class="modal-close-btn" type="button" onclick={handleCloseSuccess} aria-label="Close">
+                <lightning-icon icon-name="utility:close" size="small" class="close-icon"></lightning-icon>
+            </button>
+
+            <!-- Decorative illustration: flag -->
+            <svg class="success-illustration" viewBox="0 0 240 240" aria-hidden="true">
+                <ellipse cx="120" cy="222" rx="70" ry="8" fill="#ebe9e9"></ellipse>
+                <circle cx="120" cy="118" r="86" fill="#f3f8f9"></circle>
+                <line x1="92" y1="214" x2="132" y2="34" stroke="#37474f" stroke-width="5" stroke-linecap="round"></line>
+                <circle cx="132" cy="32" r="5" fill="#37474f"></circle>
+                <path d="M131 38 C 150 30, 168 50, 186 62 C 196 68, 204 76, 214 70 C 204 88, 186 86, 172 80 C 158 74, 142 78, 124 72 Z" fill="#8bc53f"></path>
+                <path d="M129 50 C 142 48, 150 58, 160 66 C 150 72, 138 72, 124 72 Z" fill="#6aa12a"></path>
+                <circle cx="176" cy="150" r="24" fill="#238723"></circle>
+                <path d="M165 150 l8 8 l15 -16" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+
+            <h3 id="successTitle" class="success-title">Site Visit Scheduled</h3>
+            <p class="success-text">
+                Your site visit has been scheduled successfully. You can view the visit details in the Site Visits section
+            </p>
         </div>
     </template>
 

@@ -1,6 +1,6 @@
 import { LightningElement } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import getMyDocumentsPageData from '@salesforce/apex/customerPortalController.getMyDocumentsPageData';
+import getMyDocumentsPageData from '@salesforce/apex/CustomerPortalController.getMyDocumentsPageData';
 
 const VIEW_LIST = 'LIST';
 const VIEW_DETAIL = 'DETAIL';

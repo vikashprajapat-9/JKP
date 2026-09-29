@@ -82,6 +82,12 @@
                 <identifier>RecordFloor_Rise__cField</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.Internal_QC__c</fieldItem>
+                <identifier>RecordInternal_QC__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-8f5d5012-29eb-4d60-ad8b-7522904ad739</name>
         <type>Facet</type>
     </flexiPageRegions>

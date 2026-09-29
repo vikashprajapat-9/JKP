@@ -20,6 +20,11 @@
                 <default>false</default>
                 <label>SAP - SFDC</label>
             </value>
+            <value>
+                <fullName>SFA - SFDC</fullName>
+                <default>false</default>
+                <label>SFA - SFDC</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

@@ -28,7 +28,7 @@
         <allowDelegate>true</allowDelegate>
         <assignedApprover>
             <approver>
-                <name>abhishek.dubey_cqu064klrdmsl4@utilitarianlabs.com</name>
+                <name>nazirahmed.patel@utilitarianlabs.com</name>
                 <type>user</type>
             </approver>
             <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
