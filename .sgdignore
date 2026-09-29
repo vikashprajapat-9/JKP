@@ -1,29 +1,50 @@
 # SGD (Salesforce Git Delta) Ignore File
 # This file is used by sfdx-git-delta to exclude metadata from delta deployments
 
-# Specific problematic files
-**/permissionsets/sfdcInternalInt__sfdc_slack.permissionset-meta.xml
-**/flowDefinitions/r_Lead_After_Save.flowDefinition-meta.xml
-
-# All Salesforce Internal/Managed Permission Sets
+# Salesforce Internal/Managed Permission Sets
 **/permissionsets/sfdcInternalInt__*
 **/permissionsets/force__*
 
 # All Profiles
 **/profiles/**
 
-# Experience Cloud Sites and Digital Experiences
+# Profile-related metadata
+**/profilePasswordPolicies/**
+**/profileSessionSettings/**
+
+# Experience Cloud / Sites
 **/sites/**
 **/digitalExperiences/**
 **/digitalExperienceConfigs/**
-**/networks/**
-**/siteDotComSites/**
 **/digitalExperienceBundles/**
 **/experienceBundles/**
+**/networks/**
+**/siteDotComSites/**
+**/networkBranding/**
+**/navigationMenus/**
+**/audience/**
+
+# Flow Definitions
+**/flowDefinitions/**
+
+# Approval Processes
+**/approvalProcesses/**
+
+# SAML and Security
+**/samlssoconfigs/**
+**/fieldRestrictionRules/**
 
 # Dashboards with long paths
 **/dashboards/**/*SPLIT*/**
 
-# Other problematic metadata
-**/flowDefinitions/**
+# System metadata
+**/appMenus/**
 **/installedPackages/**
+
+# Specific problematic files
+force-app/main/default/objects/Project__c/fields/Amenties__c.field-meta.xml
+force-app/main/default/objects/Sub_Document__c/fields/Project_Updates__c.field-meta.xml
+force-app/main/default/layouts/Project__c-Project Layout.layout-meta.xml
+force-app/main/default/flexipages/Project_Record_Page.flexipage-meta.xml
+force-app/main/default/lwc/partnerWebPortalMyTeam/**
+force-app/main/default/workflows/Account.workflow-meta.xml

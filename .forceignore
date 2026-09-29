@@ -8,43 +8,68 @@ package.xml
 **/jsconfig.json
 **/.eslintrc.json
 
-# Standard/system App Launcher metadata
-**/appMenus/**
-
-# Specific problematic permission sets and flow definitions
-/force-app/main/default/permissionsets/sfdcInternalInt__sfdc_slack.permissionset-meta.xml
-**/flowDefinitions/r_Lead_After_Save.flowDefinition-meta.xml
-
 # LWC Jest
 **/__tests__/**
 
 node_modules/
 
 # ==========================================
-# Additional Rules to Prevent CI/CD Failures
+# Metadata That Causes Deployment Failures
 # ==========================================
 
-# All Salesforce Internal/Managed Permission Sets (cannot be deployed)
+# Salesforce Internal/Managed Permission Sets
 **/permissionsets/sfdcInternalInt__*
 **/permissionsets/force__*
 
-# All Profiles (exclude to prevent deployment conflicts)
-# Deploy profiles manually or via separate process
+# All Profiles (deploy manually if needed)
 **/profiles/**
 
-# Experience Cloud Sites and Digital Experiences
-# These should be deployed manually or via separate change sets
+# Profile-related metadata (causes "Profile not found" errors)
+**/profilePasswordPolicies/**
+**/profileSessionSettings/**
+
+# Experience Cloud / Sites (deploy manually via Setup)
 **/sites/**
 **/digitalExperiences/**
 **/digitalExperienceConfigs/**
-**/networks/**
-**/siteDotComSites/**
 **/digitalExperienceBundles/**
 **/experienceBundles/**
+**/networks/**
+**/siteDotComSites/**
+**/networkBranding/**
+**/navigationMenus/**
+**/audience/**
 
-# Dashboards with long paths (Windows path length limitation)
+# Flow Definitions
+**/flowDefinitions/**
+
+# Approval Processes (contain user references that don't exist in target org)
+**/approvalProcesses/**
+
+# SAML and Security (org-specific configurations)
+**/samlssoconfigs/**
+**/fieldRestrictionRules/**
+
+# Dashboards with long paths
 **/dashboards/**/*SPLIT*/**
 
-# Other metadata types that commonly cause deployment failures
-**/flowDefinitions/**
+# System/Standard metadata
+**/appMenus/**
 **/installedPackages/**
+
+# Specific problematic fields that reference missing objects
+# These fields reference objects that don't exist in target org
+force-app/main/default/objects/Project__c/fields/Amenties__c.field-meta.xml
+force-app/main/default/objects/Sub_Document__c/fields/Project_Updates__c.field-meta.xml
+
+# Layouts that reference missing fields/objects
+force-app/main/default/layouts/Project__c-Project Layout.layout-meta.xml
+
+# FlexiPages with missing related lists
+force-app/main/default/flexipages/Project_Record_Page.flexipage-meta.xml
+
+# LWC with missing dependencies
+force-app/main/default/lwc/partnerWebPortalMyTeam/**
+
+# Workflows with missing email templates
+force-app/main/default/workflows/Account.workflow-meta.xml
