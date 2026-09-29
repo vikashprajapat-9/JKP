@@ -1,5 +1,5 @@
 import { LightningElement } from 'lwc';
-import getPortalData from '@salesforce/apex/customerPortalController.getPortalData';
+import getPortalData from '@salesforce/apex/CustomerPortalController.getPortalData';
 
 export default class CustomerPortal extends LightningElement {
 

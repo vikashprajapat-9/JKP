@@ -1,64 +1,69 @@
-import { LightningElement, wire, track } from 'lwc';
+import { LightningElement, wire } from 'lwc';
 import getTotalLead from '@salesforce/apex/PartnerPortalDashboard.getLeaddetail';
 import getTotalVisit from '@salesforce/apex/PartnerPortalDashboard.getSitedetail';
 import getCurrentUser from '@salesforce/apex/PartnerPortalDashboard.getCurrentUser';
 
 export default class PartnerWebPortalDashboard extends LightningElement {
-
     leadcount = '';
     visitcount = '';
     error;
     userName = '';
 
-    // ================= BANNER CAROUSEL =================
-    @track bannerIndex = 0;
-
-    bannerImages = [
-        'https://picsum.photos/seed/banner1/500/80',
-        'https://picsum.photos/seed/banner2/500/80'
-    ];
-
-    get bannerSlides() {
-        return this.bannerImages.map((url, i) => ({
-            url,
-            index: i,
-            key: 'banner-' + i,
-            slideClass: i === this.bannerIndex
-                ? 'banner-slide active'
-                : 'banner-slide',
-            dotClass: i === this.bannerIndex
-                ? 'banner-dot active'
-                : 'banner-dot'
-        }));
-    }
-
-    handleBannerPrev() {
-        const total = this.bannerImages.length;
-        this.bannerIndex = (this.bannerIndex - 1 + total) % total;
-    }
-
-    handleBannerNext() {
-        const total = this.bannerImages.length;
-        this.bannerIndex = (this.bannerIndex + 1) % total;
-    }
-
-    handleBannerDot(event) {
-        this.bannerIndex = Number(event.currentTarget.dataset.index);
-    }
-
-    // Auto-rotate every 5s (remove if unwanted)
-    bannerTimer;
-
-    connectedCallback() {
-        this.bannerTimer = window.setInterval(() => {
-            this.handleBannerNext();
-        }, 5000);
-    }
-
-    disconnectedCallback() {
-        if (this.bannerTimer) {
-            window.clearInterval(this.bannerTimer);
+    // ================= PRESENTATION =================
+    get greeting() {
+        const hour = new Date().getHours();
+        if (hour < 12) {
+            return 'Good Morning';
         }
+        if (hour < 17) {
+            return 'Good Afternoon';
+        }
+        return 'Good Evening';
+    }
+
+    // Static commission slabs shown in the hero banner (from Figma)
+    get slabs() {
+        return [
+            {
+                key: 'viman',
+                name: 'VIMAN',
+                rate: '2.5%',
+                desc: 'Base Commission',
+                note: '2.5% and an additional 0.5% if 5 or more units are sold'
+            },
+            { key: 'vauxhall', name: 'VAUXHALL DISTRICT', rate: '2.5%', desc: 'Base Rate' },
+            {
+                key: 'cinnamon',
+                name: 'CINNAMON LIFE',
+                rate: '3%',
+                desc: 'Additional 1% 5 or more units are sold',
+                current: true
+            },
+            { key: 'trizen', name: 'TRIZEN', rate: '2.5%', desc: 'Base Rate' }
+        ].map((s) => ({ ...s, cardClass: s.current ? 'slab slab-current' : 'slab' }));
+    }
+
+    get kpis() {
+        return [
+            { key: 'leads', label: 'Total Leads', value: this.leadcount, icon: 'utility:groups' },
+            { key: 'pipeline', label: 'Active Pipeline', value: '38', icon: 'utility:activity' },
+            { key: 'visits', label: 'Site Visits', value: this.visitcount, icon: 'utility:location' },
+            { key: 'bookings', label: 'Bookings', value: '07', icon: 'utility:ribbon' },
+            { key: 'sales', label: 'Sales', value: '21', icon: 'utility:chart' },
+            {
+                key: 'conversion',
+                label: 'Conversion rate (site visits to sales)',
+                value: '78%',
+                icon: 'utility:trending'
+            },
+            {
+                key: 'revenue',
+                label: 'Total sales revenue generated',
+                value: 'LKR 5,000',
+                icon: 'utility:currency'
+            },
+            { key: 'commission', label: 'Commission income', value: 'LKR 12,000', icon: 'utility:moneybag' }
+        ];
     }
 
     // ================= WIRES =================

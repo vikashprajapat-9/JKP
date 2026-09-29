@@ -67,9 +67,10 @@ public without sharing class PartnerPortalUserCreation {
             }
 
             // Fallback for names if not populated on Contact
-            String fName = String.isNotBlank(c.FirstName) ? c.FirstName : '';
-            String lName = String.isNotBlank(c.LastName) ? c.LastName : acc.Name;
-            String userEmail = String.isNotBlank(c.Email) ? c.Email : acc.Email__c;
+            String xphone= String.isNotBlank    (c.Phone)     ? c.Phone:acc.Phone;
+            String fName = String.isNotBlank    (c.FirstName) ? c.FirstName : '';
+            String lName = String.isNotBlank    (c.LastName)  ? c.LastName : acc.Name;
+            String userEmail = String.isNotBlank(c.Email)     ? c.Email : acc.Email__c;
 
             String nick = fName.length() >= 4 ? fName.substring(0, 4) : 'part';
             String randomDigits = String.valueOf(Math.abs(Crypto.getRandomInteger())).substring(0, 4);
@@ -80,6 +81,7 @@ public without sharing class PartnerPortalUserCreation {
             u.FirstName         = fName;
             u.LastName          = lName;
             u.Email             = userEmail;
+            u.Phone				= xphone;
             u.Username          = userEmail + '.partner'; // Must be unique globally
             u.Alias             = (lName.length() > 5 ? lName.substring(0, 5) : lName);
             u.CommunityNickname = nick + randomDigits;

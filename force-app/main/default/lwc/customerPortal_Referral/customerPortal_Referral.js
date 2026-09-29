@@ -1,6 +1,6 @@
 import { LightningElement } from 'lwc';
-import getReferralPageData from '@salesforce/apex/customerPortalController.getReferralPageData';
-import sendReferral from '@salesforce/apex/customerPortalController.sendReferral';
+import getReferralPageData from '@salesforce/apex/CustomerPortalController.getReferralPageData';
+import sendReferral from '@salesforce/apex/CustomerPortalController.sendReferral';
 import SuccessReferralImage from '@salesforce/resourceUrl/SuccessReferralImage';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 const MOBILE_REGEX = /^[0-9]{7,10}$/;

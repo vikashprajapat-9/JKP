@@ -528,15 +528,15 @@ public class costSheetTemplateController {
 				delete costSheetTaxLinkingListToDelete;
 			}
 
-			if(costSheetTemplateId != null){
-				Cost_Sheet_Template__c costSheetTemplate = [SELECT Id, Approval_Status__c from Cost_Sheet_Template__c where Id =: costSheetTemplateId];
-				if(costSheetTemplate != null && costSheetTemplate.Approval_Status__c == 'Pending'){
-					Approval.ProcessSubmitRequest req = new Approval.ProcessSubmitRequest();
-					req.setObjectId(costSheetTemplateId);
-					req.setProcessDefinitionNameOrId('Cost_Sheet_Template_Approval_Process'); 
-					Approval.ProcessResult result = Approval.process(req);
-				}
-			}
+			// if(costSheetTemplateId != null){
+			// 	Cost_Sheet_Template__c costSheetTemplate = [SELECT Id, Approval_Status__c from Cost_Sheet_Template__c where Id =: costSheetTemplateId];
+			// 	if(costSheetTemplate != null && costSheetTemplate.Approval_Status__c == 'Pending'){
+			// 		Approval.ProcessSubmitRequest req = new Approval.ProcessSubmitRequest();
+			// 		req.setObjectId(costSheetTemplateId);
+			// 		req.setProcessDefinitionNameOrId('Cost_Sheet_Template_Approval_Process'); 
+			// 		Approval.ProcessResult result = Approval.process(req);
+			// 	}
+			// }
 			
 			return costSheetTemplateId;
 			

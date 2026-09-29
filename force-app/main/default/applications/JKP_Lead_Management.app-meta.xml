@@ -28,7 +28,31 @@
     <tabs>standard-report</tabs>
     <tabs>standard-Dashboard</tabs>
     <tabs>Lead_Assignment_History__c</tabs>
-    <tabs>Customer_Portal</tabs>
+    <tabs>Cost_Pricing_Association__c</tabs>
+    <tabs>Cost_Scheme_Linking__c</tabs>
+    <tabs>Cost_Sheet_Template__c</tabs>
+    <tabs>Payment_Schedule_Master__c</tabs>
+    <tabs>Payment_Scheme__c</tabs>
+    <tabs>Pricing_Element_Master__c</tabs>
+    <tabs>Tax_Master__c</tabs>
+    <tabs>Cost_Unit_Linking__c</tabs>
+    <tabs>Payment_Scheme_Installment__c</tabs>
+    <tabs>Cost_Sheet__c</tabs>
+    <tabs>Pricing_Element__c</tabs>
+    <tabs>Cost_Sheet_Payment_Schedule__c</tabs>
+    <tabs>Scheme_Installment__c</tabs>
+    <tabs>Cost_Sheet_Tax_Linking__c</tabs>
+    <tabs>Payment_Schedule__c</tabs>
+    <tabs>Receipt_Log__c</tabs>
+    <tabs>SAP_Receipt__c</tabs>
+    <tabs>Escrow_Account__c</tabs>
+    <tabs>QC_Request__c</tabs>
+    <tabs>Sub_Document__c</tabs>
+    <tabs>Applicant__c</tabs>
+    <tabs>Amenties__c</tabs>
+    <tabs>Receipt_Payment_Schedule_Link__c</tabs>
+    <tabs>Project_Updates__c</tabs>
+    <tabs>Discount_Master__c</tabs>
     <uiType>Lightning</uiType>
     <utilityBar>Jhon_Keells_Lead_Management_UtilityBar</utilityBar>
 </CustomApplication>

@@ -1,11 +1,11 @@
 import { LightningElement, wire, track } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import SUCCESS_ILLUSTRATION from '@salesforce/resourceUrl/SuccessReferralImage';
-import getMyVisitsPageData from '@salesforce/apex/customerPortalController.getMyVisitsPageData';
-import scheduleVisit from '@salesforce/apex/customerPortalController.scheduleVisit';
-import rescheduleVisit from '@salesforce/apex/customerPortalController.rescheduleVisit';
-import cancelVisit from '@salesforce/apex/customerPortalController.cancelVisit';
-import submitVisitFeedback from '@salesforce/apex/customerPortalController.submitVisitFeedback';
+import getMyVisitsPageData from '@salesforce/apex/CustomerPortalController.getMyVisitsPageData';
+import scheduleVisit from '@salesforce/apex/CustomerPortalController.scheduleVisit';
+import rescheduleVisit from '@salesforce/apex/CustomerPortalController.rescheduleVisit';
+import cancelVisit from '@salesforce/apex/CustomerPortalController.cancelVisit';
+import submitVisitFeedback from '@salesforce/apex/CustomerPortalController.submitVisitFeedback';
 
 export default class CustomerPortal_MyVisits extends LightningElement {
     @track isLoading = true;

@@ -1,17 +1,22 @@
 <template>
-    <div class="marketing-wrapper">
+    <template lwc:if={selectedProject}>
+        <c-partner-web-portal-marketing-detail project={selectedProject} onback={handleBackToList}>
+        </c-partner-web-portal-marketing-detail>
+    </template>
+
+    <div class="page" lwc:else>
 
         <!-- HEADER -->
-        <div class="marketing-header">
-            <h1 class="marketing-title">Marketing</h1>
-            <p class="marketing-subtitle">
+        <header class="page-header">
+            <h1 class="page-title">Marketing</h1>
+            <p class="page-subtitle">
                 Leverage our comprehensive marketing resources to boost your sales
                 efforts. Access exclusive promotional materials, campaign strategies,
                 and market insights tailored to help you succeed. Empower your business
-                with the tools and support from John Keels Properties. Stay ahead of
+                with the tools and support from John Keells Properties. Stay ahead of
                 the competition with our expert marketing guidance.
             </p>
-        </div>
+        </header>
 
         <!-- ERROR -->
         <template lwc:if={error}>
@@ -19,61 +24,74 @@
         </template>
 
         <!-- GRID -->
-        <div class="marketing-grid">
-            <template for:each={projects} for:item="project">
-                <div key={project.id} class="project-tile">
+        <template lwc:if={hasProjects}>
+            <div class="card-grid">
+                <template for:each={projects} for:item="project">
+                    <article key={project.id} class="project-card">
 
-                    <!-- CAROUSEL -->
-                    <div class="carousel">
-                        <template for:each={project.carouselImages} for:item="slide">
-                            <div key={slide.key} class={slide.slideClass}>
-                                <img src={slide.url} alt={project.name} class="carousel-img" />
-                            </div>
-                        </template>
-
-                        <template lwc:if={project.hasMultipleImages}>
-                            <button class="carousel-nav prev"
-                                    data-id={project.id}
-                                    onclick={handlePrev}
-                                    type="button"
-                                    title="Previous">‹</button>
-
-                            <button class="carousel-nav next"
-                                    data-id={project.id}
-                                    onclick={handleNext}
-                                    type="button"
-                                    title="Next">›</button>
-
-                            <div class="carousel-dots">
-                                <template for:each={project.dots} for:item="dot">
-                                    <button key={dot.key}
-                                            class={dot.dotClass}
-                                            data-id={project.id}
-                                            data-index={dot.index}
-                                            onclick={handleDotClick}
-                                            type="button">
-                                    </button>
+                        <!-- MEDIA -->
+                        <div class="carousel">
+                            <template lwc:if={project.hasImages}>
+                                <template for:each={project.carouselImages} for:item="slide">
+                                    <div key={slide.key} class={slide.slideClass}>
+                                        <img src={slide.url} alt={project.name} class="carousel-img" />
+                                    </div>
                                 </template>
-                            </div>
-                        </template>
-                    </div>
+                            </template>
+                            <template lwc:else>
+                                <div class="media-placeholder" aria-hidden="true">
+                                    <span class="media-initial">{project.initial}</span>
+                                </div>
+                            </template>
 
-                    <!-- INFO -->
-                    <div class="project-info">
-                        <h2 class="project-name">{project.name}</h2>
-                        <p class="project-location">{project.location}</p>
+                            <template lwc:if={project.hasMultipleImages}>
+                                <button class="carousel-nav prev"
+                                        data-id={project.id}
+                                        onclick={handlePrev}
+                                        type="button"
+                                        title="Previous">‹</button>
 
-                        <button class="view-details-btn"
-                                data-id={project.id}
-                                onclick={handleViewDetails}
-                                type="button">
-                            View Details
-                        </button>
-                    </div>
+                                <button class="carousel-nav next"
+                                        data-id={project.id}
+                                        onclick={handleNext}
+                                        type="button"
+                                        title="Next">›</button>
 
-                </div>
-            </template>
-        </div>
+                                <div class="carousel-dots">
+                                    <template for:each={project.dots} for:item="dot">
+                                        <button key={dot.key}
+                                                class={dot.dotClass}
+                                                data-id={project.id}
+                                                data-index={dot.index}
+                                                onclick={handleDotClick}
+                                                aria-label="Go to image"
+                                                type="button">
+                                        </button>
+                                    </template>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- INFO -->
+                        <div class="project-info">
+                            <h2 class="project-name" title={project.name}>{project.name}</h2>
+                            <p class="project-location" title={project.location}>{project.location}</p>
+
+                            <button class="btn-primary"
+                                    data-id={project.id}
+                                    onclick={handleViewDetails}
+                                    type="button">
+                                View Details
+                            </button>
+                        </div>
+
+                    </article>
+                </template>
+            </div>
+        </template>
+        <template lwc:elseif={showEmpty}>
+            <div class="empty-state">No projects available right now.</div>
+        </template>
 
     </div>
 </template>

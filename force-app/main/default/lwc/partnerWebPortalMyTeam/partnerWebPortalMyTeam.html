@@ -8,14 +8,15 @@
             <button class="add-exec-btn"
                     type="button"
                     onclick={handleAddExecutive}>
-                <lightning-icon icon-name="utility:add" size="x-small"
-                                variant="inverse"></lightning-icon>
+                <svg class="btn-plus" viewBox="0 0 16 16" aria-hidden="true">
+                    <path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"></path>
+                </svg>
                 <span>Add Executive</span>
             </button>
         </div>
 
         <p class="team-subtitle">
-            Explore the profiles of our expert agents at John Keels Properties who are
+            Explore the profiles of our expert agents at John Keells Properties who are
             ready to assist you. Get to know their experience, areas of specialization,
             and contact information to make your real estate journey smoother. Our
             dedicated team is here to provide you with exceptional support and guidance
@@ -28,8 +29,7 @@
                 <div class="hero-avatar">AM</div>
                 <div class="hero-info">
                     <h2 class="hero-name">Arjun Mehta</h2>
-                    <p class="hero-role">Principal Partner •</p>
-                    <p class="hero-role">Channel Lead</p>
+                    <p class="hero-role">Principal Partner •<br/>Channel Lead</p>
                 </div>
             </div>
 
@@ -44,26 +44,41 @@
                 </div>
                 <div class="stat-box">
                     <span class="stat-label">EXECUTIVES</span>
-                    <span class="stat-value">
-                        <template lwc:if={stats.totalExecutives}>
-                            {stats.totalExecutives}
-                        </template>
-                    </span>
+                    <span class="stat-value">{executivesDisplay}</span>
                 </div>
             </div>
         </div>
 
         <!-- ================= TEAM MEMBERS ================= -->
-        <h3 class="section-title">Team Members</h3>
+        <div class="section-header">
+            <h2 class="section-title">Team Members</h2>
+            <div class="search-wrapper">
+                <svg class="search-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                    <circle cx="11" cy="11" r="7" fill="none" stroke="currentColor" stroke-width="1.8"></circle>
+                    <path d="M20 20l-4-4" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+                </svg>
+                <input
+                    type="search"
+                    class="search-input"
+                    placeholder="Search by name.."
+                    aria-label="Search team members by name"
+                    value={searchKey}
+                    oninput={handleSearch} />
+            </div>
+        </div>
+
+        <template lwc:if={hasNoResults}>
+            <p class="empty-state">No team members match "{searchKey}".</p>
+        </template>
 
         <div class="members-grid">
-            <template for:each={members} for:item="member">
+            <template for:each={pagedMembers} for:item="member">
                 <div key={member.userId} class="member-card">
 
                     <div class="member-header">
                         <div class={member.avatarClass}>{member.initials}</div>
                         <div class="member-info">
-                            <h4 class="member-name">{member.fullName}</h4>
+                            <h3 class="member-name">{member.fullName}</h3>
                             <p class="member-role">{member.role}</p>
                         </div>
                     </div>
@@ -71,16 +86,16 @@
                     <div class="member-stats">
                         <div class="mini-stat">
                             <span class="mini-label">
-                                <lightning-icon icon-name="utility:people"
-                                                size="xx-small"></lightning-icon>
+                                <lightning-icon icon-name="utility:user" size="xx-small"
+                                                class="mini-icon"></lightning-icon>
                                 Leads
                             </span>
                             <span class="mini-value">{member.leads}</span>
                         </div>
                         <div class="mini-stat">
                             <span class="mini-label">
-                                <lightning-icon icon-name="utility:check"
-                                                size="xx-small"></lightning-icon>
+                                <lightning-icon icon-name="utility:task" size="xx-small"
+                                                class="mini-icon"></lightning-icon>
                                 Bookings
                             </span>
                             <span class="mini-value">{member.bookings}</span>
@@ -91,5 +106,39 @@
             </template>
         </div>
 
+        <template lwc:if={showPagination}>
+            <div class="pagination">
+                <div class="entries-text">{entriesText}</div>
+                <div class="pagination-controls">
+                    <button class="page-arrow" type="button" onclick={handlePrev} disabled={isPrevDisabled}>
+                        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+                            <path d="M20 12H4M10 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                        Prev
+                    </button>
+                    <template for:each={paginationButtons} for:item="p">
+                        <button
+                            key={p.value}
+                            type="button"
+                            class={p.className}
+                            data-value={p.value}
+                            onclick={handlePageClick}>
+                            {p.label}
+                        </button>
+                    </template>
+                    <button class="page-arrow" type="button" onclick={handleNext} disabled={isNextDisabled}>
+                        Next
+                        <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+                            <path d="M4 12h16M14 6l6 6-6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                    </button>
+                </div>
+            </div>
+        </template>
+
     </div>
+
+    <template lwc:if={showAddMember}>
+        <c-partner-web-portal-add-member onclose={handleCloseAddMember}></c-partner-web-portal-add-member>
+    </template>
 </template>

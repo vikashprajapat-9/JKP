@@ -1,0 +1,95 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Bank_Name__c</fullName>
+    <label>Bank Name</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>HDFC Bank</fullName>
+                <default>false</default>
+                <label>HDFC Bank</label>
+            </value>
+            <value>
+                <fullName>IDFC First Bank</fullName>
+                <default>false</default>
+                <label>IDFC First Bank</label>
+            </value>
+            <value>
+                <fullName>ICICI Bank</fullName>
+                <default>false</default>
+                <label>ICICI Bank</label>
+            </value>
+            <value>
+                <fullName>State Bank of India</fullName>
+                <default>false</default>
+                <label>State Bank of India</label>
+            </value>
+            <value>
+                <fullName>Citi Bank</fullName>
+                <default>false</default>
+                <label>Citi Bank</label>
+            </value>
+            <value>
+                <fullName>Axis Bank</fullName>
+                <default>false</default>
+                <label>Axis Bank</label>
+            </value>
+            <value>
+                <fullName>Kotak Mahindra Bank</fullName>
+                <default>false</default>
+                <label>Kotak Mahindra Bank</label>
+            </value>
+            <value>
+                <fullName>Central Bank of India</fullName>
+                <default>false</default>
+                <label>Central Bank of India</label>
+            </value>
+            <value>
+                <fullName>HSBC Bank</fullName>
+                <default>false</default>
+                <label>HSBC Bank</label>
+            </value>
+            <value>
+                <fullName>Canara Bank</fullName>
+                <default>false</default>
+                <label>Canara Bank</label>
+            </value>
+            <value>
+                <fullName>IMPS</fullName>
+                <default>false</default>
+                <label>IMPS</label>
+            </value>
+            <value>
+                <fullName>Deutsche Bank</fullName>
+                <default>false</default>
+                <label>Deutsche Bank</label>
+            </value>
+            <value>
+                <fullName>Bank of Baroda</fullName>
+                <default>false</default>
+                <label>Bank of Baroda</label>
+            </value>
+            <value>
+                <fullName>BY TRANSFER</fullName>
+                <default>false</default>
+                <label>BY TRANSFER</label>
+            </value>
+            <value>
+                <fullName>BAJAJ HOUSING FINANCE LTD</fullName>
+                <default>false</default>
+                <label>BAJAJ HOUSING FINANCE LTD</label>
+            </value>
+            <value>
+                <fullName>YES BANK</fullName>
+                <default>false</default>
+                <label>YES BANK</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

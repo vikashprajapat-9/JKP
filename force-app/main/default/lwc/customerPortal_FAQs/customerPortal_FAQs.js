@@ -1,6 +1,6 @@
 import { LightningElement } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import getFAQs from '@salesforce/apex/customerPortalController.getFAQs';
+import getFAQs from '@salesforce/apex/CustomerPortalController.getFAQs';
 
 export default class CustomerPortal_FAQs extends LightningElement {
 

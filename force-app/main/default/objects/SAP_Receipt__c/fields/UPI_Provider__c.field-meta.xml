@@ -1,0 +1,65 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>UPI_Provider__c</fullName>
+    <label>UPI Provider</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Amazon Pay</fullName>
+                <default>false</default>
+                <label>Amazon Pay</label>
+            </value>
+            <value>
+                <fullName>Bajaj Finserv Direct Ltd</fullName>
+                <default>false</default>
+                <label>Bajaj Finserv Direct Ltd</label>
+            </value>
+            <value>
+                <fullName>My FAStag</fullName>
+                <default>false</default>
+                <label>My FAStag</label>
+            </value>
+            <value>
+                <fullName>Flipkart</fullName>
+                <default>false</default>
+                <label>Flipkart</label>
+            </value>
+            <value>
+                <fullName>Google Pay</fullName>
+                <default>false</default>
+                <label>Google Pay</label>
+            </value>
+            <value>
+                <fullName>JustDial</fullName>
+                <default>false</default>
+                <label>JustDial</label>
+            </value>
+            <value>
+                <fullName>Mi Pay</fullName>
+                <default>false</default>
+                <label>Mi Pay</label>
+            </value>
+            <value>
+                <fullName>MobiKwik</fullName>
+                <default>false</default>
+                <label>MobiKwik</label>
+            </value>
+            <value>
+                <fullName>Phonepe</fullName>
+                <default>false</default>
+                <label>Phonepe</label>
+            </value>
+            <value>
+                <fullName>PayTM</fullName>
+                <default>false</default>
+                <label>PayTM</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

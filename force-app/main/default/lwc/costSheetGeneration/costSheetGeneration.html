@@ -173,11 +173,17 @@
                     </tbody>
                 </table>
             </div>
-
-            <div class="next-button-container">
-                <lightning-button label="Next" onclick={handleThirdScreen} variant="brand">
-                </lightning-button>
+            <div class="next-button-container1">
+                <div class="left-button">
+                    <lightning-button label="Back" onclick={handleBack1} variant="brand">
+                    </lightning-button>
+                </div>
+                <div class="next-button-container">
+                    <lightning-button label="Next" onclick={handleThirdScreen} variant="brand">
+                    </lightning-button>
+                </div>
             </div>
+        
 
         </template>
 
@@ -228,7 +234,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <template for:each={rows} for:item="row" for:index="index">
+                        <template for:each={parkingDetails} for:item="row" for:index="index">
                             <tr key={row.id}>
                                 <!-- Parking Type Combobox -->
                                 <td>

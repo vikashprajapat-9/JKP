@@ -169,6 +169,11 @@
     text-align: right;
 }
 
+.payment-table th.col-center,
+.payment-table td.col-center {
+    text-align: center;
+}
+
 .mp-table tbody tr:last-child td {
     border-bottom: none;
 }

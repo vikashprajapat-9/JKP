@@ -1,14 +1,11 @@
 import { LightningElement, track, wire } from 'lwc';
 import { refreshApex } from '@salesforce/apex';
-import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import getLeads from '@salesforce/apex/partnerWebPortalLeadController.getLeads';
 import getStageOptions from '@salesforce/apex/partnerWebPortalLeadController.getStageOptions';
+import getProjectOptions from '@salesforce/apex/partnerWebPortalLeadController.getProjectOptions';
 import getBudgetOptions from '@salesforce/apex/partnerWebPortalLeadController.getBudgetOptions';
 import exportCSV from '@salesforce/apex/partnerWebPortalLeadController.exportCSV';
 import createLead from '@salesforce/apex/partnerWebPortalLeadController.createLead';
-
-// Static Interested Project lookup Id
-const PROJECT_ID = 'a01h2000000E9jNAAS';
 
 export default class PartnerWebPortalLead extends LightningElement {
 
@@ -18,6 +15,8 @@ export default class PartnerWebPortalLead extends LightningElement {
     @track searchKey = '';
     @track activeFilter = 'All';
     @track currentPage = 1;
+    @track successMessage = '';
+    @track errorMessage = '';
 
     leads = [];
     totalRecords = 0;
@@ -39,31 +38,43 @@ export default class PartnerWebPortalLead extends LightningElement {
         email: '',
         phone: '',
         address: '',
-        project: PROJECT_ID,   // static lookup Id
+        project: '',
         budget: '',
         description: ''
     };
 
+    projectOptions = [];
     budgetOptions = [];
 
-    // ---------- WIRE: FILTER TABS ----------
-    @wire(getStageOptions)
-    wiredStages({ data, error }) {
-        if (data) this.filterTabs = data;
-        else if (error) console.error('Stage options error:', error);
+    // ---------- WIRE: PROJECT OPTIONS ----------
+    @wire(getProjectOptions)
+    wiredProjectOptions({ data, error }) {
+        if (data) {
+            this.projectOptions = data.map(function(opt) {
+                return { label: opt.label, value: opt.value };
+            });
+        } else if (error) {
+            console.error('Project options error:', error);
+        }
     }
 
     // ---------- WIRE: BUDGET OPTIONS ----------
     @wire(getBudgetOptions)
     wiredBudgetOptions({ data, error }) {
         if (data) {
-            this.budgetOptions = data.map(opt => ({
-                label: opt.label,
-                value: opt.value
-            }));
+            this.budgetOptions = data.map(function(opt) {
+                return { label: opt.label, value: opt.value };
+            });
         } else if (error) {
             console.error('Budget options error:', error);
         }
+    }
+
+    // ---------- WIRE: FILTER TABS ----------
+    @wire(getStageOptions)
+    wiredStages({ data, error }) {
+        if (data) this.filterTabs = data;
+        else if (error) console.error('Stage options error:', error);
     }
 
     // ---------- WIRE: LEADS ----------
@@ -75,14 +86,16 @@ export default class PartnerWebPortalLead extends LightningElement {
     })
     wiredLeads(result) {
         this.wiredLeadsResult = result;
-        const data = result.data;
-        const error = result.error;
+        var data = result.data;
+        var error = result.error;
 
         if (data) {
-            this.leads = data.leads.map(l => ({
-                ...l,
-                badgeClass: this.getBadgeClass(l.stage)
-            }));
+            var self = this;
+            this.leads = data.leads.map(function(l) {
+                return Object.assign({}, l, {
+                    badgeClass: self.getBadgeClass(l.stage)
+                });
+            });
             this.totalRecords = data.totalRecords;
             this.totalPages = data.totalPages;
         } else if (error) {
@@ -95,11 +108,14 @@ export default class PartnerWebPortalLead extends LightningElement {
 
     // ---------- GETTERS ----------
     get filterButtons() {
-        return this.filterTabs.map(tab => ({
-            label: tab,
-            value: tab,
-            className: tab === this.activeFilter ? 'filter-btn active' : 'filter-btn'
-        }));
+        var self = this;
+        return this.filterTabs.map(function(tab) {
+            return {
+                label: tab,
+                value: tab,
+                className: tab === self.activeFilter ? 'filter-btn active' : 'filter-btn'
+            };
+        });
     }
 
     get hasLeads() { return this.leads && this.leads.length > 0; }
@@ -107,17 +123,17 @@ export default class PartnerWebPortalLead extends LightningElement {
 
     get entriesText() {
         if (this.totalRecords === 0) return 'Showing 0 entries';
-        const start = (this.currentPage - 1) * this.pageSize + 1;
-        const end = Math.min(this.currentPage * this.pageSize, this.totalRecords);
-        return `Showing ${start} to ${end} of ${this.totalRecords} entries`;
+        var start = (this.currentPage - 1) * this.pageSize + 1;
+        var end = Math.min(this.currentPage * this.pageSize, this.totalRecords);
+        return 'Showing ' + start + ' to ' + end + ' of ' + this.totalRecords + ' entries';
     }
 
     get isPrevDisabled() { return this.currentPage <= 1; }
     get isNextDisabled() { return this.currentPage >= this.totalPages; }
 
     get paginationButtons() {
-        const pages = [];
-        for (let i = 1; i <= this.totalPages; i++) {
+        var pages = [];
+        for (var i = 1; i <= this.totalPages; i++) {
             pages.push({
                 value: i,
                 label: String(i),
@@ -132,7 +148,7 @@ export default class PartnerWebPortalLead extends LightningElement {
     }
 
     getBadgeClass(stage) {
-        const map = {
+        var map = {
             'Open - Not Contacted': 'badge badge-scheduled',
             'Working - Contacted': 'badge badge-active',
             'Closed - Converted': 'badge badge-booked',
@@ -141,9 +157,17 @@ export default class PartnerWebPortalLead extends LightningElement {
             Visited: 'badge badge-visited',
             Booked: 'badge badge-booked',
             Scheduled: 'badge badge-scheduled',
-            Lost: 'badge badge-lost'
+            Lost: 'badge badge-lost',
+            New: 'badge badge-scheduled',
+            Open: 'badge badge-scheduled',
+            Contacted: 'badge badge-active',
+            Working: 'badge badge-active',
+            Qualified: 'badge badge-booked',
+            Converted: 'badge badge-booked',
+            Unqualified: 'badge badge-lost',
+            Cancelled: 'badge badge-cancelled'
         };
-        return map[stage] || 'badge';
+        return map[stage] || 'badge badge-neutral';
     }
 
     // ---------- LIST HANDLERS ----------
@@ -155,19 +179,21 @@ export default class PartnerWebPortalLead extends LightningElement {
             email: '',
             phone: '',
             address: '',
-            project: PROJECT_ID,
+            project: '',
             budget: '',
             description: ''
         };
+        this.errorMessage = '';
         this.isFormView = true;
     }
 
     handleSearch(event) {
-        const value = event.target.value;
+        var value = event.target.value;
+        var self = this;
         window.clearTimeout(this.searchTimeout);
-        this.searchTimeout = window.setTimeout(() => {
-            this.searchKey = value;
-            this.currentPage = 1;
+        this.searchTimeout = window.setTimeout(function() {
+            self.searchKey = value;
+            self.currentPage = 1;
         }, 400);
     }
 
@@ -185,87 +211,115 @@ export default class PartnerWebPortalLead extends LightningElement {
 
     async handleExport() {
         try {
-            const base64 = await exportCSV({
+            var base64 = await exportCSV({
                 stageFilter: this.activeFilter,
                 searchKey: this.searchKey
             });
-            const link = document.createElement('a');
+            var link = document.createElement('a');
             link.href = 'data:text/csv;base64,' + base64;
             link.download = 'leads_export.csv';
             link.click();
         } catch (e) {
             console.error('Export error:', e);
-            this.showToast('Error', 'Failed to export CSV', 'error');
+            this.errorMessage = 'Failed to export CSV';
         }
-    }
-
-    handleApplyFilter() {
-        if (this.wiredLeadsResult) refreshApex(this.wiredLeadsResult);
     }
 
     // ---------- FORM HANDLERS ----------
     handleFormChange(event) {
-        const field = event.target.dataset.field;
-        const value = event.target.value;
+        var field = event.target.dataset.field;
+        var value = event.target.value;
 
-        const updated = { ...this.form };
-        updated[field] = value;
-        this.form = updated;
+        this.form = Object.assign({}, this.form, {
+            [field]: value
+        });
+        this.errorMessage = ''; // Clear error on user edit
     }
 
     handleFormCancel() {
+        this.errorMessage = '';
         this.isFormView = false;
     }
 
+    handleCloseError() {
+        this.errorMessage = '';
+    }
+
+    handleCloseSuccess() {
+        this.successMessage = '';
+    }
+
     async handleRegisterLead() {
-        if (!this.form.fullName) {
-            this.showToast('Error', 'Full Name is required', 'error');
+        this.errorMessage = '';
+
+        // Force sync from DOM
+        this.template.querySelectorAll('input, select, textarea').forEach(function(input) {
+            var field = input.dataset && input.dataset.field ? input.dataset.field : null;
+            if (field && input.type !== 'file' && input.type !== 'checkbox') {
+                this.form[field] = input.value;
+            }
+        }.bind(this));
+
+        // Client-side Validations
+        if (!this.form.fullName || !this.form.fullName.trim()) {
+            this.errorMessage = 'Full Name is required.';
             return;
         }
-        if (!this.form.phone) {
-            this.showToast('Error', 'Mobile Number is required', 'error');
+        if (!this.form.phone || !this.form.phone.trim()) {
+            this.errorMessage = 'Mobile Number is required.';
+            return;
+        }
+        if (!this.form.project) {
+            this.errorMessage = 'Please select an Interested Project.';
+            return;
+        }
+        if (!this.form.budget) {
+            this.errorMessage = 'Please select a valid Budget Aligned.';
             return;
         }
 
         this.isSaving = true;
 
         try {
-            const leadId = await createLead({
-                fullName:    this.form.fullName,
-                company:     this.form.company,
-                leadSource:  this.form.leadSource,
-                email:       this.form.email,
-                phone:       this.form.phone,
-                address:     this.form.address,
-                project:     this.form.project,   // static Id
-                budget:      this.form.budget,
-                description: this.form.description
+            var leadId = await createLead({
+                fullName:    this.form.fullName ? this.form.fullName.trim() : '',
+                company:     this.form.company ? this.form.company.trim() : '',
+                leadSource:  this.form.leadSource ? this.form.leadSource.trim() : 'Partner Portal',
+                email:       this.form.email ? this.form.email.trim() : '',
+                phone:       this.form.phone ? this.form.phone.trim() : '',
+                address:     this.form.address ? this.form.address.trim() : '',
+                project:     this.form.project ? this.form.project.trim() : '',
+                budget:      this.form.budget ? this.form.budget.trim() : '',
+                description: this.form.description ? this.form.description.trim() : ''
             });
 
-            console.log('✅ Lead created:', leadId);
+            console.log('Lead created successfully:', leadId);
 
-            // Success toast with Lead Id
-            this.showToast(
-                'Success',
-                `Lead created successfully. Lead Id: ${leadId}`,
-                'success'
-            );
-
+            // Set success message for list view
+            this.successMessage = 'Lead created successfully! Lead ID: ' + leadId;
             this.isFormView = false;
+
             if (this.wiredLeadsResult) {
                 refreshApex(this.wiredLeadsResult);
             }
 
+            // Auto-hide success message after 7 seconds
+            var self = this;
+            window.setTimeout(function() {
+                self.successMessage = '';
+            }, 7000);
+
         } catch (err) {
-            console.error('❌ Lead creation error:', JSON.stringify(err));
-            const msg = err.body ? err.body.message : 'Failed to register lead';
-            this.showToast('Error', msg, 'error');
+            console.error('Lead creation error:', err);
+            var msg = 'Failed to register lead';
+            if (err && err.body && err.body.message) {
+                msg = err.body.message;
+            } else if (err && err.message) {
+                msg = err.message;
+            }
+            this.errorMessage = msg;
         } finally {
             this.isSaving = false;
         }
-    }
-
-    showToast(title, message, variant) {
-        this.dispatchEvent(new ShowToastEvent({ title, message, variant }));
     }
 }

@@ -420,6 +420,11 @@
             <field>Floor_Rise__c</field>
             <table>Block__c.Floors__r.Units__r</table>
         </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Internal_QC__c</field>
+            <table>Block__c.Floors__r.Units__r</table>
+        </columns>
         <masterLabel>Units</masterLabel>
     </sections>
 </ReportType>

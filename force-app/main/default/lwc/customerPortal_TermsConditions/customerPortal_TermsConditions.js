@@ -1,6 +1,6 @@
 import { LightningElement } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
-import getTermsConditionsData from '@salesforce/apex/customerPortalController.getTermsConditionsData';
+import getTermsConditionsData from '@salesforce/apex/CustomerPortalController.getTermsConditionsData';
 
 export default class CustomerPortal_TermsConditions extends LightningElement {
 

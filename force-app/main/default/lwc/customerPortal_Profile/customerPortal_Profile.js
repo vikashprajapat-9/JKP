@@ -1,5 +1,5 @@
 import { LightningElement } from 'lwc';
-import getProfileData from '@salesforce/apex/customerPortalController.getProfileData';
+import getProfileData from '@salesforce/apex/CustomerPortalController.getProfileData';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 const DEPARTMENT_CHOICES = [
     'Sales',

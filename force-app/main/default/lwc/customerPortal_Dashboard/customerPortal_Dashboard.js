@@ -1,8 +1,8 @@
 import { LightningElement } from 'lwc';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import REFER_EARN_IMAGE from '@salesforce/resourceUrl/ReferEarnImage';
-import getDashboardData from '@salesforce/apex/customerPortalController.getDashboardData';
-import getHandoverData from '@salesforce/apex/customerPortalController.getHandoverData';
+import getDashboardData from '@salesforce/apex/CustomerPortalController.getDashboardData';
+import getHandoverData from '@salesforce/apex/CustomerPortalController.getHandoverData';
 // CHANGED: updateHandoverStatus import removed — status-update logic no longer used.
 
 const AUTOPLAY_MS = 1000;

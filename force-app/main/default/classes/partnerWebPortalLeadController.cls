@@ -22,7 +22,7 @@ public without sharing class partnerWebPortalLeadController {
     }
 
     // =========================================================
-    // GET LEADS WITH FILTER, SEARCH, PAGINATION
+    // GET LEADS (Filtered to Logged-in Partner Only)
     // =========================================================
     @AuraEnabled(cacheable=true)
     public static LeadsResponse getLeads(
@@ -35,57 +35,39 @@ public without sharing class partnerWebPortalLeadController {
         response.pageNumber = (pageNumber == null || pageNumber < 1) ? 1 : pageNumber;
         response.pageSize   = (pageSize == null || pageSize < 1) ? 10 : pageSize;
 
-        // Count query
-        Integer totalRecords;
+        // Filter to logged-in partner user only
+        Id currentUserId = UserInfo.getUserId();
 
-        if (String.isNotBlank(searchKey) && stageFilter != null && stageFilter != 'All') {
-            String likeKey = '%' + searchKey + '%';
-            totalRecords = Database.countQuery(
-                'SELECT COUNT() FROM Lead WHERE IsConverted = false AND Status = :stageFilter AND (Name LIKE :likeKey OR Company LIKE :likeKey OR Phone LIKE :likeKey)'
-            );
-        } else if (String.isNotBlank(searchKey)) {
-            String likeKey = '%' + searchKey + '%';
-            totalRecords = Database.countQuery(
-                'SELECT COUNT() FROM Lead WHERE IsConverted = false AND (Name LIKE :likeKey OR Company LIKE :likeKey OR Phone LIKE :likeKey)'
-            );
-        } else if (String.isNotBlank(stageFilter) && stageFilter != 'All') {
-            totalRecords = Database.countQuery(
-                'SELECT COUNT() FROM Lead WHERE IsConverted = false AND Status = :stageFilter'
-            );
-        } else {
-            totalRecords = Database.countQuery(
-                'SELECT COUNT() FROM Lead WHERE IsConverted = false'
-            );
+        String baseQuery = ' FROM Lead WHERE IsConverted = false AND OwnerId = :currentUserId ';
+        List<String> conditions = new List<String>();
+
+        if (String.isNotBlank(stageFilter) && stageFilter != 'All') {
+            conditions.add('Status = :stageFilter');
         }
+
+        String likeKey;
+        if (String.isNotBlank(searchKey)) {
+            likeKey = '%' + searchKey.trim() + '%';
+            conditions.add('(Name LIKE :likeKey OR Company LIKE :likeKey OR Phone LIKE :likeKey)');
+        }
+
+        String whereClause = conditions.isEmpty() ? '' : ' AND ' + String.join(conditions, ' AND ');
+
+        // Total Count Query
+        String countQuery = 'SELECT COUNT()' + baseQuery + whereClause;
+        Integer totalRecords = Database.countQuery(countQuery);
 
         response.totalRecords = totalRecords;
-        response.totalPages = (Integer) Math.ceil((Decimal) totalRecords / response.pageSize);
+        response.totalPages   = (Integer) Math.ceil((Decimal) totalRecords / response.pageSize);
 
-        // Data query with pagination
+        // Data Query with Pagination
         Integer offset = (response.pageNumber - 1) * response.pageSize;
+        String dataQuery = 'SELECT Id, Name, Company, Phone, Status, CreatedDate ' +
+                           baseQuery + whereClause +
+                           ' ORDER BY CreatedDate DESC LIMIT :pageSize OFFSET :offset';
 
-        List<Lead> leads;
-        if (String.isNotBlank(searchKey) && stageFilter != null && stageFilter != 'All') {
-            String likeKey = '%' + searchKey + '%';
-            leads = Database.query(
-                'SELECT Id, Name, Company, Phone, Status, CreatedDate FROM Lead WHERE IsConverted = false AND Status = :stageFilter AND (Name LIKE :likeKey OR Company LIKE :likeKey OR Phone LIKE :likeKey) ORDER BY CreatedDate DESC LIMIT :pageSize OFFSET :offset'
-            );
-        } else if (String.isNotBlank(searchKey)) {
-            String likeKey = '%' + searchKey + '%';
-            leads = Database.query(
-                'SELECT Id, Name, Company, Phone, Status, CreatedDate FROM Lead WHERE IsConverted = false AND (Name LIKE :likeKey OR Company LIKE :likeKey OR Phone LIKE :likeKey) ORDER BY CreatedDate DESC LIMIT :pageSize OFFSET :offset'
-            );
-        } else if (String.isNotBlank(stageFilter) && stageFilter != 'All') {
-            leads = Database.query(
-                'SELECT Id, Name, Company, Phone, Status, CreatedDate FROM Lead WHERE IsConverted = false AND Status = :stageFilter ORDER BY CreatedDate DESC LIMIT :pageSize OFFSET :offset'
-            );
-        } else {
-            leads = Database.query(
-                'SELECT Id, Name, Company, Phone, Status, CreatedDate FROM Lead WHERE IsConverted = false ORDER BY CreatedDate DESC LIMIT :pageSize OFFSET :offset'
-            );
-        }
+        List<Lead> leads = Database.query(dataQuery);
 
-        // Convert to wrapper
         List<LeadRow> rows = new List<LeadRow>();
         Integer rowCounter = offset + 1;
 
@@ -106,13 +88,12 @@ public without sharing class partnerWebPortalLeadController {
     }
 
     // =========================================================
-    // STAGE FILTER OPTIONS (Lead.Status picklist)
+    // STAGE OPTIONS
     // =========================================================
     @AuraEnabled(cacheable=true)
     public static List<String> getStageOptions() {
         List<String> options = new List<String>{ 'All' };
-        Schema.DescribeFieldResult f = Lead.Status.getDescribe();
-        for (Schema.PicklistEntry entry : f.getPicklistValues()) {
+        for (Schema.PicklistEntry entry : Lead.Status.getDescribe().getPicklistValues()) {
             if (entry.isActive()) {
                 options.add(entry.getLabel());
             }
@@ -121,17 +102,12 @@ public without sharing class partnerWebPortalLeadController {
     }
 
     // =========================================================
-    // PROJECT OPTIONS (Queries Project__c Lookup Object)
+    // PROJECT OPTIONS
     // =========================================================
     @AuraEnabled(cacheable=true)
     public static List<Map<String, String>> getProjectOptions() {
         List<Map<String, String>> options = new List<Map<String, String>>();
-        for (Project__c p : [
-            SELECT Id, Name 
-            FROM Project__c 
-            ORDER BY Name ASC 
-            LIMIT 200
-        ]) {
+        for (Project__c p : [SELECT Id, Name FROM Project__c WITH SYSTEM_MODE ORDER BY Name ASC LIMIT 200]) {
             options.add(new Map<String, String>{
                 'label' => p.Name,
                 'value' => String.valueOf(p.Id)
@@ -141,7 +117,7 @@ public without sharing class partnerWebPortalLeadController {
     }
 
     // =========================================================
-    // BUDGET OPTIONS (Lead.Budget_Aligned__c picklist)
+    // BUDGET OPTIONS
     // =========================================================
     @AuraEnabled(cacheable=true)
     public static List<Map<String, String>> getBudgetOptions() {
@@ -158,43 +134,26 @@ public without sharing class partnerWebPortalLeadController {
     }
 
     // =========================================================
-    // EXPORT CSV
+    // EXPORT CSV (Logged-in Partner's Leads Only)
     // =========================================================
     @AuraEnabled
     public static String exportCSV(String stageFilter, String searchKey) {
-        List<Lead> leads;
+        Id currentUserId = UserInfo.getUserId();
+        String baseQuery = 'SELECT Name, Company, Phone, Status, CreatedDate FROM Lead WHERE IsConverted = false AND OwnerId = :currentUserId ';
+        List<String> conditions = new List<String>();
 
-        if (String.isNotBlank(searchKey) && stageFilter != null && stageFilter != 'All') {
-            String likeKey = '%' + searchKey + '%';
-            leads = [
-                SELECT Name, Company, Phone, Status, CreatedDate
-                FROM Lead
-                WHERE IsConverted = false AND Status = :stageFilter
-                AND (Name LIKE :likeKey OR Company LIKE :likeKey OR Phone LIKE :likeKey)
-                ORDER BY CreatedDate DESC LIMIT 1000
-            ];
-        } else if (String.isNotBlank(searchKey)) {
-            String likeKey = '%' + searchKey + '%';
-            leads = [
-                SELECT Name, Company, Phone, Status, CreatedDate
-                FROM Lead
-                WHERE IsConverted = false
-                AND (Name LIKE :likeKey OR Company LIKE :likeKey OR Phone LIKE :likeKey)
-                ORDER BY CreatedDate DESC LIMIT 1000
-            ];
-        } else if (String.isNotBlank(stageFilter) && stageFilter != 'All') {
-            leads = [
-                SELECT Name, Company, Phone, Status, CreatedDate
-                FROM Lead WHERE IsConverted = false AND Status = :stageFilter
-                ORDER BY CreatedDate DESC LIMIT 1000
-            ];
-        } else {
-            leads = [
-                SELECT Name, Company, Phone, Status, CreatedDate
-                FROM Lead WHERE IsConverted = false
-                ORDER BY CreatedDate DESC LIMIT 1000
-            ];
+        if (String.isNotBlank(stageFilter) && stageFilter != 'All') {
+            conditions.add('Status = :stageFilter');
         }
+
+        String likeKey;
+        if (String.isNotBlank(searchKey)) {
+            likeKey = '%' + searchKey.trim() + '%';
+            conditions.add('(Name LIKE :likeKey OR Company LIKE :likeKey OR Phone LIKE :likeKey)');
+        }
+
+        String whereClause = conditions.isEmpty() ? '' : ' AND ' + String.join(conditions, ' AND ');
+        List<Lead> leads = Database.query(baseQuery + whereClause + ' ORDER BY CreatedDate DESC LIMIT 1000');
 
         String csv = 'Lead Name,Company,Phone,Stage,Created Date\n';
         for (Lead l : leads) {
@@ -208,7 +167,7 @@ public without sharing class partnerWebPortalLeadController {
     }
 
     // =========================================================
-    // CREATE LEAD
+    // CREATE LEAD (With Strict Mobile Duplicate Check)
     // =========================================================
     @AuraEnabled
     public static Id createLead(
@@ -222,57 +181,77 @@ public without sharing class partnerWebPortalLeadController {
         String budget,
         String description
     ) {
-        if (String.isBlank(fullName)) {
-            throw createHandledException('Full Name is required');
-        }
-        if (String.isBlank(phone)) {
-            throw createHandledException('Mobile Number is required');
-        }
-        if (String.isBlank(project)) {
-            throw createHandledException('Please select an Interested Project');
-        }
-        if (String.isBlank(budget)) {
-            throw createHandledException('Please select a valid Budget Aligned');
+        if (String.isBlank(fullName)) throw createHandledException('Full Name is required');
+        if (String.isBlank(phone))    throw createHandledException('Mobile Number is required');
+        if (String.isBlank(project))  throw createHandledException('Please select an Interested Project');
+        if (String.isBlank(budget))   throw createHandledException('Please select a valid Budget Aligned');
+
+        String cleanPhone = phone.trim();
+
+        // =====================================================
+        // 1. DUPLICATE MOBILE NUMBER CHECK (Across entire org)
+        // =====================================================
+        List<Lead> existingLeads = [
+            SELECT Id, Name 
+            FROM Lead 
+            WHERE Phone = :cleanPhone 
+            AND IsConverted = false 
+            WITH SYSTEM_MODE
+            LIMIT 1
+        ];
+
+        if (!existingLeads.isEmpty()) {
+            throw createHandledException('A lead with this mobile number (' + cleanPhone + ') already exists (' + existingLeads[0].Name + '). Duplicate mobile numbers are not allowed.');
         }
 
+        // =====================================================
+        // 2. PREPARE NEW LEAD
+        // =====================================================
         Lead newLead = new Lead();
         newLead.LastName    = fullName.trim();
         newLead.Company     = String.isNotBlank(company) ? company.trim() : 'Individual';
         newLead.LeadSource  = String.isNotBlank(leadSource) ? leadSource.trim() : 'Partner Portal';
         newLead.Email       = String.isNotBlank(email) ? email.trim() : null;
-        newLead.Phone       = phone.trim();
+        newLead.Phone       = cleanPhone;
         newLead.Street      = String.isNotBlank(address) ? address.trim() : null;
 
-        // Project__c is a LOOKUP (assign Id)
+        // Set OwnerId to the logged-in Partner User
+        newLead.OwnerId = UserInfo.getUserId();
+
         if (String.isNotBlank(project)) {
-            try {
-                newLead.Project__c = (Id) project.trim();
-            } catch (Exception e) {
-                System.debug('>>> Invalid Project Id: ' + project);
-            }
+            try { newLead.Project__c = (Id) project.trim(); }
+            catch (Exception e) { System.debug('>>> Invalid Project Id: ' + project); }
         }
 
-        // Budget_Aligned__c is a PICKLIST (assign String value)
         if (String.isNotBlank(budget)) {
             newLead.Budget_Aligned__c = budget.trim();
         }
 
         newLead.Description = String.isNotBlank(description) ? description.trim() : null;
 
-        System.debug('>>> [LeadPortal] Inserting Lead: ' + JSON.serialize(newLead));
+        // =====================================================
+        // 3. INSERT LEAD IN SYSTEM MODE
+        // =====================================================
+        Database.DMLOptions dml = new Database.DMLOptions();
+        dml.DuplicateRuleHeader.allowSave = true;
+        dml.DuplicateRuleHeader.runAsCurrentUser = true;
+        dml.optAllOrNone = true;
 
         try {
-            insert newLead;
-            System.debug('>>> [LeadPortal] Lead created successfully: ' + newLead.Id);
+            Database.SaveResult sr = Database.insert(newLead, dml, AccessLevel.SYSTEM_MODE);
+            if (sr.isSuccess()) {
+                System.debug('>>> [LeadPortal] Lead created successfully with Owner: ' + newLead.OwnerId);
+                return sr.getId();
+            } else {
+                String errorMsg = '';
+                for (Database.Error err : sr.getErrors()) errorMsg += err.getMessage() + ' ';
+                throw createHandledException(errorMsg);
+            }
         } catch (DmlException e) {
-            System.debug('>>> [LeadPortal] DML Error: ' + e.getDmlMessage(0));
             throw createHandledException(e.getDmlMessage(0));
         } catch (Exception e) {
-            System.debug('>>> [LeadPortal] Exception: ' + e.getMessage());
             throw createHandledException(e.getMessage());
         }
-
-        return newLead.Id;
     }
 
     private static AuraHandledException createHandledException(String message) {

@@ -1,14 +1,55 @@
-import { LightningElement } from 'lwc';
+import { LightningElement, wire } from 'lwc';
+import { loadStyle } from 'lightning/platformResourceLoader';
+import PORTAL_THEME from '@salesforce/resourceUrl/JKPortalTheme';
+import getCurrentUser from '@salesforce/apex/PartnerPortalDashboard.getCurrentUser';
+
+const NAV_ITEMS = [
+    { page: 'dashboard', label: 'Dashboard', icon: 'utility:home' },
+    { page: 'leads', label: 'Leads', icon: 'utility:user' },
+    { page: 'siteVisits', label: 'Site Visits', icon: 'utility:location' },
+    { page: 'myTeam', label: 'My Team', icon: 'utility:people' },
+    { page: 'projects', label: 'Projects', icon: 'utility:list' },
+    { page: 'commission', label: 'Commission', icon: 'utility:money' },
+    { page: 'marketing', label: 'Marketing', icon: 'utility:announcement' },
+    { page: 'aboutUs', label: 'About Us', icon: 'utility:info' },
+    { page: 'terms', label: 'Terms & Conditions', icon: 'utility:description' },
+    { page: 'logout', label: 'Logout', icon: 'utility:logout' }
+];
 
 export default class PartnerWebPortal extends LightningElement {
 
     selectedPage = 'dashboard';
-
     userName = '';
-    searchText = '';
+    showLogoutConfirm = false;
+    logoUrl = PORTAL_THEME + '/logo.png';
+
+    @wire(getCurrentUser)
+    wiredUser({ data }) {
+        if (data) {
+            this.userName = data;
+        }
+    }
+
+    connectedCallback() {
+        loadStyle(this, PORTAL_THEME + '/theme.css').catch(() => {
+            // Font falls back to the system stack if the theme fails to load.
+        });
+    }
+
+    get navItems() {
+        return NAV_ITEMS.map(item => ({
+            ...item,
+            cssClass: this.selectedPage === item.page ? 'nav-item active' : 'nav-item'
+        }));
+    }
 
     handleNavigation(event) {
-        this.selectedPage = event.currentTarget.dataset.page;
+        const page = event.currentTarget.dataset.page;
+        if (page === 'logout') {
+            this.showLogoutConfirm = true;
+        } else {
+            this.selectedPage = page;
+        }
     }
 
     // ---------- RENDER CONDITIONS (Boolean) ----------
@@ -17,45 +58,44 @@ export default class PartnerWebPortal extends LightningElement {
     get isSiteVisit() { return this.selectedPage === 'siteVisits'; }
     get isMyTeam()    { return this.selectedPage === 'myTeam'; }
     get isProjects()  { return this.selectedPage === 'projects'; }
+    get isCommission() { return this.selectedPage === 'commission'; }
     get isMarketing() { return this.selectedPage === 'marketing'; }
     get isAboutUs()   { return this.selectedPage === 'aboutUs'; }
     get isTerms()     { return this.selectedPage === 'terms'; }
+    get isProfile()   { return this.selectedPage === 'profile'; }
 
-    // ---------- CSS CLASS HELPERS ----------
-    getPageClass(page) {
-        return this.selectedPage === page ? 'nav-item active' : 'nav-item';
-    }
-
-    get dashboardClass()  { return this.getPageClass('dashboard'); }
-    get leadsClass()      { return this.getPageClass('leads'); }
-    get siteVisitClass()  { return this.getPageClass('siteVisits'); }
-    get myTeamClass()     { return this.getPageClass('myTeam'); }
-    get projectsClass()   { return this.getPageClass('projects'); }
-    get commissionClass() { return this.getPageClass('commission'); }
-    get marketingClass()  { return this.getPageClass('marketing'); }
-    get aboutUsClass()    { return this.getPageClass('aboutUs'); }
-    get termsClass()      { return this.getPageClass('terms'); }
-    get logoutClass()     { return this.getPageClass('logout'); }
-
-    // ---------- LABELS (only for pages with no dedicated component) ----------
+    // ---------- LABELS ----------
     get selectedPageLabel() {
         const labels = {
-            commission: 'Commission',
-            logout:     'Logout'
+            commission: 'Commission'
         };
         return labels[this.selectedPage] || '';
     }
 
     get userInitials() {
+        if (!this.userName) return 'U';
         return this.userName
             .split(' ')
+            .filter(n => n)
             .map(n => n.charAt(0))
             .join('')
             .slice(0, 2)
             .toUpperCase();
     }
 
-    handleSearch(event) { this.searchText = event.target.value; }
-    handleNotifications() { console.log('Notifications clicked'); }
-    handleProfile() { console.log('Profile clicked'); }
+    handleNotifications() {
+        // Notifications are not built yet.
+    }
+
+    handleProfile() {
+        this.selectedPage = 'profile';
+    }
+
+    closeLogout() {
+        this.showLogoutConfirm = false;
+    }
+
+    confirmLogout() {
+        window.location.replace('/secur/logout.jsp');
+    }
 }

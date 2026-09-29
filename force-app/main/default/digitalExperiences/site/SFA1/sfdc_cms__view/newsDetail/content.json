@@ -14,21 +14,21 @@
             "layoutDirectionTablet" : "column",
             "maxContentWidth" : "",
             "sectionColumnGutterWidth" : "",
-            "sectionConfig" : "{\"UUID\":\"fba75a24-02de-4d82-bbde-9f75b7a800b3\",\"columns\":[{\"UUID\":\"e4405807-6f4d-4932-b49e-8d451e6472f3\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}",
+            "sectionConfig" : "{\"UUID\":\"9d267e58-f870-4642-b731-c31de2de855e\",\"columns\":[{\"UUID\":\"6f2e1273-900a-4dbc-a1ae-37d5f6218166\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":[]}]}",
             "sectionMinHeight" : "",
             "sectionVerticalAlign" : "flex-start"
           },
           "children" : [ {
-            "id" : "e4405807-6f4d-4932-b49e-8d451e6472f3",
+            "id" : "6f2e1273-900a-4dbc-a1ae-37d5f6218166",
             "name" : "col1",
             "title" : "Column 1",
             "type" : "region"
           } ],
           "definition" : "community_layout:section",
-          "id" : "fba75a24-02de-4d82-bbde-9f75b7a800b3",
+          "id" : "9d267e58-f870-4642-b731-c31de2de855e",
           "type" : "component"
         } ],
-        "id" : "1f3f0c2c-a2f1-4e20-b936-6c5f22bf5cea",
+        "id" : "1c6b4783-7c2c-45a2-8b62-824a2465ae1d",
         "name" : "content",
         "title" : "Content",
         "type" : "region"
@@ -41,16 +41,16 @@
             "recordId" : "{!recordId}"
           },
           "definition" : "community_builder:seoAssistant",
-          "id" : "3ad2b979-cdf7-4276-aed2-35ba43dd00e1",
+          "id" : "db4655ac-5d1c-4bcb-b94d-8e2026b46bbf",
           "type" : "component"
         } ],
-        "id" : "a0c2fb1a-b5ee-49da-9d21-266988d259d9",
+        "id" : "e96a0804-648c-4706-9a0b-320959736c11",
         "name" : "sfdcHiddenRegion",
         "title" : "sfdcHiddenRegion",
         "type" : "region"
       } ],
       "definition" : "community_layout:sldsFlexibleLayout",
-      "id" : "82f568b6-e97a-40ee-828a-2624c3273879",
+      "id" : "0603becd-5d4a-4edb-8605-72049d3d7cef",
       "type" : "component"
     },
     "dataProviders" : [ ],

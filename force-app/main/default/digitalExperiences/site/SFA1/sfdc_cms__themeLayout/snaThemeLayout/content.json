@@ -5,18 +5,18 @@
     "component" : {
       "attributes" : { },
       "children" : [ {
-        "id" : "4919b2c2-7b42-4932-9d73-b5eab7b4382c",
+        "id" : "7ad67a8a-189d-406b-a968-ff8445abc8df",
         "name" : "header",
         "title" : "Theme Header",
         "type" : "region"
       }, {
-        "id" : "04121426-5666-4681-b9d9-6e623f4d4f92",
+        "id" : "3171bf61-7813-4a98-8a4a-9cf8752eb5ed",
         "name" : "footer",
         "title" : "Theme Footer",
         "type" : "region"
       } ],
       "definition" : "community_layout:simpleThemeLayout",
-      "id" : "46743dcd-8128-4c57-8841-d80985e9c4c2",
+      "id" : "a8f1cd95-27f3-45f8-92c2-518d2fee4e39",
       "type" : "component"
     }
   },

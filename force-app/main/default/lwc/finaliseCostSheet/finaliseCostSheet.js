@@ -451,7 +451,7 @@ export default class FinaliseCostSheet extends LightningElement {
                 return sendApproval({ recordId: this.recordId });
             })
             .then(result => {
-                this.showToast('Success', 'Approval sent successfully.', 'success');
+              //  this.showToast('Success', 'Approval sent successfully.', 'success');
                 this.isDisabledApproval = false;
                 this.closeComponent();
             })

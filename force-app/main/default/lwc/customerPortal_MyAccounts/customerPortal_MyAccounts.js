@@ -1,6 +1,6 @@
 import { LightningElement, wire, track } from 'lwc';
-import getMyAccountsPageData from '@salesforce/apex/customerPortalController.getMyAccountsPageData';
-import getMyAccountDetails from '@salesforce/apex/customerPortalController.getMyAccountDetails';
+import getMyAccountsPageData from '@salesforce/apex/CustomerPortalController.getMyAccountsPageData';
+import getMyAccountDetails from '@salesforce/apex/CustomerPortalController.getMyAccountDetails';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 const ALL_PROJECTS_VALUE = 'ALL';
 const ALL_PROJECTS_LABEL = 'All Projects';

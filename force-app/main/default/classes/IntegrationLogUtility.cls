@@ -1,9 +1,9 @@
 public class IntegrationLogUtility {
     
-    public static void captureError(String className, String methodName, Exception ex, string JSONbody){
+    public static void captureError(String className, String methodName, Exception ex, string JSONbody , String direction){
         //string JSONbody = '';
         if(Label.Integration_Log == 'True'){
-        Integration_Log__c newException = createError(className, methodName, ex, JSONbody); 
+        Integration_Log__c newException = createError(className, methodName, ex, JSONbody , direction); 
         try{
             System.debug('newException-->'+newException);
             insert newException;
@@ -14,7 +14,7 @@ public class IntegrationLogUtility {
         
     }
     
-    private static Integration_Log__c createError(String className, String methodName, Exception ex, String JSONbody){
+    private static Integration_Log__c createError(String className, String methodName, Exception ex, String JSONbody , String direction){
         
             Integration_Log__c result 		= new Integration_Log__c();
             result.Class_Name__c 		= className;
@@ -23,6 +23,7 @@ public class IntegrationLogUtility {
             result.Error_Stack_Trace__c	= ex.getStackTraceString();
             result.Error_Line_No__c		= ex.getLineNumber();
             result.Error_Type__c		= ex.getTypeName();
+            result.Integration_Direction__c = direction;
             if (JSONbody != null) {
                 result.API_JSON_body__c = JSONbody;
             }            

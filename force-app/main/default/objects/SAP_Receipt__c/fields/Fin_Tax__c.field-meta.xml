@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Fin_Tax__c</fullName>
+    <label>Fin Tax</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>TDS on Immovable Property</fullName>
+                <default>false</default>
+                <label>TDS on Immovable Property</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

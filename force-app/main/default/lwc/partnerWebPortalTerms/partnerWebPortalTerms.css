@@ -1,67 +1,63 @@
+:host {
+    display: block;
+    font-family: var(--jk-font);
+    color: var(--jk-text);
+}
+
 .terms-wrapper {
-    font-family: 'Salesforce Sans', Arial, sans-serif;
-    padding: 24px;
-    background: #fff;
-    max-width: 1100px;
+    font-size: 16px;
+    line-height: 24px;
+    color: var(--jk-text);
 }
 
 .terms-title {
-    font-size: 34px;
-    font-weight: 800;
-    color: #1a237e;
-    margin: 0 0 24px;
-    line-height: 1.2;
+    font-family: var(--jk-font);
+    font-size: 32px;
+    font-weight: 700;
+    line-height: 1.25;
+    color: var(--jk-navy-soft);
+    margin: 0 0 12px;
+}
+
+/* Figma: section and numbered headings are plain body text (same size/weight),
+   section headings uppercase, no extra vertical spacing between blocks. */
+.section-heading,
+.sub-heading {
+    font-family: var(--jk-font);
+    font-size: 16px;
+    font-weight: 400;
+    line-height: 24px;
+    color: var(--jk-text);
+    margin: 0;
 }
 
 .section-heading {
-    font-size: 15px;
-    font-weight: 700;
-    color: #1a1a1a;
     text-transform: uppercase;
-    letter-spacing: 0.4px;
-    margin: 26px 0 10px;
-}
-
-.sub-heading {
-    font-size: 15px;
-    font-weight: 700;
-    color: #1a1a1a;
-    margin: 20px 0 8px;
 }
 
 .terms-paragraph {
-    font-size: 15px;
-    color: #2b2b2b;
-    line-height: 1.65;
-    margin: 0 0 14px;
+    font-size: 16px;
+    line-height: 24px;
+    margin: 0;
 }
 
 .terms-list {
-    margin: 0 0 16px 22px;
-    padding: 0;
+    margin: 0;
+    padding: 0 0 0 32px;
+    list-style: disc;
 }
 
 .terms-list li {
-    font-size: 15px;
-    color: #2b2b2b;
-    line-height: 1.65;
-    margin-bottom: 6px;
+    font-size: 16px;
+    line-height: 24px;
+    margin: 0;
 }
 
-/* TABLET */
-@media (max-width: 1024px) {
-    .terms-wrapper { padding: 20px; }
-    .terms-title { font-size: 30px; }
-    .terms-paragraph,
-    .terms-list li { font-size: 14.5px; }
-}
-
-/* MOBILE */
 @media (max-width: 640px) {
-    .terms-wrapper { padding: 16px; }
-    .terms-title { font-size: 26px; margin-bottom: 18px; }
-    .section-heading { font-size: 14px; }
-    .sub-heading { font-size: 14px; }
+    .terms-title { font-size: 26px; }
+    .terms-wrapper,
+    .section-heading,
+    .sub-heading,
     .terms-paragraph,
-    .terms-list li { font-size: 14px; line-height: 1.6; }
+    .terms-list li { font-size: 15px; line-height: 22px; }
 }

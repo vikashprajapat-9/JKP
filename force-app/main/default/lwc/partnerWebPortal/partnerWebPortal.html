@@ -4,71 +4,17 @@
         <!-- ================= LEFT SIDEBAR ================= -->
         <aside class="sidebar">
             <div class="logo-area">
-                <span>JOHN KEELLS PROPERTIES</span>
+                <img src={logoUrl} alt="John Keells Properties" class="logo" />
             </div>
 
             <nav class="vertical" aria-label="Channel partner navigation">
-
-                <button class={dashboardClass} data-page="dashboard"
-                        onclick={handleNavigation} type="button">
-                    <lightning-icon icon-name="utility:home" size="medium"></lightning-icon>
-                    <span>Dashboard</span>
-                </button>
-
-                <button class={leadsClass} data-page="leads"
-                        onclick={handleNavigation} type="button">
-                    <lightning-icon icon-name="utility:groups" size="medium"></lightning-icon>
-                    <span>Leads</span>
-                </button>
-
-                <button class={siteVisitClass} data-page="siteVisits"
-                        onclick={handleNavigation} type="button">
-                    <lightning-icon icon-name="utility:checkin" size="medium"></lightning-icon>
-                    <span>Site Visits</span>
-                </button>
-
-                <button class={myTeamClass} data-page="myTeam"
-                        onclick={handleNavigation} type="button">
-                    <lightning-icon icon-name="utility:people" size="medium"></lightning-icon>
-                    <span>My Team</span>
-                </button>
-
-                <button class={projectsClass} data-page="projects"
-                        onclick={handleNavigation} type="button">
-                    <lightning-icon icon-name="utility:table" size="medium"></lightning-icon>
-                    <span>Projects</span>
-                </button>
-
-                <button class={commissionClass} data-page="commission"
-                        onclick={handleNavigation} type="button">
-                    <lightning-icon icon-name="utility:moneybag" size="medium"></lightning-icon>
-                    <span>Commission</span>
-                </button>
-
-                <button class={marketingClass} data-page="marketing"
-                        onclick={handleNavigation} type="button">
-                    <lightning-icon icon-name="utility:campaign" size="medium"></lightning-icon>
-                    <span>Marketing</span>
-                </button>
-
-                <button class={aboutUsClass} data-page="aboutUs"
-                        onclick={handleNavigation} type="button">
-                    <lightning-icon icon-name="utility:info" size="medium"></lightning-icon>
-                    <span>About Us</span>
-                </button>
-
-                <button class={termsClass} data-page="terms"
-                        onclick={handleNavigation} type="button">
-                    <lightning-icon icon-name="utility:note" size="medium"></lightning-icon>
-                    <span>Terms &amp; Conditions</span>
-                </button>
-
-                <button class={logoutClass} data-page="logout"
-                        onclick={handleNavigation} type="button">
-                    <lightning-icon icon-name="utility:logout" size="medium"></lightning-icon>
-                    <span>Logout</span>
-                </button>
-
+                <template for:each={navItems} for:item="item">
+                    <button key={item.page} class={item.cssClass} data-page={item.page}
+                            onclick={handleNavigation} type="button">
+                        <lightning-icon icon-name={item.icon} size="x-small" class="nav-icon"></lightning-icon>
+                        <span>{item.label}</span>
+                    </button>
+                </template>
             </nav>
         </aside>
 
@@ -77,22 +23,13 @@
 
             <!-- TOP HEADER -->
             <header class="top-header">
-                <label class="search-box" for="portal-search">
-                    <lightning-icon icon-name="utility:search" size="small"
-                                    alternative-text="Search"></lightning-icon>
-                    <input id="portal-search"
-                           type="search"
-                           placeholder="Search your listings here..."
-                           oninput={handleSearch} />
-                </label>
 
                 <div class="header-actions">
                     <button class="header-icon-button"
                             type="button"
                             onclick={handleNotifications}
                             aria-label="Notifications">
-                        <lightning-icon icon-name="utility:notification"
-                                        size="medium"
+                        <lightning-icon icon-name="utility:notification" size="small" class="bell-icon"
                                         alternative-text="Notifications"></lightning-icon>
                     </button>
 
@@ -107,42 +44,68 @@
             </header>
 
             <!-- ================= RENDER CHAIN ================= -->
-            <template lwc:if={isDashboard}>
-                <c-partner-web-portal-dashboard></c-partner-web-portal-dashboard>
-            </template>
+            <section class="page-body">
+                <template lwc:if={isDashboard}>
+                    <c-partner-web-portal-dashboard></c-partner-web-portal-dashboard>
+                </template>
 
-            <template lwc:elseif={isLeads}>
-                <c-partner-web-portal-lead></c-partner-web-portal-lead>
-            </template>
+                <template lwc:elseif={isLeads}>
+                    <c-partner-web-portal-lead></c-partner-web-portal-lead>
+                </template>
 
-            <template lwc:elseif={isSiteVisit}>
-                <c-partner-web-portal-site-visit></c-partner-web-portal-site-visit>
-            </template>
+                <template lwc:elseif={isSiteVisit}>
+                    <c-partner-web-portal-site-visit></c-partner-web-portal-site-visit>
+                </template>
 
-            <template lwc:elseif={isMyTeam}>
-                <c-partner-web-portal-my-team></c-partner-web-portal-my-team>
-            </template>
+                <template lwc:elseif={isMyTeam}>
+                    <c-partner-web-portal-my-team></c-partner-web-portal-my-team>
+                </template>
 
-            <template lwc:elseif={isProjects}>
-                <c-partner-web-portal-project></c-partner-web-portal-project>
-            </template>
+                <template lwc:elseif={isProjects}>
+                    <c-partner-web-portal-project></c-partner-web-portal-project>
+                </template>
 
-            <template lwc:elseif={isMarketing}>
-                <c-partner-web-portal-marketing></c-partner-web-portal-marketing>
-            </template>
+                <template lwc:elseif={isCommission}>
+                    <c-partner-web-portal-commission></c-partner-web-portal-commission>
+                </template>
 
-            <template lwc:elseif={isAboutUs}>
-                <c-partner-web-portal-about-us></c-partner-web-portal-about-us>
-            </template>
+                <template lwc:elseif={isMarketing}>
+                    <c-partner-web-portal-marketing></c-partner-web-portal-marketing>
+                </template>
 
-            <template lwc:elseif={isTerms}>
-                <c-partner-web-portal-terms></c-partner-web-portal-terms>
-            </template>
+                <template lwc:elseif={isAboutUs}>
+                    <c-partner-web-portal-about-us></c-partner-web-portal-about-us>
+                </template>
 
-            <template lwc:else>
-                <h1>{selectedPageLabel}</h1>
-            </template>
+                <template lwc:elseif={isTerms}>
+                    <c-partner-web-portal-terms></c-partner-web-portal-terms>
+                </template>
 
+                <!-- PROFILE VIEW IN MAIN CONTENT -->
+                <template lwc:elseif={isProfile}>
+                    <c-partner-user-profile></c-partner-user-profile>
+                </template>
+
+                <template lwc:else>
+                    <h1 class="page-title">{selectedPageLabel}</h1>
+                </template>
+            </section>
         </main>
     </div>
+
+    <!-- ================= LOGOUT CONFIRMATION ================= -->
+    <template lwc:if={showLogoutConfirm}>
+        <div class="modal-backdrop" onclick={closeLogout}></div>
+        <div class="logout-modal" role="dialog" aria-modal="true" aria-labelledby="logout-title">
+            <h2 id="logout-title" class="logout-title">Logout?</h2>
+            <p class="logout-text">
+                You are about to log out of your John Keells Properties account. Thank you for using
+                our portal, and we look forward to your return.
+            </p>
+            <div class="logout-actions">
+                <button type="button" class="btn btn-outline" onclick={closeLogout}>Close</button>
+                <button type="button" class="btn btn-primary" onclick={confirmLogout}>Log out</button>
+            </div>
+        </div>
+    </template>
 </template>
