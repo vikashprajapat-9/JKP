@@ -10,7 +10,7 @@
         <type>user</type>
     </allowedSubmitters>
     <allowedSubmitters>
-        <submitter>nazirahmed.patel@utilitarianlabs.com</submitter>
+        <submitter>abhishek.dubey_cqu064klrdmsl4@utilitarianlabs.com</submitter>
         <type>user</type>
     </allowedSubmitters>
     <approvalPageFields>
@@ -28,7 +28,7 @@
         <allowDelegate>true</allowDelegate>
         <assignedApprover>
             <approver>
-                <name>nazirahmed.patel@utilitarianlabs.com</name>
+                <name>abhishek.dubey_cqu064klrdmsl4@utilitarianlabs.com</name>
                 <type>user</type>
             </approver>
             <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>

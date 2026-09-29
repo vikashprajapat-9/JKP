@@ -1,0 +1,119 @@
+<template>
+    <!-- ================= HEADER ================= -->
+    <div class="detail-header">
+        <button class="back-btn" type="button" onclick={handleBack} aria-label="Back to marketing">
+            <svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true">
+                <path d="M20 12H4M10 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+        </button>
+        <h1 class="detail-title">{project.name}</h1>
+    </div>
+
+    <!-- ================= RESOURCE CARDS ================= -->
+    <template lwc:if={hasResources}>
+        <div class="resource-grid">
+            <template for:each={resources} for:item="res">
+                <article key={res.id} class="resource-card">
+                    <div class={res.theme}>
+                        <svg class="thumb-house" viewBox="0 0 200 120" aria-hidden="true">
+                            <path d="M40 110V62l40-30 40 30v48z" fill="#8b2f2f"></path>
+                            <path d="M30 66l50-38 50 38" fill="none" stroke="#35506f" stroke-width="10" stroke-linejoin="round"></path>
+                            <rect x="58" y="74" width="16" height="16" fill="#e9edf3"></rect>
+                            <rect x="86" y="74" width="16" height="16" fill="#e9edf3"></rect>
+                            <rect x="72" y="92" width="16" height="18" fill="#e9edf3"></rect>
+                            <path d="M130 110V80l30-20 30 20v30z" fill="#b6c2d1" opacity="0.7"></path>
+                        </svg>
+
+                        <template lwc:if={res.isVideo}>
+                            <span class="play-badge" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" width="30" height="30">
+                                    <path d="M8 5v14l11-7z" fill="#ffffff"></path>
+                                </svg>
+                            </span>
+                        </template>
+                        <template lwc:else>
+                            <span class="pdf-badge" aria-hidden="true">
+                                <span class="pdf-tag">PDF</span>
+                                <svg class="pdf-arrow" viewBox="0 0 24 24" width="22" height="22">
+                                    <path d="M12 5v11M7 11l5 5 5-5" fill="none" stroke="#6aa12a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </span>
+                        </template>
+                    </div>
+
+                    <div class="card-body">
+                        <h2 class="card-title">{res.title}</h2>
+                        <button class="view-btn" type="button" data-id={res.id} onclick={handleView}
+                                aria-label={res.viewLabel} title="View">
+                            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+                                <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path>
+                                <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"></circle>
+                            </svg>
+                        </button>
+                    </div>
+                </article>
+            </template>
+        </div>
+    </template>
+    <template lwc:else>
+        <p class="empty-state">No marketing material is available for this project yet.</p>
+    </template>
+
+    <!-- ================= DOCUMENT VIEWER (p74) ================= -->
+    <template lwc:if={isViewerOpen}>
+        <div class="viewer" role="dialog" aria-modal="true" aria-label={openResource.fileName}>
+            <div class="viewer-bar">
+                <button class="viewer-back" type="button" onclick={handleCloseViewer}>
+                    <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true">
+                        <path d="M20 12H4M10 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                    <span>Back</span>
+                </button>
+
+                <span class="viewer-name">{openResource.fileName}</span>
+
+                <div class="viewer-tools">
+                    <template lwc:if={showDocTools}>
+                        <button class="tool-btn" type="button" onclick={handleZoomOut}
+                                disabled={isZoomOutDisabled} aria-label="Zoom out">
+                            <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
+                                <circle cx="11" cy="11" r="7.5" fill="none" stroke="currentColor" stroke-width="1.6"></circle>
+                                <path d="M8 11h6M17 17l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+                            </svg>
+                        </button>
+                        <button class="tool-btn" type="button" onclick={handleZoomIn}
+                                disabled={isZoomInDisabled} aria-label="Zoom in">
+                            <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
+                                <circle cx="11" cy="11" r="7.5" fill="none" stroke="currentColor" stroke-width="1.6"></circle>
+                                <path d="M8 11h6M11 8v6M17 17l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+                            </svg>
+                        </button>
+                        <span class="page-counter">{pageCounter}</span>
+                    </template>
+                </div>
+            </div>
+
+            <div class="viewer-body">
+                <template lwc:if={viewerIsVideo}>
+                    <div class="video-frame">
+                        <span class="video-play" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" width="40" height="40"><path d="M8 5v14l11-7z" fill="#ffffff"></path></svg>
+                        </span>
+                        <p class="video-note">Video preview will be available once the file is uploaded.</p>
+                    </div>
+                </template>
+                <template lwc:else>
+                    <template for:each={pageList} for:item="page">
+                        <div key={page.key} class="doc-page" style={pageStyle}>
+                            <template lwc:if={page.isFirst}>
+                                <span class="doc-page-title">{openResource.title}</span>
+                                <span class="doc-page-note">Preview will be available once the document is uploaded.</span>
+                            </template>
+                            <span class="doc-page-number">{page.number}</span>
+                        </div>
+                    </template>
+                </template>
+            </div>
+        </div>
+    </template>
+</template>

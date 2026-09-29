@@ -589,7 +589,7 @@ export default class CostSheetGeneration extends NavigationMixin(LightningElemen
         debugger;
         this.secondScreen = false;
         this.thirdScreen = true;
-        this.handleFouth();
+       // this.handleFouth();
     }
 
     handleFourthScreenBack() {
@@ -610,102 +610,249 @@ export default class CostSheetGeneration extends NavigationMixin(LightningElemen
     @track availableDependantParking = 0;
     @track availableIndependantParking = 0;
 
+    // getParkingDetails() {
+    //     debugger;
+    //     getParkingRecords({ unitId: this.selectedUnitId })
+    //         .then(result => {
+    //             if (result && Array.isArray(result) && result.length > 0) {
+    //                 this.parkingDetails = result;
+    //                 this.parkingDetails.forEach(item => {
+    //                     this.availableOpenParking = item.Parking_Type__c == 'open' ? item.Available_Parking__c : this.availableOpenParking;
+    //                     this.availableDependantParking = item.Parking_Type__c == 'Dependent' ? item.Available_Parking__c : this.availableDependantParking;
+    //                     this.availableIndependantParking = item.Parking_Type__c == 'Independent' ? item.Available_Parking__c : this.availableIndependantParking;
+    //                 });
+    //                 this.parkingType = result.map(item => {
+    //                     return { label: item.Parking_Type__c, value: item.Parking_Type__c }
+    //                 });
+    //                 this.noParkingDetails = false;
+    //                 this.parkingDetailTable = true;
+    //             } else {
+    //                 this.noParkingDetails = true;
+    //                 this.parkingDetailTable = false;
+    //             }
+    //         })
+    //         .catch(error => {
+    //             console.error('Error:', error);
+    //             this.showToast('Error', 'Unable to fetch parking details.', 'error');
+    //         });
+    // }
     getParkingDetails() {
-        debugger;
-        getParkingRecords({ unitId: this.selectedUnitId })
-            .then(result => {
-                if (result && Array.isArray(result) && result.length > 0) {
-                    this.parkingDetails = result;
-                    this.parkingDetails.forEach(item => {
-                        this.availableOpenParking = item.Parking_Type__c == 'open' ? item.Available_Parking__c : this.availableOpenParking;
-                        this.availableDependantParking = item.Parking_Type__c == 'Dependent' ? item.Available_Parking__c : this.availableDependantParking;
-                        this.availableIndependantParking = item.Parking_Type__c == 'Independent' ? item.Available_Parking__c : this.availableIndependantParking;
-                    });
-                    this.parkingType = result.map(item => {
-                        return { label: item.Parking_Type__c, value: item.Parking_Type__c }
-                    });
-                    this.noParkingDetails = false;
-                    this.parkingDetailTable = true;
-                } else {
-                    this.noParkingDetails = true;
-                    this.parkingDetailTable = false;
+    debugger;
+
+    getParkingRecords({
+        unitId: this.selectedUnitId
+    })
+    .then(result => {
+
+        console.log('RAW PARKING RESULT:', JSON.stringify(result));
+
+        if (result && result.length > 0) {
+
+            // Keep Salesforce records separately
+            this.parkingDetails = result;
+
+            // Create combobox options
+            this.parkingType = result.map(item => ({
+                label: item.Parking_Type__c,
+                value: item.Parking_Type__c
+            }));
+
+            // Availability
+            this.availableOpenParking = 0;
+            this.availableDependantParking = 0;
+            this.availableIndependantParking = 0;
+
+            result.forEach(item => {
+
+                const type = item.Parking_Type__c?.toLowerCase();
+
+                if (type === 'open') {
+                    this.availableOpenParking =
+                        item.Available_Parking__c;
                 }
-            })
-            .catch(error => {
-                console.error('Error:', error);
-                this.showToast('Error', 'Unable to fetch parking details.', 'error');
+
+                if (type === 'dependent') {
+                    this.availableDependantParking =
+                        item.Available_Parking__c;
+                }
+
+                if (type === 'independent') {
+                    this.availableIndependantParking =
+                        item.Available_Parking__c;
+                }
             });
-    }
 
-    handleParkingTypeChange(event) {
-        debugger;
-        const index = parseInt(event.target.dataset.index, 10);
-        const id = event.target.dataset.id;
-        const selectedType = event.target.value;
-        const name = event.target.name;
-        var parkingDetail = {};
-        var quantity = 1;
-
-        var currentRow = this.rows.find(item => item.id === id);
-        console.log('currentRow ===> ' + currentRow);
-
-        if (name == 'quantity') {
-            quantity = selectedType;
-            parkingDetail = this.parkingDetails.find(item => item.Parking_Type__c === currentRow.type);
-            if (currentRow) {
-                currentRow.quantity = quantity;
-            }
-        } else {
-            parkingDetail = this.parkingDetails.find(
-                item => item.Parking_Type__c === selectedType
+            console.log(
+                'Parking Types:',
+                JSON.stringify(this.parkingType)
             );
+
+            console.log(
+                'Parking Rows:',
+                JSON.stringify(this.rows)
+            );
+
+            this.parkingDetailTable = true;
+            this.noParkingDetails = false;
+
+        } else {
+
+            this.parkingDetails = [];
+            this.parkingType = [];
+
+            this.parkingDetailTable = false;
+            this.noParkingDetails = true;
         }
-        console.log('Updated Rows:', JSON.stringify(currentRow));
+    })
+    .catch(error => {
 
-        var amount = parkingDetail != null ? parkingDetail.Amount_Per_Parking__c : 0;
-        var finalAmount = currentRow.quantity != '' && name != 'quantity' ? parkingDetail.Amount_Per_Parking__c * currentRow.quantity : name == 'quantity' && selectedType != null ? parkingDetail.Amount_Per_Parking__c * selectedType : 0;
+        console.error(
+            'Parking Error:',
+            JSON.stringify(error)
+        );
 
-        // const amount = parkingDetail ? (parkingDetail.Amount__c) : 0;
-        `  console.log('Found Parking Detail:', parkingDetail);
-            console.log('Amount for Selected Type:', amount);`
+        this.parkingDetails = [];
+        this.parkingType = [];
+
+        this.parkingDetailTable = false;
+        this.noParkingDetails = true;
+    });
+}
+
+    // handleParkingTypeChange(event) {
+    //     debugger;
+    //     const index = parseInt(event.target.dataset.index, 10);
+    //     const id = event.target.dataset.id;
+    //     const selectedType = event.target.value;
+    //     const name = event.target.name;
+    //     var parkingDetail = {};
+    //     var quantity = 1;
+
+    //     var currentRow = this.rows.find(item => item.id === id);
+    //     console.log('currentRow ===> ' + currentRow);
+
+    //     if (name == 'quantity') {
+    //         quantity = selectedType;
+    //         parkingDetail = this.parkingDetails.find(item => item.Parking_Type__c === currentRow.type);
+    //         if (currentRow) {
+    //             currentRow.quantity = quantity;
+    //         }
+    //     } else {
+    //         parkingDetail = this.parkingDetails.find(
+    //             item => item.Parking_Type__c === selectedType
+    //         );
+    //     }
+    //     console.log('Updated Rows:', JSON.stringify(currentRow));
+
+    //     var amount = parkingDetail != null ? parkingDetail.Amount_Per_Parking__c : 0;
+    //     var finalAmount = currentRow.quantity != '' && name != 'quantity' ? parkingDetail.Amount_Per_Parking__c * currentRow.quantity : name == 'quantity' && selectedType != null ? parkingDetail.Amount_Per_Parking__c * selectedType : 0;
+
+    //     // const amount = parkingDetail ? (parkingDetail.Amount__c) : 0;
+    //     `  console.log('Found Parking Detail:', parkingDetail);
+    //         console.log('Amount for Selected Type:', amount);`
 
 
-        // const previousAmount = this.rows[index]?.amount || 0;
-        // this.totalAmount = this.totalAmount - previousAmount + finalAmount;
+    //     // const previousAmount = this.rows[index]?.amount || 0;
+    //     // this.totalAmount = this.totalAmount - previousAmount + finalAmount;
 
-        // Format the totalAmount
-        this.formattedTotalAmount = new Intl.NumberFormat('en-IN').format(this.totalAmount);
-        this.rows = this.rows.map((row, rowIndex) => {
-            if (rowIndex === index) {
-                return {
-                    ...row,
-                    type: (name == 'quantity' && currentRow != null) ? currentRow.type : selectedType,
-                    amount: amount,
-                    quantity: currentRow['quantity'],
-                    carCGSTtax: this.carParkingTax.CGST__c != null || this.carParkingTax.CGST__c != undefined ? this.carParkingTax.CGST__c : 0,
-                    carSGSTtax: this.carParkingTax.SGST__c != null || this.carParkingTax.SGST__c != undefined ? this.carParkingTax.SGST__c : 0,
-                    finalAmount: finalAmount,
-                    taxAmt: (finalAmount * (parseFloat(this.carParkingTax?.CGST__c) / 100)) +
-                        (finalAmount * (parseFloat(this.carParkingTax?.SGST__c) / 100)),
-                    Parking_Numbers__c: ((name == 'quantity' || name == 'type') && currentRow != null) ? currentRow['Parking_Numbers__c'] : currentRow['Parking_Numbers__c'],
-                };
-            }
-            return row;
-        });
+    //     // Format the totalAmount
+    //     this.formattedTotalAmount = new Intl.NumberFormat('en-IN').format(this.totalAmount);
+    //     this.rows = this.rows.map((row, rowIndex) => {
+    //         if (rowIndex === index) {
+    //             return {
+    //                 ...row,
+    //                 type: (name == 'quantity' && currentRow != null) ? currentRow.type : selectedType,
+    //                 amount: amount,
+    //                 quantity: currentRow['quantity'],
+    //                 carCGSTtax: this.carParkingTax.CGST__c != null || this.carParkingTax.CGST__c != undefined ? this.carParkingTax.CGST__c : 0,
+    //                 carSGSTtax: this.carParkingTax.SGST__c != null || this.carParkingTax.SGST__c != undefined ? this.carParkingTax.SGST__c : 0,
+    //                 finalAmount: finalAmount,
+    //                 taxAmt: (finalAmount * (parseFloat(this.carParkingTax?.CGST__c) / 100)) +
+    //                     (finalAmount * (parseFloat(this.carParkingTax?.SGST__c) / 100)),
+    //                 Parking_Numbers__c: ((name == 'quantity' || name == 'type') && currentRow != null) ? currentRow['Parking_Numbers__c'] : currentRow['Parking_Numbers__c'],
+    //             };
+    //         }
+    //         return row;
+    //     });
 
-        this.updateAvailableOptions();
-        console.log('Updated Rows:', this.rows);
-        console.log('Updated Total Amount:', this.totalAmount);
-        console.log('Formatted Total Amount:', this.formattedTotalAmount);
+    //     this.updateAvailableOptions();
+    //     console.log('Updated Rows:', this.rows);
+    //     console.log('Updated Total Amount:', this.totalAmount);
+    //     console.log('Formatted Total Amount:', this.formattedTotalAmount);
 
-        const numericRealAmount = parseFloat(String(this.realAmount).replace(/[^0-9.]/g, ''));
-        const numericTaxAmount = parseFloat(this.taxAmount);
-        var finalAmountNew = this.rows.reduce((sum, element) => {
-            return sum + (parseFloat(element.finalAmount) || 0);
-        }, 0);
-        this.totalAmount = numericRealAmount + numericTaxAmount + finalAmountNew;
-        this.formattedTotalAmount = this.totalAmount;
+    //     const numericRealAmount = parseFloat(String(this.realAmount).replace(/[^0-9.]/g, ''));
+    //     const numericTaxAmount = parseFloat(this.taxAmount);
+    //     var finalAmountNew = this.rows.reduce((sum, element) => {
+    //         return sum + (parseFloat(element.finalAmount) || 0);
+    //     }, 0);
+    //     this.totalAmount = numericRealAmount + numericTaxAmount + finalAmountNew;
+    //     this.formattedTotalAmount = this.totalAmount;
+    // }
+    handleParkingTypeChange(event) {
+
+    const index = Number(event.target.dataset.index);
+    const name = event.target.name;
+
+    let selectedType;
+    let quantity;
+
+    if (name === 'parkingType') {
+        selectedType = event.detail.value;
+        quantity = 1;
+    } else {
+        quantity = Number(event.target.value) || 1;
+
+        selectedType = this.rows[index]?.type;
     }
+
+    const parkingDetail = this.parkingDetails.find(
+        item =>
+            item.Parking_Type__c?.toLowerCase() ===
+            selectedType?.toLowerCase()
+    );
+
+    console.log('Selected Type:', selectedType);
+    console.log('Parking Detail:', JSON.stringify(parkingDetail));
+
+    if (!parkingDetail) {
+        console.log('No Parking Detail found');
+        return;
+    }
+
+    const amount =
+        Number(parkingDetail.Amount_Per_Parking__c) || 0;
+
+    const finalAmount = amount * quantity;
+
+    this.rows = this.rows.map((row, rowIndex) => {
+
+        if (rowIndex !== index) {
+            return row;
+        }
+
+        return {
+            ...row,
+
+            type: selectedType,
+
+            amount: amount,
+
+            quantity: quantity,
+
+            finalAmount: finalAmount,
+
+            parkingDetailId: parkingDetail.Id,
+
+            availableParking:
+                parkingDetail.Available_Parking__c
+        };
+    });
+
+    console.log(
+        'UPDATED PARKING ROWS:',
+        JSON.stringify(this.rows)
+    );
+}
 
 
     updateAvailableOptions() {
@@ -731,9 +878,9 @@ export default class CostSheetGeneration extends NavigationMixin(LightningElemen
             type: '',
             quantity: 1,
             amount: '',
-            carCGSTtax: this.carParkingTax.CGST__c != null || this.carParkingTax.CGST__c != undefined ? this.carParkingTax.CGST__c : 0,
-            carSGSTtax: this.carParkingTax.SGST__c != null || this.carParkingTax.SGST__c != undefined ? this.carParkingTax.SGST__c : 0,
-            taxAmt: '',
+           // carCGSTtax: this.carParkingTax.CGST__c != null || this.carParkingTax.CGST__c != undefined ? this.carParkingTax.CGST__c : 0,
+           // carSGSTtax: this.carParkingTax.SGST__c != null || this.carParkingTax.SGST__c != undefined ? this.carParkingTax.SGST__c : 0,
+          //  taxAmt: '',
             finalAmount: '',
         };
         this.rows = [...this.rows, newRow];

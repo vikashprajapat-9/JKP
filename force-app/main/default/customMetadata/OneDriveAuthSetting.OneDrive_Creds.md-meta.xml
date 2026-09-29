@@ -1,0 +1,37 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>OneDrive Creds</label>
+    <protected>false</protected>
+    <values>
+        <field>AuthEndpoint__c</field>
+        <value xsi:type="xsd:string">https://login.microsoftonline.com/{tenant}/oauth2/v2.0/authorize</value>
+    </values>
+    <values>
+        <field>AuthGrantType__c</field>
+        <value xsi:type="xsd:string">client_credentials</value>
+    </values>
+    <values>
+        <field>ClientID__c</field>
+        <value xsi:type="xsd:string">7bf2dcf7-280b-41a6-85b3-ff99b7000cf2</value>
+    </values>
+    <values>
+        <field>ClientSecret__c</field>
+        <value xsi:type="xsd:string">NiE8Q~ejOmAFeI4II6-y_dmQHmh-Cyt8Y1VvNa0F</value>
+    </values>
+    <values>
+        <field>RedirectUrl__c</field>
+        <value xsi:nil="true"/>
+    </values>
+    <values>
+        <field>Scope__c</field>
+        <value xsi:type="xsd:string">https://graph.microsoft.com/.default</value>
+    </values>
+    <values>
+        <field>TenantId__c</field>
+        <value xsi:type="xsd:string">9d94cb2f-05ce-4ac3-96a0-8a8a97437d2a</value>
+    </values>
+    <values>
+        <field>TokenUrl__c</field>
+        <value xsi:type="xsd:string">https://login.microsoftonline.com/{tenant}/oauth2/v2.0/token</value>
+    </values>
+</CustomMetadata>

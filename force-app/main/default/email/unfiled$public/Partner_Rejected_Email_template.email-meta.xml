@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>UTF-8</encodingKey>
+    <name>Partner Rejected Email template</name>
+    <style>none</style>
+    <subject>Request Rejected For Partner</subject>
+    <textOnly>Dear {!Account.Name}
+
+Your Application number:{!Account.Id} is rejected.
+
+Thanks
+
+John Keels Properties.</textOnly>
+    <type>custom</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

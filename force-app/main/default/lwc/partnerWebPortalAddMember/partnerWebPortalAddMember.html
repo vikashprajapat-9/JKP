@@ -1,0 +1,137 @@
+<template>
+    <div class="modal-backdrop" onclick={handleClose}></div>
+
+    <!-- ================= FORM ================= -->
+    <template lwc:if={isFormStep}>
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="addMemberTitle">
+            <button class="close-btn" type="button" onclick={handleClose} aria-label="Close">
+                <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+                    <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"></path>
+                </svg>
+            </button>
+
+            <h2 id="addMemberTitle" class="modal-title">Add Team Member</h2>
+            <p class="modal-intro">
+                Expand your team by adding new members to your John Keells Properties channel partner portal.
+                Simply provide their details, enhance productivity and manage your projects efficiently.
+                Keep your team aligned and focused on achieving your goals.
+            </p>
+
+            <div class="form-grid">
+                <div class="field">
+                    <label class="field-label" for="fullName">Full Name</label>
+                    <input id="fullName" class="field-input" type="text" placeholder="Enter Full Name"
+                           data-field="fullName" value={form.fullName} oninput={handleInput} />
+                </div>
+
+                <div class="field">
+                    <label class="field-label" for="reportingTo">Field Reporting to</label>
+                    <input id="reportingTo" class="field-input" type="text" placeholder="Enter Name"
+                           data-field="reportingTo" value={form.reportingTo} oninput={handleInput} />
+                </div>
+
+                <div class="field">
+                    <label class="field-label" for="email">Email ID</label>
+                    <input id="email" class={emailClass} type="email" placeholder="Enter Email ID"
+                           data-field="email" value={form.email} oninput={handleInput} />
+                    <template lwc:if={showEmailError}>
+                        <span class="field-error">Enter a valid email address.</span>
+                    </template>
+                </div>
+
+                <div class="field">
+                    <label class="field-label" for="phone">Phone Number</label>
+                    <div class={phoneClass}>
+                        <span class="country-code">
+                            <svg class="flag" viewBox="0 0 22 14" aria-hidden="true">
+                                <rect width="22" height="14" rx="1.5" fill="#ffbe29"></rect>
+                                <rect x="1.5" y="1.5" width="3" height="11" fill="#00534e"></rect>
+                                <rect x="4.5" y="1.5" width="3" height="11" fill="#eb7400"></rect>
+                                <rect x="8.5" y="1.5" width="12" height="11" fill="#8d153a"></rect>
+                            </svg>
+                            94
+                        </span>
+                        <input id="phone" class="phone-input" type="tel" inputmode="numeric" maxlength="10"
+                               placeholder="Enter Phone Number" data-field="phone" value={form.phone}
+                               oninput={handleInput} />
+                    </div>
+                    <template lwc:if={showPhoneError}>
+                        <span class="field-error">Enter a valid 9 or 10 digit phone number.</span>
+                    </template>
+                </div>
+            </div>
+
+            <p class="section-label">Project Access</p>
+            <div class="project-grid">
+                <template for:each={projectOptions} for:item="project">
+                    <button key={project.id} type="button" class={project.cardClass}
+                            data-id={project.id} onclick={handleProjectToggle}
+                            aria-pressed={project.ariaPressed}>
+                        <span class="project-bar"></span>
+                        <span class="project-name">{project.name}</span>
+                        <span class="project-check">
+                            <svg viewBox="0 0 16 16" width="14" height="14" aria-hidden="true">
+                                <path d="M3 8.5l3.2 3L13 5" stroke="currentColor" stroke-width="2" fill="none"
+                                      stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </span>
+                    </button>
+                </template>
+                <template lwc:if={noProjects}>
+                    <p class="muted">No active projects available.</p>
+                </template>
+            </div>
+            <p class="hint">Select one or more projects to assign.</p>
+
+            <div class="privacy-box">
+                <span class="privacy-icon">
+                    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                        <path d="M12 3l7 3v5c0 4.5-3 8.3-7 10-4-1.7-7-5.5-7-10V6l7-3z" fill="none"
+                              stroke="currentColor" stroke-width="1.7" stroke-linejoin="round"></path>
+                    </svg>
+                </span>
+                <div>
+                    <p class="privacy-title">Data Privacy Control</p>
+                    <p class="privacy-text">
+                        Executives can only see leads under their assigned projects. This ensures focused
+                        engagement and lead protection for your team members.
+                    </p>
+                </div>
+            </div>
+
+            <div class="modal-footer">
+                <button type="button" class="submit-btn" disabled={isSubmitDisabled} onclick={handleSubmit}>
+                    Add Team Member
+                </button>
+            </div>
+        </div>
+    </template>
+
+    <!-- ================= SUCCESS ================= -->
+    <template lwc:else>
+        <div class="modal modal-success" role="dialog" aria-modal="true" aria-labelledby="addedTitle">
+            <button class="close-btn" type="button" onclick={handleClose} aria-label="Close">
+                <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+                    <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"></path>
+                </svg>
+            </button>
+
+            <svg class="success-illustration" viewBox="0 0 240 240" aria-hidden="true">
+                <ellipse cx="120" cy="222" rx="70" ry="8" fill="#ebe9e9"></ellipse>
+                <circle cx="120" cy="118" r="86" fill="#f3f8f9"></circle>
+                <line x1="92" y1="214" x2="132" y2="34" stroke="#37474f" stroke-width="5" stroke-linecap="round"></line>
+                <circle cx="132" cy="32" r="5" fill="#37474f"></circle>
+                <path d="M131 38 C 150 30, 168 50, 186 62 C 196 68, 204 76, 214 70 C 204 88, 186 86, 172 80 C 158 74, 142 78, 124 72 Z" fill="#8bc53f"></path>
+                <path d="M129 50 C 142 48, 150 58, 160 66 C 150 72, 138 72, 124 72 Z" fill="#6aa12a"></path>
+                <circle cx="176" cy="150" r="24" fill="#238723"></circle>
+                <path d="M165 150 l8 8 l15 -16" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+
+            <h2 id="addedTitle" class="success-title">Team Member has been added!</h2>
+            <p class="success-text">
+                Your new team member has been added to the John Keells Properties Estate portal. They now have
+                access to their assigned roles and can start contributing immediately. Collaboration just got stronger!
+            </p>
+        </div>
+    </template>
+</template>

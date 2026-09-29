@@ -1,0 +1,293 @@
+<template>
+    <lightning-quick-action-panel header="Upload Document">
+        <div class="uploader">
+
+            <!-- ================= HERO + STEPPER ================= -->
+            <div class="hero">
+                <div class="hero-content">
+                    <span class={heroIconClass}>
+                        <lightning-icon icon-name={heroIcon} size="small" variant="inverse"></lightning-icon>
+                    </span>
+                    <div>
+                        <p class="hero-title">{heroTitle}</p>
+                        <p class="hero-subtitle">{heroSubtitle}</p>
+                    </div>
+                </div>
+                <ol class="stepper">
+                    <template for:each={steps} for:item="s">
+                        <li key={s.key} class={s.className}>
+                            <span class="step-dot">
+                                <template lwc:if={s.isDone}>
+                                    <lightning-icon icon-name="utility:check" size="xx-small" variant="inverse"></lightning-icon>
+                                </template>
+                                <template lwc:else>{s.number}</template>
+                            </span>
+                            <span class="step-label">{s.label}</span>
+                            <template lwc:if={s.showConnector}>
+                                <span class={s.connectorClass}></span>
+                            </template>
+                        </li>
+                    </template>
+                </ol>
+            </div>
+
+            <!-- ================= STEP 1: CHOOSE FOLDER ================= -->
+            <template lwc:if={isFolderStep}>
+                <div class="step-body">
+                    <template lwc:if={isLoading}>
+                        <div class="folder-grid">
+                            <template for:each={skeletonTiles} for:item="k">
+                                <div key={k} class="skeleton-tile">
+                                    <span class="skeleton-circle"></span>
+                                    <span class="skeleton-lines">
+                                        <span class="skeleton-line"></span>
+                                        <span class="skeleton-line skeleton-line_short"></span>
+                                    </span>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+
+                    <template lwc:if={loadError}>
+                        <div class="alert alert_error" role="alert">
+                            <lightning-icon icon-name="utility:error" size="x-small" variant="error"></lightning-icon>
+                            <span>{loadError}</span>
+                        </div>
+                    </template>
+
+                    <template lwc:if={showEmptyState}>
+                        <div class="empty-state">
+                            <span class="empty-art">
+                                <lightning-icon icon-name="doctype:folder" size="large"></lightning-icon>
+                            </span>
+                            <p class="empty-title">No document folders yet</p>
+                            <p class="empty-text">Folders are created automatically from the Document Master categories when a project is created.</p>
+                        </div>
+                    </template>
+
+                    <template lwc:if={hasFolders}>
+                        <div class="folder-grid" role="radiogroup" aria-label="Document folders">
+                            <template for:each={folderTiles} for:item="folder">
+                                <button key={folder.id}
+                                        type="button"
+                                        class={folder.tileClass}
+                                        style={folder.style}
+                                        data-id={folder.id}
+                                        disabled={folder.disabled}
+                                        role="radio"
+                                        aria-checked={folder.ariaChecked}
+                                        onclick={handleFolderSelect}>
+                                    <span class="folder-art">
+                                        <lightning-icon icon-name="doctype:folder" size="medium"></lightning-icon>
+                                    </span>
+                                    <span class="folder-text">
+                                        <span class="folder-name" title={folder.name}>{folder.name}</span>
+                                        <span class="folder-meta">{folder.meta}</span>
+                                    </span>
+                                    <template lwc:if={folder.status}>
+                                        <span class={folder.badgeClass}>
+                                            <span class="chip-dot"></span>{folder.status}
+                                        </span>
+                                    </template>
+                                    <span class="folder-check">
+                                        <lightning-icon icon-name="utility:check" size="xx-small" variant="inverse"></lightning-icon>
+                                    </span>
+                                </button>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+            </template>
+
+            <!-- ================= STEP 2: ADD FILES ================= -->
+            <template lwc:if={isFilesStep}>
+                <div class="step-body">
+                    <div class="folder-pill">
+                        <lightning-icon icon-name="doctype:folder" size="small"></lightning-icon>
+                        <span class="folder-pill-text">Uploading to <strong>{selectedFolderName}</strong></span>
+                        <button type="button" class="link-button" onclick={handleBack}>Change</button>
+                    </div>
+
+                    <div class={dropzoneClass}
+                         role="button"
+                         tabindex="0"
+                         aria-label="Add files: drag and drop or browse"
+                         ondragover={handleDragOver}
+                         ondragenter={handleDragOver}
+                         ondragleave={handleDragLeave}
+                         ondrop={handleDrop}
+                         onclick={handleBrowse}
+                         onkeydown={handleDropzoneKey}>
+                        <span class="drop-orb">
+                            <lightning-icon icon-name="utility:upload" size="small" variant="inverse"></lightning-icon>
+                        </span>
+                        <p class="drop-title">{dropTitle}</p>
+                        <p class="drop-text">or <span class="browse-link">browse your computer</span></p>
+                        <div class="type-chips">
+                            <span class="type-chip type-chip_pdf">PDF</span>
+                            <span class="type-chip type-chip_image">JPG</span>
+                            <span class="type-chip type-chip_image">JPEG</span>
+                            <span class="type-chip type-chip_image">PNG</span>
+                            <span class="type-chip type-chip_video">MP4</span>
+                            <span class="type-limit">· up to 200 MB each</span>
+                        </div>
+                    </div>
+                    <input class="file-input" type="file" multiple accept={acceptedTypes} onchange={handleFileInput} />
+
+                    <template lwc:if={fileError}>
+                        <div class="alert alert_warning" role="alert">
+                            <lightning-icon icon-name="utility:warning" size="x-small" variant="warning"></lightning-icon>
+                            <span>{fileError}</span>
+                        </div>
+                    </template>
+
+                    <template lwc:if={hasFiles}>
+                        <div class="list-header">
+                            <span class="list-heading">{fileCountText} · {totalSizeLabel}</span>
+                            <button type="button" class="link-button link-button_muted" onclick={handleClearAll}>Clear all</button>
+                        </div>
+                        <ul class="file-list">
+                            <template for:each={fileRows} for:item="f">
+                                <li key={f.key} class="file-row" style={f.rowStyle}>
+                                    <span class={f.badgeClass}>
+                                        <lightning-icon icon-name={f.icon} size="small"></lightning-icon>
+                                    </span>
+                                    <div class="file-info">
+                                        <p class="file-name" title={f.name}>{f.name}</p>
+                                        <p class="file-meta">{f.sizeLabel}</p>
+                                    </div>
+                                    <button type="button" class="remove-button" data-key={f.key} onclick={handleRemove} title="Remove" aria-label="Remove file">
+                                        <lightning-icon icon-name="utility:close" size="xx-small"></lightning-icon>
+                                    </button>
+                                </li>
+                            </template>
+                        </ul>
+                    </template>
+                </div>
+            </template>
+
+            <!-- ================= STEP 3a: UPLOADING ================= -->
+            <template lwc:if={isUploadingStep}>
+                <div class="step-body">
+                    <div class="progress-hero">
+                        <div class="ring">
+                            <svg class="ring-svg" viewBox="0 0 120 120" aria-hidden="true">
+                                <circle class="ring-track" cx="60" cy="60" r="52"></circle>
+                                <circle class="ring-value" cx="60" cy="60" r="52" style={ringStyle}></circle>
+                            </svg>
+                            <div class="ring-label">
+                                <span class="ring-pct">{overallProgress}%</span>
+                                <span class="ring-caption">done</span>
+                            </div>
+                        </div>
+                        <div class="progress-text">
+                            <p class="progress-title">{uploadingText}</p>
+                            <p class="progress-sub">Please keep this window open until all files are uploaded.</p>
+                        </div>
+                    </div>
+
+                    <ul class="file-list">
+                        <template for:each={fileRows} for:item="f">
+                            <li key={f.key} class="file-row" style={f.rowStyle}>
+                                <span class={f.badgeClass}>
+                                    <lightning-icon icon-name={f.icon} size="small"></lightning-icon>
+                                </span>
+                                <div class="file-info">
+                                    <p class="file-name" title={f.name}>{f.name}</p>
+                                    <template lwc:if={f.isUploading}>
+                                        <div class="bar"><div class="bar-fill" style={f.barStyle}></div></div>
+                                    </template>
+                                    <template lwc:elseif={f.isDone}>
+                                        <p class="file-meta file-meta_success">Uploaded</p>
+                                    </template>
+                                    <template lwc:elseif={f.isError}>
+                                        <p class="file-meta file-meta_error">{f.error}</p>
+                                    </template>
+                                    <template lwc:else>
+                                        <p class="file-meta">Waiting…</p>
+                                    </template>
+                                </div>
+                                <span class={f.chipClass}>{f.chipLabel}</span>
+                            </li>
+                        </template>
+                    </ul>
+                </div>
+            </template>
+
+            <!-- ================= STEP 3b: DONE ================= -->
+            <template lwc:if={isDoneStep}>
+                <div class="step-body">
+                    <div class={doneHeroClass}>
+                        <template lwc:if={hasFailures}>
+                            <span class="warn-badge">
+                                <lightning-icon icon-name="utility:warning" size="small" variant="inverse"></lightning-icon>
+                            </span>
+                        </template>
+                        <template lwc:else>
+                            <svg class="check-svg" viewBox="0 0 52 52" aria-hidden="true">
+                                <circle class="check-circle" cx="26" cy="26" r="24"></circle>
+                                <path class="check-mark" d="M15 27 l7 7 l15 -15"></path>
+                            </svg>
+                        </template>
+                        <p class="done-title">{doneTitle}</p>
+                        <p class="done-sub">Each file is saved as a Sub Document under "{selectedFolderName}" with its preview link.</p>
+                        <template lwc:if={hasOrgOnlyLinks}>
+                            <p class="done-note">Some links need a Microsoft sign-in because public links are turned off in OneDrive.</p>
+                        </template>
+                    </div>
+
+                    <ul class="file-list">
+                        <template for:each={fileRows} for:item="f">
+                            <li key={f.key} class="file-row" style={f.rowStyle}>
+                                <span class={f.badgeClass}>
+                                    <lightning-icon icon-name={f.icon} size="small"></lightning-icon>
+                                </span>
+                                <div class="file-info">
+                                    <p class="file-name" title={f.name}>{f.name}</p>
+                                    <template lwc:if={f.isError}>
+                                        <p class="file-meta file-meta_error">{f.error}</p>
+                                    </template>
+                                    <template lwc:else>
+                                        <p class="file-meta">{f.sizeLabel}</p>
+                                    </template>
+                                </div>
+                                <template lwc:if={f.isDone}>
+                                    <a href={f.url} target="_blank" rel="noopener noreferrer" class="preview-pill">
+                                        {f.linkLabel}
+                                        <lightning-icon icon-name="utility:new_window" size="xx-small" class="preview-icon"></lightning-icon>
+                                    </a>
+                                </template>
+                                <template lwc:if={f.isError}>
+                                    <span class="status-chip status-chip_error">Failed</span>
+                                </template>
+                            </li>
+                        </template>
+                    </ul>
+                </div>
+            </template>
+        </div>
+
+        <!-- ================= FOOTER ================= -->
+        <div slot="footer" class="footer">
+            <template lwc:if={isFolderStep}>
+                <lightning-button label="Cancel" onclick={handleClose}></lightning-button>
+                <lightning-button variant="brand" label="Next" icon-name="utility:forward" icon-position="right" disabled={isNextDisabled} onclick={handleNext} class="footer-primary"></lightning-button>
+            </template>
+            <template lwc:if={isFilesStep}>
+                <lightning-button label="Back" icon-name="utility:back" onclick={handleBack}></lightning-button>
+                <lightning-button label="Cancel" onclick={handleClose} class="footer-gap"></lightning-button>
+                <lightning-button variant="brand" label="Save" icon-name="utility:upload" disabled={isSaveDisabled} onclick={handleSave} class="footer-primary"></lightning-button>
+            </template>
+            <template lwc:if={isUploadingStep}>
+                <lightning-button variant="brand" label="Uploading…" disabled class="footer-primary"></lightning-button>
+            </template>
+            <template lwc:if={isDoneStep}>
+                <template lwc:if={hasFailures}>
+                    <lightning-button label="Retry failed" icon-name="utility:refresh" onclick={handleRetry}></lightning-button>
+                </template>
+                <lightning-button label="Upload more" icon-name="utility:add" onclick={handleUploadMore} class="footer-gap"></lightning-button>
+                <lightning-button variant="brand" label="Done" onclick={handleClose} class="footer-primary"></lightning-button>
+            </template>
+        </div>
+    </lightning-quick-action-panel>
+</template>
