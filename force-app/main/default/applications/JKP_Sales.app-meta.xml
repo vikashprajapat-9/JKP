@@ -81,6 +81,7 @@
     <tabs>Receipt_Log__c</tabs>
     <tabs>SAP_Receipt__c</tabs>
     <tabs>Escrow_Account__c</tabs>
+    <tabs>QC_Request__c</tabs>
     <tabs>Sub_Document__c</tabs>
     <tabs>Applicant__c</tabs>
     <tabs>Amenties__c</tabs>

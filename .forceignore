@@ -1,6 +1,5 @@
-# List files or directories below to ignore them when running force:source:push, force:source:pull, and force:source:status
-# More information: https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_exclude_source.htm
-#
+# Minimal .forceignore for generic CI/CD pipeline
+# Only ignore what truly cannot be deployed
 
 package.xml
 
@@ -8,68 +7,22 @@ package.xml
 **/jsconfig.json
 **/.eslintrc.json
 
-# LWC Jest
+# LWC Jest tests
 **/__tests__/**
 
 node_modules/
 
 # ==========================================
-# Metadata That Causes Deployment Failures
+# Org-Specific Metadata (Cannot be deployed)
 # ==========================================
 
 # Salesforce Internal/Managed Permission Sets
 **/permissionsets/sfdcInternalInt__*
 **/permissionsets/force__*
 
-# All Profiles (deploy manually if needed)
-**/profiles/**
-
-# Profile-related metadata (causes "Profile not found" errors)
-**/profilePasswordPolicies/**
-**/profileSessionSettings/**
-
-# Experience Cloud / Sites (deploy manually via Setup)
-**/sites/**
-**/digitalExperiences/**
-**/digitalExperienceConfigs/**
-**/digitalExperienceBundles/**
-**/experienceBundles/**
-**/networks/**
-**/siteDotComSites/**
-**/networkBranding/**
-**/navigationMenus/**
-**/audience/**
-
-# Flow Definitions
-**/flowDefinitions/**
-
-# Approval Processes (contain user references that don't exist in target org)
-**/approvalProcesses/**
-
-# SAML and Security (org-specific configurations)
+# SAML and Security (org-specific)
 **/samlssoconfigs/**
-**/fieldRestrictionRules/**
 
-# Dashboards with long paths
-**/dashboards/**/*SPLIT*/**
-
-# System/Standard metadata
+# System metadata
 **/appMenus/**
 **/installedPackages/**
-
-# Specific problematic fields that reference missing objects
-# These fields reference objects that don't exist in target org
-force-app/main/default/objects/Project__c/fields/Amenties__c.field-meta.xml
-force-app/main/default/objects/Sub_Document__c/fields/Project_Updates__c.field-meta.xml
-
-# Layouts that reference missing fields/objects
-force-app/main/default/layouts/Project__c-Project Layout.layout-meta.xml
-
-# FlexiPages with missing related lists
-force-app/main/default/flexipages/Project_Record_Page.flexipage-meta.xml
-
-# LWC with missing dependencies
-force-app/main/default/lwc/partnerWebPortalMyTeam/**
-
-# Workflows with missing email templates
-force-app/main/default/workflows/Account.workflow-meta.xml

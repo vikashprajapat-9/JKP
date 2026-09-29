@@ -1,50 +1,13 @@
-# SGD (Salesforce Git Delta) Ignore File
-# This file is used by sfdx-git-delta to exclude metadata from delta deployments
+# Minimal .sgdignore for delta deployments
+# Only ignore what truly cannot be deployed
 
 # Salesforce Internal/Managed Permission Sets
 **/permissionsets/sfdcInternalInt__*
 **/permissionsets/force__*
 
-# All Profiles
-**/profiles/**
-
-# Profile-related metadata
-**/profilePasswordPolicies/**
-**/profileSessionSettings/**
-
-# Experience Cloud / Sites
-**/sites/**
-**/digitalExperiences/**
-**/digitalExperienceConfigs/**
-**/digitalExperienceBundles/**
-**/experienceBundles/**
-**/networks/**
-**/siteDotComSites/**
-**/networkBranding/**
-**/navigationMenus/**
-**/audience/**
-
-# Flow Definitions
-**/flowDefinitions/**
-
-# Approval Processes
-**/approvalProcesses/**
-
 # SAML and Security
 **/samlssoconfigs/**
-**/fieldRestrictionRules/**
-
-# Dashboards with long paths
-**/dashboards/**/*SPLIT*/**
 
 # System metadata
 **/appMenus/**
 **/installedPackages/**
-
-# Specific problematic files
-force-app/main/default/objects/Project__c/fields/Amenties__c.field-meta.xml
-force-app/main/default/objects/Sub_Document__c/fields/Project_Updates__c.field-meta.xml
-force-app/main/default/layouts/Project__c-Project Layout.layout-meta.xml
-force-app/main/default/flexipages/Project_Record_Page.flexipage-meta.xml
-force-app/main/default/lwc/partnerWebPortalMyTeam/**
-force-app/main/default/workflows/Account.workflow-meta.xml

@@ -50,6 +50,12 @@ jobs:
       - name: Set Initial Stage
         run: echo "stage=Checkout" >> "$GITHUB_ENV"
 
+      - name: Run Pre-Deployment Cleanup
+        run: |
+          echo "stage=Pre-Deployment Cleanup" >> "$GITHUB_ENV"
+          chmod +x scripts/pre-deploy-clean.sh
+          bash scripts/pre-deploy-clean.sh
+
       - name: Install Salesforce CLI
         run: |
           echo "stage=Install Salesforce CLI" >> "$GITHUB_ENV"
