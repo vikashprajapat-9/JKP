@@ -1,29 +1,13 @@
-# SGD (Salesforce Git Delta) Ignore File
-# This file is used by sfdx-git-delta to exclude metadata from delta deployments
+# Minimal .sgdignore for delta deployments
+# Only ignore what truly cannot be deployed
 
-# Specific problematic files
-**/permissionsets/sfdcInternalInt__sfdc_slack.permissionset-meta.xml
-**/flowDefinitions/r_Lead_After_Save.flowDefinition-meta.xml
-
-# All Salesforce Internal/Managed Permission Sets
+# Salesforce Internal/Managed Permission Sets
 **/permissionsets/sfdcInternalInt__*
 **/permissionsets/force__*
 
-# All Profiles
-**/profiles/**
+# SAML and Security
+**/samlssoconfigs/**
 
-# Experience Cloud Sites and Digital Experiences
-**/sites/**
-**/digitalExperiences/**
-**/digitalExperienceConfigs/**
-**/networks/**
-**/siteDotComSites/**
-**/digitalExperienceBundles/**
-**/experienceBundles/**
-
-# Dashboards with long paths
-**/dashboards/**/*SPLIT*/**
-
-# Other problematic metadata
-**/flowDefinitions/**
+# System metadata
+**/appMenus/**
 **/installedPackages/**

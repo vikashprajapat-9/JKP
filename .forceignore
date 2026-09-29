@@ -1,6 +1,5 @@
-# List files or directories below to ignore them when running force:source:push, force:source:pull, and force:source:status
-# More information: https://developer.salesforce.com/docs/atlas.en-us.sfdx_dev.meta/sfdx_dev/sfdx_dev_exclude_source.htm
-#
+# Minimal .forceignore for generic CI/CD pipeline
+# Only ignore what truly cannot be deployed
 
 package.xml
 
@@ -8,43 +7,22 @@ package.xml
 **/jsconfig.json
 **/.eslintrc.json
 
-# Standard/system App Launcher metadata
-**/appMenus/**
-
-# Specific problematic permission sets and flow definitions
-/force-app/main/default/permissionsets/sfdcInternalInt__sfdc_slack.permissionset-meta.xml
-**/flowDefinitions/r_Lead_After_Save.flowDefinition-meta.xml
-
-# LWC Jest
+# LWC Jest tests
 **/__tests__/**
 
 node_modules/
 
 # ==========================================
-# Additional Rules to Prevent CI/CD Failures
+# Org-Specific Metadata (Cannot be deployed)
 # ==========================================
 
-# All Salesforce Internal/Managed Permission Sets (cannot be deployed)
+# Salesforce Internal/Managed Permission Sets
 **/permissionsets/sfdcInternalInt__*
 **/permissionsets/force__*
 
-# All Profiles (exclude to prevent deployment conflicts)
-# Deploy profiles manually or via separate process
-**/profiles/**
+# SAML and Security (org-specific)
+**/samlssoconfigs/**
 
-# Experience Cloud Sites and Digital Experiences
-# These should be deployed manually or via separate change sets
-**/sites/**
-**/digitalExperiences/**
-**/digitalExperienceConfigs/**
-**/networks/**
-**/siteDotComSites/**
-**/digitalExperienceBundles/**
-**/experienceBundles/**
-
-# Dashboards with long paths (Windows path length limitation)
-**/dashboards/**/*SPLIT*/**
-
-# Other metadata types that commonly cause deployment failures
-**/flowDefinitions/**
+# System metadata
+**/appMenus/**
 **/installedPackages/**
