@@ -1,0 +1,89 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your Partner Portal access is approved</title>
+</head>
+<body style="margin:0; padding:0; background-color:#f3f5f8;">
+<div style="display:none; max-height:0; max-width:0; overflow:hidden; opacity:0; font-size:1px; line-height:1px; color:#f3f5f8; mso-hide:all;">Your channel partner registration is approved. Here are your access dates and what happens next.&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f3f5f8;">
+<tr>
+<td align="center" style="padding:24px 12px;">
+<table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px; max-width:100%; background-color:#ffffff; border:1px solid #e3e6ec; border-radius:10px;">
+<tr>
+<td style="background-color:#112149; padding:22px 32px; border-radius:10px 10px 0 0;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td style="font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; letter-spacing:3px; color:#ffffff;">JOHN KEELLS PROPERTIES</td>
+<td align="right" style="font-family:Arial, Helvetica, sans-serif; font-size:12px; letter-spacing:1px; color:#e3c47a;">PARTNER PORTAL</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td style="padding:32px 32px 8px 32px; font-family:Arial, Helvetica, sans-serif; color:#1b1b1f;">
+<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td bgcolor="#e6f4ea" style="background-color:#e6f4ea; border-radius:20px; padding:6px 12px; font-family:Arial, Helvetica, sans-serif; font-size:12px; font-weight:bold; letter-spacing:1px; color:#1e6b34;">REGISTRATION APPROVED</td></tr></table>
+<h1 style="margin:18px 0 14px 0; font-family:Arial, Helvetica, sans-serif; font-size:24px; line-height:30px; font-weight:bold; color:#112149;">Your Partner Portal access is approved</h1>
+<p style="margin:0 0 14px 0; font-size:15px; line-height:23px;">Dear {!Contact.Name},</p>
+<p style="margin:0 0 8px 0; font-size:15px; line-height:23px;">Your channel partner registration for <strong>{!Account.Name}</strong> has been approved by John Keells Properties. You now have temporary access to the Partner Portal.</p>
+</td>
+</tr>
+<tr>
+<td style="padding:8px 32px 4px 32px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f3f8f9; border:1px solid #dfe9ec; border-radius:8px;">
+<tr>
+<td width="50%" valign="top" style="padding:16px 20px; font-family:Arial, Helvetica, sans-serif;">
+<div style="font-size:11px; letter-spacing:1px; color:#6b6b73;">ACCESS STARTS</div>
+<div style="font-size:18px; line-height:26px; font-weight:bold; color:#112149; padding-top:4px;">{!Account.Temporary_Access_Start_Date__c}</div>
+</td>
+<td width="50%" valign="top" style="padding:16px 20px; border-left:1px solid #dfe9ec; font-family:Arial, Helvetica, sans-serif;">
+<div style="font-size:11px; letter-spacing:1px; color:#6b6b73;">ACCESS ENDS</div>
+<div style="font-size:18px; line-height:26px; font-weight:bold; color:#112149; padding-top:4px;">{!Account.Temporary_Access_End_Date__c}</div>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td style="padding:20px 32px 4px 32px; font-family:Arial, Helvetica, sans-serif; color:#1b1b1f;">
+<h2 style="margin:0 0 10px 0; font-family:Arial, Helvetica, sans-serif; font-size:16px; line-height:22px; font-weight:bold; color:#112149;">How to become an Exclusive channel partner</h2>
+<p style="margin:0 0 10px 0; font-size:15px; line-height:23px;">One of these must happen before your access ends:</p>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td width="22" valign="top" style="font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:23px; color:#775918;">&#8226;</td>
+<td style="font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:23px; color:#1b1b1f; padding-bottom:6px;">one of your leads becomes a customer, or</td>
+</tr>
+<tr>
+<td width="22" valign="top" style="font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:23px; color:#775918;">&#8226;</td>
+<td style="font-family:Arial, Helvetica, sans-serif; font-size:15px; line-height:23px; color:#1b1b1f; padding-bottom:6px;">3 site visits take place on leads you create in this period.</td>
+</tr>
+</table>
+<p style="margin:6px 0 8px 0; font-size:15px; line-height:23px;">John Keells Properties will then prepare your Exclusive channel partner contract. You become an Exclusive channel partner when the contract is signed.</p>
+</td>
+</tr>
+<tr>
+<td style="padding:14px 32px 30px 32px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#fbf7ee; border-left:4px solid #775918;">
+<tr>
+<td style="padding:14px 18px; font-family:Arial, Helvetica, sans-serif;">
+<div style="font-size:12px; font-weight:bold; letter-spacing:1px; color:#775918;">NEXT STEP</div>
+<div style="font-size:14px; line-height:21px; color:#1b1b1f; padding-top:6px;">Look for a second email from us, &quot;Welcome to the John Keells Properties Partner Portal&quot;. It has your username and a button to set your password. If you cannot find it, check your spam folder.</div>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td style="padding:20px 32px 24px 32px; border-top:1px solid #ebe9e9; font-family:Arial, Helvetica, sans-serif; font-size:13px; line-height:20px; color:#6b6b73;">
+Thanks,<br>
+<strong style="color:#112149;">John Keells Properties</strong><br><br>
+<span style="font-size:12px;">This is an automated message from the John Keells Properties Partner Portal.</span>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</body>
+</html>

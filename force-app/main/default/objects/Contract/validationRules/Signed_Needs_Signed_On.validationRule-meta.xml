@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Signed_Needs_Signed_On</fullName>
+    <active>true</active>
+    <description>A contract marked Signed needs the date the partner signed it.</description>
+    <errorConditionFormula>AND(ISPICKVAL(Contract_Stage__c, &quot;Signed&quot;), ISBLANK(Signed_On__c))</errorConditionFormula>
+    <errorDisplayField>Signed_On__c</errorDisplayField>
+    <errorMessage>Enter the date the partner signed the contract.</errorMessage>
+</ValidationRule>

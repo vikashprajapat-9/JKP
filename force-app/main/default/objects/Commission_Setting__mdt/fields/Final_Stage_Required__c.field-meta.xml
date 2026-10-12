@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Final_Stage_Required__c</fullName>
+    <defaultValue>true</defaultValue>
+    <description>A configuration needs a Final payout stage before it can be submitted.</description>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>A configuration needs a Final payout stage before it can be submitted.</inlineHelpText>
+    <label>Final Stage Required</label>
+    <type>Checkbox</type>
+</CustomField>

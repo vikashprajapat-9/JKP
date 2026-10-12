@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>64.0</apiVersion>
+    <isExposed>false</isExposed>
+    <description>Line icons (from Lucide, ISC License) that the partner portal draws for each amenity; the key comes from Amenties__c.Icon__c.</description>
+</LightningComponentBundle>

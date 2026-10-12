@@ -1,0 +1,173 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Master_Category__c</fullName>
+    <label>Master Category</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <controllingField>Location__c</controllingField>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Doors &amp; Ironmongery</fullName>
+                <default>false</default>
+                <label>Doors &amp; Ironmongery</label>
+            </value>
+            <value>
+                <fullName>Civil &amp; Finishes</fullName>
+                <default>false</default>
+                <label>Civil &amp; Finishes</label>
+            </value>
+            <value>
+                <fullName>Sliding door &amp; Ironmongery</fullName>
+                <default>false</default>
+                <label>Sliding door &amp; Ironmongery</label>
+            </value>
+            <value>
+                <fullName>Electrical</fullName>
+                <default>false</default>
+                <label>Electrical</label>
+            </value>
+            <value>
+                <fullName>Air Conditioning</fullName>
+                <default>false</default>
+                <label>Air Conditioning</label>
+            </value>
+            <value>
+                <fullName>Waterproofing &amp; Water Ingress</fullName>
+                <default>false</default>
+                <label>Waterproofing &amp; Water Ingress</label>
+            </value>
+            <value>
+                <fullName>Fire &amp; Life Safety</fullName>
+                <default>false</default>
+                <label>Fire &amp; Life Safety</label>
+            </value>
+            <value>
+                <fullName>Miscellaneous</fullName>
+                <default>false</default>
+                <label>Miscellaneous</label>
+            </value>
+            <value>
+                <fullName>Plumbing &amp; Sanitary</fullName>
+                <default>false</default>
+                <label>Plumbing &amp; Sanitary</label>
+            </value>
+            <value>
+                <fullName>Joinery &amp; Carpentry</fullName>
+                <default>false</default>
+                <label>Joinery &amp; Carpentry</label>
+            </value>
+            <value>
+                <fullName>Appliances &amp; Equipment</fullName>
+                <default>false</default>
+                <label>Appliances &amp; Equipment</label>
+            </value>
+            <value>
+                <fullName>Windows &amp; Ironmongery</fullName>
+                <default>false</default>
+                <label>Windows &amp; Ironmongery</label>
+            </value>
+            <value>
+                <fullName>Balcony &amp; External Works</fullName>
+                <default>false</default>
+                <label>Balcony &amp; External Works</label>
+            </value>
+        </valueSetDefinition>
+        <valueSettings>
+            <controllingFieldValue>Living Room</controllingFieldValue>
+            <controllingFieldValue>Kitchen</controllingFieldValue>
+            <controllingFieldValue>Master Bedroom</controllingFieldValue>
+            <controllingFieldValue>Master Bathroom</controllingFieldValue>
+            <controllingFieldValue>Bedroom 1</controllingFieldValue>
+            <controllingFieldValue>Bedroom 2</controllingFieldValue>
+            <controllingFieldValue>Common Bathroom</controllingFieldValue>
+            <valueName>Doors &amp; Ironmongery</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Living Room</controllingFieldValue>
+            <controllingFieldValue>Kitchen</controllingFieldValue>
+            <controllingFieldValue>Master Bedroom</controllingFieldValue>
+            <controllingFieldValue>Master Bathroom</controllingFieldValue>
+            <controllingFieldValue>Bedroom 1</controllingFieldValue>
+            <controllingFieldValue>Bedroom 2</controllingFieldValue>
+            <controllingFieldValue>Common Bathroom</controllingFieldValue>
+            <valueName>Civil &amp; Finishes</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Living Room</controllingFieldValue>
+            <valueName>Sliding door &amp; Ironmongery</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Living Room</controllingFieldValue>
+            <controllingFieldValue>Kitchen</controllingFieldValue>
+            <controllingFieldValue>Master Bedroom</controllingFieldValue>
+            <controllingFieldValue>Master Bathroom</controllingFieldValue>
+            <controllingFieldValue>Bedroom 1</controllingFieldValue>
+            <controllingFieldValue>Bedroom 2</controllingFieldValue>
+            <controllingFieldValue>Common Bathroom</controllingFieldValue>
+            <valueName>Electrical</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Living Room</controllingFieldValue>
+            <controllingFieldValue>Master Bedroom</controllingFieldValue>
+            <controllingFieldValue>Bedroom 1</controllingFieldValue>
+            <controllingFieldValue>Bedroom 2</controllingFieldValue>
+            <valueName>Air Conditioning</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Living Room</controllingFieldValue>
+            <controllingFieldValue>Kitchen</controllingFieldValue>
+            <controllingFieldValue>Master Bedroom</controllingFieldValue>
+            <controllingFieldValue>Bedroom 1</controllingFieldValue>
+            <controllingFieldValue>Bedroom 2</controllingFieldValue>
+            <valueName>Waterproofing &amp; Water Ingress</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Living Room</controllingFieldValue>
+            <controllingFieldValue>Kitchen</controllingFieldValue>
+            <controllingFieldValue>Master Bedroom</controllingFieldValue>
+            <controllingFieldValue>Bedroom 1</controllingFieldValue>
+            <controllingFieldValue>Bedroom 2</controllingFieldValue>
+            <valueName>Fire &amp; Life Safety</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Living Room</controllingFieldValue>
+            <controllingFieldValue>Kitchen</controllingFieldValue>
+            <controllingFieldValue>Master Bedroom</controllingFieldValue>
+            <controllingFieldValue>Master Bathroom</controllingFieldValue>
+            <controllingFieldValue>Bedroom 1</controllingFieldValue>
+            <controllingFieldValue>Bedroom 2</controllingFieldValue>
+            <controllingFieldValue>Common Bathroom</controllingFieldValue>
+            <valueName>Miscellaneous</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Kitchen</controllingFieldValue>
+            <controllingFieldValue>Master Bathroom</controllingFieldValue>
+            <controllingFieldValue>Common Bathroom</controllingFieldValue>
+            <valueName>Plumbing &amp; Sanitary</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Kitchen</controllingFieldValue>
+            <valueName>Joinery &amp; Carpentry</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Kitchen</controllingFieldValue>
+            <valueName>Appliances &amp; Equipment</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Master Bedroom</controllingFieldValue>
+            <controllingFieldValue>Bedroom 1</controllingFieldValue>
+            <controllingFieldValue>Bedroom 2</controllingFieldValue>
+            <valueName>Windows &amp; Ironmongery</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Balcony &amp; External Works</controllingFieldValue>
+            <valueName>Balcony &amp; External Works</valueName>
+        </valueSettings>
+    </valueSet>
+</CustomField>

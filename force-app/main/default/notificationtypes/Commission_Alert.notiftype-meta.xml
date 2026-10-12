@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomNotificationType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customNotifTypeName>Commission Alert</customNotifTypeName>
+    <description>Bell notifications of Commission Setup: a configuration submitted, approved, rejected or withdrawn, a personal target changed, a period about to end, a project without a configuration.</description>
+    <desktop>true</desktop>
+    <masterLabel>Commission Alert</masterLabel>
+    <mobile>true</mobile>
+    <slack>false</slack>
+</CustomNotificationType>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Booked__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Shows converted leads whose opportunity is booked: in a stage the Partner Portal Setting counts as a booking (after its Bookings After Stage), as the My Team page counts Bookings.</description>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <label>Booked</label>
+    <type>Checkbox</type>
+</CustomField>

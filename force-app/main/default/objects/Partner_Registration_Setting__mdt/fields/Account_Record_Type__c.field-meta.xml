@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Account_Record_Type__c</fullName>
+    <description>Developer name of the channel partner Account record type, for example Channel_Partner. Every registration gets it, an email already used on an account of this type cannot register again, and only partners whose account has it can log in to the portal.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Developer name of the channel partner Account record type, for example Channel_Partner. Every registration gets it, an email already used on an account of this type cannot register again, and only partners whose account has it can log in to the portal.</inlineHelpText>
+    <label>Account Record Type</label>
+    <length>80</length>
+    <required>true</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

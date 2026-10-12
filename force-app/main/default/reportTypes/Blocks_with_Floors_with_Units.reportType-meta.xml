@@ -425,6 +425,36 @@
             <field>Internal_QC__c</field>
             <table>Block__c.Floors__r.Units__r</table>
         </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Plant__c</field>
+            <table>Block__c.Floors__r.Units__r</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Description__c</field>
+            <table>Block__c.Floors__r.Units__r</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Sales_Organization__c</field>
+            <table>Block__c.Floors__r.Units__r</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Distribution_Channel__c</field>
+            <table>Block__c.Floors__r.Units__r</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>Item_Category_Group__c</field>
+            <table>Block__c.Floors__r.Units__r</table>
+        </columns>
+        <columns>
+            <checkedByDefault>false</checkedByDefault>
+            <field>UOM__c</field>
+            <table>Block__c.Floors__r.Units__r</table>
+        </columns>
         <masterLabel>Units</masterLabel>
     </sections>
 </ReportType>

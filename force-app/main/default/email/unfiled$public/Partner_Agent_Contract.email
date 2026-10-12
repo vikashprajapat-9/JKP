@@ -1,0 +1,37 @@
+<html><body style="font-family: Arial, Helvetica, sans-serif; font-size: 11pt; color: #1b1b1b;">
+<p style="text-align: right; font-size: 9pt; color: #555;">Contract {!Contract.ContractNumber} &middot; Draft {!Contract.Draft_Version__c} &middot; Prepared {!Today}</p>
+<h1 style="font-size: 18pt; color: #112149; margin-bottom: 4pt;">Exclusive Channel Partner Agreement</h1>
+<p style="margin-top: 0; color: #555;">John Keells Properties</p>
+
+<p>This Agreement is made between <b>John Keells Properties</b> (&quot;JKP&quot;) and <b>{!Contract.Account}</b> (&quot;the Channel Partner&quot;), represented by <b>{!Contact.Name}</b> ({!Contact.Email}).</p>
+
+<h2 style="font-size: 13pt; color: #112149;">1. Appointment</h2>
+<p>JKP appoints the Channel Partner as an exclusive channel partner for the sale of JKP&apos;s projects, on the terms of this Agreement and the Channel Partner Terms &amp; Conditions published on the JKP Partner Portal.</p>
+
+<h2 style="font-size: 13pt; color: #112149;">2. Term</h2>
+<p>This Agreement runs for {!Contract.ContractTerm} months from the contract start date recorded by JKP when it is signed, unless it is terminated earlier under clause 6.</p>
+
+<h2 style="font-size: 13pt; color: #112149;">3. Obligations of the Channel Partner</h2>
+<ul>
+<li>Register every customer lead on the JKP Partner Portal before introducing the customer to JKP.</li>
+<li>Present JKP&apos;s projects accurately, using only the information and material provided by JKP.</li>
+<li>Follow JKP&apos;s pricing, booking, site visit and customer data policies.</li>
+</ul>
+
+<h2 style="font-size: 13pt; color: #112149;">4. Commission</h2>
+<p>Commission is paid on bookings made through the Channel Partner, according to JKP&apos;s commission schedule in force at the time of booking.</p>
+
+<h2 style="font-size: 13pt; color: #112149;">5. Confidentiality</h2>
+<p>Both parties keep confidential all customer, pricing and commercial information they receive under this Agreement.</p>
+
+<h2 style="font-size: 13pt; color: #112149;">6. Termination</h2>
+<p>Either party may terminate this Agreement by written notice. JKP may suspend or end the Channel Partner&apos;s portal access in line with the Terms &amp; Conditions.</p>
+
+<h2 style="font-size: 13pt; color: #112149;">Signatures</h2>
+<table style="width: 100%; border-collapse: collapse; margin-top: 12pt;">
+<tr>
+<td style="width: 50%; vertical-align: top; padding-right: 12pt;"><b>For John Keells Properties</b><br/><br/><br/>Signature: ____________________________<br/><br/>Name: _______________________________<br/><br/>Date: ________________________________</td>
+<td style="width: 50%; vertical-align: top;"><b>For {!Contract.Account}</b><br/><br/><br/>Signature: ____________________________<br/><br/>Name: {!Contact.Name}<br/><br/>Date: ________________________________</td>
+</tr>
+</table>
+</body></html>

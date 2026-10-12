@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Not_Signed_Needs_Reason</fullName>
+    <active>true</active>
+    <description>A contract marked Not Signed needs the reason, which goes to the next draft&apos;s verification.</description>
+    <errorConditionFormula>AND(ISPICKVAL(Contract_Stage__c, &quot;Not Signed&quot;), ISBLANK(Not_Signed_Reason__c))</errorConditionFormula>
+    <errorDisplayField>Not_Signed_Reason__c</errorDisplayField>
+    <errorMessage>Enter why the partner did not sign the contract.</errorMessage>
+</ValidationRule>

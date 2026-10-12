@@ -88,6 +88,42 @@
                 <identifier>RecordInternal_QC__cField</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.Plant__c</fieldItem>
+                <identifier>RecordPlant__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.Description__c</fieldItem>
+                <identifier>RecordDescription__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.Sales_Organization__c</fieldItem>
+                <identifier>RecordSales_Organization__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.Distribution_Channel__c</fieldItem>
+                <identifier>RecordDistribution_Channel__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.Item_Category_Group__c</fieldItem>
+                <identifier>RecordItem_Category_Group__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.UOM__c</fieldItem>
+                <identifier>RecordUOM__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-8f5d5012-29eb-4d60-ad8b-7522904ad739</name>
         <type>Facet</type>
     </flexiPageRegions>

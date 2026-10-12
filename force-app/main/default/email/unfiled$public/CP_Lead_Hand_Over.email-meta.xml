@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Tells the JKP CP Executive and CP Manager that a channel partner completed the site visit with a customer and the lead is handed over to the JKP CP team to convert.</description>
+    <encodingKey>UTF-8</encodingKey>
+    <name>CP Lead Hand Over</name>
+    <style>none</style>
+    <subject>Site visit done: {!Lead.Name} is ready for the JKP CP team</subject>
+    <type>text</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

@@ -1,0 +1,186 @@
+<template>
+    <!-- The grey panel of the mock-ups, around every view that does not bring its own -->
+    <div class={shellClass}>
+        <!-- A new draft is being prepared -->
+        <template lwc:if={busy}>
+            <div class="busy"><lightning-spinner alternative-text={labels.loading} size="medium"></lightning-spinner></div>
+        </template>
+
+        <!-- A failed action: the view under it stays as it is -->
+        <template lwc:if={actionError}>
+            <div class="note red actionerror" role="alert">
+                <span class="grow">{actionError}</span>
+                <button type="button" class="link" onclick={handleDismissError}>{labels.close}</button>
+            </div>
+        </template>
+
+        <template lwc:if={isChildView}>
+            <!-- One configuration: the editor or the review. They bring their own header. -->
+            <template for:each={editorSlots} for:item="slot">
+                <c-commission-editor
+                    key={slot.key}
+                    config-id={childConfigId}
+                    draft={childDraft}
+                    catalog={childCatalog}
+                    flags={childFlags}
+                    projects={childProjects}
+                    onback={handleBack}
+                    onsaved={handleSaved}
+                    onsubmitted={handleSubmitted}
+                    ondiscarded={handleDiscarded}
+                    onopenconfig={handleOpenConfig}
+                    ondraftfrom={handleDraftFrom}
+                    onrefresh={handleRefresh}
+                ></c-commission-editor>
+            </template>
+            <template for:each={reviewSlots} for:item="slot">
+                <c-commission-review
+                    key={slot.key}
+                    config-id={childConfigId}
+                    catalog={childCatalog}
+                    flags={childFlags}
+                    projects={childProjects}
+                    onback={handleBack}
+                    ondecided={handleDecided}
+                    ondraftfrom={handleDraftFrom}
+                    onopenconfig={handleOpenConfig}
+                    onrefresh={handleRefresh}
+                ></c-commission-review>
+            </template>
+        </template>
+
+        <template lwc:else>
+            <!-- Header: icon tile, title, view switch, primary button -->
+            <div class="pagehead">
+                <div class="row">
+                    <div class="icon" aria-hidden="true">
+                        <svg viewBox="0 0 20 20" fill="none" stroke="#fff" stroke-width="2">
+                            <path d="M4 15V9M10 15V5M16 15v-3"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1>{labels.title}</h1>
+                        <div class="sub">{labels.subtitle}</div>
+                    </div>
+                </div>
+                <template lwc:if={hasTabs}>
+                    <nav class="tabs" aria-label={labels.viewsLabel}>
+                        <template for:each={tabs} for:item="tab">
+                            <button
+                                key={tab.key}
+                                type="button"
+                                class={tab.className}
+                                data-view={tab.key}
+                                aria-current={tab.current}
+                                onclick={handleTab}
+                            >
+                                {tab.label}
+                                <template lwc:if={tab.hasCount}>
+                                    <span class="count" title={tab.countTitle}>{tab.count}</span>
+                                </template>
+                            </button>
+                        </template>
+                    </nav>
+                </template>
+                <div class="headside">
+                    <template lwc:if={showNewButton}>
+                        <button type="button" class="btn primary" data-id="new" onclick={handleNewConfiguration}>
+                            {labels.newConfiguration}
+                        </button>
+                    </template>
+                </div>
+            </div>
+
+            <template lwc:if={showLoading}>
+                <div class="card state" aria-busy="true">
+                    <lightning-spinner alternative-text={labels.loading} size="medium"></lightning-spinner>
+                </div>
+            </template>
+
+            <template lwc:elseif={showLoadError}>
+                <div class="card">
+                    <div class="note red" role="alert" data-id="loaderror"><span>{loadError}</span></div>
+                    <div class="stateaction">
+                        <button type="button" class="btn" data-id="retry" onclick={handleRetry}>{labels.retry}</button>
+                    </div>
+                </div>
+            </template>
+
+            <template lwc:elseif={showNoAccess}>
+                <div class="card">
+                    <div class="note grey" data-id="noaccess"><span>{labels.noAccess}</span></div>
+                </div>
+            </template>
+
+            <template lwc:elseif={isOverview}>
+                <c-commission-overview
+                    workspace={workspace}
+                    onopenconfig={handleOpenConfig}
+                    onnewconfig={handleNewConfig}
+                    ondraftfrom={handleDraftFrom}
+                ></c-commission-overview>
+            </template>
+
+            <template lwc:elseif={isApprovals}>
+                <!-- Configurations waiting for a decision -->
+                <div class="card approvals">
+                    <h2 class="sectitle">
+                        <span>{labels.approvalsTitle}</span>
+                        <span class="hint">{approvalsHint}</span>
+                    </h2>
+                    <template lwc:if={hasApprovals}>
+                        <div class="tablewrap">
+                            <table class="grid">
+                                <caption class="assistive">
+                                    {labels.approvalsCaption}
+                                </caption>
+                                <thead>
+                                    <tr>
+                                        <th scope="col">{labels.colProject}</th>
+                                        <th scope="col">{labels.colConfiguration}</th>
+                                        <th scope="col">{labels.colPeriod}</th>
+                                        <th scope="col">{labels.colChange}</th>
+                                        <th scope="col">{labels.colSubmittedBy}</th>
+                                        <th scope="col">{labels.colSubmittedOn}</th>
+                                        <th scope="col" class="action"><span class="assistive">{labels.colAction}</span></th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template for:each={approvalRows} for:item="row">
+                                        <tr key={row.key}>
+                                            <td class="project">{row.projectName}</td>
+                                            <td class="num nowrap">{row.configText}</td>
+                                            <td class="num nowrap">{row.periodText}</td>
+                                            <td>{row.changeText}</td>
+                                            <td>{row.submittedBy}</td>
+                                            <td class="num nowrap">{row.submittedOn}</td>
+                                            <td class="action">
+                                                <button type="button" class={row.buttonClass} data-id={row.key} onclick={handleApprovalOpen}>
+                                                    {row.buttonLabel}
+                                                </button>
+                                            </td>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                    </template>
+                    <template lwc:else>
+                        <div class="empty">
+                            <span class="muted">{labels.approvalsEmpty}</span>
+                            <button type="button" class="link" onclick={handleShowOverview}>{labels.approvalsToOverview}</button>
+                        </div>
+                    </template>
+                </div>
+            </template>
+
+            <template lwc:elseif={isTargets}>
+                <c-commission-targets flags={flags} onrefresh={handleRefresh} onopenconfig={handleOpenConfig}></c-commission-targets>
+            </template>
+
+            <template lwc:elseif={isTerms}>
+                <c-commission-my-terms currency-code={currencyCode}></c-commission-my-terms>
+            </template>
+        </template>
+    </div>
+</template>

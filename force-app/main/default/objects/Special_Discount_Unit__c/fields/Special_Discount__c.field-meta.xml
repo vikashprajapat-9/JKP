@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Special_Discount__c</fullName>
+    <label>Special Discount</label>
+    <referenceTo>Special_Discount__c</referenceTo>
+    <relationshipLabel>Special Discount Units</relationshipLabel>
+    <relationshipName>Special_Discount_Units</relationshipName>
+    <relationshipOrder>0</relationshipOrder>
+    <reparentableMasterDetail>false</reparentableMasterDetail>
+    <trackTrending>false</trackTrending>
+    <type>MasterDetail</type>
+    <writeRequiresMasterRead>false</writeRequiresMasterRead>
+</CustomField>

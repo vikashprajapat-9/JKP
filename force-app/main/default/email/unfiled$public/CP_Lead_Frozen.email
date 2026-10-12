@@ -1,0 +1,12 @@
+Dear partner,
+
+No site visit was done with this customer within the freezing window, so the lead has moved to the John Keells Properties Partnership team.
+
+Lead: {!Lead.Name}
+Project: {!Lead.Project__c}
+Stage: {!Lead.Status}
+Freezing date: {!Lead.CP_Freeze_Date__c}
+
+The lead stays in your Leads list on the partner portal, read-only.
+
+John Keells Properties

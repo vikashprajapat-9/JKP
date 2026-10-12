@@ -50,11 +50,12 @@ jobs:
       - name: Set Initial Stage
         run: echo "stage=Checkout" >> "$GITHUB_ENV"
 
-      - name: Run Pre-Deployment Cleanup
+      - name: Run Pre-Deployment Validation
+        if: inputs.deployment_type == 'full' || inputs.deployment_type == 'validate'
         run: |
-          echo "stage=Pre-Deployment Cleanup" >> "$GITHUB_ENV"
-          chmod +x scripts/pre-deploy-clean.sh
-          bash scripts/pre-deploy-clean.sh
+          echo "stage=Pre-Deployment Validation" >> "$GITHUB_ENV"
+          chmod +x scripts/pre-deploy-check.sh
+          bash scripts/pre-deploy-check.sh
 
       - name: Install Salesforce CLI
         run: |
@@ -155,9 +156,12 @@ jobs:
           echo
           echo "========== Generating SGD Delta =========="
 
+          # Use the validated from_sha/to_sha inputs — do NOT fall back to
+          # github.event.before / github.sha here. Those were already passed in
+          # and verified by the "Verify Git Range" step above.
           sf sgd source delta \
-            --from "${{ github.event.before }}" \
-            --to "${{ github.sha }}" \
+            --from "${{ inputs.from_sha }}" \
+            --to "${{ inputs.to_sha }}" \
             --generate-delta \
             --ignore-file .sgdignore \
             --output-dir delta
@@ -255,11 +259,23 @@ jobs:
         run: |
           echo "========== .forceignore =========="
           cat .forceignore
-      
+
           echo
-          echo "========== Ignored Permission Set =========="
-          sf project list ignored \
-            --source-dir force-app/main/default/permissionsets/sfdcInternalInt__sfdc_slack.permissionset-meta.xml
+          echo "========== All Ignored Metadata (sample) =========="
+          sf project list ignored --source-dir force-app 2>/dev/null | head -100 || true
+
+          echo
+          echo
+          echo "========== Key Ignored Directories (Excluded from Deployment) =========="
+          for dir in sites navigationMenus digitalExperienceConfigs audience networkBranding samlssoconfigs; do
+            COUNT=$(find force-app -type f -name "*" -path "*/${dir}/*" 2>/dev/null | wc -l || echo 0)
+            echo "  ${dir}: ${COUNT} file(s) present (excluded from deployment by .forceignore)"
+          done
+          echo
+          echo "========== Experience Cloud Content (Allowed for Deployment) =========="
+          EXP_COUNT=$(find force-app/main/default/digitalExperiences -type f 2>/dev/null | wc -l || echo 0)
+          echo "  digitalExperiences: ${EXP_COUNT} file(s) present (included in deployment)"
+
             
       - name: Start Full Deployment
         if: inputs.deployment_type == 'full'
@@ -275,6 +291,7 @@ jobs:
             --source-dir force-app \
             --target-org "${{ inputs.target_org_alias }}" \
             --ignore-conflicts \
+            --ignore-warnings \
             --wait 120 \
             --json \
             > deploy-result.json \
@@ -329,6 +346,7 @@ jobs:
             --source-dir delta/force-app \
             --target-org "${{ inputs.target_org_alias }}" \
             --ignore-conflicts \
+            --ignore-warnings \
             --wait 120 \
             --json \
             > deploy-result.json \
@@ -374,10 +392,49 @@ jobs:
         run: |
           echo "stage=Salesforce Validation" >> "$GITHUB_ENV"
 
+          : > deploy-result.json
+          : > deploy-error.log
+
+          set +e
+
           sf project deploy validate \
             --target-org "${{ inputs.target_org_alias }}" \
             --source-dir force-app \
-            --wait 30
+            --ignore-warnings \
+            --wait 60 \
+            --json \
+            > deploy-result.json \
+            2> deploy-error.log
+
+          SF_EXIT_CODE=$?
+
+          set -e
+
+          echo "Salesforce CLI exit code: ${SF_EXIT_CODE}"
+
+          echo
+          echo "========== Salesforce CLI STDOUT =========="
+          cat deploy-result.json || true
+
+          echo
+          echo "========== Salesforce CLI STDERR =========="
+          cat deploy-error.log || true
+
+          if ! jq empty deploy-result.json > /dev/null 2>&1; then
+            echo "::error::Salesforce CLI did not return valid JSON during validation."
+            exit "${SF_EXIT_CODE:-1}"
+          fi
+
+          STATUS=$(jq -r '.result.status // "Unknown"' deploy-result.json)
+          ERRORS=$(jq -r '.result.numberComponentErrors // 0' deploy-result.json)
+
+          echo "Validation Status: ${STATUS}"
+          echo "Component Errors:  ${ERRORS}"
+
+          if [[ "${SF_EXIT_CODE}" -ne 0 ]]; then
+            echo "::error::Salesforce validation failed. Status: ${STATUS}. Errors: ${ERRORS}"
+            exit "${SF_EXIT_CODE}"
+          fi
 
       - name: Collect Deployment Result
         id: result

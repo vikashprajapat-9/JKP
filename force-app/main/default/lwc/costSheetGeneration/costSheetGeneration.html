@@ -61,53 +61,137 @@
         </template>
     </template>
 
-    <template if:true={secondScreen}>
-        <div class="slds-grid slds-wrap slds-align_absolute-center slds-p-around_medium">
-            <!-- Pricing Elements Card -->
-            <div class="slds-col slds-size_1-of-1 slds-large-size_2-of-4 slds-p-horizontal_small">
-                <div class="slds-p-around_medium">
-            <div class="slds-form-element styled-container">
-            <lightning-radio-group name="discountApplicable"
-                label="Is discount applicable on this?"
-                options={discountOptions}
-                value={discountApplicable}
-                type="radio"
-                onchange={handleDiscountApplicable}>
-            </lightning-radio-group>
+<template if:true={secondScreen}>
+
+    <div class="slds-grid slds-wrap slds-align_absolute-center slds-p-around_medium">
+
+        <!-- LEFT SIDE: DISCOUNT -->
+        <div class="slds-col slds-size_1-of-1 slds-large-size_2-of-4 slds-p-horizontal_small">
+
+            <div class="slds-p-around_medium">
+
+                <!-- NORMAL DISCOUNT -->
+                <template if:false={specialDiscountApplied}>
+
+                    <div class="slds-form-element styled-container">
+
+                        <lightning-radio-group
+                            name="discountApplicable"
+                            label="Is discount applicable on this?"
+                            options={discountOptions}
+                            value={discountApplicable}
+                            type="radio"
+                            onchange={handleDiscountApplicable}>
+                        </lightning-radio-group>
+
+                    </div>
+
+                    <template if:true={isDiscountApplicable}>
+
+                        <div class="slds-grid slds-wrap slds-m-top_medium styled-container">
+
+                            <div class="styled-text">
+                                Enter Discount Amount or Discount Percentage.
+                                The other field will be calculated automatically.
+                            </div>
+
+                            <!-- Discount Amount -->
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-right_small">
+
+                                <lightning-input
+                                    type="number"
+                                    name="discountAmount"
+                                    label="Discount Amount"
+                                    value={discountAmount}
+                                    min="0"
+                                    max={realAmountNumeric}
+                                    step="0.01"
+                                    onchange={handleDiscountAmountChange}>
+                                </lightning-input>
+
+                            </div>
+
+                            <!-- Discount Percentage -->
+                            <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-left_small">
+
+                                <lightning-input
+                                    type="number"
+                                    name="discountPercent"
+                                    label="Discount Percentage (%)"
+                                    value={discountPercent}
+                                    min="0"
+                                    max="100"
+                                    step="0.01"
+                                    onchange={handleDiscountPercentChange}>
+                                </lightning-input>
+
+                            </div>
+
+                        </div>
+
+                    </template>
+
+                </template>
+
+
+                <!-- SPECIAL DISCOUNT -->
+                <template if:true={specialDiscountApplied}>
+
+                    <div class="styled-container">
+
+                        <div class="styled-text">
+                            <b>Special Discount Applied</b>
+                        </div>
+
+                        <div class="styled-text">
+                            {specialDiscountName}
+                        </div>
+
+                    </div>
+
+                </template>
+
+            </div>
+
         </div>
 
-        <template if:true={isDiscountApplicable}>
-            <div class="slds-grid slds-wrap slds-m-top_medium styled-container">
-                <div class="styled-text">Enter Discount Amount or Discount Percentage. The other field will be calculated automatically. </div>
-                <!-- Discount Amount -->
-                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-right_small">
-                    <lightning-input  type="number" name="discountAmount" label="Discount Amount" value={discountAmount}  min="0" max={realAmountNumeric}   step="0.01"  onchange={handleDiscountAmountChange}></lightning-input>
-                </div>
-                <!-- Discount Percentage -->
-                <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2 slds-p-left_small">
-                    <lightning-input  type="number"  name="discountPercent" label="Discount Percentage (%)" value={discountPercent} min="0"   max="100"  step="0.01" onchange={handleDiscountPercentChange}>
-                    </lightning-input>
-                </div>
-            </div>
-        </template>
-        </div>
-            </div>
 
-            <!-- Amount Circle -->
-            <div class="slds-col slds-size_1-of-1 slds-large-size_2-of-4 slds-p-horizontal_small styled-container">
+        <!-- RIGHT SIDE: AMOUNTS -->
+        <div class="slds-col slds-size_1-of-1 slds-large-size_2-of-4 slds-p-horizontal_small styled-container">
+
             <div class="styled-text">
-                Total Amount Exclusive of Taxes: <b>{realAmount}</b>
+                Total Amount Exclusive of Taxes:
+                <b>{realAmount}</b>
             </div>
 
+            <!-- DISCOUNTED AMOUNT -->
             <template if:true={isDiscountApplicable}>
+
                 <div class="styled-text">
-                    Discounted Amount ({discountPercent}%):
+
+                    <template if:true={specialDiscountApplied}>
+
+                        {specialDiscountName}
+                        ({specialDiscountPercent}%):
+
+                    </template>
+
+                    <template if:false={specialDiscountApplied}>
+
+                        Discounted Amount
+                        ({discountPercent}%):
+
+                    </template>
+
                     <b>{formattedDiscountAmount}</b>
+
                 </div>
+
             </template>
 
             <div class="styled-text">
-                Total Tax Amount: <b>{taxAmount}</b>
+                Total Tax Amount:
+                <b>{taxAmount}</b>
             </div>
 
             <div class="styled-text">
@@ -115,89 +199,147 @@
                 <b>{formattedTotalAmount}</b>
             </div>
 
-            <template if:true={isDiscountApplicable}>
-                <div class="styled-text">
-                    Total Amount Inclusive of Discount:
-                    <b>{formattedDiscountedTotalAmount}</b>
-                </div>
-            </template>
-            </div>
         </div>
 
-        <template if:true={isLoading}>
-            <div class="slds-align_absolute-center">
-                <lightning-spinner alternative-text="Loading"></lightning-spinner>
-            </div>
-        </template>
+    </div>
 
-        <template if:true={pricingElements}>
-            <lightning-card title="Pricing Elements" icon-name="custom:custom63" class="fixed-card"></lightning-card>
-            <div class="table-container">
-                <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
-                    <thead style="background-color: #906a09;">
-                        <tr>
-                            <th>Pricing Element</th>
-                            <th>Quantity</th>
-                            <th>Rate</th>
-                            <th>Unit</th>
-                            <th>PE Type</th>
-                            <th>Amount</th>
-                            <!-- <th>Discount Amount</th>
-                            <th>Discount %</th> -->
-                            <th>Actual Amount</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        <template for:each={pricingElements} for:item="element" for:index="index">
-                            <tr key={element.Id}>
-                                <td>{element.Pricing_Element_Master__r.Name}</td>
-                                <td>{element.Quantity__c}</td>
-                                <td>{element.Rate__c}</td>
-                                <td>{element.Unit__c}</td>
-                                <td>{element.PE_Type__c}</td>
-                                <td>{element.Amount__c}</td>
-                                <!-- <td>
-                                    <template if:true={element.edit}>
-                                        <lightning-input type="number" value={element.Discount_Amount__c}
-                                            data-field="Discount_Amount__c" data-index={index}
-                                            onchange={handleDiscountChange}>
-                                        </lightning-input>
-                                    </template>
-                                    <span style="color: red;">{element.limitExceed}</span>
-                                </td> -->
-                                <!-- <td>{element.Discount__c}</td> -->
-                                <td>{element.ActualAmount}</td>
-                                <!-- <td>{element.formattedDiscountedTotalAmount}</td> -->
-                            </tr>
-                        </template>
-                    </tbody>
-                </table>
-            </div>
-            <div class="next-button-container1">
-                <div class="left-button">
-                    <lightning-button label="Back" onclick={handleBack1} variant="brand">
-                    </lightning-button>
-                </div>
-                <div class="next-button-container">
-                    <lightning-button label="Next" onclick={handleThirdScreen} variant="brand">
-                    </lightning-button>
-                </div>
-            </div>
-        
 
-        </template>
+    <!-- LOADING -->
+    <template if:true={isLoading}>
 
-        <template if:false={pricingElements}>
-            <p class="slds-text-align_center">No Pricing Elements found.</p>
-        </template>
+        <div class="slds-align_absolute-center">
+
+            <lightning-spinner
+                alternative-text="Loading">
+            </lightning-spinner>
+
+        </div>
 
     </template>
 
+
+    <!-- ============================= -->
+    <!-- PRICING ELEMENTS -->
+    <!-- ============================= -->
+
+    <template if:true={pricingElements}>
+
+        <lightning-card
+            title="Pricing Elements"
+            icon-name="custom:custom63"
+            class="fixed-card">
+        </lightning-card>
+
+        <div class="table-container">
+
+            <table class="slds-table slds-table_cell-buffer slds-table_bordered slds-table_striped">
+
+                <thead style="background-color: #906a09;">
+
+                    <tr>
+                        <th>Pricing Element</th>
+                        <th>Quantity</th>
+                        <th>Rate</th>
+                        <th>Unit</th>
+                        <th>PE Type</th>
+                        <th>Amount</th>
+                        <th>Actual Amount</th>
+                    </tr>
+
+                </thead>
+
+                <tbody>
+
+                    <template
+                        for:each={pricingElements}
+                        for:item="element"
+                        for:index="index">
+
+                        <tr key={element.Id}>
+
+                            <td>
+                                {element.Pricing_Element_Master__r.Name}
+                            </td>
+
+                            <td>
+                                {element.Quantity__c}
+                            </td>
+
+                            <td>
+                                {element.Rate__c}
+                            </td>
+
+                            <td>
+                                {element.Unit__c}
+                            </td>
+
+                            <td>
+                                {element.PE_Type__c}
+                            </td>
+
+                            <td>
+                                {element.Amount__c}
+                            </td>
+
+                            <td>
+                                {element.ActualAmount}
+                            </td>
+
+                        </tr>
+
+                    </template>
+
+                </tbody>
+
+            </table>
+
+        </div>
+
+
+        <!-- NAVIGATION BUTTONS -->
+
+        <div class="next-button-container1">
+
+            <div class="left-button">
+
+                <lightning-button
+                    label="Back"
+                    onclick={handleBack1}
+                    variant="brand">
+                </lightning-button>
+
+            </div>
+
+            <div class="next-button-container">
+
+                <lightning-button
+                    label="Next"
+                    onclick={handleThirdScreen}
+                    variant="brand">
+                </lightning-button>
+
+            </div>
+
+        </div>
+
+    </template>
+
+
+    <!-- NO PRICING ELEMENTS -->
+
+    <template if:false={pricingElements}>
+
+        <p class="slds-text-align_center">
+            No Pricing Elements found.
+        </p>
+
+    </template>
+
+</template>
+
     <template if:true={thirdScreen}>
-
-
         <lightning-card title="Add Parking Details" icon-name="custom:custom63"></lightning-card>
-
+        <template if:true={showAddParkingButton}>
         <div class="slds-grid slds-align_absolute-center slds-p-around_small">
             <div class="slds-col slds-text-heading_medium slds-p-right_medium">
                 "Do you want to add parking details?"
@@ -206,11 +348,10 @@
                 <button class="slds-button slds-button_brand" onclick={handleParking}>Add Parking Details</button>
             </div>
         </div>
+        </template>
 
         <template if:true={parkingDetailTable}>
-
-             <div style="margin-left: 20px;" class="slds-col slds-size_1-of-1 slds-large-size_2-of-4 slds-p-horizontal_small styled-container">
-
+            <div style="margin-left: 20px;" class="slds-col slds-size_1-of-1 slds-large-size_2-of-4 slds-p-horizontal_small styled-container">
                 <div class="styled-text">Total Available Open Parking: <b>{availableOpenParking}</b></div>
 
                 <div class="styled-text">Total Available Dependant Parking: <b>{availableDependantParking}</b></div>
@@ -234,7 +375,7 @@
                         </tr>
                     </thead>
                     <tbody>
-                        <template for:each={parkingDetails} for:item="row" for:index="index">
+                        <template for:each={rows} for:item="row" for:index="index">
                             <tr key={row.id}>
                                 <!-- Parking Type Combobox -->
                                 <td>
@@ -279,12 +420,12 @@
 
         </template>
 
-        <div class="next-button-container">
-            <div class="left-button">
+        <div class="next-button-container slds-m-top_medium">
+            <div class="left-button slds-m-top_medium">
                 <lightning-button label="Back" onclick={handleFourthScreenBack} variant="brand">
                 </lightning-button>
             </div>
-            <div class="right-button">
+            <div class="right-button slds-m-top_medium">
                 <lightning-button label="Next" disabled={isFourthNextDisabled} onclick={handleFouth} variant="brand">
                 </lightning-button>
             </div>

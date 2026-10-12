@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Fixed_Trigger__c</fullName>
+    <description>For Split = Single: the DeveloperName of the Commission Payout Event the designation is paid on.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>For Split = Single: the DeveloperName of the Commission Payout Event the designation is paid on.</inlineHelpText>
+    <label>Fixed Payout Event</label>
+    <length>80</length>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

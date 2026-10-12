@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Tells a channel partner that the CP Manager rejected more time on a lead&apos;s freezing window.</description>
+    <encodingKey>UTF-8</encodingKey>
+    <name>CP Lead Grace Rejected</name>
+    <style>none</style>
+    <subject>More time not approved on lead {!Partner_Access_Request__c.Lead__c}</subject>
+    <type>text</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

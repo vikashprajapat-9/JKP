@@ -92,6 +92,12 @@
                 <identifier>RecordIsStandard__cField</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.Token_Type__c</fieldItem>
+                <identifier>RecordToken_Type__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-9542a2db-984d-44c2-b936-24958701571a</name>
         <type>Facet</type>
     </flexiPageRegions>

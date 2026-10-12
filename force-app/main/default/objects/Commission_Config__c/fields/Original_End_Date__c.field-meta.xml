@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Original_End_Date__c</fullName>
+    <description>The end date before a later version shortened this period.</description>
+    <inlineHelpText>Filled when a later version changed the terms from a date: the end date this period had before.</inlineHelpText>
+    <label>Original End Date</label>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Date</type>
+</CustomField>

@@ -56,6 +56,11 @@
                 <default>false</default>
                 <label>Others</label>
             </value>
+            <value>
+                <fullName>Referral</fullName>
+                <default>false</default>
+                <label>Referral</label>
+            </value>
         </valueSetDefinition>
         <valueSettings>
             <controllingFieldValue>Digital</controllingFieldValue>
@@ -92,6 +97,10 @@
         <valueSettings>
             <controllingFieldValue>Manual</controllingFieldValue>
             <valueName>Others</valueName>
+        </valueSettings>
+        <valueSettings>
+            <controllingFieldValue>Referral</controllingFieldValue>
+            <valueName>Referral</valueName>
         </valueSettings>
     </valueSet>
 </CustomField>

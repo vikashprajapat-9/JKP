@@ -48,6 +48,42 @@ export default class NewPaymentSchemeButton extends LightningElement {
     @track installmentSequence = '';
     @track isDisabled1 = false;
     @track companyOptions = [];
+    tokenType = '';
+    tokenAmount = null;
+
+    tokenTypeOptions = [
+        { label: 'Lumpsum', value: 'Lumpsum' },
+        { label: 'Percentage', value: 'Percentage' }
+    ];
+
+    get showTokenAmount() {
+        return this.tokenType === 'Lumpsum';
+    }
+    get percentMax() {
+        return this.tokenType === 'Lumpsum' ? 0 : 100;
+    }
+
+    handleTokenTypeChange(event) {
+        this.tokenType = event.detail.value;
+        if (this.tokenType === 'Lumpsum') {
+            this.tokenAmount = null;
+            this.rows = this.rows.map(row => ({
+                ...row,
+                percentInstallment: 0
+            }));
+            this.renderedRows = this.renderedRows.map(row => ({
+                ...row,
+                percentInstallment: 0
+            }));
+        } else {
+            this.tokenAmount = null;
+        }
+        this.updateRenderedRows();
+    }
+
+    handleTokenAmountChange(event) {
+        this.tokenAmount = event.target.value;
+    }
 
     connectedCallback() {
         debugger;
@@ -173,23 +209,34 @@ export default class NewPaymentSchemeButton extends LightningElement {
     handleTokenAmountChange(event) {
         this.tokenAmount = event.target.value;
     }
-
     handleFromDateChange(event) {
         this.fromDate = event.target.value;
+        if (this.toDate && this.toDate < this.fromDate) {
+            this.toDate = null;
+        }
     }
 
     handleToDateChange(event) {
-        this.toDate = event.target.value;
-    }
+        const selectedToDate = event.target.value;
+        if (this.fromDate && selectedToDate < this.fromDate) {
+            event.target.setCustomValidity('To Date cannot be before From Date.');
+            event.target.reportValidity();
+            this.toDate = null;
+            return;
+        }
+            event.target.setCustomValidity('');
+            event.target.reportValidity();
+            this.toDate = selectedToDate;
+        }
 
-    showToast(title, message, variant) {
-    const event = new ShowToastEvent({
-        title: title,
-        message: message,
-        variant: variant
-    });
-    this.dispatchEvent(event);
-   }
+        showToast(title, message, variant) {
+        const event = new ShowToastEvent({
+            title: title,
+            message: message,
+            variant: variant
+        });
+        this.dispatchEvent(event);
+    }
 
     handleSubmit() {
         debugger;
@@ -199,9 +246,16 @@ export default class NewPaymentSchemeButton extends LightningElement {
         }
         
 
+        // const hasEmptyFields = this.rows.some(row => {
+        // return !row.selectedSchedule || !row.percentInstallment || !row.displayOrder;
+        // });
         const hasEmptyFields = this.rows.some(row => {
-        return !row.selectedSchedule || !row.percentInstallment || !row.displayOrder;
-        });
+                return !row.selectedSchedule ||
+                    row.percentInstallment === null ||
+                    row.percentInstallment === undefined ||
+                    row.percentInstallment === '' ||
+                    !row.displayOrder;
+            });
 
         if (hasEmptyFields) {
         this.showToast('Validation Error', 'Please fill all details for each row: Schedule, Installment, and Display Order.', 'error');
@@ -225,18 +279,20 @@ export default class NewPaymentSchemeButton extends LightningElement {
             From_Date__c: this.fromDate,
             To_Date__c: this.toDate,
             Company__c: this.selectedCompany,
+            Token_Type__c: this.tokenType,
             Project__c: this.selectedProject,
             
         };
 
         console.log('paymentScheme==>'+paymentScheme);
-       
+    
         const installments = this.rows.map(row => ({
             Id: row.id && typeof row.id === 'string' ? row.id : null, 
             Payment_Schedule_Master__c: row.selectedSchedule,
             Type__c:row.type,
             Installment__c: row.percentInstallment,
-            Display_Order__c: row.displayOrder
+            Display_Order__c: row.displayOrder,
+            Milestone_Completion_Date__c : row.Date
         }));
         console.log('Installments to be sent:', JSON.stringify(installments));
         console.log('this.selectedBlock==>'+this.selectedBlock);
@@ -244,11 +300,11 @@ export default class NewPaymentSchemeButton extends LightningElement {
     insertPaymentScheme({ paymentScheme, installments ,editValue : this.edit1,block : this.selectedBlock})
         .then(paymentSchemeId => {
             console.log('Records inserted successfully, Payment Scheme ID:', paymentSchemeId);
-           
+        
             this.isDisabled1 = true;
-           this.showToast('Success', 'Records inserted successfully.', 'success');
-           this.resetForm();
-           this.showSpinner = false;
+            this.showToast('Success', 'Records inserted successfully.', 'success');
+            this.resetForm();
+            this.showSpinner = false;
         })
         .catch(error => {
             console.error('Error inserting records:', error);
@@ -256,7 +312,7 @@ export default class NewPaymentSchemeButton extends LightningElement {
 
             
         });
-}
+    }
 
     resetForm() {
         this.selectedCompany = null;
@@ -447,26 +503,46 @@ get selectedBlockLabel() {
     //     this.updateRenderedRows();
     // }
     handlePercentChange(event) {
-        debugger;
         const rowId = event.target.dataset.id;
-        const percentInstallment = event.target.value;
-        
-        if (percentInstallment < 0) {
-        event.target.value = ''; 
-        return;
+        let value = event.target.value;
+        if (this.tokenType === 'Lumpsum') {
+            if (Number(value) !== 0) {
+                event.target.setCustomValidity(
+                    'For Lumpsum Token Type, % Installment must be 0.'
+                );
+                event.target.reportValidity();
+                value = 0;
+            } else {
+                event.target.setCustomValidity('');
+                event.target.reportValidity();
+            }
+        } else {
+            event.target.setCustomValidity('');
+            event.target.reportValidity();
         }
-        this.rows = this.rows.map(row => {
+
+        this.renderedRows = this.renderedRows.map(row => {
             if (row.id == rowId) {
-                return { ...row, percentInstallment };
+                return {
+                    ...row,
+                    percentInstallment: value
+                };
             }
             return row;
         });
-        console.log('Rows after percent change:', JSON.stringify(this.rows));
-        this.updateRenderedRows();
+        this.rows = this.rows.map(row => {
+            if (row.id == rowId) {
+                return {
+                    ...row,
+                    percentInstallment: value
+                };
+            }
+            return row;
+        });
     }
 
     handleNext() {
-        if (!this.name || !this.tokenAmount || !this.fromDate || !this.toDate || !this.selectedCompany || !this.selectedProject || !this.selectedBlock) {
+        if (!this.name || !this.fromDate|| !this.tokenType  || !this.toDate || !this.selectedCompany || !this.selectedProject || !this.selectedBlock) {//|| !this.tokenAmount 
         // Show toast message
         const event = new ShowToastEvent({
             title: 'Validation Error',
@@ -475,7 +551,17 @@ get selectedBlockLabel() {
         });
         this.dispatchEvent(event);
         return; 
-      }   
+    }   
+    if (this.tokenType === 'Lumpsum' && !this.tokenAmount) {
+        const event = new ShowToastEvent({
+            title: 'Validation Error',
+            message: 'Please enter Token Amount.',
+            variant: 'error'
+        });
+
+        this.dispatchEvent(event);
+        return;
+    }
 
         debugger;
         if (this.rows.length === 0) {
@@ -514,6 +600,23 @@ get selectedBlockLabel() {
         console.log('Rows after display order change:', JSON.stringify(this.rows));
         this.updateRenderedRows();
     }
+    handleDateChange(event) {
+        debugger;
+        const rowId = event.target.dataset.id;
+        const dateValue = event.target.value;
+        console.log('Date:', dateValue);
+        this.rows = this.rows.map(row => {
+            if (row.id == rowId) {
+                return {
+                    ...row,
+                    Date: dateValue
+                };
+            }
+            return row;
+        });
+        console.log('Rows after date change:', JSON.stringify(this.rows) );
+        this.updateRenderedRows();
+    }
 
     handleTypeChange(event) {
         debugger;
@@ -530,7 +633,7 @@ get selectedBlockLabel() {
         });
 
         console.log('Updated row:', rowId, 'to type:', selectedType);
-           this.updateRenderedRows();
+        this.updateRenderedRows();
     }
 
 

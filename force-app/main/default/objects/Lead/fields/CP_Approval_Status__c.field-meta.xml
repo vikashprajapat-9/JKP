@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CP_Approval_Status__c</fullName>
+    <description>For a Channel Partner lead whose customer Direct Sales already has: Pending while the Direct Sales Manager and the JKP CP Manager decide (CP Lead Approval process), then Approved (the lead goes to Assigned) or Rejected (the lead stays, hidden from the partner portal). Blank for every other lead.</description>
+    <inlineHelpText>Set by the CP Lead Approval process; blank when no approval was needed.</inlineHelpText>
+    <label>CP Approval Status</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetName>Approval_Status</valueSetName>
+    </valueSet>
+</CustomField>

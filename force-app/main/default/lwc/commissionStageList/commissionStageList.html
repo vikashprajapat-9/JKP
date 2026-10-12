@@ -1,0 +1,194 @@
+<template>
+    <div class="stagelist">
+        <!-- The 100 % bar: one segment per stage, then what is left -->
+        <template lwc:if={showBar}>
+            <div class={barClass} aria-hidden="true" data-id="bar">
+                <template for:each={segments} for:item="segment">
+                    <div key={segment.key} class={segment.className} style={segment.style}>{segment.text}</div>
+                </template>
+            </div>
+            <div class="assistive" aria-live="polite" data-id="summary">{summaryText}</div>
+        </template>
+
+        <template lwc:if={showHead}>
+            <div class={headClass} aria-hidden="true">
+                <span></span>
+                <span class="label">{labels.paidWhen}</span>
+                <template lwc:if={hasParameterColumn}><span></span></template>
+                <span class="label">{labels.percentOfCommission}</span>
+                <span></span>
+            </div>
+        </template>
+
+        <template for:each={rows} for:item="row">
+            <div key={row.key} class="stagerow" role="group" aria-label={row.name} data-id="row" data-key={row.key}>
+                <div class={gridClass}>
+                    <span class="name">{row.name}</span>
+
+                    <div class={row.triggerClass}>
+                        <lightning-combobox
+                            data-id="trigger"
+                            data-key={row.key}
+                            variant="label-hidden"
+                            label={row.triggerLabel}
+                            placeholder={labels.chooseEvent}
+                            options={row.triggerOptions}
+                            value={row.triggerKey}
+                            disabled={readOnly}
+                            onchange={handleTrigger}
+                        ></lightning-combobox>
+                    </div>
+
+                    <template lwc:if={hasParameterColumn}>
+                        <div class="par">
+                            <template lwc:if={row.showNumberParameter}>
+                                <div class={row.parameterClass}>
+                                    <lightning-input
+                                        data-id="parameter"
+                                        data-key={row.key}
+                                        data-field={row.parameterField}
+                                        type="number"
+                                        step="any"
+                                        format-fraction-digits={row.parameterDigits}
+                                        variant="label-hidden"
+                                        label={row.parameterLabel}
+                                        value={row.parameterValue}
+                                        disabled={readOnly}
+                                        onchange={handleNumber}
+                                    ></lightning-input>
+                                </div>
+                                <span class="suffix">{row.parameterSuffix}</span>
+                            </template>
+                            <template lwc:elseif={row.showInstallment}>
+                                <div class={row.installmentClass}>
+                                    <lightning-combobox
+                                        data-id="installment"
+                                        data-key={row.key}
+                                        variant="label-hidden"
+                                        label={row.installmentLabel}
+                                        placeholder={labels.chooseInstallment}
+                                        options={row.installmentOptions}
+                                        value={row.installmentId}
+                                        disabled={readOnly}
+                                        onchange={handleInstallment}
+                                    ></lightning-combobox>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+
+                    <div class="pct">
+                        <template lwc:if={single}>
+                            <span class="input num readonly fixed" data-id="fixed">{fixedPercentText}</span>
+                        </template>
+                        <template lwc:else>
+                            <div class={row.releaseClass}>
+                                <lightning-input
+                                    data-id="release"
+                                    data-key={row.key}
+                                    data-field="releasePercent"
+                                    type="number"
+                                    step="any"
+                                    format-fraction-digits={row.releaseDigits}
+                                    variant="label-hidden"
+                                    label={row.releaseLabel}
+                                    value={row.releaseValue}
+                                    disabled={readOnly}
+                                    onchange={handleNumber}
+                                ></lightning-input>
+                            </div>
+                        </template>
+                        <span class="suffix">{labels.percentSuffix}</span>
+                    </div>
+
+                    <div class="end">
+                        <template lwc:if={row.showMove}>
+                            <button
+                                type="button"
+                                class="btn ghost sm arrow"
+                                data-id="up"
+                                data-key={row.key}
+                                title={row.moveUpLabel}
+                                aria-label={row.moveUpLabel}
+                                disabled={row.cannotMoveUp}
+                                onclick={handleMoveUp}
+                            >
+                                <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 10V2.5M2.5 6L6 2.5 9.5 6"></path></svg>
+                            </button>
+                            <button
+                                type="button"
+                                class="btn ghost sm arrow"
+                                data-id="down"
+                                data-key={row.key}
+                                title={row.moveDownLabel}
+                                aria-label={row.moveDownLabel}
+                                disabled={row.cannotMoveDown}
+                                onclick={handleMoveDown}
+                            >
+                                <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M6 2v7.5M2.5 6L6 9.5 9.5 6"></path></svg>
+                            </button>
+                        </template>
+                        <template lwc:if={row.canRemove}>
+                            <button type="button" class="btn ghost sm" data-id="remove" data-key={row.key} aria-label={row.removeLabel} onclick={handleRemove}>
+                                {labels.remove}
+                            </button>
+                        </template>
+                    </div>
+                </div>
+
+                <!-- What is wrong on this row, right under it -->
+                <template lwc:if={row.hasErrors}>
+                    <div class="rowerrors" role="alert">
+                        <template for:each={row.errors} for:item="problem">
+                            <div key={problem.key} class="error-text" data-id="row-error">{problem.message}</div>
+                        </template>
+                    </div>
+                </template>
+            </div>
+        </template>
+
+        <template lwc:if={showEmpty}>
+            <div class="small muted">{labels.noStages}</div>
+        </template>
+
+        <div class="bottom">
+            <div class="adds">
+                <template lwc:if={showAddInitial}>
+                    <button type="button" class="link" data-id="add-initial" onclick={handleAddInitial}>{labels.addInitial}</button>
+                </template>
+                <template lwc:if={showAddMid}>
+                    <button type="button" class="link" data-id="add-mid" onclick={handleAddMid}>{labels.addMid}</button>
+                </template>
+                <template lwc:if={showAddFinal}>
+                    <button type="button" class="link" data-id="add-final" onclick={handleAddFinal}>{labels.addFinal}</button>
+                </template>
+            </div>
+            <div class="status">
+                <template lwc:if={isComplete}>
+                    <span class="ok-text" data-id="complete">
+                        <svg class="ico" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 7.4l3 3 6-6.8"></path></svg>
+                        {allocatedText}
+                    </span>
+                </template>
+                <template lwc:elseif={isOver}>
+                    <span class="error-text" data-id="over">{overText}</span>
+                </template>
+                <template lwc:elseif={hasLeft}>
+                    <span class="small muted" data-id="left">{leftText}</span>
+                    <template lwc:if={showPutRemaining}>
+                        <button type="button" class="link" data-id="put-remaining" onclick={handlePutRemaining}>{putRemainingText}</button>
+                    </template>
+                </template>
+            </div>
+        </div>
+
+        <!-- Issues of the whole split (the total, a missing stage) -->
+        <template lwc:if={hasGeneralIssues}>
+            <div class="splitissues" role="alert">
+                <template for:each={generalIssues} for:item="problem">
+                    <div key={problem.key} class="error-text" data-id="split-error">{problem.message}</div>
+                </template>
+            </div>
+        </template>
+    </div>
+</template>

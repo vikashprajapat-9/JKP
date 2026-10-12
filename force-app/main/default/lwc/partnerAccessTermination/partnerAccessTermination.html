@@ -1,0 +1,93 @@
+<template>
+    <lightning-quick-action-panel header="Request Termination">
+        <div class="panel-body">
+            <template lwc:if={isLoading}>
+                <div class="loading">
+                    <lightning-spinner alternative-text="Loading the partner's details" size="small"></lightning-spinner>
+                </div>
+            </template>
+
+            <template lwc:elseif={info}>
+                <!-- The partner -->
+                <div class="slds-grid slds-wrap slds-gutters_small">
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                        <div class="slds-form-element slds-form-element_readonly">
+                            <span class="slds-form-element__label">Account</span>
+                            <div class="slds-form-element__control">
+                                <div class="slds-form-element__static slds-truncate" title={accountName}>{accountName}</div>
+                            </div>
+                        </div>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1 slds-medium-size_1-of-2">
+                        <div class="slds-form-element slds-form-element_readonly">
+                            <span class="slds-form-element__label">Partner Type</span>
+                            <div class="slds-form-element__control">
+                                <div class="slds-form-element__static partner-type">
+                                    <span>{partnerTypeLabel}</span>
+                                    <template lwc:if={roleLabel}>
+                                        <lightning-badge label={roleLabel} class="role-badge"></lightning-badge>
+                                    </template>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- What happens, or why it cannot be requested -->
+                <div class="slds-scoped-notification slds-scoped-notification_light slds-media slds-media_center slds-m-top_medium" role="status">
+                    <div class="slds-media__figure">
+                        <lightning-icon icon-name={messageIcon} variant={messageIconVariant} size="x-small" alternative-text={messageIconText}></lightning-icon>
+                    </div>
+                    <div class="slds-media__body">
+                        <p>{message}</p>
+                    </div>
+                </div>
+
+                <!-- A channel head takes their executives with them -->
+                <template lwc:if={showExecutives}>
+                    <div class="slds-scoped-notification slds-scoped-notification_light slds-media slds-media_center slds-m-top_x-small executives">
+                        <div class="slds-media__figure">
+                            <lightning-icon icon-name="utility:people" variant="warning" size="x-small" alternative-text="Executives"></lightning-icon>
+                        </div>
+                        <div class="slds-media__body">
+                            <p>{executivesText}</p>
+                        </div>
+                    </div>
+                </template>
+
+                <template lwc:if={canRequest}>
+                    <lightning-textarea class="reason slds-m-top_medium"
+                                        name="reason"
+                                        label="Reason for termination"
+                                        placeholder="Why should this partner's portal access end?"
+                                        required
+                                        max-length={reasonMaxLength}
+                                        message-when-value-missing="Enter the reason for the termination."
+                                        value={reason}
+                                        disabled={isSaving}
+                                        onchange={handleReasonChange}></lightning-textarea>
+                </template>
+            </template>
+
+            <template lwc:if={error}>
+                <div class="slds-scoped-notification slds-scoped-notification_light slds-media slds-media_center slds-m-top_medium error" role="alert">
+                    <div class="slds-media__figure">
+                        <lightning-icon icon-name="utility:error" variant="error" size="x-small" alternative-text="Error"></lightning-icon>
+                    </div>
+                    <div class="slds-media__body">
+                        <p class="slds-text-color_error">{error}</p>
+                    </div>
+                </div>
+            </template>
+
+            <template lwc:if={isSaving}>
+                <lightning-spinner alternative-text="Submitting the termination request" size="small"></lightning-spinner>
+            </template>
+        </div>
+
+        <div slot="footer">
+            <lightning-button label="Cancel" onclick={handleCancel} disabled={isSaving}></lightning-button>
+            <lightning-button class="slds-m-left_x-small" variant="brand" label="Submit for Approval" onclick={handleSubmit} disabled={submitDisabled}></lightning-button>
+        </div>
+    </lightning-quick-action-panel>
+</template>

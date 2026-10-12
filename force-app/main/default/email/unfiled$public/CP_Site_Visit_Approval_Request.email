@@ -1,0 +1,13 @@
+A channel partner requests a site visit and needs your approval.
+
+Customer: {!Visit__c.Lead__c}
+Channel partner: {!Visit__c.Channel_Partner__c}
+Project: {!Visit__c.Project__c}
+Requirement type: {!Visit__c.Requirement_Type__c}
+Date: {!Visit__c.Visit_Date__c}
+Time: {!Visit__c.Visit_Time__c}
+Notes: {!Visit__c.Visit_Description__c}
+
+Approve or reject it here: {!ApprovalRequest.Internal_URL}
+
+When the JKP CP Executive rejects a request, it goes to the CP Manager.

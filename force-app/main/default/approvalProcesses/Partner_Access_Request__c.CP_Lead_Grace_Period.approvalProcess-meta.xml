@@ -1,0 +1,71 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApprovalProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <allowRecall>false</allowRecall>
+    <allowedSubmitters>
+        <type>allInternalUsers</type>
+    </allowedSubmitters>
+    <allowedSubmitters>
+        <type>creator</type>
+    </allowedSubmitters>
+    <allowedSubmitters>
+        <type>owner</type>
+    </allowedSubmitters>
+    <approvalPageFields>
+        <field>Name</field>
+        <field>Lead__c</field>
+        <field>Account__c</field>
+        <field>Type__c</field>
+        <field>Extension_Days__c</field>
+        <field>Reason__c</field>
+        <field>Requested_By__c</field>
+        <field>Requested_Via__c</field>
+        <field>Status__c</field>
+        <field>Owner</field>
+    </approvalPageFields>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <name>Approver__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <label>CP Manager</label>
+        <name>CP_Manager</name>
+    </approvalStep>
+    <description>Lead Freezing Window grace period: a channel partner asks on the portal for more days before a lead moves to the Partnership Queue; the CP Manager approves (the freezing date moves on) or rejects. The partner is emailed either way.</description>
+    <emailTemplate>unfiled$public/CP_Lead_Grace_Request</emailTemplate>
+    <enableMobileDeviceAccess>false</enableMobileDeviceAccess>
+    <entryCriteria>
+        <criteriaItems>
+            <field>Partner_Access_Request__c.Type__c</field>
+            <operation>equals</operation>
+            <value>Lead Grace Period</value>
+        </criteriaItems>
+        <criteriaItems>
+            <field>Partner_Access_Request__c.Status__c</field>
+            <operation>equals</operation>
+            <value>Pending</value>
+        </criteriaItems>
+    </entryCriteria>
+    <finalApprovalActions>
+        <action>
+            <name>Partner_Access_Request_Approved</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalApprovalActions>
+    <finalApprovalRecordLock>false</finalApprovalRecordLock>
+    <finalRejectionActions>
+        <action>
+            <name>Partner_Access_Request_Rejected</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalRejectionActions>
+    <finalRejectionRecordLock>false</finalRejectionRecordLock>
+    <label>CP Lead Grace Period</label>
+    <processOrder>3</processOrder>
+    <recordEditability>AdminOnly</recordEditability>
+    <showApprovalHistory>true</showApprovalHistory>
+</ApprovalProcess>

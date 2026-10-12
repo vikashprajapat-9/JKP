@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Version_Key__c</fullName>
+    <caseSensitive>false</caseSensitive>
+    <description>Reference and version together, for example CC-0003-v2. Written by the trigger and unique, so that a version cannot exist twice.</description>
+    <externalId>false</externalId>
+    <label>Version Key</label>
+    <length>40</length>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>true</unique>
+</CustomField>

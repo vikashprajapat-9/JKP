@@ -5,7 +5,7 @@
             <div class="logo-container">
                 <img src={logoWhite} alt="Logo" class="logo" />
             </div>
-            <div class="header-title"> Schedule a Visit </div>
+            <div class="header-title"> {pageTitle} </div>
         </div>
         <!-- ================= EXISTING VISITS ================= -->
         <template if:true={showVisitList}>
@@ -39,6 +39,7 @@
                                                 <div class="action-buttons">
                                                     <button class="action-btn completed-btn" data-id={visit.Id} onclick={handleCompleted}>Completed </button>
                                                     <button class="action-btn cancelled-btn" data-id={visit.Id} onclick={handleCancelled}>Cancelled </button>
+                                                    <button class="action-btn reschedule-btn" data-id={visit.Id} onclick={handleReschedule}>Rescheduled </button>
                                                 </div>
                                             </template>
                                             <template if:false={visit.showActions}>
@@ -74,11 +75,12 @@
         <template if:true={showCreateVisit}>
             <div class="modal-body">
                 <div class="form-container">
+                    <lightning-record-picker label="Project" placeholder="Search Project..." object-api-name="Project__c" value={projectId} onchange={handleProjectChange} required></lightning-record-picker>
+                    <lightning-combobox label="Requirement Type" value={requirementType} options={requirementTypeOptions} placeholder="Select an Option" onchange={handleRequirementTypeChange} required></lightning-combobox>
                     <lightning-input type="date" label="Visit Date" value={visitDate} onchange={handleVisitDateChange} required> </lightning-input>
                     <lightning-input type="time" label="Visit Time" value={visitTime} onchange={handleVisitTimeChange} required></lightning-input>
                     <lightning-textarea label="Remarks" value={remarks} onchange={handleRemarksChange}> </lightning-textarea>
-                    <lightning-combobox label="Requirement Type" value={requirementType} options={requirementTypeOptions} placeholder="Select an Option" onchange={handleRequirementTypeChange} required></lightning-combobox>
-                    <lightning-record-picker label="Project" placeholder="Search Project..." object-api-name="Project__c" value={projectId} onchange={handleProjectChange} required></lightning-record-picker>
+            
                 </div>
             </div>
 
@@ -90,7 +92,7 @@
                 </div>
                 <div class="footer-actions">
                 <button class="footer-btn cancel-btn" onclick={handleCancel}> Cancel</button>
-                <button class="footer-btn primary-btn" onclick={handleCreateVisit}> Create Visit </button>
+                <button class="footer-btn primary-btn" onclick={handleCreateVisit}> {visitButtonLabel} </button>
             </div>
             </div>
         </template>

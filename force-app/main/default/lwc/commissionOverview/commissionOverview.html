@@ -1,0 +1,126 @@
+<template>
+    <!-- Filter chips with their counts, and today's date -->
+    <div class="card">
+        <div class="filters">
+            <div class="chips" role="group" aria-label={labels.filterLabel}>
+                <template for:each={chips} for:item="chip">
+                    <button
+                        key={chip.key}
+                        type="button"
+                        class={chip.className}
+                        data-key={chip.key}
+                        aria-pressed={chip.pressed}
+                        onclick={handleChip}
+                    >
+                        {chip.label}<span class="count">{chip.count}</span>
+                    </button>
+                </template>
+            </div>
+            <span class="today small muted">{todayText}</span>
+        </div>
+        <span class="assistive" aria-live="polite">{showingText}</span>
+    </div>
+
+    <!-- One row per active project -->
+    <div class="card">
+        <template lwc:if={hasVisibleRows}>
+            <div class="tablewrap">
+                <table class="grid">
+                    <caption class="assistive">
+                        {labels.tableCaption}
+                    </caption>
+                    <colgroup>
+                        <col class="c-project" />
+                        <col class="c-current" />
+                        <col class="c-period" />
+                        <col class="c-days" />
+                        <col class="c-next" />
+                        <col class="c-status" />
+                        <col class="c-action" />
+                    </colgroup>
+                    <thead>
+                        <tr>
+                            <th scope="col">{labels.colProject}</th>
+                            <th scope="col">{labels.colCurrent}</th>
+                            <th scope="col">{labels.colPeriod}</th>
+                            <th scope="col" class="r">{labels.colDaysLeft}</th>
+                            <th scope="col" class="next">{labels.colNext}</th>
+                            <th scope="col">{labels.colStatus}</th>
+                            <th scope="col"><span class="assistive">{labels.colAction}</span></th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        <template for:each={visibleRows} for:item="row">
+                            <tr key={row.key} data-key={row.key}>
+                                <td class="project">{row.projectName}</td>
+                                <td class="num nowrap">
+                                    <template lwc:if={row.hasCurrent}>
+                                        <button
+                                            type="button"
+                                            class="textlink num"
+                                            data-key={row.key}
+                                            title={row.currentTitle}
+                                            onclick={handleOpenCurrent}
+                                        >
+                                            {row.currentText}
+                                        </button>
+                                    </template>
+                                    <template lwc:else><span class="dash">{labels.none}</span></template>
+                                </td>
+                                <td class="num nowrap">
+                                    <template lwc:if={row.hasCurrent}>{row.periodText}</template>
+                                    <template lwc:else><span class="dash">{labels.none}</span></template>
+                                </td>
+                                <td class="r num">
+                                    <template lwc:if={row.hasDays}><span class={row.daysClass}>{row.daysText}</span></template>
+                                    <template lwc:else><span class="dash">{labels.none}</span></template>
+                                </td>
+                                <td class="next">
+                                    <template lwc:if={row.nextIsLink}>
+                                        <button
+                                            type="button"
+                                            class="textlink wrap"
+                                            data-key={row.key}
+                                            title={row.nextTitle}
+                                            onclick={handleOpenNext}
+                                        >
+                                            <span class={row.nextClass}>{row.nextText}</span>
+                                        </button>
+                                    </template>
+                                    <template lwc:elseif={row.hasNext}><span class={row.nextClass}>{row.nextText}</span></template>
+                                    <template lwc:else><span class="dash">{labels.none}</span></template>
+                                </td>
+                                <td><span class={row.pillClass}>{row.stateLabel}</span></td>
+                                <td>
+                                    <template lwc:if={row.hasAction}>
+                                        <button type="button" class={row.actionClass} data-key={row.key} onclick={handleAction}>
+                                            {row.actionLabel}
+                                        </button>
+                                    </template>
+                                </td>
+                            </tr>
+                        </template>
+                    </tbody>
+                </table>
+            </div>
+        </template>
+        <template lwc:elseif={hasProjects}>
+            <!-- The chosen chip has no project -->
+            <div class="empty">
+                <span class="muted">{labels.filterEmpty}</span>
+                <button type="button" class="link" onclick={handleShowAll}>{labels.filterShowAll}</button>
+            </div>
+        </template>
+        <template lwc:else>
+            <div class="empty"><span class="muted">{labels.noProjects}</span></div>
+        </template>
+
+        <div class="note grey">
+            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                <circle cx="8" cy="8" r="6.5"></circle>
+                <path d="M8 7.5v3.5M8 4.8v.2"></path>
+            </svg>
+            <span>{labels.overviewNote}</span>
+        </div>
+    </div>
+</template>

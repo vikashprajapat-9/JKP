@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>The wording of a channel partner&apos;s exclusive agent contract. PartnerContractService turns it into the draft PDF (Partner Portal Setting: Contract Template), with the merge fields of the Contract and the partner&apos;s contact. Edit the wording here.</description>
+    <encodingKey>UTF-8</encodingKey>
+    <name>Partner Agent Contract</name>
+    <style>none</style>
+    <subject>Exclusive Channel Partner Agreement {!Contract.ContractNumber}</subject>
+    <type>custom</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

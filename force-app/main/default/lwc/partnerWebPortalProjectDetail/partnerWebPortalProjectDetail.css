@@ -1,0 +1,571 @@
+:host {
+    display: block;
+    font-family: var(--jk-font);
+    color: var(--jk-text);
+}
+
+button {
+    font-family: var(--jk-font);
+}
+
+p,
+h1,
+h2 {
+    margin: 0;
+}
+
+/* ---------- Back controls ---------- */
+.back-icon,
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--jk-text);
+    cursor: pointer;
+}
+
+.back-icon {
+    margin-bottom: 40px;
+}
+
+.back-link {
+    margin-bottom: 28px;
+    font-size: 26px;
+    font-weight: 600;
+}
+
+/* ---------- Layout ---------- */
+.detail-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.42fr) minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+}
+
+.col-left,
+.col-right {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 0;
+}
+
+/* ---------- Hero ---------- */
+.hero {
+    position: relative;
+    height: 306px;
+    overflow: hidden;
+    border-radius: 14px;
+    background: var(--jk-navy);
+}
+
+.hero-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Photos from the Project Images folder cross-fade like the project cards */
+.hero-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+}
+
+.hero-slide_active {
+    opacity: 1;
+}
+
+.hero-nav {
+    position: absolute;
+    top: 50%;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    margin-top: -17px;
+    padding: 0 0 3px;
+    border: 0;
+    border-radius: 50%;
+    background: rgb(0 0 0 / 38%);
+    color: #ffffff;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.hero-nav:hover {
+    background: rgb(0 0 0 / 60%);
+}
+
+.hero-nav_prev {
+    left: 12px;
+}
+
+.hero-nav_next {
+    right: 12px;
+}
+
+.hero-dots {
+    position: absolute;
+    top: 18px;
+    right: 16px;
+    z-index: 2;
+    display: flex;
+    gap: 6px;
+}
+
+.hero-dot {
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 55%);
+    cursor: pointer;
+}
+
+.hero-dot_active {
+    background: #ffffff;
+}
+
+.hero-nav:focus-visible,
+.hero-dot:focus-visible,
+.doc-row-view:focus-visible,
+.doc-row-download:focus-visible,
+.doc-view:focus-visible,
+.doc-download:focus-visible {
+    outline: 2px solid var(--jk-navy);
+    outline-offset: 2px;
+}
+
+.hero-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    background: linear-gradient(135deg, #1d2d5c 0%, #3a4f82 55%, #8fa6cc 100%);
+    color: #ffffff;
+}
+
+.hero-building {
+    width: 62%;
+    height: 90%;
+    margin-right: 4%;
+}
+
+.hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgb(0 0 0 / 0%) 45%, rgb(0 0 0 / 55%) 100%);
+    pointer-events: none;
+}
+
+.phase-badge {
+    position: absolute;
+    top: 14px;
+    left: 16px;
+    z-index: 1;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: var(--jk-navy);
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.hero-overlay {
+    position: absolute;
+    left: 24px;
+    right: 24px;
+    bottom: 22px;
+    z-index: 1;
+    color: #ffffff;
+}
+
+.hero-name {
+    font-size: 26px;
+    font-weight: 600;
+    line-height: 32px;
+}
+
+.hero-location {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    font-size: 15px;
+}
+
+/* ---------- Buttons ---------- */
+.btn-outline {
+    width: 100%;
+    height: 52px;
+    border: 2px solid var(--jk-navy);
+    border-radius: var(--jk-radius);
+    background: var(--jk-surface);
+    color: var(--jk-navy);
+    font-size: 17px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.btn-outline:hover {
+    background: var(--jk-tint);
+}
+
+.btn-outline.small {
+    width: auto;
+    height: 40px;
+    padding: 0 20px;
+    border-width: 1px;
+    font-size: 14px;
+}
+
+/* ---------- Facts ---------- */
+.fact-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.fact-card,
+.panel,
+.config-card {
+    border: 1px solid var(--jk-divider);
+    border-radius: 12px;
+    background: var(--jk-surface);
+    box-shadow: 0 2px 8px rgb(17 33 73 / 6%);
+}
+
+.fact-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 34px 24px;
+}
+
+.fact-label {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.8px;
+    color: var(--jk-text-muted);
+}
+
+.fact-value {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--jk-text);
+}
+
+/* ---------- Amenities ---------- */
+.panel {
+    padding: 28px 24px;
+}
+
+.panel-title,
+.section-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--jk-text-strong);
+}
+
+.panel-title {
+    margin-bottom: 28px;
+}
+
+.amenity-row {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.amenity {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-align: center;
+}
+
+.amenity-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--jk-tint);
+    color: var(--jk-text);
+}
+
+.amenity-label {
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--jk-text-muted);
+}
+
+/* ---------- Configurations ---------- */
+.section-title {
+    margin-top: 4px;
+}
+
+.docs-title {
+    margin-top: 16px;
+}
+
+.config-card {
+    padding: 22px 20px 8px;
+}
+
+.config-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--jk-divider);
+}
+
+.config-type {
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--jk-text-strong);
+}
+
+.config-area {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    font-size: 14px;
+    color: var(--jk-text-muted);
+}
+
+.config-price {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    text-align: right;
+}
+
+.price-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.8px;
+    color: var(--jk-text);
+}
+
+.price-value {
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--jk-text-strong);
+    white-space: nowrap;
+}
+
+.doc-row {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 0;
+}
+
+.doc-row-view,
+.doc-row-download {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border: 0;
+    background: none;
+    color: var(--jk-text);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.doc-row-view:hover {
+    color: var(--jk-navy);
+    text-decoration: underline;
+}
+
+.doc-row-download:hover {
+    color: var(--jk-navy);
+}
+
+.doc-row-empty {
+    padding: 14px 0;
+    color: var(--jk-text-muted);
+    font-size: 13px;
+}
+
+/* ---------- Documents ---------- */
+.doc-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    border-radius: 12px;
+    background: #f5f6f8;
+}
+
+.doc-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    background: var(--jk-surface);
+    color: var(--jk-text);
+    flex-shrink: 0;
+}
+
+.doc-name {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--jk-text-strong);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.doc-view,
+.doc-download {
+    display: flex;
+    align-items: center;
+    padding: 4px;
+    border: 0;
+    background: none;
+    color: var(--jk-text);
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.doc-view:hover {
+    text-decoration: underline;
+}
+
+.notice {
+    font-size: 13px;
+    color: var(--jk-text-muted);
+}
+
+.empty-note {
+    padding: 14px 0 4px;
+    color: var(--jk-text-muted);
+    font-size: 14px;
+}
+
+.load-error {
+    margin-bottom: 16px;
+    padding: 12px 16px;
+    border: 1px solid #f5c6cb;
+    border-radius: var(--jk-radius);
+    background: #fdecea;
+    color: var(--jk-badge-cancelled);
+    font-size: 14px;
+}
+
+/* Placeholders while the project loads */
+.skeleton-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 22px 20px;
+}
+
+.skeleton-line {
+    width: 45%;
+    height: 14px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #e6e9ee 25%, #f4f6f9 50%, #e6e9ee 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.3s linear infinite;
+}
+
+.skeleton-line_wide {
+    width: 70%;
+}
+
+@keyframes shimmer {
+    from { background-position: 200% 0; }
+    to { background-position: -200% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-slide {
+        transition: none;
+    }
+
+    .skeleton-line {
+        animation: none;
+    }
+}
+
+/* ---------- Location view ---------- */
+.map-frame {
+    height: calc(100vh - 300px);
+    min-height: 360px;
+    overflow: hidden;
+    border-radius: var(--jk-radius);
+    border: 1px solid var(--jk-divider);
+    background: var(--jk-tint);
+}
+
+.map-frame lightning-map {
+    display: block;
+    height: 100%;
+}
+
+.map-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--jk-text-muted);
+}
+
+.map-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+}
+
+.map-address {
+    font-size: 15px;
+    color: var(--jk-text);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1100px) {
+    .detail-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 700px) {
+    .amenity-row {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .fact-row {
+        grid-template-columns: 1fr;
+    }
+}

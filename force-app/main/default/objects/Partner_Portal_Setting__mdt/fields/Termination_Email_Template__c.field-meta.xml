@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Termination_Email_Template__c</fullName>
+    <description>Developer name of the email template sent to the partner when the termination of its access is approved. Blank: no email.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Developer name of the email template sent to the partner when the termination of its access is approved. Blank: no email.</inlineHelpText>
+    <label>Termination Email Template</label>
+    <length>80</length>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

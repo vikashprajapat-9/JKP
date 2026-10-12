@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Sent to a channel partner when its site visit request is not approved (Partner Portal Setting: Visit Rejected Email Template). [[Customer]], [[Visit Date]] and [[Visit Time]] are filled in by PartnerSiteVisitService; [[Reason]] stands for the approver&apos;s comment. Without a comment the part between &lt;!--reason--&gt; and &lt;!--/reason--&gt; is left out, and in the text version the line that holds [[Reason]].</description>
+    <encodingKey>UTF-8</encodingKey>
+    <name>Partner Portal Site Visit Rejected</name>
+    <style>none</style>
+    <subject>Your site visit request for [[Customer]] was not approved</subject>
+    <textOnly>Dear {!Visit__c.OwnerFullName},
+
+Your site visit request for [[Customer]] was not approved by John Keells Properties.
+
+Customer: [[Customer]]
+Project: {!Visit__c.Project__c}
+Requested date: [[Visit Date]]
+Requested time: [[Visit Time]]
+
+Reason given by John Keells Properties: [[Reason]]
+
+NEXT STEP
+If this lead is still open, you can request another site visit on the Partner Portal: Leads → Edit → Site Visit Scheduled.
+
+Thanks,
+John Keells Properties</textOnly>
+    <type>custom</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

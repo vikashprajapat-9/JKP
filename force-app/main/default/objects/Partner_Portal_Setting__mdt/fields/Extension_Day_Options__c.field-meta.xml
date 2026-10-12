@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Extension_Day_Options__c</fullName>
+    <description>The extension periods (days) a channel partner may ask for, comma separated, e.g. 15, 30, 60.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>The extension periods (days) a channel partner may ask for, comma separated, e.g. 15, 30, 60.</inlineHelpText>
+    <label>Extension Day Options</label>
+    <length>80</length>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Allowed_File_Types__c</fullName>
+    <description>File extensions partners can upload, separated by commas, for example pdf, jpg, png. Leave blank to allow any file.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>File extensions partners can upload, separated by commas, for example pdf, jpg, png. Leave blank to allow any file.</inlineHelpText>
+    <label>Allowed File Types</label>
+    <length>255</length>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

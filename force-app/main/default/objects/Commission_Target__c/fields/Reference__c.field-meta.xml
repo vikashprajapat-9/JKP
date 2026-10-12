@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Reference__c</fullName>
+    <description>The reference of the commission configuration the target belongs to. It stays the same across the versions of that configuration.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The reference of the configuration. The target stays valid across its versions.</inlineHelpText>
+    <label>Configuration Reference</label>
+    <length>20</length>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

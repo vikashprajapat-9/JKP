@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Field_Reporting_To__c</fullName>
+    <description>Who a channel partner executive reports to in the field, as entered on the Partner Portal&apos;s Add Executive form.</description>
+    <externalId>false</externalId>
+    <label>Field Reporting To</label>
+    <length>255</length>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

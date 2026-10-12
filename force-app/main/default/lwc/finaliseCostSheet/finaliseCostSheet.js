@@ -3,11 +3,12 @@ import { loadStyle } from "lightning/platformResourceLoader";
 import modal from "@salesforce/resourceUrl/custommodalcss";
 import getRecordDetails from '@salesforce/apex/FinaliseCostSheetController.getRecordDetails';
 import createPaymentSchedule from '@salesforce/apex/FinaliseCostSheetController.createPaymentSchedule';
-import sendApproval from '@salesforce/apex/FinaliseCostSheetController.sendApproval';
+import updateTaskAndOpportunity from '@salesforce/apex/FinaliseCostSheetController.updateTaskAndOpportunity';
 import { CloseActionScreenEvent } from 'lightning/modal';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import markUnitOnHold from '@salesforce/apex/FinaliseCostSheetController.markUnitOnHold';
 import checkStandardPaymentScheme from '@salesforce/apex/FinaliseCostSheetController.checkStandardPaymentScheme';
+import tagActiveBankDetail from '@salesforce/apex/FinaliseCostSheetController.tagActiveBankDetail';
 import createEscrowAccount from '@salesforce/apex/FinaliseCostSheetController.createEscrowAccount';
 import getCostSheetPreview from '@salesforce/apex/FinaliseCostSheetController.getCostSheetPreview';
 import generatePaymentSchedulePreview from '@salesforce/apex/FinaliseCostSheetController.generatePaymentSchedulePreview';
@@ -177,7 +178,7 @@ export default class FinaliseCostSheet extends LightningElement {
         }
         if (this.selectedEscrowOption === 'WITHOUT') {
             this.showEscrowConfirmation = false;
-            this.handleApproval();
+            this.tagBankDetailAndApprove();
             return;
         }
         if (this.selectedEscrowOption === 'WITH') {
@@ -219,10 +220,7 @@ export default class FinaliseCostSheet extends LightningElement {
             });
         })
         .then(isStandard => {
-            console.log(
-                'Is Standard Payment Scheme:',
-                isStandard
-            );
+            console.log('Is Standard Payment Scheme:',isStandard);
             if (isStandard === true) {
                 this.showHoldConfirmation = false;
                 this.payment = false;
@@ -232,18 +230,24 @@ export default class FinaliseCostSheet extends LightningElement {
 
             } else {
 
-                this.handleApproval();
+                this.tagBankDetailAndApprove();
             }
         })
         .catch(error => {
-
-            console.error(
-                'Error while marking Unit On Hold:',
-                error
-            );
-
+            console.error('Error while marking Unit On Hold:', error);
             this.error = error;
+            this.showToast('Error', error.body?.message || error.message || 'Unable to continue finalizing the Cost Sheet.', 'error');
         });
+    }
+
+    tagBankDetailAndApprove() {
+        return tagActiveBankDetail({ costSheetId: this.costSheetRecords[0].Id })
+            .then(() => this.handleApproval())
+            .catch(error => {
+                console.error('Error tagging Bank Detail:', error);
+                this.error = error;
+                this.showToast('Error', error.body?.message || error.message || 'Unable to tag an active Bank Detail.', 'error');
+            });
     }
     @track selectedCostSheetTempId;
     handleRadioChange(event) {
@@ -448,10 +452,9 @@ export default class FinaliseCostSheet extends LightningElement {
                 this.paymentSchedules = result.paymentScheduleList;
                 this.costPricingAsstnList = result.costPricingAsstnList;
                 this.showToast('Success', 'Payment Schedule created.', 'success');
-                return sendApproval({ recordId: this.recordId });
+                return updateTaskAndOpportunity({ recordId: this.recordId });
             })
             .then(result => {
-              //  this.showToast('Success', 'Approval sent successfully.', 'success');
                 this.isDisabledApproval = false;
                 this.closeComponent();
             })

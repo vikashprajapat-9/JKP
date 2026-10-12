@@ -5,10 +5,12 @@ import saveCostSheet from '@salesforce/apex/CostSheetGenerationController.saveCo
 import getPricingElements from '@salesforce/apex/CostSheetGenerationController.getPricingElements';
 import getParkingRecords from '@salesforce/apex/CostSheetGenerationController.getParkingRecords';
 import createparkingElements from '@salesforce/apex/CostSheetGenerationController.createparkingElements';
+import updateParkingAvailability from '@salesforce/apex/CostSheetGenerationController.updateParkingAvailability';
 //import updatePricingElements from '@salesforce/apex/CostSheetGenerationController.updatePricingElements';
 import submitCostSheetForApproval from '@salesforce/apex/CostSheetGenerationController.submitCostSheetForApproval';
 //import checkAccess from '@salesforce/apex/CostSheetGenerationController.checkAccess';
 import getUnitRecord from '@salesforce/apex/CostSheetGenerationController.getUnitRecord';
+import getSpecialDiscount from '@salesforce/apex/CostSheetGenerationController.getSpecialDiscount';
 import { ShowToastEvent } from 'lightning/platformShowToastEvent';
 import { CloseActionScreenEvent } from 'lightning/actions';
 import { NavigationMixin } from 'lightning/navigation';
@@ -26,6 +28,7 @@ export default class CostSheetGeneration extends NavigationMixin(LightningElemen
     isDropdownOpen = false;
     searchKey = '';
     selectedCostSchemeId = '';
+    showAddParkingButton = true;
     @track showErrorBlock = false;
     @track firstScreen = true;
     @track secondScreen = false;
@@ -42,11 +45,17 @@ export default class CostSheetGeneration extends NavigationMixin(LightningElemen
    // @track discountLineItem = [];
     @track realAmount = 0;
     @track taxAmount = 0;
+
     @track discountApplicable = 'No';
     @track discountAmount = 0;
     @track discountPercent = 0;
     @track discountedAmount = 0;
     @track discountedTotalAmount = 0;
+
+    @track specialDiscountApplied = false;
+    @track specialDiscountName = '';
+    @track specialDiscountPercent = 0;
+    @track specialDiscountId = null;
     @track parkingDetailTable = false;
     @track selectedUnitRec = [];
     @track carParkingTax = {};
@@ -114,6 +123,97 @@ export default class CostSheetGeneration extends NavigationMixin(LightningElemen
         debugger;
         loadStyle(this, modal);
     }
+    checkSpecialDiscount() {
+        if (!this.selectedUnitId) {
+            this.clearSpecialDiscount();
+            return;
+        }
+        console.log('Checking Special Discount for Unit:', this.selectedUnitId );
+
+        getSpecialDiscount({
+            unitId: this.selectedUnitId
+        })
+        .then(result => {
+            console.log('Special Discount Result:',JSON.stringify(result));
+            if (result) {
+                this.specialDiscountApplied = true;
+                this.specialDiscountId = result.Id;
+                this.specialDiscountName = result.Special_Discount_Name__c || result.Name;
+                this.specialDiscountPercent = parseFloat(result.Discount_Percentage__c) || 0;
+                this.discountApplicable = 'Yes';
+                this.discountPercent = this.specialDiscountPercent;
+                if (this.realAmountNumeric > 0) {
+                    this.applySpecialDiscount();
+                }
+                console.log('Name:', this.specialDiscountName);
+                console.log('Percentage:', this.specialDiscountPercent);
+            } else {
+                console.log('No Special Discount found');
+                this.clearSpecialDiscount();
+            }
+        })
+        .catch(error => {
+            console.error('Special Discount Error:', JSON.stringify(error));
+            this.clearSpecialDiscount();
+        });
+    }
+    clearSpecialDiscount() {
+
+        this.specialDiscountApplied = false;
+        this.specialDiscountId = null;
+        this.specialDiscountName = '';
+        this.specialDiscountPercent = 0;
+    }
+    applySpecialDiscount() {
+
+    if (
+        !this.specialDiscountApplied ||
+        !this.specialDiscountPercent ||
+        !this.realAmountNumeric
+    ) {
+        return;
+    }
+
+    const amount = parseFloat(this.realAmountNumeric) || 0;
+
+    this.discountApplicable = 'Yes';
+
+    this.discountPercent =
+        parseFloat(this.specialDiscountPercent) || 0;
+
+    this.discountAmount =
+        (amount * this.discountPercent) / 100;
+
+    this.discountAmount =
+        parseFloat(this.discountAmount.toFixed(2));
+
+    this.calculateDiscountedAmount();
+
+    console.log(
+        'Special Discount Name:',
+        this.specialDiscountName
+    );
+
+    console.log(
+        'Special Discount Percentage:',
+        this.specialDiscountPercent
+    );
+
+    console.log(
+        'Special Discount Amount:',
+        this.discountAmount
+    );
+
+    console.log(
+        'Discounted Amount:',
+        this.discountedAmount
+    );
+
+    console.log(
+        'Discounted Total Amount:',
+        this.discountedTotalAmount
+    );
+}
 
     loadData() {
         getOnLoadData({ recordId: this._recordId })
@@ -128,6 +228,7 @@ export default class CostSheetGeneration extends NavigationMixin(LightningElemen
                     this.selectedUnitId = this.opp.Unit__c;
                     this.isUnitDisabled = true;
                     this.getUnitRecord();
+                    this.checkSpecialDiscount();
                 }
                 this.unitList = data.unitList == undefined || data.unitList == null ? null : data.unitList;
                 if (this.unitList) {
@@ -151,7 +252,7 @@ export default class CostSheetGeneration extends NavigationMixin(LightningElemen
         this.selectedUnitId = event.detail.id;
         console.log('selectedUnitId ===> ' + this.selectedUnitId);
         this.getUnitRecord();
-        // this.selectedUnitId = event.detail.recordId;
+        this.checkSpecialDiscount();
 
     }
 
@@ -160,7 +261,11 @@ export default class CostSheetGeneration extends NavigationMixin(LightningElemen
 
         getUnitRecord({ unitId: this.selectedUnitId })
             .then(result => {
-                console.log('Unit Record:', result);
+                console.log('UNIT RECORD:', JSON.stringify(result));
+                console.log('UNIT ID:', result?.Id);
+                console.log('FLOOR ID:', result?.Floor__c);
+                console.log('BLOCK ID:', result?.Floor__r?.Block__c);
+                console.log('PROJECT ID:', result?.Floor__r?.Block__r?.Project__r?.Name);
                 this.selectedUnitRec = result;
                 this.filteredTemplate();
             })
@@ -169,6 +274,7 @@ export default class CostSheetGeneration extends NavigationMixin(LightningElemen
             });
 
     }
+
     handleDiscountApplicable(event) {
         this.discountApplicable = event.detail.value;
 
@@ -316,6 +422,10 @@ export default class CostSheetGeneration extends NavigationMixin(LightningElemen
             return;
         }
         console.log('this.templateList==>', this.templateList);
+        console.log('selectedUnitId:', this.selectedUnitId);
+        console.log('selectedUnitRec:', JSON.stringify(this.selectedUnitRec));
+        console.log('searchKey:', this.searchKey);
+
 
         this.filteredTemplateOptions = this.templateList.reduce((acc, template) => {
 
@@ -323,7 +433,6 @@ export default class CostSheetGeneration extends NavigationMixin(LightningElemen
             console.log('blockLinking==>' + JSON.stringify(blockLinking));
             const unitLinking = template.Cost_Unit_Linking__r || [];
             console.log('unitLinking==>' + JSON.stringify(unitLinking));
-            if(template.Id == 'a0hBh000004BTkMIAW') debugger;
             console.log('Processing Template:', template.Name);
 
             for (var i = 0; i < blockLinking.length; i++) {
@@ -473,6 +582,10 @@ export default class CostSheetGeneration extends NavigationMixin(LightningElemen
                     this.firstScreen = false;
                     this.secondScreen = true;
 
+                    if (this.specialDiscountApplied) {
+                        this.applySpecialDiscount();
+                    }
+
                     console.log('Pricing Elements:', JSON.stringify(this.pricingElements));
                     console.log('Pricing Elements:', JSON.stringify(this.pricingElements));
 
@@ -589,7 +702,6 @@ export default class CostSheetGeneration extends NavigationMixin(LightningElemen
         debugger;
         this.secondScreen = false;
         this.thirdScreen = true;
-        this.handleFouth();
     }
 
     handleFourthScreenBack() {
@@ -600,6 +712,7 @@ export default class CostSheetGeneration extends NavigationMixin(LightningElemen
 
     handleParking(event) {
         debugger;
+        this.showAddParkingButton = false;
         this.getParkingDetails();
         this.parkingDetailTable = true;
     }
@@ -636,8 +749,44 @@ export default class CostSheetGeneration extends NavigationMixin(LightningElemen
                 this.showToast('Error', 'Unable to fetch parking details.', 'error');
             });
     }
+    recalculateAvailableParking() {
+        let openAvailable = 0;
+        let dependantAvailable = 0;
+        let independantAvailable = 0;
+        this.parkingDetails.forEach(item => {
+            const type = (item.Parking_Type__c || '').toLowerCase();
+            if (type === 'open') {
+                openAvailable = Number(item.Available_Parking__c) || 0;
+            }
+            if (type === 'dependent') {
+                dependantAvailable = Number(item.Available_Parking__c) || 0;
+            }
+            if (type === 'independent') {
+                independantAvailable = Number(item.Available_Parking__c) || 0;
+            }
+        });
+        this.rows.forEach(row => {
+            const type = (row.type || '').toLowerCase();
+            const quantity = Number(row.quantity) || 0;
 
-    handleParkingTypeChange(event) {
+            if (type === 'open') {
+                openAvailable -= quantity;
+            }
+
+            if (type === 'dependent') {
+                dependantAvailable -= quantity;
+            }
+
+            if (type === 'independent') {
+                independantAvailable -= quantity;
+            }
+        });
+        this.availableOpenParking = Math.max(0, openAvailable);
+        this.availableDependantParking = Math.max(0, dependantAvailable);
+        this.availableIndependantParking = Math.max(0, independantAvailable);
+    }
+
+    async handleParkingTypeChange(event) {
         debugger;
         const index = parseInt(event.target.dataset.index, 10);
         const id = event.target.dataset.id;
@@ -647,20 +796,41 @@ export default class CostSheetGeneration extends NavigationMixin(LightningElemen
         var quantity = 1;
 
         var currentRow = this.rows.find(item => item.id === id);
+        const oldQuantity = parseInt(currentRow.quantity, 10) || 0;
         console.log('currentRow ===> ' + currentRow);
 
         if (name == 'quantity') {
-            quantity = selectedType;
+            quantity = parseInt(selectedType, 10) || 0;
             parkingDetail = this.parkingDetails.find(item => item.Parking_Type__c === currentRow.type);
             if (currentRow) {
                 currentRow.quantity = quantity;
             }
         } else {
-            parkingDetail = this.parkingDetails.find(
-                item => item.Parking_Type__c === selectedType
-            );
+            parkingDetail = this.parkingDetails.find(item => item.Parking_Type__c === selectedType);
+        }
+        const quantityChange = quantity 
+        if (name == 'quantity' && parkingDetail && quantityChange !== 0) {
+            console.log('parkingDetail.Id => ', parkingDetail.Id);
+            console.log('oldQuantity => ', oldQuantity);
+            console.log('quantity => ', quantity);
+            console.log('quantityChange => ', quantityChange);
+
+            try {
+                await updateParkingAvailability({
+                    parkingDetailId: parkingDetail.Id,
+                    quantityChange: quantityChange
+                });
+
+                console.log('BACKEND UPDATE SUCCESS');
+
+            } catch (error) {
+                console.error('BACKEND UPDATE ERROR => ', error);
+                console.error('ERROR BODY => ', error.body);
+                console.error('ERROR MESSAGE => ', error?.body?.message);
+            }
         }
         console.log('Updated Rows:', JSON.stringify(currentRow));
+
 
         var amount = parkingDetail != null ? parkingDetail.Amount_Per_Parking__c : 0;
         var finalAmount = currentRow.quantity != '' && name != 'quantity' ? parkingDetail.Amount_Per_Parking__c * currentRow.quantity : name == 'quantity' && selectedType != null ? parkingDetail.Amount_Per_Parking__c * selectedType : 0;
@@ -669,11 +839,6 @@ export default class CostSheetGeneration extends NavigationMixin(LightningElemen
         `  console.log('Found Parking Detail:', parkingDetail);
             console.log('Amount for Selected Type:', amount);`
 
-
-        // const previousAmount = this.rows[index]?.amount || 0;
-        // this.totalAmount = this.totalAmount - previousAmount + finalAmount;
-
-        // Format the totalAmount
         this.formattedTotalAmount = new Intl.NumberFormat('en-IN').format(this.totalAmount);
         this.rows = this.rows.map((row, rowIndex) => {
             if (rowIndex === index) {
@@ -692,7 +857,7 @@ export default class CostSheetGeneration extends NavigationMixin(LightningElemen
             }
             return row;
         });
-
+        this.recalculateAvailableParking();
         this.updateAvailableOptions();
         console.log('Updated Rows:', this.rows);
         console.log('Updated Total Amount:', this.totalAmount);
@@ -755,71 +920,103 @@ export default class CostSheetGeneration extends NavigationMixin(LightningElemen
 
 @track discountAdded = false;
 @track discountByPricingMap = [];
-    handleFouth() {
-        debugger;
-        console.log('this.rows==>' + this.rows);
+    // handleFouth() {
+    //     debugger;
+    //     console.log('this.rows==>' + this.rows);
 
-        if (this.rows && this.rows.length > 0) {
-            this.isFourthNextDisabled = true;
-            createparkingElements({ parkingElements: this.rows, costId: this.newCostSheetId })
-                .then(result => {
-                    console.log('Apex result:', result);
-                    console.log('pricingElemets==>' + this.pricingElements);
-                    this.pricingElements = this.pricingElements.filter(element =>
-                        !element.parking_Element__c
-                    );
+    //     if (this.rows && this.rows.length > 0) {
+    //         this.isFourthNextDisabled = true;
+    //         createparkingElements({ parkingElements: this.rows, costId: this.newCostSheetId })
+    //             .then(result => {
+    //                 console.log('Apex result:', result);
+    //                 console.log('pricingElemets==>' + this.pricingElements);
+    //                 this.pricingElements = this.pricingElements.filter(element =>
+    //                     !element.parking_Element__c
+    //                 );
 
 
-                    this.pricingElements = [...this.pricingElements, ...result].map(item => ({
-                        ...item,
-                        ActualAmount: item.Amount__c
-                    }));
+    //                 this.pricingElements = [...this.pricingElements, ...result].map(item => ({
+    //                     ...item,
+    //                     ActualAmount: item.Amount__c
+    //                 }));
 
-                    console.log('Updated pricingElements:', this.pricingElements);
+    //                 console.log('Updated pricingElements:', this.pricingElements);
 
-                    this.secondScreen = false;
-                    this.fourthScreen = true;
-                    this.isFourthNextDisabled = false;
-                })
-                .catch(error => {
-                    console.error('Error during Apex call:', error);
-                    this.isFourthNextDisabled = false;
-                });
-        } else {
-            console.log('No parking element records to send.');
-        }
+    //                 this.secondScreen = false;
+    //                 this.fourthScreen = true;
+    //                 this.isFourthNextDisabled = false;
+    //             })
+    //             .catch(error => {
+    //                 console.error('Error during Apex call:', error);
+    //                 this.isFourthNextDisabled = false;
+    //             });
+    //     } else {
+    //         console.log('No parking element records to send.');
+    //     }
 
-        this.pricingElements = this.pricingElements.map(item => ({
-            ...item,
-            ActualAmount: item.Amount__c
-        }));
-        //this.discountAdded = this.pricingElements.some(item => item.Discount_Amount__c != null);
+    //     this.pricingElements = this.pricingElements.map(item => ({
+    //         ...item,
+    //         ActualAmount: item.Amount__c
+    //     }));
+    //     //this.discountAdded = this.pricingElements.some(item => item.Discount_Amount__c != null);
 
-        // this.discountByPricingMap = [];
-        // this.pricingElements.forEach(item => {
-        //     if (item.Discount_Amount__c != null) {
-        //         this.discountByPricingMap.push({
-        //             discountAmount: item.Discount_Amount__c,
-        //             id: item.Pricing_Element_Master__c
-        //         });
-        //     }
-        // });
+    //     // this.discountByPricingMap = [];
+    //     // this.pricingElements.forEach(item => {
+    //     //     if (item.Discount_Amount__c != null) {
+    //     //         this.discountByPricingMap.push({
+    //     //             discountAmount: item.Discount_Amount__c,
+    //     //             id: item.Pricing_Element_Master__c
+    //     //         });
+    //     //     }
+    //     // });
         
-        this.thirdScreen = false;
-        this.fourthScreen = true;
-    }
+    //     this.thirdScreen = false;
+    //     this.fourthScreen = true;
+    // }
 
+    // handleFouth() {
+    //     debugger;
+    //     console.log('Parking rows:', JSON.stringify(this.rows));
+    //     this.pricingElements = this.pricingElements.map(item => ({
+    //         ...item,
+    //         ActualAmount: item.Amount__c
+    //     }));
+
+    //     this.thirdScreen = false;
+    //     this.fourthScreen = true;
+    // }
     handleFouth() {
-        debugger;
-        console.log('Parking rows:', JSON.stringify(this.rows));
-        this.pricingElements = this.pricingElements.map(item => ({
-            ...item,
-            ActualAmount: item.Amount__c
-        }));
+    // Only rows where a parking type was actually selected
+    const validRows = (this.rows || []).filter(
+        r => r.type && Number(r.quantity) > 0
+    );
 
-        this.thirdScreen = false;
-        this.fourthScreen = true;
-    }
+    const nonParking = this.pricingElements.filter(
+        element => !element.parking_Element__c
+    );
+
+    const parkingPreview = validRows.map(r => ({
+        Id: `parking_${r.id}`, // temp key for the template only, never sent to Apex
+        Pricing_Element_Master__r: { Name: `Parking - ${r.type}` },
+        Quantity__c: Number(r.quantity),
+        Rate__c: Number(r.amount) || 0,
+        Amount__c: Number(r.finalAmount) || 0,
+        Unit__c: 'Nos',
+        PE_Type__c: 'Parking',
+        Type__c: 'Agreement',
+        CGST_Tax_Percentage__c: Number(r.carCGSTtax) || 0,
+        SGST_Tax_Percentage__c: Number(r.carSGSTtax) || 0,
+        parking_Element__c: true
+    }));
+
+    this.pricingElements = [...nonParking, ...parkingPreview].map(item => ({
+        ...item,
+        ActualAmount: item.Amount__c
+    }));
+
+    this.thirdScreen = false;
+    this.fourthScreen = true;
+}
 
     handleBack() {
         debugger;
@@ -909,21 +1106,34 @@ export default class CostSheetGeneration extends NavigationMixin(LightningElemen
         });
     }
 
-    submitForApproval() {
-        debugger;
-        console.log('Cost Sheet Id:', this.newCostSheetId);
-        submitCostSheetForApproval({ data: null, costSheetId: this.newCostSheetId })//JSON.stringify(this.discountByPricingMap)
-            .then(result => {
-                console.log('Apex call success', result);
-            })
-            .catch(error => {
-                console.error('Apex call failed', error);
-            });
+    // submitForApproval() {
+    //     debugger;
+    //     console.log('Cost Sheet Id:', this.newCostSheetId);
+    //     submitCostSheetForApproval({ data: null, costSheetId: this.newCostSheetId })//JSON.stringify(this.discountByPricingMap)
+    //         .then(result => {
+    //             console.log('Apex call success', result);
+    //         })
+    //         .catch(error => {
+    //             console.error('Apex call failed', error);
+    //         });
 
+    // }
+    
+    submitForApproval() {
+        console.log( 'Cost Sheet Id:', this.newCostSheetId);
+        return submitCostSheetForApproval({data: null,costSheetId: this.newCostSheetId })
+        .then(result => {
+            console.log('Approval submission success', result);
+            return result;
+        })
+        .catch(error => {
+            console.error('Approval submission failed', error);
+            throw error;
+        });
     }
 
     getPricingElementsForSave() {
-        return this.pricingElements.map(item => ({
+        return this.pricingElements.filter(item => !item.parking_Element__c).map(item => ({
             Id: item.Id,
             Cost_Sheet__c: item.Cost_Sheet__c,
             Pricing_Element_Master__c: item.Pricing_Element_Master__c,
@@ -945,11 +1155,9 @@ export default class CostSheetGeneration extends NavigationMixin(LightningElemen
     getRateForSave(item) {
         const quantity = parseFloat(item.Quantity__c) || 0;
         const amount = parseFloat(item.Amount__c) || 0;
-
         if (quantity > 0 && amount > 0) {
             return amount / quantity;
         }
-
         return item.Rate__c;
     }
 

@@ -5,14 +5,26 @@
         <div class="team-header">
             <h1 class="team-title">My Team</h1>
 
-            <button class="add-exec-btn"
-                    type="button"
-                    onclick={handleAddExecutive}>
-                <svg class="btn-plus" viewBox="0 0 16 16" aria-hidden="true">
-                    <path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"></path>
-                </svg>
-                <span>Add Executive</span>
-            </button>
+            <!-- Add Executive once the partnership is Exclusive; until then a note in its place says so -->
+            <template lwc:if={canAddExecutive}>
+                <button class="add-exec-btn"
+                        type="button"
+                        onclick={handleAddExecutive}>
+                    <svg class="btn-plus" viewBox="0 0 16 16" aria-hidden="true">
+                        <path d="M8 2v12M2 8h12" stroke="currentColor" stroke-width="1.6" stroke-linecap="round" fill="none"></path>
+                    </svg>
+                    <span>Add Executive</span>
+                </button>
+            </template>
+            <template lwc:elseif={showExclusiveNote}>
+                <p class="exclusive-note" role="note">
+                    <svg class="exclusive-note-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                        <rect x="5" y="10.5" width="14" height="10" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"></rect>
+                        <path d="M8.5 10.5V7.5a3.5 3.5 0 0 1 7 0v3" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+                    </svg>
+                    <span>{labels.exclusiveOnly}</span>
+                </p>
+            </template>
         </div>
 
         <p class="team-subtitle">
@@ -23,12 +35,19 @@
             throughout your property search.
         </p>
 
+        <template lwc:if={error}>
+            <div class="alert-banner error-banner" role="alert">
+                <lightning-icon icon-name="utility:error" size="x-small" class="alert-icon"></lightning-icon>
+                <span class="alert-text">{error}</span>
+            </div>
+        </template>
+
         <!-- ================= HERO CARD ================= -->
         <div class="hero-card">
             <div class="hero-left">
-                <div class="hero-avatar">AM</div>
+                <div class="hero-avatar" aria-hidden="true">{partnerInitials}</div>
                 <div class="hero-info">
-                    <h2 class="hero-name">Arjun Mehta</h2>
+                    <h2 class="hero-name">{partnerName}</h2>
                     <p class="hero-role">Principal Partner •<br/>Channel Lead</p>
                 </div>
             </div>
@@ -36,11 +55,11 @@
             <div class="hero-stats">
                 <div class="stat-box">
                     <span class="stat-label">TOTAL LEADS</span>
-                    <span class="stat-value">{stats.totalLeads}</span>
+                    <span class="stat-value">{leadsDisplay}</span>
                 </div>
                 <div class="stat-box">
                     <span class="stat-label">BOOKINGS</span>
-                    <span class="stat-value">{stats.totalBookings}</span>
+                    <span class="stat-value">{bookingsDisplay}</span>
                 </div>
                 <div class="stat-box">
                     <span class="stat-label">EXECUTIVES</span>
@@ -67,19 +86,23 @@
             </div>
         </div>
 
+        <template lwc:if={hasNoTeam}>
+            <p class="empty-state">You don't have any executives in your team yet.</p>
+        </template>
+
         <template lwc:if={hasNoResults}>
             <p class="empty-state">No team members match "{searchKey}".</p>
         </template>
 
         <div class="members-grid">
             <template for:each={pagedMembers} for:item="member">
-                <div key={member.userId} class="member-card">
+                <div key={member.accountId} class="member-card">
 
                     <div class="member-header">
-                        <div class={member.avatarClass}>{member.initials}</div>
+                        <div class={member.avatarClass} aria-hidden="true">{member.initials}</div>
                         <div class="member-info">
                             <h3 class="member-name">{member.fullName}</h3>
-                            <p class="member-role">{member.role}</p>
+                            <p class="member-role">Executive</p>
                         </div>
                     </div>
 
@@ -139,6 +162,6 @@
     </div>
 
     <template lwc:if={showAddMember}>
-        <c-partner-web-portal-add-member onclose={handleCloseAddMember}></c-partner-web-portal-add-member>
+        <c-partner-web-portal-add-member onclose={handleCloseAddMember} onmemberadded={handleMemberAdded}></c-partner-web-portal-add-member>
     </template>
 </template>

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Designation__c</fullName>
+    <description>Blank: a stage shared by the internal team. A designation key: the own release of that designation.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Blank = shared by the internal team. Filled = the own payout stage of that designation.</inlineHelpText>
+    <label>Designation Key</label>
+    <length>80</length>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

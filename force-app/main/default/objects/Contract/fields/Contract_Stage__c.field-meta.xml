@@ -1,0 +1,41 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Contract_Stage__c</fullName>
+    <description>Where a channel partner&apos;s exclusive agent contract is: Draft (generated, verified by the CP Manager and the Head of Sales), Sent for Signature (the partner downloads it on the portal and signs it offline), Signed or Not Signed (recorded by the CP Executive; Not Signed generates a new draft), Completed (the signed scan and the contract dates are in).</description>
+    <inlineHelpText>Draft → Sent for Signature (when the CP Manager closes the verification task) → Signed / Not Signed (CP Executive) → Completed (signed scan uploaded, start and end dates entered).</inlineHelpText>
+    <label>Contract Stage</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Draft</fullName>
+                <default>true</default>
+                <label>Draft</label>
+            </value>
+            <value>
+                <fullName>Sent for Signature</fullName>
+                <default>false</default>
+                <label>Sent for Signature</label>
+            </value>
+            <value>
+                <fullName>Signed</fullName>
+                <default>false</default>
+                <label>Signed</label>
+            </value>
+            <value>
+                <fullName>Not Signed</fullName>
+                <default>false</default>
+                <label>Not Signed</label>
+            </value>
+            <value>
+                <fullName>Completed</fullName>
+                <default>false</default>
+                <label>Completed</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

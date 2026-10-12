@@ -25,6 +25,11 @@
                 <default>false</default>
                 <label>Account</label>
             </value>
+            <value>
+                <fullName>Case</fullName>
+                <default>false</default>
+                <label>Case</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

@@ -66,6 +66,12 @@
                 <identifier>RecordPhone_Number__cField</identifier>
             </fieldInstance>
         </itemInstances>
+        <itemInstances>
+            <fieldInstance>
+                <fieldItem>Record.Location__c</fieldItem>
+                <identifier>RecordLocation__cField</identifier>
+            </fieldInstance>
+        </itemInstances>
         <name>Facet-496d5ccd-ec97-4ca4-80bb-f13048331571</name>
         <type>Facet</type>
     </flexiPageRegions>
@@ -296,16 +302,6 @@
         <type>Facet</type>
     </flexiPageRegions>
     <flexiPageRegions>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Correspondence_Address__c</fieldItem>
-                <identifier>RecordCorrespondence_Address__cField</identifier>
-            </fieldInstance>
-        </itemInstances>
         <name>Facet-52474476-e0d7-4e0d-af30-a892d74aefb8</name>
         <type>Facet</type>
     </flexiPageRegions>

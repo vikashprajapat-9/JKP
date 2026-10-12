@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Sent to a channel partner when its site visit request is approved (Partner Portal Setting: Visit Confirmed Email Template). [[Customer]], [[Visit Date]] and [[Visit Time]] are filled in by PartnerSiteVisitService.</description>
+    <encodingKey>UTF-8</encodingKey>
+    <name>Partner Portal Site Visit Confirmed</name>
+    <style>none</style>
+    <subject>Your site visit with [[Customer]] is confirmed</subject>
+    <textOnly>Dear {!Visit__c.OwnerFullName},
+
+John Keells Properties has approved your site visit request for [[Customer]]. The site visit is scheduled as shown below.
+
+Customer: [[Customer]]
+Project: {!Visit__c.Project__c}
+Date: [[Visit Date]]
+Time: [[Visit Time]]
+
+AFTER THE VISIT
+Once the date and time of the visit have passed, record the outcome on the Partner Portal: Leads → Edit → Visited, then choose this visit.
+If the customer visited, click Update stage. The JKP CP team then takes the lead over.
+If the customer did not come, click Customer did not visit. You can then request a new site visit.
+To change the date or time, please contact the JKP CP team.
+
+Thanks,
+John Keells Properties</textOnly>
+    <type>custom</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

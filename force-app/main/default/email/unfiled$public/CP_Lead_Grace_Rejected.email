@@ -1,0 +1,8 @@
+Dear partner,
+
+Your request for more time on this lead was not approved. The lead keeps its freezing date.
+
+Lead: {!Partner_Access_Request__c.Lead__c}
+More days asked: {!Partner_Access_Request__c.Extension_Days__c}
+
+John Keells Properties

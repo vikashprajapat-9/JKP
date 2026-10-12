@@ -1,0 +1,13 @@
+Hello,
+
+A Channel Partner has submitted a customer that already exists with Direct Sales for the same project. The Channel Partner's lead is waiting for the approval of both the Direct Sales Manager and the JKP CP Manager.
+
+Lead: {!Lead.Name}
+Mobile: {!Lead.Phone}
+Project: {!Lead.Project__c}
+Channel Partner: {!Lead.Channel_Partner__c}
+Submitted by: {!Lead.OwnerFullName}
+
+Approve or reject it here: {!ApprovalRequest.External_URL}
+
+If both of you approve, the Channel Partner's lead moves to Assigned. If either of you rejects it, the lead stays Rejected and the Channel Partner is told.

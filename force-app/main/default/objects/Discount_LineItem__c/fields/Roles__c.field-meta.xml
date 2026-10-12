@@ -8,38 +8,6 @@
     <type>Picklist</type>
     <valueSet>
         <restricted>true</restricted>
-        <valueSetDefinition>
-            <sorted>false</sorted>
-            <value>
-                <fullName>MD</fullName>
-                <default>false</default>
-                <label>MD</label>
-            </value>
-            <value>
-                <fullName>Sales Head</fullName>
-                <default>false</default>
-                <label>Sales Head</label>
-            </value>
-            <value>
-                <fullName>Sales Manager</fullName>
-                <default>false</default>
-                <label>Sales Manager</label>
-            </value>
-            <value>
-                <fullName>Sales Executive</fullName>
-                <default>false</default>
-                <label>Sales Executive</label>
-            </value>
-            <value>
-                <fullName>System Administrator</fullName>
-                <default>false</default>
-                <label>System Administrator</label>
-            </value>
-            <value>
-                <fullName>Finance Head</fullName>
-                <default>false</default>
-                <label>Finance Head</label>
-            </value>
-        </valueSetDefinition>
+        <valueSetName>Roles</valueSetName>
     </valueSet>
 </CustomField>

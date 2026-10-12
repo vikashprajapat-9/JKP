@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CP_Freeze_Date__c</fullName>
+    <description>Lead Freezing Window: the day a channel partner lead moves to the Partnership Queue when no site visit has been done by then. Set when the lead is assigned to the channel partner (Partner Portal Setting: Lead Freeze Days); a grace period the CP Manager approves moves it on.</description>
+    <inlineHelpText>The day the lead moves to the Partnership Queue if no site visit has been done by then (Lead Freezing Window).</inlineHelpText>
+    <label>Freezing Date</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Date</type>
+</CustomField>

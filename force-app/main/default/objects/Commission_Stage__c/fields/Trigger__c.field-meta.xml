@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Trigger__c</fullName>
+    <description>The DeveloperName of the Commission Payout Event (custom metadata) that releases this stage.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>The key of the payout event in the Commission Payout Event custom metadata.</inlineHelpText>
+    <label>Payout Event Key</label>
+    <length>80</length>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

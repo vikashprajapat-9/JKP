@@ -1,0 +1,26 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Welcome email of the Partner Portal site (Administration, Emails): sent when a channel partner&apos;s login is created, with the username and the link to set the password.</description>
+    <encodingKey>UTF-8</encodingKey>
+    <name>Partner Portal Welcome</name>
+    <style>none</style>
+    <subject>Welcome to the John Keells Properties Partner Portal</subject>
+    <textOnly>Dear {!Receiving_User.FirstName} {!Receiving_User.LastName},
+
+Your login to the John Keells Properties Partner Portal has been created.
+
+Your username: {!Receiving_User.Username}
+
+Set your password here to get started:
+{!Community_Url}
+
+The link works once and for a limited time. If it has expired, open the Partner Portal login page and choose &quot;Forgot Password?&quot; to get a new one.
+
+Thanks,
+John Keells Properties
+
+This is an automated message from the John Keells Properties Partner Portal. If you did not register as a channel partner, please ignore it.</textOnly>
+    <type>custom</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

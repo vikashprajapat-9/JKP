@@ -32,6 +32,12 @@
         </section>
 
         <!-- ================= KPI TILES ================= -->
+        <template lwc:if={error}>
+            <div class="alert-banner error-banner" role="alert">
+                <lightning-icon icon-name="utility:error" size="x-small" class="alert-icon"></lightning-icon>
+                <span class="alert-text">{error}</span>
+            </div>
+        </template>
         <div class="kpi-grid">
             <template for:each={kpis} for:item="kpi">
                 <div key={kpi.key} class="kpi">
@@ -39,7 +45,7 @@
                         <lightning-icon icon-name={kpi.icon} size="x-small" alternative-text={kpi.label}></lightning-icon>
                     </span>
                     <p class="kpi-label">{kpi.label}</p>
-                    <p class="kpi-value">{kpi.value}</p>
+                    <p class={kpi.valueClass}>{kpi.value}</p>
                 </div>
             </template>
         </div>

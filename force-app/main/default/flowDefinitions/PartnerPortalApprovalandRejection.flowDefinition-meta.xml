@@ -1,0 +1,8 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!-- FlowDefinition: activation is controlled by <status>Active</status> in the
+     corresponding .flow-meta.xml. The activeVersionNumber field was removed
+     because it referenced a source-org version number (8) that does not exist
+     in the target org after a fresh deployment, causing a deployment error.
+     Salesforce API v51+ activates the deployed Flow version automatically when
+     the Flow XML carries <status>Active</status>. -->
+<FlowDefinition xmlns="http://soap.sforce.com/2006/04/metadata"/>

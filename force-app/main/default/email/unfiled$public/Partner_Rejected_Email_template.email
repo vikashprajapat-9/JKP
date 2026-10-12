@@ -1,0 +1,6 @@
+Dear <strong>{!Account.Name}</strong>
+<p> Your Application number:{!Account.Id} is rejected. </p> 
+
+
+<p>Thanks</p> 
+<p>John Keels Properties.</p>

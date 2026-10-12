@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>The events a payout stage can be paid on (&quot;paid when&quot;): one record per event, with the stage types it is offered for, how the system recognises it and whether it needs a percentage, a tranche number or an instalment.</description>
+    <label>Commission Payout Event</label>
+    <pluralLabel>Commission Payout Events</pluralLabel>
+    <visibility>Public</visibility>
+</CustomObject>

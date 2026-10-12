@@ -1,0 +1,7 @@
+<?xml version="1.0"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+	<isExposed>true</isExposed>
+	<apiVersion>68.0</apiVersion>
+	<masterLabel>Deed of assignment Proof of communication</masterLabel>
+	<description>Deed of assignment Proof of communication this will store all files</description>
+</LightningComponentBundle>

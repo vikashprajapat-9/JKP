@@ -1,0 +1,470 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Upcoming Payment Milestone – Pre-Intimation</title>
+</head>
+
+<body style="
+    margin:0;
+    padding:0;
+    background-color:#eef1f5;
+    font-family:Arial, Helvetica, sans-serif;
+    color:#17233f;
+">
+
+<table width="100%" cellpadding="0" cellspacing="0" border="0"
+       style="background-color:#eef1f5; padding:35px 12px;">
+
+<tr>
+<td align="center">
+
+    <!-- MAIN CONTAINER -->
+    <table width="700" cellpadding="0" cellspacing="0" border="0"
+           style="
+               width:100%;
+               max-width:700px;
+               background-color:#ffffff;
+           ">
+
+        <!-- ============================== -->
+        <!-- BRAND HEADER -->
+        <!-- ============================== -->
+
+        <tr>
+            <td style="
+                background-color:#101f3d;
+                padding:30px 38px;
+            ">
+
+                <table width="100%" cellpadding="0" cellspacing="0" border="0">
+                    <tr>
+
+                        <!-- LOGO -->
+                        <td valign="middle">
+                            <img src="{{JKP_LOGO_WHITE}}"
+                                 alt="John Keells Properties"
+                                 width="190"
+                                 style="
+                                     display:block;
+                                     width:190px;
+                                     max-width:190px;
+                                     height:auto;
+                                     border:0;
+                                 ">
+                        </td>
+
+                        <!-- LABEL -->
+                        <td align="right" valign="middle">
+
+                            <div style="
+                                font-size:9px;
+                                line-height:14px;
+                                color:#b8c2d1;
+                                letter-spacing:2px;
+                                text-transform:uppercase;
+                                font-weight:bold;
+                            ">
+                                PAYMENT NOTIFICATION
+                            </div>
+
+                            <div style="
+                                font-size:12px;
+                                line-height:18px;
+                                color:#ffffff;
+                                font-weight:bold;
+                                letter-spacing:0.5px;
+                                margin-top:3px;
+                            ">
+                                PRE-INTIMATION
+                            </div>
+
+                        </td>
+
+                    </tr>
+                </table>
+
+            </td>
+        </tr>
+
+        <!-- GOLD ACCENT -->
+
+        <tr>
+            <td style="
+                background-color:#c6a15b;
+                height:4px;
+                font-size:0;
+                line-height:0;
+            ">
+                &nbsp;
+            </td>
+        </tr>
+
+
+        <!-- ============================== -->
+        <!-- HERO -->
+        <!-- ============================== -->
+
+        <tr>
+            <td style="
+                padding:40px 38px 25px 38px;
+            ">
+
+                <div style="
+                    font-size:10px;
+                    line-height:16px;
+                    color:#a18751;
+                    text-transform:uppercase;
+                    letter-spacing:2px;
+                    font-weight:bold;
+                ">
+                    UPCOMING PAYMENT
+                </div>
+
+                <div style="
+                    font-size:27px;
+                    line-height:36px;
+                    color:#101f3d;
+                    font-weight:bold;
+                    margin-top:8px;
+                ">
+                    Upcoming Payment<br>
+                    Milestone – Pre-Intimation
+                </div>
+
+                <div style="
+                    font-size:14px;
+                    line-height:24px;
+                    color:#5d6878;
+                    margin-top:17px;
+                ">
+                    Dear <strong>{!Contact.Name}</strong>,
+                    <br><br>
+
+                    This is a pre-intimation regarding your upcoming
+                    payment milestone/tranche under your booking.
+                 
+                </div>
+
+            </td>
+        </tr>
+
+
+        <!-- ============================== -->
+        <!-- PAYMENT DETAILS -->
+        <!-- ============================== -->
+
+        <tr>
+            <td style="
+                padding:0 38px 30px 38px;
+            ">
+
+                <div style="
+                    font-size:10px;
+                    line-height:16px;
+                    color:#a18751;
+                    text-transform:uppercase;
+                    letter-spacing:1.8px;
+                    font-weight:bold;
+                    margin-bottom:10px;
+                ">
+                    PAYMENT DETAILS
+                </div>
+
+                <table width="100%"
+                       cellpadding="0"
+                       cellspacing="0"
+                       border="0"
+                       style="
+                           border:1px solid #dfe4ea;
+                           border-collapse:collapse;
+                       ">
+
+                    <!-- PROJECT -->
+
+                    <tr>
+                        <td width="42%" style="
+                            background-color:#f8f9fb;
+                            padding:14px 16px;
+                            border-bottom:1px solid #dfe4ea;
+                            font-size:12px;
+                            color:#6c7685;
+                            font-weight:bold;
+                        ">
+                            Project
+                        </td>
+
+                        <td style="
+                            padding:14px 16px;
+                            border-bottom:1px solid #dfe4ea;
+                            font-size:13px;
+                            color:#101f3d;
+                            font-weight:bold;
+                        ">
+                            {!Project.Name}
+                        </td>
+                    </tr>
+
+                    <!-- UNIT -->
+
+                    <tr>
+                        <td style="
+                            background-color:#f8f9fb;
+                            padding:14px 16px;
+                            border-bottom:1px solid #dfe4ea;
+                            font-size:12px;
+                            color:#6c7685;
+                            font-weight:bold;
+                        ">
+                            Unit
+                        </td>
+
+                        <td style="
+                            padding:14px 16px;
+                            border-bottom:1px solid #dfe4ea;
+                            font-size:13px;
+                            color:#101f3d;
+                            font-weight:bold;
+                        ">
+                            {!Unit.Name}
+                        </td>
+                    </tr>
+
+                    <!-- MILESTONE -->
+
+                    <tr>
+                        <td style="
+                            background-color:#f8f9fb;
+                            padding:14px 16px;
+                            border-bottom:1px solid #dfe4ea;
+                            font-size:12px;
+                            color:#6c7685;
+                            font-weight:bold;
+                        ">
+                            Milestone / Tranche
+                        </td>
+
+                        <td style="
+                            padding:14px 16px;
+                            border-bottom:1px solid #dfe4ea;
+                            font-size:13px;
+                            color:#101f3d;
+                        ">
+                            {!Milestone_Name}
+                        </td>
+                    </tr>
+
+                 
+
+                </table>
+
+            </td>
+        </tr>
+
+
+        <!-- ============================== -->
+        <!-- IMPORTANT NOTICE -->
+        <!-- ============================== -->
+
+        <tr>
+            <td style="
+                padding:0 38px 35px 38px;
+            ">
+
+                <table width="100%"
+                       cellpadding="0"
+                       cellspacing="0"
+                       border="0"
+                       style="
+                           background-color:#f7f5ef;
+                       ">
+
+                    <tr>
+
+                        <td width="4"
+                            style="
+                                background-color:#c6a15b;
+                                font-size:0;
+                            ">
+                            &nbsp;
+                        </td>
+
+                        <td style="
+                            padding:18px 21px;
+                        ">
+
+                            <div style="
+                                font-size:9px;
+                                line-height:14px;
+                                color:#9b8250;
+                                text-transform:uppercase;
+                                letter-spacing:1.7px;
+                                font-weight:bold;
+                            ">
+                                IMPORTANT
+                            </div>
+
+                            <div style="
+                                font-size:13px;
+                                line-height:21px;
+                                color:#4d5968;
+                                margin-top:6px;
+                            ">
+                                We request you to kindly take note of the
+                                upcoming due date and make the required
+                                payment on or before the scheduled date
+                                to ensure a smooth payment process.
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                </table>
+
+            </td>
+        </tr>
+
+
+        <!-- ============================== -->
+        <!-- CLOSING MESSAGE -->
+        <!-- ============================== -->
+
+        <tr>
+            <td style="
+                padding:0 38px 35px 38px;
+            ">
+
+                <div style="
+                    font-size:14px;
+                    line-height:24px;
+                    color:#5d6878;
+                ">
+
+                    A formal payment reminder will be shared closer to
+                    the due date, if applicable.
+
+                    <br><br>
+
+                    For any clarification or assistance, please contact
+                    our Customer Service team.
+
+                    <br><br>
+
+                    <strong style="color:#101f3d;">
+                        Regards,
+                    </strong>
+                    <br>
+                    Customer Service Team
+                    <br>
+                    {!Company__c.Name}
+
+                </div>
+
+            </td>
+        </tr>
+
+
+        <!-- ============================== -->
+        <!-- FOOTER -->
+        <!-- ============================== -->
+
+        <tr>
+            <td style="
+                background-color:#101f3d;
+                padding:30px 38px;
+            ">
+
+                <table width="100%"
+                       cellpadding="0"
+                       cellspacing="0"
+                       border="0">
+
+                    <tr>
+
+                        <td align="center">
+
+                            <div style="
+                                background-color:#ffffff;
+                                display:inline-block;
+                                padding:9px 15px;
+                            ">
+
+                                <img src="{{JKP_LOGO_BLUE}}"
+                                     alt="John Keells Properties"
+                                     width="165"
+                                     style="
+                                         display:block;
+                                         width:165px;
+                                         max-width:165px;
+                                         height:auto;
+                                         border:0;
+                                     ">
+
+                            </div>
+
+                            <div style="
+                                font-size:17px;
+                                line-height:24px;
+                                color:#ffffff;
+                                font-style:italic;
+                                margin-top:15px;
+                            ">
+                                Creating New Worlds
+                            </div>
+
+                            <div style="
+                                font-size:10px;
+                                line-height:17px;
+                                color:#aeb8c7;
+                                margin-top:12px;
+                            ">
+                                Customer Service Team
+                            </div>
+
+                        </td>
+
+                    </tr>
+
+                </table>
+
+            </td>
+        </tr>
+
+
+        <!-- SYSTEM FOOTER -->
+
+        <tr>
+            <td style="
+                background-color:#f7f8fa;
+                padding:17px 25px;
+            ">
+
+                <div style="
+                    text-align:center;
+                    font-size:10px;
+                    line-height:17px;
+                    color:#929baa;
+                ">
+
+                    This is an automated payment notification.
+
+                    <br>
+
+                    {!Company__c.Name}
+
+                </div>
+
+            </td>
+        </tr>
+
+    </table>
+
+</td>
+</tr>
+
+</table>
+
+</body>
+</html>

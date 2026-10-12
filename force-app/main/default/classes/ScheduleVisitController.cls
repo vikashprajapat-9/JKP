@@ -1,7 +1,7 @@
 public with sharing class ScheduleVisitController {
 
     @AuraEnabled
-    public static Id createVisit(Id leadId,Id opportunityId,Id projectId,String requirementType,Date visitDate,String visitTime,String remarks) {
+    public static Id createVisit(Id leadId,Id opportunityId,Id projectId,String requirementType,Date visitDate,String visitTime,String remarks, Id parentVisitId) {
         if (projectId == null) {
             throw new AuraHandledException('Project is required.');
         }
@@ -19,18 +19,25 @@ public with sharing class ScheduleVisitController {
         }
 
         Time parsedVisitTime;
-
         try {
-            List<String> parts = visitTime.split(':');
-            Integer hour = Integer.valueOf(parts[0]);
-            Integer minute = Integer.valueOf(parts[1]);
+            String timeValue = visitTime.trim().toUpperCase();
+            Integer hour;
+            Integer minute;
             Integer second = 0;
-
-            if (parts.size() > 2) {
-                second = Integer.valueOf(parts[2].split('\\.')[0]);
-            }
-
-            parsedVisitTime = Time.newInstance(hour,minute,second, 0);
+                Boolean isPM = timeValue.endsWith('PM');
+                timeValue = timeValue.replace('AM', '').replace('PM', '').trim();
+                List<String> parts = timeValue.split(':');
+                hour = Integer.valueOf(parts[0]);
+                minute = Integer.valueOf(parts[1]);
+                if (parts.size() > 2) {
+                    second = Integer.valueOf(parts[2].split('\\.')[0]);
+                }
+                if (isPM && hour != 12) {
+                    hour += 12;
+                } else if (!isPM && hour == 12) {
+                    hour = 0;
+                }
+            parsedVisitTime = Time.newInstance(hour, minute, second, 0);
 
         } catch (Exception e) {
             throw new AuraHandledException('Invalid Visit Time: ' + visitTime);
@@ -45,38 +52,71 @@ public with sharing class ScheduleVisitController {
         visit.Visit_Date__c = visitDate;
         visit.Visit_Time__c = parsedVisitTime;
         visit.Remarks__c = remarks;
-
+        if (parentVisitId != null) {
+            visit.Visit__c = parentVisitId;
+        }
+        visit.Status__c = 'Upcoming';
         insert visit;
+        if (parentVisitId != null) {
+            Visit__c oldVisit = [SELECT Id, Status__c FROM Visit__c WHERE Id = :parentVisitId LIMIT 1];
+            oldVisit.Status__c = 'Rescheduled';
+            update oldVisit;
+        }
 
-        Lead lead = [ SELECT Id, Status  FROM Lead WHERE Id = :leadId  LIMIT 1 ];
-        Integer visitCount = [ SELECT COUNT()  FROM Visit__c WHERE Lead__c = :leadId ];
+        if (leadId != null) {
+        Lead lead = [SELECT Id, Status FROM Lead WHERE Id = :leadId LIMIT 1 ];
+        Integer visitCount = [SELECT COUNT()  FROM Visit__c WHERE Lead__c = :leadId ];
+
         if (visitCount == 1) {
             lead.Status = 'Site Visit Scheduled';
             update lead;
         }
+    }
         return visit.Id;
     }
     @AuraEnabled(cacheable=true)
+    public static Lead getLeadDetails(Id leadId) {
+        if (leadId == null) {
+            return null;
+        }
+        return [ SELECT Id,Unit_Type__c, Project__c FROM Lead WHERE Id = :leadId LIMIT 1];
+    }
+    @AuraEnabled(cacheable=true)
+    public static Opportunity getOpportunityDetails(Id opportunityId) {
+
+        if (opportunityId == null) {
+            return null;
+        }
+
+        return [ SELECT Id,Project__c, Project__r.Name, Unit__c, Unit__r.Name,Unit__r.Unit_Type__c FROM Opportunity WHERE Id = :opportunityId LIMIT 1 ];
+    }
+    @AuraEnabled(cacheable=true)
     public static List<Visit__c> getVisits(Id recordId) {
+        List<Visit__c> result = new List<Visit__c>();
+
         if (recordId == null) {
-            return new List<Visit__c>();
+            return result;
         }
         String objectName = recordId.getSObjectType().getDescribe().getName();
+        List<Visit__c> visitRecords;
         if (objectName == 'Lead') {
-            return [SELECT Id,Name,Visit_Date__c, Visit_Time__c, Remarks__c,Requirement_Type__c,  Status__c,Project__c,Project__r.Name
+            visitRecords = [SELECT Id,Name,Visit_Date__c, Visit_Time__c, Remarks__c,Requirement_Type__c,  Status__c,Project__c,Project__r.Name
                 FROM Visit__c
                 WHERE Lead__c = :recordId
                 ORDER BY Visit_Date__c DESC, Visit_Time__c DESC
             ];
         } else if (objectName == 'Opportunity') {
-            return [
+            visitRecords = [
                 SELECT Id,Name, Visit_Date__c, Visit_Time__c,Remarks__c, Requirement_Type__c, Status__c, Project__c, Project__r.Name
                 FROM Visit__c
                 WHERE Opportunity__c = :recordId
                 ORDER BY Visit_Date__c DESC, Visit_Time__c DESC
             ];
         }
-        return new List<Visit__c>();
+        for (Visit__c visit : visitRecords) {
+            result.add(visit);
+        }
+        return result;
     }
     @AuraEnabled
     public static void updateVisitStatus( Id visitId,String status ) {
@@ -101,4 +141,6 @@ public with sharing class ScheduleVisitController {
                 }
             }
         }
+
+    
 }

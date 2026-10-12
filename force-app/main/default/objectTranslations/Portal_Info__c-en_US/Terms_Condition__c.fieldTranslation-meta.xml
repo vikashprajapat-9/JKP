@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomFieldTranslation xmlns="http://soap.sforce.com/2006/04/metadata">
+    <help><!-- Shown on the Channel Partner Portal. Images are not shown there, so use text, lists and links only. --></help>
+    <label><!-- Terms &amp; Condition --></label>
+    <name>Terms_Condition__c</name>
+</CustomFieldTranslation>

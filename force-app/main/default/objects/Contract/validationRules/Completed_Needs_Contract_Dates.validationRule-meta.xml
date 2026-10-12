@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Completed_Needs_Contract_Dates</fullName>
+    <active>true</active>
+    <description>A Completed contract needs the start and end dates of the signed contract, the end after the start.</description>
+    <errorConditionFormula>AND(ISPICKVAL(Contract_Stage__c, &quot;Completed&quot;), OR(ISBLANK(Contract_Start__c), ISBLANK(Contract_End__c), Contract_End__c &lt; Contract_Start__c))</errorConditionFormula>
+    <errorDisplayField>Contract_End__c</errorDisplayField>
+    <errorMessage>Enter the start and end dates of the signed contract (the end date after the start date).</errorMessage>
+</ValidationRule>

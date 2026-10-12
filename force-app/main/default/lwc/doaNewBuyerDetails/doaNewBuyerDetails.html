@@ -1,0 +1,83 @@
+<template>
+    <div class="visit-modal">
+        <!-- ================= HEADER WITH LOGO ================= -->
+        <div class="modal-header">
+            <div class="logo-container">
+                <img src={logoWhite} alt="John Keells Logo" class="logo" />
+            </div>
+            <div class="header-title">{pageTitle}</div>
+        </div>
+
+        <!-- ================= BODY / FORM ================= -->
+        <div class="modal-body">
+            <template if:true={isLoading}>
+                <lightning-spinner alternative-text="Loading Details..." size="medium"></lightning-spinner>
+            </template>
+
+            <div class="form-container">
+                <!-- SECTION 1: NEW BUYER DETAILS -->
+                <h2 class="section-title">1. New Buyer Personal Details</h2>
+                <div class="slds-grid slds-gutters slds-wrap slds-m-bottom_small">
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-input label="New Buyer Full Name" value={buyerName} onchange={handleNameChange} required></lightning-input>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-input type="email" label="New Buyer Email" value={buyerEmail} onchange={handleEmailChange} required></lightning-input>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-input type="tel" label="New Buyer Phone" value={buyerPhone} onchange={handlePhoneChange} required></lightning-input>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-input label="National Identity Card (NIC)" value={nic} onchange={handleNicChange} ></lightning-input>
+                    </div>
+                    <div class="slds-col slds-size_1-of-1">
+                        <lightning-textarea label="Residential Address" value={address} onchange={handleAddressChange} ></lightning-textarea>
+                    </div>
+                </div>
+
+                <!-- SECTION 2: SPECIAL DECLARATIONS -->
+                <h2 class="section-title slds-m-top_medium">2. Special Declarations</h2>
+                <div class="slds-grid slds-gutters slds-m-bottom_small">
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-input type="checkbox" label="Is Dual Citizen?" checked={isDualCitizen} onchange={handleDualCitizenChange}></lightning-input>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-input type="checkbox" label="Has Power of Attorney (POA)?" checked={hasPOA} onchange={handlePOAChange}></lightning-input>
+                    </div>
+                </div>
+
+                <!-- SECTION 3: FINANCIAL SETTLEMENT -->
+                <h2 class="section-title slds-m-top_medium">3. Financial Settlement</h2>
+                <div class="slds-grid slds-gutters slds-wrap">
+                    <div class="slds-col slds-size_1-of-1">
+                        <lightning-combobox 
+                            label="Amount Settlement Type" 
+                            value={settlementType} 
+                            options={settlementOptions} 
+                            placeholder="Select Settlement Type" 
+                            onchange={handleSettlementChange} 
+                           >
+                        </lightning-combobox>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-input type="number" formatter="currency" step="0.01" label="Pending Amount" value={pendingAmount} onchange={handlePendingAmountChange}></lightning-input>
+                    </div>
+                    <div class="slds-col slds-size_1-of-2">
+                        <lightning-input type="number" formatter="currency" step="0.01" label="Interest Amount" value={interestAmount} onchange={handleInterestAmountChange}></lightning-input>
+                    </div>
+                </div>
+            </div>
+        </div>
+
+        <!-- ================= FOOTER ================= -->
+        <div class="modal-footer">
+            <div class="footer-copyright">
+                🔒 John Keells Properties™ • All Rights Reserved
+            </div>
+            <div class="footer-actions">
+                <button class="footer-btn cancel-btn" onclick={handleCancel}>Cancel</button>
+                <button class="footer-btn primary-btn" onclick={handleSubmit} disabled={isSaving}>Save & Complete Task</button>
+            </div>
+        </div>
+    </div>
+</template>

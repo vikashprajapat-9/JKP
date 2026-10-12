@@ -25,6 +25,11 @@
                 <default>false</default>
                 <label>SFA - SFDC</label>
             </value>
+            <value>
+                <fullName>WEB - SFDC</fullName>
+                <default>false</default>
+                <label>WEB - SFDC</label>
+            </value>
         </valueSetDefinition>
     </valueSet>
 </CustomField>

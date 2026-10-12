@@ -4,6 +4,18 @@
     <objectMapping>
         <inputObject>Lead</inputObject>
         <mappingFields>
+            <inputField>Channel_Partner__c</inputField>
+            <outputField>Channel_Head__c</outputField>
+        </mappingFields>
+        <outputObject>Account</outputObject>
+    </objectMapping>
+    <objectMapping>
+        <inputObject>Lead</inputObject>
+        <mappingFields>
+            <inputField>Channel_Partner__c</inputField>
+            <outputField>Channel_Partner__c</outputField>
+        </mappingFields>
+        <mappingFields>
             <inputField>Normalised_Phone__c</inputField>
             <outputField>Normalised_Phone__c</outputField>
         </mappingFields>

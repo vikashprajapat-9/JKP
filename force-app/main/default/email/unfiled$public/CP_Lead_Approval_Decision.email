@@ -1,0 +1,11 @@
+Dear {!Lead.OwnerFullName},
+
+The customer you submitted on the John Keells Properties partner portal already exists with our Direct Sales team, so your lead needed the approval of the Direct Sales Manager and the JKP CP Manager.
+
+Lead: {!Lead.Name}
+Project: {!Lead.Project__c}
+Outcome: {!Lead.CP_Approval_Status__c}
+
+If it was approved, the lead is now Assigned in your Leads list on the partner portal, and you can schedule a site visit for it. If it was rejected, the lead is not created for you and no longer appears in your Leads list.
+
+John Keells Properties

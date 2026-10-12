@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Lead_Statuses__c</fullName>
+    <description>Shows leads in one of these Lead Status values, separated by commas (for example Assigned, In-Discussion). Leave blank for no status condition.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Lead Status values, separated by commas, as they are in the Lead Status picklist.</inlineHelpText>
+    <label>Lead Statuses</label>
+    <length>255</length>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

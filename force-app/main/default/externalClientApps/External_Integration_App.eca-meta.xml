@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ExternalClientApplication xmlns="http://soap.sforce.com/2006/04/metadata">
+    <contactEmail>vikash.utilitarianlabs@gmail.com</contactEmail>
+    <contactPhone>7023377001</contactPhone>
+    <distributionState>Local</distributionState>
+    <isProtected>false</isProtected>
+    <label>External Integration App</label>
+    <orgScopedExternalApp>00Dh20000002T9B:External_Integration_App</orgScopedExternalApp>
+</ExternalClientApplication>

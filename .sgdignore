@@ -11,3 +11,22 @@
 # System metadata
 **/appMenus/**
 **/installedPackages/**
+
+# Experience Cloud
+# Inaccessible Network infrastructure metadata:
+# The deployment user does not have administrative permissions to retrieve or deploy Network
+# records. Therefore, infrastructure metadata types that directly create or reference the Network
+# boundary (CustomSite, NavigationMenu, DigitalExperienceConfig, Audience, NetworkBranding)
+# are excluded from deployment. The target sandbox already has the Experience Cloud site created.
+#
+# Experience Cloud Site Content (ALLOWED):
+# **/digitalExperiences/** (DigitalExperienceBundle & DigitalExperience) IS PRESERVED and deployed.
+# It updates site views, pages, routes, and CMS content on the existing target-org site.
+# **/sites/**
+# **/navigationMenus/**
+# **/digitalExperienceConfigs/**
+# **/audience/**
+**/networkBranding/**
+
+# Secrets: contains an OAuth client secret, must never be deployed from source
+**/customMetadata/OneDriveAuthSetting.*.md-meta.xml
