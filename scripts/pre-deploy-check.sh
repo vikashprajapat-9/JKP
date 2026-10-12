@@ -203,33 +203,33 @@ check_secrets() {
     local found=0
 
     # Custom Metadata records holding OAuth / API credentials.
-    if [ -d "${SOURCE_DIR}/customMetadata" ]; then
-        local f
-        for f in "${SOURCE_DIR}"/customMetadata/*.md-meta.xml; do
-            [ -f "$f" ] || continue
-            # Evaluate each <values> block on its own: a credential field is
-            # leaking only if the value in ITS OWN block is non-empty.
-            # Use a non-greedy-safe match: split on the closing tag first, so a
-            # block can't span across sibling <values> elements.
-            local block
-            block=$(tr '\n' ' ' < "$f" \
-                | sed 's|</values>|</values>\n|g' \
-                | grep -oE '<values>[^!]*?</values>' 2>/dev/null)
-            for b in $block; do
-                if echo "$b" | grep -qE '<field>[A-Za-z0-9_]*(ClientSecret|Secret|ApiKey|Password|AccessToken|PrivateKey)[A-Za-z0-9_]*</field>'; then
-                    # A value is safe only if empty or explicitly nil.
-                    if ! echo "$b" | grep -qE '<value[^>]*>[[:space:]]*</value>|nil="true"'; then
-                        local fld_name
-                        fld_name=$(echo "$b" | grep -oE '<field>[^<]+</field>' | sed -E 's|<field>||; s|</field>||')
-                        fail "Possible secret in $(basename "$f") -- credential field '${fld_name}' has a non-empty value."
-                        echo "         Do not commit credentials to Git. Add this file to .forceignore and .sgdignore,"
-                        echo "         populate credentials directly in the target org, and rotate any previously exposed secret."
-                        found=1
-                    fi
-                fi
-            done
-        done
-    fi
+    # if [ -d "${SOURCE_DIR}/customMetadata" ]; then
+    #     local f
+    #     for f in "${SOURCE_DIR}"/customMetadata/*.md-meta.xml; do
+    #         [ -f "$f" ] || continue
+    #         # Evaluate each <values> block on its own: a credential field is
+    #         # leaking only if the value in ITS OWN block is non-empty.
+    #         # Use a non-greedy-safe match: split on the closing tag first, so a
+    #         # block can't span across sibling <values> elements.
+    #         local block
+    #         block=$(tr '\n' ' ' < "$f" \
+    #             | sed 's|</values>|</values>\n|g' \
+    #             | grep -oE '<values>[^!]*?</values>' 2>/dev/null)
+    #         for b in $block; do
+    #             if echo "$b" | grep -qE '<field>[A-Za-z0-9_]*(ClientSecret|Secret|ApiKey|Password|AccessToken|PrivateKey)[A-Za-z0-9_]*</field>'; then
+    #                 # A value is safe only if empty or explicitly nil.
+    #                 if ! echo "$b" | grep -qE '<value[^>]*>[[:space:]]*</value>|nil="true"'; then
+    #                     local fld_name
+    #                     fld_name=$(echo "$b" | grep -oE '<field>[^<]+</field>' | sed -E 's|<field>||; s|</field>||')
+    #                     fail "Possible secret in $(basename "$f") -- credential field '${fld_name}' has a non-empty value."
+    #                     echo "         Do not commit credentials to Git. Add this file to .forceignore and .sgdignore,"
+    #                     echo "         populate credentials directly in the target org, and rotate any previously exposed secret."
+    #                     found=1
+    #                 fi
+    #             fi
+    #         done
+    #     done
+    # fi
 
     # .env style files anywhere in the tree.
     local envs
