@@ -14,11 +14,11 @@
     </values>
     <values>
         <field>ClientID__c</field>
-        <value xsi:type="xsd:string">1</value>
+        <value xsi:type="xsd:string"></value>
     </values>
     <values>
         <field>ClientSecret__c</field>
-        <value xsi:type="xsd:string">1</value>
+        <value xsi:type="xsd:string"></value>
     </values>
     <values>
         <field>RedirectUrl__c</field>
@@ -30,7 +30,7 @@
     </values>
     <values>
         <field>TenantId__c</field>
-        <value xsi:type="xsd:string">9d94cb2f-05ce-4ac3-96a0-8a8a97437d2a</value>
+        <value xsi:type="xsd:string"></value>
     </values>
     <values>
         <field>TokenUrl__c</field>
