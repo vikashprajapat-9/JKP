@@ -44,3 +44,6 @@ node_modules/
 # **/digitalExperienceConfigs/**
 # **/audience/**
 **/networkBranding/**
+
+# Secrets: contains an OAuth client secret, must never be deployed from source
+**/customMetadata/OneDriveAuthSetting.*.md-meta.xml
