@@ -1,0 +1,80 @@
+@import 'c/commissionStyles';
+
+/* Layout of this screen only (the approved mock-up targets.html) */
+.pick { display: flex; align-items: flex-end; flex-wrap: wrap; gap: 10px 14px; }
+.pick .f-project { flex: 0 1 214px; }
+.pick .f-config { flex: 0 1 296px; }
+.pick .basis { margin-left: auto; padding-bottom: 8px; font-size: 13px; color: var(--muted); }
+.tcard { position: relative; padding: 8px 16px 14px; }
+
+/* The fold arrows, links and footer buttons are real buttons */
+button { font-family: inherit; cursor: pointer; }
+button:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px; }
+button.link { border: 0; background: transparent; padding: 0; }
+button.link:hover { text-decoration: underline; }
+button.link:disabled { color: #7a8496; cursor: default; text-decoration: none; }
+.btn.primary:hover { filter: brightness(1.08); }
+.btn:not(.primary):hover { background: var(--row-alt); }
+.btn:disabled { background: var(--grey-bg); border-color: var(--grey-line); color: #7a8496; box-shadow: none; cursor: default; filter: none; }
+
+/* Loading, error and empty states */
+.state { position: relative; min-height: 10rem; }
+.stateaction { margin-top: 10px; }
+.note.red { background: var(--red-bg); border-color: var(--red-line); color: var(--red); }
+.actionerror { margin-top: 12px; }
+.empty { display: flex; align-items: center; justify-content: center; min-height: 96px; padding: 12px; text-align: center; }
+
+/* The table: a narrow page scrolls it sideways instead of squeezing the columns */
+.tablewrap { overflow-x: auto; }
+table.grid.targets { min-width: 900px; }
+table.grid.targets th, table.grid.targets td { padding-left: 9px; padding-right: 9px; }
+table.grid.targets td { white-space: nowrap; }
+col.c-target { width: 210px; }
+col.c-actual { width: 108px; }
+col.c-result { width: 140px; }
+col.c-rate { width: 114px; }
+col.c-from { width: 104px; }
+table.grid .dash { color: #7a8496; }
+
+/* Person: a manager with the fold arrow and the team line, the team indented under it */
+.person { display: flex; align-items: flex-start; gap: 7px; }
+.fold { flex: none; display: flex; width: 16px; height: 16px; margin: 2px 0 0; padding: 0; border: 0; border-radius: 4px; background: transparent; color: var(--navy); }
+.fold svg { width: 16px; height: 16px; }
+.person .name { font-weight: 700; color: var(--navy); }
+.person .team { font-size: 13px; font-weight: 400; color: var(--muted); line-height: 1.3; white-space: normal; max-width: 15rem; }
+/* A team member stands under the name of the manager; a person without a manager in line with the manager names */
+table.grid.targets td.who.sub { padding-left: 46px; }
+table.grid.targets td.who.solo { padding-left: 32px; }
+
+/* Target: the input, and beside it "default", "set 03 Oct 2026" with the link back to the default, or what it was */
+.tgt { display: flex; align-items: center; gap: 7px; }
+.tgt lightning-input { flex: none; width: 76px; }
+.tgt.wide lightning-input { width: 140px; }
+.tgt .fixed { min-width: 46px; font-weight: 600; }
+.tgt .side { display: flex; flex-direction: column; align-items: flex-start; gap: 1px; line-height: 1.25; }
+.tgt .hint { font-size: 13px; font-weight: 400; color: var(--muted); }
+.tgt .was { font-size: 13px; font-weight: 600; color: var(--blue); }
+.cellerror { margin-top: 3px; }
+/* A changed target gets the blue border, an unusable one the red one */
+.tgt.editing lightning-input { --slds-c-input-color-border: var(--blue); --slds-c-input-shadow: 0 0 0 2px rgba(27, 95, 214, 0.18); }
+.tgt.invalid lightning-input { --slds-c-input-color-border: var(--red); --slds-c-input-shadow: 0 0 0 2px rgba(186, 5, 23, 0.12); }
+
+/* Rates are read-only here: the figure and a lock */
+.rate { display: inline-flex; align-items: center; justify-content: flex-end; gap: 5px; font-variant-numeric: tabular-nums; }
+.rate svg { flex: none; width: 13px; height: 13px; margin-top: -1px; color: #8a94a6; }
+.tcard .note { margin-top: 10px; }
+.tcard .note div + div { margin-top: 1px; }
+
+/* Footer: the change, from when, why, and the two buttons */
+.footerbar { flex-wrap: wrap; }
+.footerbar .change { flex: none; display: flex; align-items: baseline; gap: 8px; white-space: nowrap; }
+.footerbar .inline { flex: none; display: flex; align-items: center; gap: 7px; }
+.footerbar .change + .inline { margin-left: 8px; }
+.footerbar .inline.wide { flex: 1 1 14rem; min-width: 0; }
+.footerbar .f-reason { flex: 1 1 auto; min-width: 0; }
+.footerbar .f-from { width: 150px; }
+.footerbar .actions { flex: none; display: flex; gap: 8px; }
+.formerror { margin-top: 6px; text-align: right; }
+
+/* Text for screen readers only */
+.assistive { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

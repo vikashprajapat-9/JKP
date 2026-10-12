@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Email_Sender_Address__c</fullName>
+    <description>Address of the Organization-Wide Email Address that sends the emails to channel partners (access approved, registration rejected and so on). It must exist under Setup &gt; Organization-Wide Addresses, be verified and be allowed for all profiles. Never a Gmail or other public mailbox: mail providers block such emails. Blank, unknown or not verified: the emails go out in the name of the user who triggered them.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Verified Organization-Wide Email Address that sends the emails to channel partners. Never a Gmail or other public mailbox. Blank: emails go out in the name of the user who triggered them.</inlineHelpText>
+    <label>Email Sender Address</label>
+    <required>false</required>
+    <type>Email</type>
+    <unique>false</unique>
+</CustomField>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Type_Required</fullName>
+    <active>true</active>
+    <description>Each Portal Info record is for one portal, so its Type is required. PortalInfoTrigger allows one record per Type.</description>
+    <errorConditionFormula>ISBLANK(TEXT(Type__c))</errorConditionFormula>
+    <errorDisplayField>Type__c</errorDisplayField>
+    <errorMessage>Choose which portal this information is for: Customer or Channel partner.</errorMessage>
+</ValidationRule>

@@ -1,0 +1,592 @@
+/* The access notice above every portal page, and the extension request dialog. Design tokens (--jk-*) are inherited
+   from the partnerWebPortal shell; the tones, badge, buttons and fields follow the My Contract, Leads and Add Team
+   Member pages. */
+
+:host {
+    display: block;
+    font-family: var(--jk-font);
+    color: var(--jk-text);
+}
+
+button,
+select,
+textarea {
+    font-family: var(--jk-font);
+}
+
+p,
+h2 {
+    margin: 0;
+}
+
+/* Spacing below the notice only while something shows */
+.access-area_shown {
+    margin-bottom: 28px;
+}
+
+/* ============================ NOTICE ============================ */
+.access-banner {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 14px 16px 14px 14px;
+    border: 1px solid #d6e0f5;
+    border-radius: var(--jk-radius);
+    background: #eef3fe;
+    animation: banner-in 0.35s ease-out both;
+}
+
+.access-banner:focus {
+    outline: none;
+}
+
+.banner-icon {
+    width: 44px;
+    height: 44px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--jk-radius);
+    background: var(--jk-surface);
+    color: var(--jk-navy);
+    box-shadow: 0 1px 3px rgb(17 33 73 / 8%);
+}
+
+.banner-copy {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+}
+
+.banner-label {
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 600;
+    letter-spacing: 1px;
+    text-transform: uppercase;
+    color: var(--jk-navy-muted);
+}
+
+.banner-text {
+    font-size: 15px;
+    line-height: 22px;
+    font-weight: 500;
+    color: var(--jk-text);
+    overflow-wrap: anywhere;
+}
+
+.banner-action {
+    flex-shrink: 0;
+}
+
+/* The last days: amber, as the contract's call to act */
+.access-banner_soon {
+    background: #fff7e6;
+    border-color: #f5c26b;
+}
+
+.access-banner_soon .banner-icon,
+.access-banner_soon .banner-label {
+    color: #8a5a00;
+}
+
+/* Ended: as the portal's error banners */
+.access-banner_ended {
+    background: #fdecea;
+    border-color: #f5c2bd;
+}
+
+.access-banner_ended .banner-icon {
+    color: #d93025;
+}
+
+.access-banner_ended .banner-label {
+    color: #8c1d18;
+}
+
+/* ============================ ACTION ============================ */
+.request-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 40px;
+    padding: 0 20px;
+    box-sizing: border-box;
+    border: 1px solid var(--jk-navy);
+    border-radius: var(--jk-radius);
+    background: var(--jk-navy);
+    color: #fff;
+    box-shadow: var(--jk-shadow);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.request-btn:hover {
+    background: var(--jk-navy-soft);
+}
+
+.request-btn:focus-visible,
+.btn:focus-visible,
+.close-btn:focus-visible,
+.notice-close:focus-visible {
+    outline: 2px solid var(--jk-gold);
+    outline-offset: 3px;
+}
+
+.btn-icon {
+    flex-shrink: 0;
+}
+
+/* As the Leads and My Contract badges */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 120px;
+    height: 28px;
+    padding: 0 14px;
+    box-sizing: border-box;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1;
+    white-space: nowrap;
+}
+
+.badge-pending {
+    background: #fff7e6;
+    color: #8a5a00;
+    box-shadow: inset 0 0 0 1px #f5c26b;
+}
+
+/* ============================ CONFIRMATION ============================ */
+.sent-notice {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 12px;
+    padding: 12px 12px 12px 16px;
+    border: 1px solid #bfe0bf;
+    border-radius: var(--jk-radius);
+    background: #edf7ed;
+    font-size: 14px;
+    line-height: 20px;
+    animation: banner-in 0.3s ease-out both;
+}
+
+.sent-notice:focus {
+    outline: none;
+}
+
+.sent-icon {
+    flex-shrink: 0;
+    color: var(--jk-badge-active);
+}
+
+.sent-text {
+    flex: 1;
+    color: var(--jk-text);
+}
+
+.notice-close {
+    flex-shrink: 0;
+    padding: 2px 6px;
+    border: none;
+    background: none;
+    color: var(--jk-text);
+    font-size: 14px;
+    opacity: 0.7;
+    cursor: pointer;
+}
+
+.notice-close:hover {
+    opacity: 1;
+}
+
+/* ============================ DIALOG ============================ */
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgb(0 0 0 / 38%);
+    z-index: 200;
+    animation: fade-in 0.2s ease-out both;
+}
+
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(560px, calc(100vw - 32px));
+    max-height: calc(100vh - 32px);
+    overflow-y: auto;
+    box-sizing: border-box;
+    border-radius: var(--jk-radius-lg);
+    background: var(--jk-surface);
+    box-shadow: 0 10px 40px rgb(0 0 0 / 18%);
+    text-align: left;
+    z-index: 201;
+    animation: modal-in 0.25s cubic-bezier(0.2, 0.8, 0.3, 1) both;
+}
+
+.modal-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    padding: 28px 24px 22px 32px;
+    border-bottom: 1px solid var(--jk-divider);
+}
+
+.modal-icon {
+    width: 48px;
+    height: 48px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: var(--jk-radius);
+    background: var(--jk-icon-bg);
+    color: var(--jk-navy);
+}
+
+.modal-titles {
+    flex: 1;
+    min-width: 0;
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+}
+
+.modal-title {
+    font-size: 22px;
+    line-height: 28px;
+    font-weight: 600;
+    color: var(--jk-navy);
+}
+
+.modal-intro {
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--jk-navy-muted);
+}
+
+.close-btn {
+    flex-shrink: 0;
+    display: flex;
+    margin: -4px 0 0;
+    padding: 4px;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--jk-text);
+    cursor: pointer;
+}
+
+.close-btn:hover:not(:disabled) {
+    background: var(--jk-tint);
+}
+
+.close-btn:disabled {
+    opacity: 0.4;
+    cursor: not-allowed;
+}
+
+.modal-body {
+    display: flex;
+    flex-direction: column;
+    gap: 22px;
+    padding: 24px 32px 4px;
+}
+
+/* ---------- Fields (as Add Team Member) ---------- */
+.field {
+    display: flex;
+    flex-direction: column;
+    gap: 10px;
+    min-width: 0;
+}
+
+.field-label {
+    font-size: 15px;
+    font-weight: 600;
+    color: var(--jk-text);
+}
+
+/* Required fields carry a red star (the abbr reads "required" to screen readers) */
+.required-mark {
+    margin-left: 3px;
+    border: 0;
+    color: var(--jk-badge-cancelled);
+    font-weight: 600;
+    text-decoration: none;
+    cursor: default;
+}
+
+.field-input {
+    width: 100%;
+    box-sizing: border-box;
+    border: 1px solid var(--jk-border);
+    border-radius: var(--jk-radius-sm);
+    background: var(--jk-surface);
+    font-size: 15px;
+    color: var(--jk-text);
+    outline: none;
+    transition: border-color 0.15s ease;
+}
+
+.field-input::placeholder {
+    color: var(--jk-placeholder);
+}
+
+.field-input:focus {
+    border-color: var(--jk-navy);
+}
+
+.field-input.invalid {
+    border-color: var(--jk-badge-cancelled);
+}
+
+.field-input:disabled {
+    background: #f6f8fc;
+    color: var(--jk-text-muted);
+    cursor: not-allowed;
+}
+
+.select-wrap {
+    position: relative;
+}
+
+.field-select {
+    height: 48px;
+    padding: 0 44px 0 16px;
+    appearance: none;
+    -webkit-appearance: none;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.field-select_placeholder {
+    color: var(--jk-placeholder);
+    font-weight: 400;
+}
+
+/* The list keeps its usual text */
+.field-select option {
+    color: var(--jk-text);
+    font-weight: 500;
+}
+
+.select-wrap .chevron {
+    position: absolute;
+    right: 16px;
+    top: 50%;
+    transform: translateY(-50%);
+    color: var(--jk-text);
+    pointer-events: none;
+}
+
+.field-textarea {
+    display: block;
+    min-height: 132px;
+    padding: 12px 16px;
+    line-height: 22px;
+    resize: vertical;
+}
+
+.field-foot {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    margin-top: -2px;
+}
+
+.field-error {
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--jk-badge-cancelled);
+}
+
+.char-count {
+    margin-left: auto;
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--jk-text-muted);
+    font-variant-numeric: tabular-nums;
+    white-space: nowrap;
+}
+
+/* Same look as the portal's error banners */
+.form-error {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    border: 1px solid #f5c2bd;
+    border-radius: var(--jk-radius);
+    background: #fdecea;
+    color: #8c1d18;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.form-error-icon {
+    flex-shrink: 0;
+    color: #d93025;
+}
+
+/* ---------- Footer (buttons as My Contract) ---------- */
+.modal-footer {
+    display: flex;
+    justify-content: flex-end;
+    gap: 12px;
+    padding: 24px 32px 28px;
+}
+
+.btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-width: 140px;
+    height: 44px;
+    padding: 0 24px;
+    box-sizing: border-box;
+    border-radius: var(--jk-radius);
+    font-size: 14px;
+    font-weight: 600;
+    letter-spacing: 0.3px;
+    cursor: pointer;
+    transition: background-color 0.15s ease, opacity 0.15s ease;
+}
+
+.btn-primary {
+    border: 1px solid var(--jk-navy);
+    background: var(--jk-navy);
+    color: #fff;
+    box-shadow: var(--jk-shadow);
+}
+
+.btn-primary:hover:not(:disabled) {
+    background: var(--jk-navy-soft);
+}
+
+.btn-outline {
+    border: 1px solid var(--jk-navy);
+    background: #fff;
+    color: var(--jk-navy);
+}
+
+.btn-outline:hover:not(:disabled) {
+    background: var(--jk-tint);
+}
+
+.btn:disabled {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.btn-spinner {
+    width: 16px;
+    height: 16px;
+    flex-shrink: 0;
+    box-sizing: border-box;
+    border: 2px solid currentColor;
+    border-right-color: transparent;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+/* ============================ MOTION ============================ */
+@keyframes banner-in {
+    from { opacity: 0; transform: translateY(-4px); }
+    to { opacity: 1; transform: none; }
+}
+
+@keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes modal-in {
+    from { opacity: 0; transform: translate(-50%, -46%); }
+    to { opacity: 1; transform: translate(-50%, -50%); }
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+/* ============================ RESPONSIVE ============================ */
+@media (max-width: 640px) {
+    .access-banner {
+        flex-wrap: wrap;
+        gap: 12px 14px;
+        padding: 14px;
+    }
+
+    .banner-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    /* The action goes under the text, the full width of the notice */
+    .banner-action {
+        flex: 1 0 100%;
+    }
+
+    .request-btn {
+        width: 100%;
+        height: 44px;
+    }
+
+    /* The badge lines up with the text above it */
+    .banner-action .badge {
+        margin-left: 54px;
+    }
+
+    .modal-head {
+        padding: 22px 16px 18px 20px;
+        gap: 14px;
+    }
+
+    .modal-icon {
+        width: 40px;
+        height: 40px;
+    }
+
+    .modal-title {
+        font-size: 19px;
+        line-height: 24px;
+    }
+
+    .modal-body {
+        padding: 20px 20px 4px;
+    }
+
+    .modal-footer {
+        padding: 20px;
+    }
+
+    .modal-footer .btn {
+        flex: 1;
+        min-width: 0;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .access-banner,
+    .sent-notice,
+    .modal,
+    .modal-backdrop,
+    .btn-spinner {
+        animation: none;
+    }
+}

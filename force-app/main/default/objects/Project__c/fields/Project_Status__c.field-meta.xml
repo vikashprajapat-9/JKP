@@ -11,9 +11,9 @@
         <valueSetDefinition>
             <sorted>false</sorted>
             <value>
-                <fullName>Planning</fullName>
+                <fullName>Upcoming</fullName>
                 <default>false</default>
-                <label>Planning</label>
+                <label>Upcoming</label>
             </value>
             <value>
                 <fullName>In Progress</fullName>
@@ -33,6 +33,7 @@
             <value>
                 <fullName>New Project Launch</fullName>
                 <default>false</default>
+                <isActive>false</isActive>
                 <label>New Project Launch</label>
             </value>
         </valueSetDefinition>

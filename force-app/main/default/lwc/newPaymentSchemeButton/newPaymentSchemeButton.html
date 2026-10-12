@@ -43,7 +43,7 @@
 
         
         <div class="slds-p-around_medium  slds-grid slds-wrap slds-gutters">
-              <div class="slds-col slds-size_1-of-2">
+            <div class="slds-col slds-size_1-of-2">
             <lightning-combobox 
                 label="Company" 
                 value={selectedCompany} 
@@ -76,7 +76,7 @@
                 required>
             </lightning-combobox> -->
 
-             <lightning-dual-listbox
+            <lightning-dual-listbox
                 label="Tower"
                 source-label="Available Tower"
                 selected-label="Selected Tower"
@@ -91,7 +91,7 @@
 
 
             </div>
-              <div class="slds-col slds-size_1-of-2">
+            <div class="slds-col slds-size_1-of-2">
             <lightning-input 
                 label="Payment Scheme Name" 
                 value={name} 
@@ -99,45 +99,61 @@
                 disabled={approval}
                 required>
             </lightning-input>
-              </div>
-               <div class="slds-col slds-size_2-of-2">
-            <lightning-input 
-                type="number" 
-                label="Token Amount" 
-                value={tokenAmount} 
-                onchange={handleTokenAmountChange}
+            </div>
+            <div class="slds-col slds-size_2-of-2">
+            <lightning-combobox
+                name="tokenType"
+                label="Token Type"
+                value={tokenType}
+                options={tokenTypeOptions}
+                onchange={handleTokenTypeChange}
                 disabled={approval}
                 required>
-            </lightning-input>
-               </div>
-                <div class="slds-col slds-size_1-of-2">
-            <lightning-input 
-            class="date"
-                type="date" 
-                label="From Date" 
-                value={fromDate} 
+            </lightning-combobox>
+        </div>
+
+        <template if:true={showTokenAmount}>
+            <div class="slds-col slds-size_1-of-2">
+                <lightning-input
+                    type="number"
+                    label="Token Amount"
+                    value={tokenAmount}
+                    onchange={handleTokenAmountChange}
+                    disabled={approval}
+                    required>
+                </lightning-input>
+            </div>
+        </template>
+        <div class="slds-col slds-size_1-of-2">
+            <lightning-input
+                class="date"
+                type="date"
+                label="From Date"
+                value={fromDate}
                 onchange={handleFromDateChange}
                 disabled={approval}
                 required>
             </lightning-input>
-                </div>
-                 <div class="slds-col slds-size_1-of-2">
-            <lightning-input 
-            class="date"
-                type="date" 
-                label="To Date" 
-                value={toDate} 
+        </div>
+
+        <div class="slds-col slds-size_1-of-2">
+            <lightning-input
+                class="date"
+                type="date"
+                label="To Date"
+                value={toDate}
+                min={fromDate}
                 onchange={handleToDateChange}
                 disabled={approval}
                 required>
             </lightning-input>
-                 </div>
+        </div>
             <template if:true={isLoading}>
                 <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
             </template>
-             </div>
+            </div>
 
-             <template if:true={nextButton}>
+            <template if:true={nextButton}>
             <div class="slds-grid slds-grid_align-end slds-m-top_medium" style=" display: flex; justify-content: center;">
                 <!-- <lightning-button 
                     variant="brand"
@@ -147,7 +163,7 @@
                 <div class="cstm_btn" onclick={handleNext}>Next</div>
             </div>
             </template>
-       
+    
         
         <template if:true={showTable}>
             <div class="custom-table-container">
@@ -155,11 +171,12 @@
                     <thead>
                         <tr class="custom-header-row">
                             <th class="custom-header-cell">#</th>
-                             <th class="custom-header-cell">Schedule Installment &nbsp;<span class="required-text">(Required)</span></th>
+                            <th class="custom-header-cell">Schedule Installment &nbsp;<span class="required-text">(Required)</span></th>
                             <th class="custom-header-cell">Type <span class="required-text">(Required)</span></th>
-                           
+                        
                             <th class="custom-header-cell">% Installment <span class="required-text">(Required)</span></th>
                             <th class="custom-header-cell">Display Order <span class="required-text">(Required)</span></th>
+                            <th class="custom-header-cell">Date</th>
                             <th class="custom-header-cell">Actions</th>
                         </tr>
                     </thead>
@@ -177,7 +194,7 @@
                                         >
                                     </lightning-combobox>
                                 </td>
-                                 <td class="custom-cell">
+                                <td class="custom-cell">
                                     <lightning-combobox
                                         value={row.type}
                                         options={typeOption}
@@ -188,25 +205,37 @@
                                     </lightning-combobox>
                                 </td>
                                 <td class="custom-cell">
-                                    <lightning-input type="number"
-                                                     value={row.percentInstallment}
-                                                     onchange={handlePercentChange}
-                                                     data-id={row.id}
-                                                     data-field="percentInstallment"
-                                                     disabled={approval}
-                                                     step="0.01"
-                                                     formatter="decimal"
-                                                     >
+                                    <lightning-input
+                                        type="number"
+                                        value={row.percentInstallment}
+                                        onchange={handlePercentChange}
+                                        data-id={row.id}
+                                        data-field="percentInstallment"
+                                        disabled={approval}
+                                        min="0"
+                                        max={percentMax}
+                                        step="0.01"
+                                        formatter="decimal">
                                     </lightning-input>
                                 </td>
                                 <td class="custom-cell">
                                     <lightning-input type="number" 
-                                                     value={row.displayOrder} 
-                                                     onchange={handleDisplayOrderChange} 
-                                                     data-id={row.id} 
-                                                     data-field="displayOrder"
-                                                     disabled={approval}
-                                                     >
+                                                        value={row.displayOrder} 
+                                                        onchange={handleDisplayOrderChange} 
+                                                        data-id={row.id} 
+                                                        data-field="displayOrder"
+                                                        disabled={approval}
+                                                        >
+                                    </lightning-input>
+                                </td>
+                                <td class="custom-cell">
+                                    <lightning-input type="Date" 
+                                                        value={row.Date} 
+                                                        onchange={handleDateChange} 
+                                                        data-id={row.id} 
+                                                        data-field="Date"
+                                                        disabled={approval}
+                                                        >
                                     </lightning-input>
                                 </td>
                                 <td class="custom-cell">
@@ -240,8 +269,8 @@
                 <lightning-button 
                     variant="brand" 
                     label="Save" 
-                    onclick={handleSubmit}>
-                    disabled={isDisabled}
+                    onclick={handleSubmit} disabled={isDisabled}>
+                    
                 </lightning-button>
             </div>
         </template>

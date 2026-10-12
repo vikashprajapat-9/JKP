@@ -44,6 +44,18 @@
         <members>*</members>
         <name>CustomTab</name>
     </types>
+    <types>
+        <members>*</members>
+        <name>CustomApplication</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>QuickAction</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>GlobalValueSet</name>
+    </types>
 
     <!-- Objects -->
     <types>
@@ -56,19 +68,39 @@
         <members>*</members>
         <name>Flow</name>
     </types>
-    <types>
-        <members>*</members>
-        <name>FlowDefinition</name>
-    </types>
+    <!-- FlowDefinition is intentionally omitted. Flow activation is controlled by
+         <status>Active</status> in each .flow-meta.xml file (API v51+ behaviour).
+         Including FlowDefinition would retrieve source-org version numbers that
+         do not exist in the target org, causing "Cannot find Flow version N" errors. -->
     <types>
         <members>*</members>
         <name>ApprovalProcess</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>Workflow</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>EmailTemplate</name>
     </types>
 
     <!-- Security -->
     <types>
         <members>*</members>
         <name>PermissionSet</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>PermissionSetGroup</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>Profile</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>Role</name>
     </types>
 
     <!-- Metadata -->
@@ -86,13 +118,46 @@
         <members>*</members>
         <name>StaticResource</name>
     </types>
-
-    <!-- Experience Cloud -->
     <types>
         <members>*</members>
-        <name>ExperienceBundle</name>
+        <name>ContentAsset</name>
+    </types>
+
+    <!-- Experience Cloud Site Content -->
+    <!-- DigitalExperienceBundle and DigitalExperience deliver LWR/Enhanced LWR site content
+         to the pre-existing Experience Cloud site in the target sandbox without requiring Network retrieval.
+         Network infrastructure metadata (CustomSite, NavigationMenu) is omitted. -->
+    <types>
+        <members>*</members>
+        <name>DigitalExperienceBundle</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>DigitalExperience</name>
+    </types>
+
+    <!-- Settings & Config -->
+    <types>
+        <members>*</members>
+        <name>RemoteSiteSetting</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>Queue</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>ReportType</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>PathAssistant</name>
+    </types>
+    <types>
+        <members>*</members>
+        <name>AnimationRule</name>
     </types>
 
     <version>67.0</version>
 
-</Package>
+</Package>

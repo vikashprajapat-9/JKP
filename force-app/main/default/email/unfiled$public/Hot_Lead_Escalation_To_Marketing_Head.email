@@ -1,0 +1,74 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+</head>
+
+<body style="margin:0; padding:0; background:#f4f6f9; font-family:Arial, Helvetica, sans-serif;">
+
+<table width="100%" cellpadding="0" cellspacing="0" style="background:#f4f6f9; padding:30px 0;">
+    <tr>
+        <td align="center">
+
+            <table width="650" cellpadding="0" cellspacing="0" style="background:#ffffff; border-radius:6px; overflow:hidden; border:1px solid #dcdcdc;">
+
+                <!-- Header -->
+                <tr>
+                    <td align="center"
+                        style="background:#1A2149; color:#ffffff; padding:20px; font-size:24px; font-weight:bold;">
+                        Hot Leads Pending Assignment
+                    </td>
+                </tr>
+
+                <!-- Body -->
+                <tr>
+                    <td style="padding:30px; color:#444444; font-size:15px; line-height:24px;">
+
+                        <p style="margin-top:0;">
+                            Hi <b>Marketing Head,</b>
+                        </p>
+
+                        <p>
+                            The following <b>Hot Leads</b> have not been assigned to any
+                            <b>Pre-Sales Executive</b> within  within <b>30 minutes</b> of their creation.
+                        </p>
+
+                        <p>
+                            Kindly review and assign these leads at the earliest to avoid any delay in customer engagement.
+                        </p>
+
+                        <!-- Dynamic Table -->
+                        {{LeadTable}}
+
+                        <br>
+
+                        <div style="background:#EEF4FB; border-left:5px solid #1A2149; padding:15px; margin-top:20px;">
+                            <b>Note:</b> These leads are still pending assignment and require your immediate attention.
+                        </div>
+
+                        <br>
+
+                        <p>
+                            Thank you,<br>
+                            <b>Salesforce CRM</b>
+                        </p>
+
+                    </td>
+                </tr>
+
+                <!-- Footer -->
+                <tr>
+                    <td align="center"
+                        style="background:#f7f7f7; padding:15px; font-size:12px; color:#777777;">
+                        This is an automated notification. Please do not reply to this email.
+                    </td>
+                </tr>
+
+            </table>
+
+        </td>
+    </tr>
+</table>
+
+</body>
+</html>

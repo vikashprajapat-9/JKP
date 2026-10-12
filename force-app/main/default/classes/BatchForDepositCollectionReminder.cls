@@ -5,7 +5,6 @@
  *              Generates a 'Deposit Amount Overdue' task assigned to the Opportunity's Sales Member.
  */
 global with sharing class BatchForDepositCollectionReminder implements Database.Batchable<sObject>, Schedulable {
-
     private String query;
 
     global BatchForDepositCollectionReminder() {
@@ -14,21 +13,18 @@ global with sharing class BatchForDepositCollectionReminder implements Database.
     global BatchForDepositCollectionReminder(String customQuery) {
         this.query = customQuery;
     }
-
     global Database.QueryLocator start(Database.BatchableContext BC) {
         if (String.isNotBlank(this.query)) {
             return Database.getQueryLocator(this.query);
         }
         return Database.getQueryLocator([
-            SELECT Id, Name, StageName, Offer_Letter_Sent__c, Offer_Letter_Sent_Date__c,
-                   Sales_Member__c, OwnerId, Project__c, Project__r.Deposit_Collection_Threshold__c,
-                   Token_Amount__c
+            SELECT Id, Name, StageName, Offer_Letter_Sent__c, Offer_Letter_Sent_Date__c,Sales_Member__c, OwnerId, Project__c, Project__r.Deposit_Collection_Threshold__c,Token_Amount__c
             FROM Opportunity
             WHERE StageName = 'Offer Letter and Deposit Collection'
-              AND Offer_Letter_Sent__c = true
-              AND Offer_Letter_Sent_Date__c != null
-              AND Project__c != null
-              AND Project__r.Deposit_Collection_Threshold__c != null
+            AND Offer_Letter_Sent__c = true
+            AND Offer_Letter_Sent_Date__c != null
+            AND Project__c != null
+            AND Project__r.Deposit_Collection_Threshold__c != null
         ]);
     }
 
@@ -66,7 +62,7 @@ global with sharing class BatchForDepositCollectionReminder implements Database.
             SELECT Id, Name, Total_Amount_Inclusive_Of_Tax__c, Total_Due_Amount__c, Total_Received_Amount__c, Opportunity__c
             FROM Payment_Schedule__c
             WHERE Opportunity__c IN :overdueCandidateIds
-              AND Name LIKE '%Deposit Amount%'
+            AND Name LIKE '%Deposit Amount%'
         ]) {
             Decimal requiredAmount = (ps.Total_Due_Amount__c != null && ps.Total_Due_Amount__c > 0)
                 ? ps.Total_Due_Amount__c
@@ -96,7 +92,6 @@ global with sharing class BatchForDepositCollectionReminder implements Database.
             }
 
             Decimal totalPaid = oppToTotalPaid.containsKey(opp.Id) ? oppToTotalPaid.get(opp.Id) : 0;
-
             Boolean isDepositCollected = false;
             if (requiredDeposit > 0) {
                 isDepositCollected = (totalPaid >= requiredDeposit);

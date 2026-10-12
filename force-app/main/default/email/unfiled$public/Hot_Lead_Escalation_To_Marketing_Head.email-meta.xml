@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>UTF-8</encodingKey>
+    <name>Hot Lead Escalation To Marketing Head</name>
+    <style>none</style>
+    <subject>Action Required: Hot Leads Pending Assignment</subject>
+    <textOnly>Hot Leads Pending Assignment
+
+Hi Marketing Head,
+
+The following Hot Leads have not been assigned to any Pre-Sales Executive within  within 30 minutes of their creation.
+
+Kindly review and assign these leads at the earliest to avoid any delay in customer engagement.
+
+{{LeadTable}}
+Note: These leads are still pending assignment and require your immediate attention.
+
+Thank you,
+Salesforce CRM
+
+This is an automated notification. Please do not reply to this email.</textOnly>
+    <type>custom</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

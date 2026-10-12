@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Denial_Grace_Days__c</fullName>
+    <description>Days after the end of a partner&apos;s temporary access before the nightly check marks it Access Denied and deactivates the portal users of the partner and its executives. With 0 this happens the first night after the end date, so from then on no login page lets them in. More days keep their users active a little longer (for visits and conversions entered late); the portal&apos;s login page refuses them, and the portal shows them only that their access has ended, from the day after the end date in any case.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Days after the temporary access ends before the nightly check marks the partner Access Denied and deactivates its users and its executives&apos; users. 0 = the first night after the end date.</inlineHelpText>
+    <label>Denial Grace Days</label>
+    <precision>3</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

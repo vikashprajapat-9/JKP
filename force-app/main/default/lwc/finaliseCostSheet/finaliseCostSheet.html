@@ -142,18 +142,28 @@
                                 <td>{schedule.Actual_Amount__c}</td>
                             </tr>
                         </template>
-                        <tr>
+                        <tr class="total-row">
+                        <!-- Name -->
                         <td></td>
+                        <!-- Pricing Element Master -->
                         <td style="font-weight: bold;">TOTAL</td>
+                        <!-- PE Type -->
                         <td></td>
-                        <!-- <td style="font-weight: bold;">{priceElementMasterQuantity}</td>
-                        <td style="font-weight: bold;">{priceElementMasterRate}</td> -->
-                        <td style="font-weight: bold;">{priceElementMasterinstallment}</td>
-                        <td style="font-weight: bold;">{priceElementMasterDiscount}</td>
+                        <!-- Quantity -->
+                        <td></td>
+                        <!-- Rate -->
+                        <td></td>
+                        <!-- Amount -->
+                        <td style="font-weight: bold;"> {priceElementMasterinstallment} </td>
+                        <!-- Discount Amount -->
+                        <td style="font-weight: bold;"> {priceElementMasterDiscount}</td>
+                        <!-- Actual Amount without TAX -->
                         <td style="font-weight: bold;">{priceElementMasterActualDiscountWithoutTax}</td>
+                        <!-- Tax Amount -->
                         <td style="font-weight: bold;">{priceElementMasterTaxAmount}</td>
+                        <!-- Actual Amount -->
                         <td style="font-weight: bold;">{priceElementMasterActualDiscount}</td>
-                        </tr>
+                    </tr>
                     </tbody>
                 </table>
 

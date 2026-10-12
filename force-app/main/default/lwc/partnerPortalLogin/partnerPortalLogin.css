@@ -1,0 +1,1037 @@
+:host {
+    --login-navy: #112149;
+    --login-navy-hover: #1b2f63;
+    --login-text: #1b1b1f;
+    --login-muted: #6b6b73;
+    --login-placeholder: #a8a6a6;
+    --login-border: #c9ccd3;
+    --login-art-bg: #f2f5f5;
+    --login-link: #2f80ed;
+    --login-error: #d93025;
+    --login-disabled: #d9d9d9;
+    --login-focus: rgb(17 33 73 / 14%);
+
+    display: block;
+    font-family: 'JKP Sans', 'Barlow', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    color: var(--login-text);
+    -webkit-font-smoothing: antialiased;
+}
+
+/* ---------- Split layout (design: 640 + 640) ---------- */
+.auth-page {
+    display: flex;
+    min-height: 100vh;
+    background: #ffffff;
+}
+
+.art-panel {
+    flex: 1 1 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px;
+    background: var(--login-art-bg);
+    /* As in the design: one screen high, and it stays in view while the long registration form scrolls */
+    position: sticky;
+    top: 0;
+    align-self: flex-start;
+    height: 100vh;
+    box-sizing: border-box;
+}
+
+.art {
+    width: min(476px, 82%);
+    height: auto;
+    animation: art-in 0.8s cubic-bezier(0.2, 0.7, 0.2, 1) both;
+}
+
+.form-panel {
+    flex: 1 1 50%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 56px 24px;
+}
+
+.form-column {
+    width: 100%;
+    max-width: 420px;
+}
+
+.logo {
+    display: block;
+    width: 284px;
+    max-width: 78%;
+    height: auto;
+    margin: 0 auto 36px;
+}
+
+.step {
+    animation: step-in 0.35s ease-out both;
+}
+
+/* ---------- Text ---------- */
+.tagline {
+    margin: 0 0 40px;
+    text-align: center;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--login-muted);
+}
+
+.notice {
+    display: flex;
+    gap: 10px;
+    align-items: flex-start;
+    margin: 0 0 24px;
+    padding: 12px 14px;
+    border: 1px solid #d6e0f5;
+    border-radius: 8px;
+    background: #f1f5ff;
+    color: var(--login-navy);
+    font-size: 14px;
+    line-height: 20px;
+    animation: step-in 0.35s ease-out both;
+}
+
+.notice_error {
+    border-color: #f3c7c3;
+    background: #fdf1f0;
+    color: var(--login-error);
+}
+
+.status-note {
+    margin: 20px 0 0;
+    text-align: left;
+}
+
+.notice-icon {
+    flex: 0 0 18px;
+    width: 18px;
+    height: 18px;
+    margin-top: 1px;
+}
+
+.field-label {
+    display: block;
+    margin: 0 0 12px;
+    font-size: 16px;
+    font-weight: 600;
+    line-height: 20px;
+    color: #000000;
+}
+
+.field-label_tight {
+    margin-bottom: 6px;
+}
+
+/* Required fields carry a red star, as Salesforce marks them (the abbr reads "required" to screen readers) */
+.required-mark {
+    margin-left: 3px;
+    border: 0;
+    color: var(--login-error);
+    font-weight: 600;
+    text-decoration: none;
+    cursor: default;
+}
+
+.field-hint {
+    margin: 0 0 4px;
+    font-size: 12px;
+    line-height: 18px;
+    color: var(--login-text);
+}
+
+.field-error {
+    margin: 6px 0 0;
+    min-height: 0;
+    font-size: 13px;
+    line-height: 18px;
+    color: var(--login-error);
+}
+
+.field-error:empty {
+    margin: 0;
+}
+
+.field-error_center {
+    text-align: center;
+}
+
+.form-error:not(:empty) {
+    margin-top: 24px;
+    text-align: center;
+}
+
+.form-error:not(:empty) + .primary-btn {
+    margin-top: 12px;
+}
+
+/* ---------- Username and password ---------- */
+.login-form {
+    margin: 0;
+}
+
+.field-label_spaced {
+    margin-top: 24px;
+}
+
+.password-box {
+    display: flex;
+    align-items: center;
+    height: 48px;
+    border: 1px solid var(--login-border);
+    border-radius: 6px;
+    background: #ffffff;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.password-box:focus-within {
+    border-color: var(--login-navy);
+    box-shadow: 0 0 0 3px var(--login-focus);
+}
+
+.password-box_error,
+.password-box_error:focus-within {
+    border-color: var(--login-error);
+    box-shadow: 0 0 0 3px rgb(217 48 37 / 10%);
+}
+
+.password-input {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    padding: 0 8px 0 16px;
+    border: 0;
+    outline: 0;
+    background: transparent;
+    font: inherit;
+    font-size: 16px;
+    color: var(--login-text);
+}
+
+.password-input::placeholder {
+    color: var(--login-placeholder);
+}
+
+.eye-btn {
+    display: grid;
+    place-items: center;
+    flex: 0 0 40px;
+    width: 40px;
+    height: 40px;
+    margin-right: 4px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: #5a6070;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.eye-btn svg {
+    width: 20px;
+    height: 20px;
+}
+
+.eye-btn:hover {
+    background: #f1f3f6;
+    color: var(--login-navy);
+}
+
+.eye-btn:focus-visible {
+    outline: 3px solid rgb(17 33 73 / 35%);
+    outline-offset: 0;
+}
+
+.forgot-link {
+    display: inline-block;
+    margin-top: 12px;
+    font-size: 14px;
+    font-weight: 500;
+    text-decoration: none;
+}
+
+.login-form a.forgot-link,
+.login-form a.forgot-link:link,
+.login-form a.forgot-link:visited {
+    color: #5a5f6b;
+}
+
+.login-form a.forgot-link:hover {
+    color: var(--login-navy);
+    text-decoration: underline;
+}
+
+.forgot-link:focus-visible {
+    outline: 3px solid rgb(17 33 73 / 35%);
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
+.login-form .primary-btn {
+    margin-top: 38px;
+}
+
+/* The design's Login button is grey until both fields are filled */
+.primary-btn.primary-btn_login:disabled {
+    background: #6e6f72;
+}
+
+/* ---------- Buttons ---------- */
+.primary-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    width: 100%;
+    height: 48px;
+    margin-top: 32px;
+    border: 0;
+    border-radius: 6px;
+    background: var(--login-navy);
+    color: #ffffff;
+    font: inherit;
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.2s ease, box-shadow 0.2s ease, transform 0.1s ease;
+}
+
+.primary-btn:hover:not(:disabled) {
+    background: var(--login-navy-hover);
+    box-shadow: 0 8px 18px rgb(17 33 73 / 22%);
+}
+
+.primary-btn:active:not(:disabled) {
+    transform: translateY(1px);
+}
+
+.primary-btn:disabled {
+    background: var(--login-disabled);
+    cursor: not-allowed;
+}
+
+.primary-btn:focus-visible,
+.link-btn:focus-visible,
+.terms-link:focus-visible,
+.upload-link:focus-visible,
+.file-remove:focus-visible,
+.modal-close:focus-visible {
+    outline: 3px solid rgb(17 33 73 / 35%);
+    outline-offset: 2px;
+}
+
+.spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgb(255 255 255 / 40%);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+.link-btn {
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    font-weight: 600;
+    color: var(--login-navy);
+    cursor: pointer;
+    text-decoration: none;
+    text-underline-offset: 3px;
+}
+
+.link-btn:hover {
+    text-decoration: underline;
+}
+
+.link-btn_blue {
+    color: var(--login-link);
+    text-decoration: none;
+}
+
+.link-btn_blue:hover:not(:disabled) {
+    text-decoration: underline;
+}
+
+.link-btn:disabled {
+    color: var(--login-muted);
+    cursor: default;
+    text-decoration: none;
+}
+
+.switch {
+    margin: 16px 0 0;
+    text-align: center;
+    font-size: 14px;
+    font-weight: 500;
+    color: #5a5f6b;
+}
+
+/* ---------- Terms checkbox ---------- */
+.terms {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: 26px;
+    font-size: 14px;
+    font-weight: 500;
+    line-height: 20px;
+    color: var(--login-muted);
+    cursor: pointer;
+}
+
+.terms_roomy {
+    margin-top: 128px;
+}
+
+.terms-input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    opacity: 0;
+    pointer-events: none;
+}
+
+.terms-box {
+    display: grid;
+    place-items: center;
+    flex: 0 0 20px;
+    width: 20px;
+    height: 20px;
+    border: 1.5px solid #8d8d8d;
+    border-radius: 3px;
+    background: #ffffff;
+    color: #ffffff;
+    transition: background 0.15s ease, border-color 0.15s ease;
+}
+
+.terms-box svg {
+    width: 14px;
+    height: 14px;
+    opacity: 0;
+    transform: scale(0.6);
+    transition: opacity 0.15s ease, transform 0.15s ease;
+}
+
+.terms-input:checked + .terms-box {
+    border-color: var(--login-navy);
+    background: var(--login-navy);
+}
+
+.terms-input:checked + .terms-box svg {
+    opacity: 1;
+    transform: none;
+}
+
+.terms-input:disabled + .terms-box {
+    opacity: 0.6;
+}
+
+.terms-input:focus-visible + .terms-box {
+    outline: 3px solid rgb(17 33 73 / 30%);
+    outline-offset: 2px;
+}
+
+.terms-link {
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    font-weight: 600;
+    color: var(--login-navy);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+    cursor: pointer;
+}
+
+.terms-link:hover {
+    color: var(--login-navy);
+}
+
+/* ---------- Sign-up form ---------- */
+.welcome-title {
+    margin: 0 0 12px;
+    text-align: center;
+    font-size: 28px;
+    font-weight: 700;
+    line-height: 34px;
+    color: var(--login-navy);
+}
+
+.welcome-text {
+    margin: 0;
+    text-align: center;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--login-text);
+}
+
+.field {
+    margin-top: 32px;
+}
+
+.text-input {
+    width: 100%;
+    height: 48px;
+    padding: 0 16px;
+    border: 1px solid var(--login-border);
+    border-radius: 6px;
+    background: #ffffff;
+    font: inherit;
+    font-size: 16px;
+    color: var(--login-text);
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+    box-sizing: border-box;
+}
+
+.text-input::placeholder {
+    color: var(--login-placeholder);
+}
+
+.text-input:focus {
+    outline: 0;
+    border-color: var(--login-navy);
+    box-shadow: 0 0 0 3px var(--login-focus);
+}
+
+.text-input_error,
+.text-input_error:focus {
+    border-color: var(--login-error);
+    box-shadow: 0 0 0 3px rgb(217 48 37 / 10%);
+}
+
+/* Once the registration is saved its details stay as they were sent */
+.text-input:disabled {
+    background: #f6f7f9;
+    color: var(--login-muted);
+    cursor: default;
+}
+
+.select {
+    position: relative;
+}
+
+.select-btn {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width: 100%;
+    height: 48px;
+    padding: 0 16px;
+    border: 1px solid var(--login-border);
+    border-radius: 6px;
+    background: #ffffff;
+    box-shadow: 0 2px 8px rgb(0 0 0 / 6%);
+    font: inherit;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--login-text);
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.2s ease, box-shadow 0.2s ease;
+}
+
+.select-btn:focus-visible,
+.select-btn_open {
+    outline: 0;
+    border-color: var(--login-navy);
+    box-shadow: 0 0 0 3px var(--login-focus);
+}
+
+.select-value_placeholder {
+    color: var(--login-placeholder);
+    font-weight: 400;
+}
+
+.select-value {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.chevron {
+    flex: 0 0 18px;
+    width: 18px;
+    height: 18px;
+    color: #4a4f5a;
+    transition: transform 0.2s ease;
+}
+
+.select-btn_open .chevron {
+    transform: rotate(180deg);
+}
+
+.select-btn_error,
+.select-btn_error:focus-visible {
+    border-color: var(--login-error);
+    box-shadow: 0 0 0 3px rgb(217 48 37 / 10%);
+}
+
+.select-btn:disabled {
+    background: #f6f7f9;
+    box-shadow: none;
+    color: var(--login-muted);
+    cursor: default;
+}
+
+.menu {
+    position: absolute;
+    z-index: 5;
+    top: calc(100% + 8px);
+    left: 0;
+    right: 0;
+    padding: 8px 0;
+    border: 1px solid #e3e5ea;
+    border-radius: 6px;
+    background: #ffffff;
+    box-shadow: 0 12px 28px rgb(17 33 73 / 12%);
+    animation: menu-in 0.16s ease-out both;
+}
+
+.menu_scroll {
+    max-height: 240px;
+    overflow-y: auto;
+}
+
+.menu-option {
+    display: block;
+    width: 100%;
+    padding: 8px 16px;
+    border: 0;
+    background: transparent;
+    font: inherit;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--login-text);
+    text-align: left;
+    cursor: pointer;
+}
+
+.menu-option:hover,
+.menu-option:focus {
+    outline: 0;
+    background: #f3f6fa;
+}
+
+.menu-option_selected {
+    color: var(--login-navy);
+    font-weight: 700;
+}
+
+.menu-empty {
+    margin: 0;
+    padding: 8px 16px;
+    font-size: 14px;
+    color: var(--login-muted);
+}
+
+/* ---------- Document upload ---------- */
+.dropzone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 6px;
+    margin-top: 12px;
+    padding: 20px 16px;
+    border: 1px dashed var(--login-border);
+    border-radius: 6px;
+    background: #ffffff;
+    text-align: center;
+    transition: border-color 0.2s ease, background 0.2s ease, transform 0.2s ease;
+}
+
+.dropzone_active {
+    border-color: var(--login-navy);
+    background: #f4f7ff;
+    transform: scale(1.01);
+}
+
+.dropzone_error {
+    border-color: var(--login-error);
+}
+
+.upload-icon {
+    width: 26px;
+    height: 26px;
+    color: #3b4252;
+}
+
+.dropzone-text {
+    margin: 4px 0 0;
+    font-size: 14px;
+    color: var(--login-muted);
+}
+
+.dropzone-hint {
+    margin: 0;
+    font-size: 12px;
+    color: var(--login-text);
+}
+
+.upload-link {
+    padding: 0;
+    border: 0;
+    background: none;
+    font: inherit;
+    font-weight: 700;
+    color: var(--login-navy);
+    cursor: pointer;
+}
+
+.upload-link:hover:not(:disabled) {
+    text-decoration: underline;
+}
+
+.upload-link:disabled {
+    color: var(--login-muted);
+    cursor: default;
+}
+
+.file-input {
+    display: none;
+}
+
+.file-list {
+    margin: 10px 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.file-item {
+    position: relative;
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin-top: 8px;
+    padding: 8px 10px;
+    overflow: hidden;
+    border: 1px solid #e3e5ea;
+    border-radius: 6px;
+    background: #fafbfc;
+    font-size: 14px;
+    animation: step-in 0.25s ease-out both;
+    transition: border-color 0.3s ease, background 0.3s ease;
+}
+
+/* A document on its way to Salesforce: a bar runs along the bottom of its row */
+.file-item_uploading::after {
+    content: '';
+    position: absolute;
+    left: 0;
+    right: 0;
+    bottom: 0;
+    height: 3px;
+    background: linear-gradient(90deg, transparent, var(--login-navy), transparent);
+    background-size: 50% 100%;
+    background-repeat: no-repeat;
+    animation: upload-run 1.1s ease-in-out infinite;
+}
+
+.file-item_done {
+    border-color: #cfe8d6;
+    background: #f3fbf5;
+}
+
+.file-item_failed {
+    border-color: #f3c7c3;
+    background: #fdf1f0;
+}
+
+.file-spinner {
+    flex: 0 0 18px;
+    width: 18px;
+    height: 18px;
+    margin: 0 5px;
+    border: 2px solid rgb(17 33 73 / 18%);
+    border-top-color: var(--login-navy);
+    border-radius: 50%;
+    animation: spin 0.8s linear infinite;
+}
+
+.file-done {
+    flex: 0 0 20px;
+    width: 20px;
+    height: 20px;
+    margin: 0 4px;
+    color: #1e8e3e;
+    animation: pop-in 0.35s cubic-bezier(0.2, 0.8, 0.3, 1.25) both;
+}
+
+.file-icon {
+    flex: 0 0 20px;
+    width: 20px;
+    height: 20px;
+    color: #c0392b;
+}
+
+.file-name {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.file-size {
+    color: var(--login-muted);
+    font-size: 12px;
+}
+
+.file-remove {
+    display: grid;
+    place-items: center;
+    width: 28px;
+    height: 28px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--login-muted);
+    cursor: pointer;
+}
+
+.file-remove svg {
+    width: 16px;
+    height: 16px;
+}
+
+.file-remove:hover {
+    background: #fdecea;
+    color: var(--login-error);
+}
+
+/* ---------- Status screens ---------- */
+.status {
+    text-align: center;
+}
+
+.status-icon {
+    display: block;
+    width: 128px;
+    height: auto;
+    margin: 0 auto 20px;
+    animation: pop-in 0.55s cubic-bezier(0.2, 0.8, 0.3, 1.25) both;
+}
+
+.status-title {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 30px;
+    color: #000000;
+}
+
+.status-text {
+    margin: 12px auto 0;
+    max-width: 460px;
+    font-size: 16px;
+    line-height: 24px;
+    color: #3f3f46;
+}
+
+.primary-btn_status {
+    margin-top: 24px;
+}
+
+/* ---------- Terms / privacy dialog ---------- */
+.modal-backdrop {
+    position: fixed;
+    z-index: 50;
+    inset: 0;
+    background: rgb(17 33 73 / 45%);
+    animation: fade-in 0.2s ease-out both;
+}
+
+.modal {
+    position: fixed;
+    z-index: 51;
+    top: 50%;
+    left: 50%;
+    display: flex;
+    flex-direction: column;
+    width: min(680px, calc(100vw - 32px));
+    max-height: min(80vh, 720px);
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 24px 60px rgb(17 33 73 / 30%);
+    transform: translate(-50%, -50%);
+    animation: modal-in 0.25s cubic-bezier(0.2, 0.8, 0.3, 1) both;
+}
+
+.modal-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 18px 20px 14px 24px;
+    border-bottom: 1px solid #ebe9e9;
+}
+
+.modal-title {
+    margin: 0;
+    font-size: 20px;
+    font-weight: 700;
+    color: var(--login-navy);
+}
+
+.modal-close {
+    display: grid;
+    place-items: center;
+    width: 36px;
+    height: 36px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: transparent;
+    color: var(--login-text);
+    cursor: pointer;
+}
+
+.modal-close svg {
+    width: 20px;
+    height: 20px;
+}
+
+.modal-close:hover {
+    background: #f1f3f6;
+}
+
+.modal-body {
+    padding: 20px 24px 24px;
+    overflow-y: auto;
+}
+
+.modal-note {
+    margin: 0;
+    font-size: 15px;
+    line-height: 22px;
+    color: var(--login-muted);
+}
+
+.modal-skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+}
+
+.modal-skeleton span {
+    height: 14px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #e6e9ee 25%, #f4f6f9 50%, #e6e9ee 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.3s linear infinite;
+}
+
+.modal-skeleton .short {
+    width: 60%;
+}
+
+/* ---------- Motion ---------- */
+.shake {
+    animation: shake 0.42s ease-in-out;
+}
+
+@keyframes step-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: none; }
+}
+
+@keyframes art-in {
+    from { opacity: 0; transform: translateY(18px) scale(0.98); }
+    to { opacity: 1; transform: none; }
+}
+
+@keyframes digit-in {
+    from { transform: scale(0.9); }
+    to { transform: none; }
+}
+
+@keyframes pop-in {
+    from { opacity: 0; transform: scale(0.7); }
+    to { opacity: 1; transform: none; }
+}
+
+@keyframes menu-in {
+    from { opacity: 0; transform: translateY(-6px); }
+    to { opacity: 1; transform: none; }
+}
+
+@keyframes modal-in {
+    from { opacity: 0; transform: translate(-50%, -46%); }
+    to { opacity: 1; transform: translate(-50%, -50%); }
+}
+
+@keyframes fade-in {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@keyframes spin {
+    to { transform: rotate(360deg); }
+}
+
+@keyframes upload-run {
+    from { background-position: -50% 0; }
+    to { background-position: 150% 0; }
+}
+
+@keyframes shimmer {
+    from { background-position: 200% 0; }
+    to { background-position: -200% 0; }
+}
+
+@keyframes shake {
+    10%, 90% { transform: translateX(-1px); }
+    20%, 80% { transform: translateX(2px); }
+    30%, 50%, 70% { transform: translateX(-4px); }
+    40%, 60% { transform: translateX(4px); }
+}
+
+/* ---------- Smaller screens: the form alone ---------- */
+@media (max-width: 900px) {
+    .art-panel {
+        display: none;
+    }
+
+    .form-panel {
+        align-items: flex-start;
+        padding: 40px 20px;
+    }
+}
+
+@media (max-width: 420px) {
+    .logo {
+        width: 230px;
+    }
+
+
+    .welcome-title {
+        font-size: 24px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .art,
+    .step,
+    .notice,
+    .shake,
+    .status-icon,
+    .menu,
+    .file-item,
+    .file-done,
+    .modal,
+    .modal-backdrop {
+        animation: none;
+    }
+
+    .primary-btn,
+    .dropzone,
+    .chevron {
+        transition: none;
+    }
+}

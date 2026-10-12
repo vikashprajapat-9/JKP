@@ -1,0 +1,33 @@
+<template>
+    <lightning-modal-header label={labels.heading}></lightning-modal-header>
+    <lightning-modal-body>
+        <template lwc:if={hasProjects}>
+            <p class="hint muted">{labels.hint}</p>
+            <div class="field">
+                <lightning-combobox
+                    data-id="project"
+                    label={labels.project}
+                    placeholder={labels.placeholder}
+                    options={projects}
+                    value={projectId}
+                    required
+                    onchange={handleProject}
+                ></lightning-combobox>
+                <template lwc:if={error}>
+                    <span class="error-text" role="alert">{error}</span>
+                </template>
+            </div>
+        </template>
+        <template lwc:else>
+            <div class="note grey"><span>{labels.noProjects}</span></div>
+        </template>
+    </lightning-modal-body>
+    <lightning-modal-footer>
+        <div class="actions">
+            <button type="button" class="btn" data-id="cancel" onclick={handleCancel}>{labels.cancel}</button>
+            <button type="button" class="btn primary" data-id="continue" disabled={continueDisabled} onclick={handleContinue}>
+                {labels.continueLabel}
+            </button>
+        </div>
+    </lightning-modal-footer>
+</template>

@@ -1,13 +1,19 @@
 @isTest
 private class ProjectTriggerHandlerTest {
 
-    // Answers the OneDrive token request; the Graph folder call itself is skipped in tests by the queueable.
+    // Answers the OneDrive token request and refuses the folder call, so the folder job queued by the project insert
+    // does nothing and these tests count only the documents they create themselves
     private class OneDriveMock implements HttpCalloutMock {
         public HttpResponse respond(HttpRequest req) {
             HttpResponse res = new HttpResponse();
-            res.setStatusCode(200);
             res.setHeader('Content-Type', 'application/json');
-            res.setBody('{"access_token":"test-token","id":"test-folder-id"}');
+            if (req.getEndpoint().contains('/oauth2/')) {
+                res.setStatusCode(200);
+                res.setBody('{"access_token":"test-token"}');
+            } else {
+                res.setStatusCode(503);
+                res.setBody('{"error":{"code":"serviceNotAvailable"}}');
+            }
             return res;
         }
     }

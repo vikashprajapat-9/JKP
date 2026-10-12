@@ -1,0 +1,8 @@
+A channel partner asks for more time on a lead before it moves to the Partnership Queue.
+
+Lead: {!Partner_Access_Request__c.Lead__c}
+Channel partner: {!Partner_Access_Request__c.Account__c}
+More days asked: {!Partner_Access_Request__c.Extension_Days__c}
+Reason: {!Partner_Access_Request__c.Reason__c}
+
+Approve or reject it here: {!ApprovalRequest.Internal_URL}

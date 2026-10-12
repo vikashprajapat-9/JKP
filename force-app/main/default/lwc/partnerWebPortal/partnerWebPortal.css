@@ -154,6 +154,85 @@
     --sds-c-icon-color-foreground-default: var(--jk-text);
 }
 
+/* ---------- The bell: site visit reminders ---------- */
+.bell-wrap {
+    position: relative;
+    display: flex;
+}
+
+.header-icon-button {
+    position: relative;
+}
+
+.bell-badge {
+    position: absolute;
+    top: -6px;
+    right: -8px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 999px;
+    background: var(--jk-badge-cancelled, #d93025);
+    color: #fff;
+    font-family: var(--jk-font);
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 18px;
+    text-align: center;
+    box-shadow: 0 0 0 2px #fff;
+}
+
+.bell-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+}
+
+.bell-popover {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: -8px;
+    width: min(420px, calc(100vw - 32px));
+    max-height: min(560px, calc(100vh - 120px));
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border: 1px solid var(--jk-divider);
+    border-radius: var(--jk-radius-lg);
+    box-shadow: 0 14px 40px rgb(17 33 73 / 18%);
+    z-index: 51;
+    overflow: hidden;
+}
+
+.bell-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--jk-divider);
+    background: var(--jk-tint);
+}
+
+.bell-title {
+    font-family: var(--jk-font);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--jk-text-strong);
+}
+
+.bell-close {
+    border: 0;
+    background: transparent;
+    color: var(--jk-text-muted);
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.bell-body {
+    padding: 12px 14px 4px;
+    overflow-y: auto;
+}
+
 .profile-button {
     width: 40px;
     height: 40px;
@@ -238,6 +317,124 @@
     border: 1px solid var(--jk-navy);
     background: var(--jk-navy);
     color: #ffffff;
+}
+
+/* ---------- Access ended: the whole portal for a partner whose access has ended ---------- */
+/* The card sits in the middle, and scrolls rather than being cut off on a short screen */
+/* Over the whole portal (its popups included) while Salesforce is asked whether the partner's session is over */
+.session-check {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background: var(--jk-surface);
+}
+
+.ended-page {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    padding: 32px 16px;
+    overflow-y: auto;
+    background: var(--jk-tint);
+}
+
+.ended-card {
+    width: min(480px, 100%);
+    margin: auto;
+    padding: 40px 32px 36px;
+    box-sizing: border-box;
+    border-radius: var(--jk-radius-lg);
+    background: var(--jk-surface);
+    box-shadow: 0 14px 40px rgb(17 33 73 / 12%);
+    text-align: center;
+    animation: ended-in 0.35s ease-out both;
+}
+
+.ended-logo {
+    display: block;
+    width: 168px;
+    height: auto;
+    margin: 0 auto 28px;
+}
+
+.ended-icon {
+    display: block;
+    width: 112px;
+    height: auto;
+    margin: 0 auto 20px;
+}
+
+.ended-title {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 30px;
+    color: var(--jk-text);
+}
+
+.ended-title:focus {
+    outline: none;
+}
+
+.ended-text {
+    margin: 12px auto 0;
+    max-width: 400px;
+    font-size: 16px;
+    line-height: 24px;
+    color: var(--jk-text-muted);
+}
+
+.ended-logout {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-width: 200px;
+    margin-top: 32px;
+    padding: 0 28px;
+    transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ended-logout:hover {
+    border-color: var(--jk-navy-soft);
+    background: var(--jk-navy-soft);
+    box-shadow: 0 8px 18px rgb(17 33 73 / 22%);
+}
+
+.ended-logout:focus-visible {
+    outline: 3px solid rgb(17 33 73 / 35%);
+    outline-offset: 2px;
+}
+
+.ended-logout-icon {
+    --slds-c-icon-color-foreground-default: #ffffff;
+    --sds-c-icon-color-foreground-default: #ffffff;
+}
+
+@keyframes ended-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: none; }
+}
+
+@media (max-width: 480px) {
+    .ended-card {
+        padding: 32px 20px 28px;
+    }
+
+    .ended-logout {
+        width: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ended-card {
+        animation: none;
+    }
+
+    .ended-logout {
+        transition: none;
+    }
 }
 
 @media (max-width: 900px) {

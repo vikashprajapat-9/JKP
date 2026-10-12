@@ -23,54 +23,17 @@
         <label>Rejected Email alert</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
-        <actionName>emailSimple</actionName>
-        <actionType>emailSimple</actionType>
-        <flowTransactionModel>CurrentTransaction</flowTransactionModel>
+        <actionName>PartnerRegistrationRejection</actionName>
+        <actionType>apex</actionType>
+        <flowTransactionModel>Automatic</flowTransactionModel>
         <inputParameters>
-            <name>recipientAddresses</name>
+            <name>accountIds</name>
             <value>
-                <collectionElements>
-                    <elementReference>$Record.Email__c</elementReference>
-                </collectionElements>
+                <elementReference>$Record.Id</elementReference>
             </value>
         </inputParameters>
-        <inputParameters>
-            <name>composeEmailContent</name>
-            <value>
-                <stringValue>True</stringValue>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>emailSubject</name>
-            <value>
-                <elementReference>subject</elementReference>
-                <inputConfiguratorMode>Resource</inputConfiguratorMode>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>emailBody</name>
-            <value>
-                <inputConfiguratorMode>Custom</inputConfiguratorMode>
-                <stringValue>&lt;p&gt;&lt;span style=&quot;color: rgb(1, 3, 121); font-size: 14px;&quot;&gt;Dear &lt;/span&gt;&lt;strong style=&quot;color: rgb(10, 39, 144); font-size: 14px;&quot;&gt;{!$Record.Name},&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;color: rgb(34, 1, 53); font-size: 14px;&quot;&gt;Your application number:{!$Record.Id}&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;span style=&quot;color: rgb(34, 1, 53); font-size: 14px;&quot;&gt; is rejected contact to admin.&lt;/span&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;&lt;p&gt;&lt;strong style=&quot;color: rgb(3, 5, 124); font-size: 14px;&quot;&gt;Thanks,&lt;/strong&gt;&lt;/p&gt;&lt;p&gt;&lt;a href=&quot;https://www.keells.com/&quot; rel=&quot;noopener noreferrer&quot; target=&quot;_blank&quot; style=&quot;color: rgb(4, 52, 157); font-size: 14px;&quot;&gt;&lt;strong&gt;John Keels Properties.&lt;/strong&gt;&lt;/a&gt;&lt;/p&gt;&lt;p&gt;&lt;br&gt;&lt;/p&gt;</stringValue>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>sendRichBody</name>
-            <value>
-                <booleanValue>true</booleanValue>
-                <inputConfiguratorMode>Resource</inputConfiguratorMode>
-            </value>
-        </inputParameters>
-        <inputParameters>
-            <name>useLineBreaks</name>
-            <value>
-                <booleanValue>true</booleanValue>
-                <inputConfiguratorMode>Resource</inputConfiguratorMode>
-            </value>
-        </inputParameters>
-        <nameSegment>emailSimple</nameSegment>
+        <nameSegment>PartnerRegistrationRejection</nameSegment>
         <offset>0</offset>
-        <versionString>3.0.1</versionString>
     </actionCalls>
     <apiVersion>68.0</apiVersion>
     <areMetricsLoggedToDataCloud>false</areMetricsLoggedToDataCloud>
@@ -79,10 +42,7 @@
         <label>Decision based on Approval</label>
         <locationX>0</locationX>
         <locationY>0</locationY>
-        <defaultConnector>
-            <targetReference>Rejected_Email_alert</targetReference>
-        </defaultConnector>
-        <defaultConnectorLabel>Not Approved</defaultConnectorLabel>
+        <defaultConnectorLabel>Other Status</defaultConnectorLabel>
         <rules>
             <name>If_Approved</name>
             <conditionLogic>and</conditionLogic>
@@ -98,8 +58,30 @@
             </connector>
             <label>If Approved</label>
         </rules>
+        <rules>
+            <name>If_Rejected</name>
+            <conditionLogic>and</conditionLogic>
+            <conditions>
+                <leftValueReference>$Record.Onboarding_Status__c</leftValueReference>
+                <operator>EqualTo</operator>
+                <rightValue>
+                    <stringValue>Rejected</stringValue>
+                </rightValue>
+            </conditions>
+            <conditions>
+                <leftValueReference>$Record.Email__c</leftValueReference>
+                <operator>IsNull</operator>
+                <rightValue>
+                    <booleanValue>false</booleanValue>
+                </rightValue>
+            </conditions>
+            <connector>
+                <targetReference>Rejected_Email_alert</targetReference>
+            </connector>
+            <label>If Rejected</label>
+        </rules>
     </decisions>
-    <description>This approval update approval status as well as passese AccountId to apex class along with if rejected sending email to perticular account</description>
+    <description>Runs only when an Account&apos;s Onboarding Status changes. Approved: passes the Account Id to PartnerPortalUserCreation, which makes it a partner account and creates the partner login. Rejected: emails the rejection to the account&apos;s Email (only when it has one). Other changes do nothing, so ordinary edits never send a rejection email.</description>
     <environments>Default</environments>
     <interviewLabel>PartnerPortalApprovalandRejection {!$Flow.CurrentDateTime}</interviewLabel>
     <label>PartnerPortalApprovalandRejection</label>
@@ -128,14 +110,17 @@
         <connector>
             <targetReference>Decision_based_on_Approval</targetReference>
         </connector>
+        <filterLogic>and</filterLogic>
+        <filters>
+            <field>Onboarding_Status__c</field>
+            <operator>IsChanged</operator>
+            <value>
+                <booleanValue>true</booleanValue>
+            </value>
+        </filters>
         <object>Account</object>
         <recordTriggerType>Update</recordTriggerType>
         <triggerType>RecordAfterSave</triggerType>
     </start>
     <status>Active</status>
-    <textTemplates>
-        <name>subject</name>
-        <isViewedAsPlainText>true</isViewedAsPlainText>
-        <text>&lt;p&gt;Application is rejected&lt;/p&gt;</text>
-    </textTemplates>
 </Flow>

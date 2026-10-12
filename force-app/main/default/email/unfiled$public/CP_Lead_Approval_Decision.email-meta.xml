@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Tells a Channel Partner user whether the managers approved or rejected their lead for a customer Direct Sales already has.</description>
+    <encodingKey>UTF-8</encodingKey>
+    <name>CP Lead Approval Decision</name>
+    <style>none</style>
+    <subject>Your lead {!Lead.Name} was {!Lead.CP_Approval_Status__c}</subject>
+    <type>text</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

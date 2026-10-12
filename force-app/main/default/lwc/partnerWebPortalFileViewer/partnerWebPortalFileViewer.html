@@ -1,0 +1,70 @@
+<template>
+    <div class="viewer" role="dialog" aria-modal="true" aria-label={fileName}>
+        <div class="viewer-bar">
+            <button class="viewer-back" type="button" onclick={handleClose}>
+                <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true">
+                    <path d="M20 12H4M10 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+                <span>Back</span>
+            </button>
+
+            <span class="viewer-name" title={fileName}>{fileName}</span>
+
+            <div class="viewer-tools">
+                <template lwc:if={isImage}>
+                    <button class="tool-btn" type="button" onclick={handleZoomOut} disabled={isZoomOutDisabled} aria-label="Zoom out" title="Zoom out">
+                        <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
+                            <circle cx="11" cy="11" r="7.5" fill="none" stroke="currentColor" stroke-width="1.6"></circle>
+                            <path d="M8 11h6M17 17l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+                        </svg>
+                    </button>
+                    <button class="tool-btn" type="button" onclick={handleZoomIn} disabled={isZoomInDisabled} aria-label="Zoom in" title="Zoom in">
+                        <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
+                            <circle cx="11" cy="11" r="7.5" fill="none" stroke="currentColor" stroke-width="1.6"></circle>
+                            <path d="M8 11h6M11 8v6M17 17l4 4" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+                        </svg>
+                    </button>
+                    <span class="zoom-label">{zoomLabel}</span>
+                </template>
+                <button class="tool-btn" type="button" onclick={handleDownload} aria-label="Download" title="Download">
+                    <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+                        <path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </button>
+                <button class="tool-btn" type="button" onclick={handleOpenInOneDrive} aria-label="Open in OneDrive" title="Open in OneDrive">
+                    <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+                        <path d="M14 4h6v6M20 4l-9 9M18 14v5a1 1 0 0 1-1 1H5a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1h5" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </button>
+            </div>
+        </div>
+
+        <div class="viewer-body">
+            <template lwc:if={isVideo}>
+                <video class="viewer-video" src={file.mediaUrl} controls autoplay playsinline></video>
+            </template>
+            <template lwc:elseif={isImage}>
+                <img class="viewer-image" src={file.mediaUrl} alt={fileName} style={imageStyle} />
+            </template>
+            <template lwc:else>
+                <div class="doc-frame-wrap">
+                    <template lwc:if={isPreviewLoading}>
+                        <div class="doc-state">
+                            <span class="doc-spinner" aria-hidden="true"></span>
+                            <p>Preparing preview…</p>
+                        </div>
+                    </template>
+                    <template lwc:elseif={previewError}>
+                        <div class="doc-state">
+                            <p>{previewError}</p>
+                            <button type="button" class="doc-open-btn" onclick={handleOpenInOneDrive}>Open in OneDrive</button>
+                        </div>
+                    </template>
+                    <template lwc:else>
+                        <iframe class="doc-frame" src={previewUrl} title={fileName} allowfullscreen></iframe>
+                    </template>
+                </div>
+            </template>
+        </div>
+    </div>
+</template>

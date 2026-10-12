@@ -1,0 +1,252 @@
+:host {
+    display: block;
+    font-family: var(--jk-font);
+    color: var(--jk-text);
+}
+
+button {
+    font-family: var(--jk-font);
+}
+
+.page-title {
+    margin: 0 0 16px;
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--jk-text);
+}
+
+.page-subtitle {
+    margin: 0 0 28px;
+    font-size: 16px;
+    line-height: 24px;
+    color: var(--jk-text);
+}
+
+/* ---------- Table ---------- */
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+}
+
+.table {
+    min-width: 900px;
+}
+
+.table-head,
+.row-main {
+    display: grid;
+    grid-template-columns: 1.1fr 1.2fr 1fr 1.1fr 0.9fr 1.3fr 0.7fr;
+    align-items: center;
+    column-gap: 12px;
+    padding: 0 16px;
+}
+
+.table-head {
+    height: 48px;
+    border-radius: var(--jk-radius-sm);
+    background: var(--jk-navy);
+    color: #ffffff;
+    font-size: 14px;
+    font-weight: 600;
+    white-space: nowrap;
+}
+
+.row {
+    border-bottom: 1px solid var(--jk-divider);
+}
+
+.row-main {
+    min-height: 64px;
+    font-size: 14px;
+    font-weight: 500;
+    color: var(--jk-text);
+}
+
+.strong {
+    font-weight: 600;
+}
+
+.center {
+    display: flex;
+    justify-content: center;
+}
+
+/* ---------- Status badges ---------- */
+.badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 120px;
+    height: 28px;
+    padding: 0 14px;
+    box-sizing: border-box;
+    border-radius: 999px;
+    font-size: 13px;
+    font-weight: 500;
+    white-space: nowrap;
+    background: var(--jk-divider);
+    color: var(--jk-text);
+}
+
+.badge-yet {
+    background: var(--jk-badge-scheduled);
+    color: var(--jk-badge-scheduled-text);
+}
+
+.badge-approved {
+    background: var(--jk-badge-active);
+    color: #ffffff;
+}
+
+.badge-submitted {
+    background: #e0a500;
+    color: #ffffff;
+}
+
+.badge-credited {
+    background: #0b67d0;
+    color: #ffffff;
+}
+
+.badge-rejected {
+    background: #c40d0d;
+    color: #ffffff;
+}
+
+/* ---------- Expand toggle ---------- */
+.toggle-btn {
+    display: flex;
+    padding: 4px;
+    border: 0;
+    border-radius: 4px;
+    background: none;
+    color: var(--jk-text);
+    cursor: pointer;
+}
+
+.toggle-btn:hover {
+    background: var(--jk-tint);
+}
+
+.chevron {
+    transition: transform 0.15s ease;
+}
+
+.chevron.open {
+    transform: rotate(180deg);
+}
+
+/* ---------- Expanded detail ---------- */
+.row-detail {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    padding: 18px 16px;
+    background: #f5f6f7;
+}
+
+.detail-item {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+.detail-label {
+    font-size: 14px;
+    font-weight: 600;
+    color: var(--jk-text);
+}
+
+.detail-value {
+    font-size: 14px;
+    color: var(--jk-text-muted);
+}
+
+.claim-btn {
+    flex-shrink: 0;
+    height: 48px;
+    padding: 0 24px;
+    border: 0;
+    border-radius: var(--jk-radius-sm);
+    background: var(--jk-navy);
+    color: #ffffff;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.claim-btn:hover {
+    background: var(--jk-navy-soft);
+}
+
+.empty-state {
+    font-size: 15px;
+    color: var(--jk-text-muted);
+}
+
+/* ---------- Success modal ---------- */
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgb(0 0 0 / 38%);
+    z-index: 200;
+}
+
+.modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(866px, calc(100vw - 32px));
+    box-sizing: border-box;
+    padding: 64px 40px 72px;
+    border-radius: var(--jk-radius-lg);
+    background: var(--jk-surface);
+    text-align: center;
+    z-index: 201;
+}
+
+.close-btn {
+    position: absolute;
+    top: 18px;
+    right: 18px;
+    display: flex;
+    padding: 4px;
+    border: 0;
+    background: none;
+    color: var(--jk-text);
+    cursor: pointer;
+}
+
+.success-illustration {
+    display: block;
+    width: 240px;
+    height: 240px;
+    margin: 0 auto 24px;
+}
+
+.success-title {
+    margin: 0 0 10px;
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--jk-text);
+}
+
+.success-text {
+    margin: 0;
+    font-size: 14px;
+    line-height: 22px;
+    color: var(--jk-text);
+}
+
+@media (max-width: 900px) {
+    .row-detail {
+        flex-wrap: wrap;
+    }
+
+    .detail-item {
+        flex: 1 1 40%;
+    }
+}

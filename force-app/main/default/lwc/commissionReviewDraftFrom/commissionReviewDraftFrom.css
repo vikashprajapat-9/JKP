@@ -1,0 +1,22 @@
+@import 'c/commissionStyles';
+
+.hint { margin: 0 0 12px; font-size: 13.5px; }
+.choices { border: 0; margin: 0; padding: 0; min-width: 0; }
+.slot + .slot { margin-top: 8px; }
+/* The whole card is the label of its radio button */
+.choice { cursor: pointer; }
+.choice:focus-within { outline: 2px solid var(--sky); outline-offset: 2px; }
+.choice.off { cursor: default; background: var(--row-alt); color: #7a8496; }
+.choice .title, .choice .text { display: block; }
+.choice .none { color: var(--amber); }
+/* The project of a copy, under its card; room for the open list of the combobox */
+.project { margin: 8px 0 0 25px; min-height: 9rem; }
+.error-text { margin-top: 10px; }
+.actions { display: flex; justify-content: flex-end; gap: 8px; }
+button { font-family: inherit; cursor: pointer; }
+button:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px; }
+.btn.primary:hover { filter: brightness(1.08); }
+.btn:not(.primary):hover { background: var(--row-alt); }
+
+/* Text for screen readers only (the radio buttons stay reachable by keyboard) */
+.assistive { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customSettingsType>Hierarchy</customSettingsType>
+    <description>Signing key for the documents of Partner Portal registrations. Salesforce creates it on the first registration; keep it private and do not copy it between orgs.</description>
+    <label>Partner Registration Key</label>
+    <visibility>Protected</visibility>
+</CustomObject>

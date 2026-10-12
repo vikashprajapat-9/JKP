@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Follow_Up_Required__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>The call log needs a Follow Up Date Time (for example In Discussion).</description>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>The call log needs a Follow Up Date Time (for example In Discussion).</inlineHelpText>
+    <label>Follow-up Required</label>
+    <type>Checkbox</type>
+</CustomField>

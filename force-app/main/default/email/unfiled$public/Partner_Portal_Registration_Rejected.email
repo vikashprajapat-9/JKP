@@ -1,0 +1,71 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Your channel partner registration</title>
+</head>
+<body style="margin:0; padding:0; background-color:#f3f5f8;">
+<div style="display:none; max-height:0; max-width:0; overflow:hidden; opacity:0; font-size:1px; line-height:1px; color:#f3f5f8; mso-hide:all;">An update on your channel partner registration with John Keells Properties.&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;&nbsp;&zwnj;</div>
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#f3f5f8;">
+<tr>
+<td align="center" style="padding:24px 12px;">
+<table role="presentation" width="600" cellpadding="0" cellspacing="0" border="0" style="width:600px; max-width:100%; background-color:#ffffff; border:1px solid #e3e6ec; border-radius:10px;">
+<tr>
+<td style="background-color:#112149; padding:22px 32px; border-radius:10px 10px 0 0;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0">
+<tr>
+<td style="font-family:Arial, Helvetica, sans-serif; font-size:15px; font-weight:bold; letter-spacing:3px; color:#ffffff;">JOHN KEELLS PROPERTIES</td>
+<td align="right" style="font-family:Arial, Helvetica, sans-serif; font-size:12px; letter-spacing:1px; color:#e3c47a;">PARTNER PORTAL</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td style="padding:32px 32px 8px 32px; font-family:Arial, Helvetica, sans-serif; color:#1b1b1f;">
+<table role="presentation" cellpadding="0" cellspacing="0" border="0"><tr><td bgcolor="#fdecea" style="background-color:#fdecea; border-radius:20px; padding:6px 12px; font-family:Arial, Helvetica, sans-serif; font-size:12px; font-weight:bold; letter-spacing:1px; color:#9b2c2c;">REGISTRATION NOT APPROVED</td></tr></table>
+<h1 style="margin:18px 0 14px 0; font-family:Arial, Helvetica, sans-serif; font-size:24px; line-height:30px; font-weight:bold; color:#112149;">We are unable to approve your registration</h1>
+<p style="margin:0 0 14px 0; font-size:15px; line-height:23px;">Dear {!Contact.Name},</p>
+<p style="margin:0 0 14px 0; font-size:15px; line-height:23px;">Thank you for registering <strong>{!Account.Name}</strong> as a channel partner with John Keells Properties.</p>
+<p style="margin:0 0 8px 0; font-size:15px; line-height:23px;">After reviewing your application, we are unable to approve it at this time.</p>
+</td>
+</tr>
+<!--reason-->
+<tr>
+<td style="padding:8px 32px 4px 32px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#fdf6f5; border:1px solid #f3d9d6; border-radius:8px;">
+<tr>
+<td style="padding:16px 20px; font-family:Arial, Helvetica, sans-serif;">
+<div style="font-size:11px; letter-spacing:1px; color:#6b6b73;">REASON</div>
+<div style="font-size:15px; line-height:23px; color:#1b1b1f; padding-top:4px; word-break:break-word; overflow-wrap:anywhere;">[[Reason]]</div>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+<!--/reason-->
+<tr>
+<td style="padding:14px 32px 30px 32px;">
+<table role="presentation" width="100%" cellpadding="0" cellspacing="0" border="0" style="background-color:#fbf7ee; border-left:4px solid #775918;">
+<tr>
+<td style="padding:14px 18px; font-family:Arial, Helvetica, sans-serif;">
+<div style="font-size:12px; font-weight:bold; letter-spacing:1px; color:#775918;">QUESTIONS?</div>
+<div style="font-size:14px; line-height:21px; color:#1b1b1f; padding-top:6px;">If you have any questions, please contact the JKP CP team.</div>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+<tr>
+<td style="padding:20px 32px 24px 32px; border-top:1px solid #ebe9e9; font-family:Arial, Helvetica, sans-serif; font-size:13px; line-height:20px; color:#6b6b73;">
+Thanks,<br>
+<strong style="color:#112149;">John Keells Properties</strong><br><br>
+<span style="font-size:12px;">This is an automated message from the John Keells Properties Partner Portal.</span>
+</td>
+</tr>
+</table>
+</td>
+</tr>
+</table>
+</body>
+</html>

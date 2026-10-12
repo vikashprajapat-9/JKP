@@ -243,3 +243,33 @@ h2 {
         width: calc(50% - 6px);
     }
 }
+
+/* A figure that is a message, not a number */
+.kpi-value_note {
+    font-size: 18px;
+    line-height: 26px;
+    font-weight: 600;
+    color: var(--jk-text-muted);
+}
+
+/* Same banner as the Leads page */
+.alert-banner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    margin-bottom: 24px;
+    border-radius: var(--jk-radius);
+    font-size: 14px;
+}
+
+.error-banner {
+    background: #fdecea;
+    border: 1px solid #f5c2bd;
+    color: #8c1d18;
+    --slds-c-icon-color-foreground-default: #d93025;
+}
+
+.alert-text {
+    flex: 1;
+}

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>64.0</apiVersion>
+    <isExposed>false</isExposed>
+    <description>Full-screen viewer for one partner portal file: photos with zoom, videos, and documents in OneDrive's embedded preview.</description>
+</LightningComponentBundle>

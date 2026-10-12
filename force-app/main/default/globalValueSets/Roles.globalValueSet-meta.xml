@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<GlobalValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customValue>
+        <fullName>System Administrator</fullName>
+        <default>false</default>
+        <label>System Administrator</label>
+    </customValue>
+    <customValue>
+        <fullName>Investment Advisor</fullName>
+        <default>false</default>
+        <label>Investment Advisor</label>
+    </customValue>
+    <customValue>
+        <fullName>Senior Manager Sales</fullName>
+        <default>false</default>
+        <label>Senior Manager Sales</label>
+    </customValue>
+    <customValue>
+        <fullName>Chief Commercial Officer GMC</fullName>
+        <default>false</default>
+        <label>Chief Commercial Officer GMC</label>
+    </customValue>
+    <customValue>
+        <fullName>Sector Head GMC</fullName>
+        <default>false</default>
+        <label>Sector Head GMC</label>
+    </customValue>
+    <masterLabel>Roles</masterLabel>
+    <sorted>false</sorted>
+</GlobalValueSet>

@@ -1,7 +1,26 @@
 name: Validate Pull Request
 
+# Validates the source against the sandbox without deploying.
+# This workflow targets the SAME org as the delta/full deploy workflows
+# (SF_AUTH_URL secret) to confirm the metadata is deployable there.
+#
+# PREREQUISITE: The SF_AUTH_URL repository secret must be set.
+# It is the same secret used by deploy-develop.yml and full-deploy.yml.
+# If you want validation against a *separate* integration org, add a new
+# secret (e.g. SF_AUTH_URL_INTEGRATION) and pass it via an additional
+# secrets mapping in the calling workflow.
+#
+# This workflow is intentionally left as workflow_dispatch only.
+# Do NOT change the trigger to pull_request without also confirming that
+# the SF_AUTH_URL target org is safe for validation-only access from
+# feature branches; it does not deploy any metadata.
+
 on:
   workflow_dispatch:
+
+concurrency:
+  group: validate-pr
+  cancel-in-progress: true
 
 permissions:
   contents: read
@@ -11,6 +30,9 @@ jobs:
     uses: ./.github/workflows/salesforce-deploy.yml
     with:
       deployment_type: validate
-      target_org_alias: integration
+      # Uses the same sandbox alias as delta and full deployments.
+      # The validate deployment type runs "sf project deploy validate"
+      # which performs a dry-run and does NOT commit changes to the org.
+      target_org_alias: dev
       send_notifications: false
     secrets: inherit

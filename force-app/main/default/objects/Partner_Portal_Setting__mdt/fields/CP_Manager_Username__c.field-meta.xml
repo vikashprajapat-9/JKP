@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CP_Manager_Username__c</fullName>
+    <description>Username of the JKP CP Manager. Approves a channel partner&apos;s lead for a customer Direct Sales already has when the owner of the partner&apos;s account has no active manager. Blank: such a lead is refused.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Username of the JKP CP Manager. Approves a channel partner&apos;s lead for a customer Direct Sales already has when the owner of the partner&apos;s account has no active manager. Blank: such a lead is refused.</inlineHelpText>
+    <label>JKP CP Manager Username</label>
+    <length>80</length>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

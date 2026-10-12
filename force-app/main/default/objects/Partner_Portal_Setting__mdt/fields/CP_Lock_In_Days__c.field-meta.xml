@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CP_Lock_In_Days__c</fullName>
+    <description>Channel partner lock-in: for this many days after a channel partner submits a customer (normalised phone + project) that only channel partners have, a Direct Sales, Digital or other non-CP lead for that customer is refused. Blank: no lock-in.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Days after a channel partner submits a customer during which a non-CP lead for that customer and project is refused. Blank: no lock-in.</inlineHelpText>
+    <label>CP Lock-in Days</label>
+    <precision>3</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

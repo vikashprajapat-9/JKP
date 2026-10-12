@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>64.0</apiVersion>
+    <isExposed>false</isExposed>
+    <description>The Documents popup of the Partner Portal Leads page: the channel partner chooses the customer type (Individual or Company) and uploads the customer's documents against the lead (OneDrive, partnerWebPortalLeadDocuments).</description>
+</LightningComponentBundle>

@@ -19,28 +19,37 @@
 
             <div class="form-grid">
                 <div class="field">
-                    <label class="field-label" for="fullName">Full Name</label>
-                    <input id="fullName" class="field-input" type="text" placeholder="Enter Full Name"
-                           data-field="fullName" value={form.fullName} oninput={handleInput} />
-                </div>
-
-                <div class="field">
-                    <label class="field-label" for="reportingTo">Field Reporting to</label>
-                    <input id="reportingTo" class="field-input" type="text" placeholder="Enter Name"
-                           data-field="reportingTo" value={form.reportingTo} oninput={handleInput} />
-                </div>
-
-                <div class="field">
-                    <label class="field-label" for="email">Email ID</label>
-                    <input id="email" class={emailClass} type="email" placeholder="Enter Email ID"
-                           data-field="email" value={form.email} oninput={handleInput} />
-                    <template lwc:if={showEmailError}>
-                        <span class="field-error">Enter a valid email address.</span>
+                    <label class="field-label" for="fullName">Full Name<abbr class="required-mark" title="required">*</abbr></label>
+                    <input id="fullName" class={fullNameClass} type="text" placeholder="Enter Full Name" required
+                           aria-required="true" aria-invalid={fullNameInvalid} aria-describedby="fullName-error"
+                           data-field="fullName" value={form.fullName} oninput={handleInput} onblur={handleBlur} />
+                    <template lwc:if={fullNameError}>
+                        <span class="field-error" id="fullName-error">{fullNameError}</span>
                     </template>
                 </div>
 
                 <div class="field">
-                    <label class="field-label" for="phone">Phone Number</label>
+                    <label class="field-label" for="reportingTo">Field Reporting to<abbr class="required-mark" title="required">*</abbr></label>
+                    <input id="reportingTo" class={reportingToClass} type="text" placeholder="Enter Name" required
+                           aria-required="true" aria-invalid={reportingToInvalid} aria-describedby="reportingTo-error"
+                           data-field="reportingTo" value={form.reportingTo} oninput={handleInput} onblur={handleBlur} />
+                    <template lwc:if={reportingToError}>
+                        <span class="field-error" id="reportingTo-error">{reportingToError}</span>
+                    </template>
+                </div>
+
+                <div class="field">
+                    <label class="field-label" for="email">Email ID<abbr class="required-mark" title="required">*</abbr></label>
+                    <input id="email" class={emailClass} type="email" placeholder="Enter Email ID" required
+                           aria-required="true" aria-invalid={emailInvalid} aria-describedby="email-error"
+                           data-field="email" value={form.email} oninput={handleInput} onblur={handleBlur} />
+                    <template lwc:if={emailError}>
+                        <span class="field-error" id="email-error">{emailError}</span>
+                    </template>
+                </div>
+
+                <div class="field">
+                    <label class="field-label" for="phone">Phone Number<abbr class="required-mark" title="required">*</abbr></label>
                     <div class={phoneClass}>
                         <span class="country-code">
                             <svg class="flag" viewBox="0 0 22 14" aria-hidden="true">
@@ -52,17 +61,18 @@
                             94
                         </span>
                         <input id="phone" class="phone-input" type="tel" inputmode="numeric" maxlength="10"
-                               placeholder="Enter Phone Number" data-field="phone" value={form.phone}
-                               oninput={handleInput} />
+                               placeholder="Enter Phone Number" data-field="phone" value={form.phone} required
+                               aria-required="true" aria-invalid={phoneInvalid} aria-describedby="phone-error"
+                               oninput={handleInput} onblur={handleBlur} />
                     </div>
-                    <template lwc:if={showPhoneError}>
-                        <span class="field-error">Enter a valid 9 or 10 digit phone number.</span>
+                    <template lwc:if={phoneError}>
+                        <span class="field-error" id="phone-error">{phoneError}</span>
                     </template>
                 </div>
             </div>
 
-            <p class="section-label">Project Access</p>
-            <div class="project-grid">
+            <p class="section-label" id="projectAccessLabel">Project Access<abbr class="required-mark" title="required">*</abbr></p>
+            <div class="project-grid" role="group" aria-labelledby="projectAccessLabel" aria-describedby="project-error">
                 <template for:each={projectOptions} for:item="project">
                     <button key={project.id} type="button" class={project.cardClass}
                             data-id={project.id} onclick={handleProjectToggle}
@@ -81,6 +91,9 @@
                     <p class="muted">No active projects available.</p>
                 </template>
             </div>
+            <template lwc:if={projectError}>
+                <span class="field-error project-error" id="project-error">{projectError}</span>
+            </template>
             <p class="hint">Select one or more projects to assign.</p>
 
             <div class="privacy-box">
@@ -99,9 +112,16 @@
                 </div>
             </div>
 
+            <template lwc:if={errorMessage}>
+                <div class="form-error" role="alert">
+                    <lightning-icon icon-name="utility:error" size="x-small" class="form-error-icon"></lightning-icon>
+                    <span>{errorMessage}</span>
+                </div>
+            </template>
+
             <div class="modal-footer">
-                <button type="button" class="submit-btn" disabled={isSubmitDisabled} onclick={handleSubmit}>
-                    Add Team Member
+                <button type="button" class="submit-btn" disabled={isSubmitDisabled} onmousedown={keepFocus} onclick={handleSubmit}>
+                    {submitLabel}
                 </button>
             </div>
         </div>
@@ -129,8 +149,8 @@
 
             <h2 id="addedTitle" class="success-title">Team Member has been added!</h2>
             <p class="success-text">
-                Your new team member has been added to the John Keells Properties Estate portal. They now have
-                access to their assigned roles and can start contributing immediately. Collaboration just got stronger!
+                Your new team member has been added to your team. Once John Keells Properties approves them,
+                they will receive their portal login details.
             </p>
         </div>
     </template>

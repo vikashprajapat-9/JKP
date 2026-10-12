@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Trigger_Installment__c</fullName>
+    <deleteConstraint>Restrict</deleteConstraint>
+    <description>For a payout event with an instalment: the Payment Schedule Master instalment that must be paid.</description>
+    <inlineHelpText>Only for the instalment event: the Payment Schedule Master instalment that must be paid.</inlineHelpText>
+    <label>Instalment</label>
+    <referenceTo>Payment_Schedule_Master__c</referenceTo>
+    <relationshipLabel>Commission Payout Stages</relationshipLabel>
+    <relationshipName>Commission_Stages</relationshipName>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

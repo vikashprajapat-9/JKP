@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Sent to a channel partner whose lead was closed because the same customer went to another registration for the same project: another channel partner completed the first site visit, or the customer was booked (Partner Portal Setting: CP Lead Ownership Email Template).</description>
+    <encodingKey>UTF-8</encodingKey>
+    <name>Partner Portal Lead Closed</name>
+    <style>none</style>
+    <subject>Your lead {!Lead.Name} has been closed</subject>
+    <textOnly>Dear {!Lead.OwnerFullName},
+
+Your lead {!Lead.Name} for {!Lead.Project__c} has been closed.
+
+The same customer was also registered for this project by another channel partner or by our Direct Sales team.
+
+When a customer is registered more than once for a project, the customer goes to the channel partner who completes the first site visit, or to whoever books the customer first. This has now happened on another registration, so your lead was closed.
+
+Lead: {!Lead.Name}
+Project: {!Lead.Project__c}
+Lead stage: {!Lead.Status}
+
+WHAT THIS MEANS
+The lead stays in your Leads list on the Partner Portal with this stage, as view only, and it cannot be reopened.
+Any site visit scheduled for this lead has been cancelled, and a site visit request still waiting for approval will not go ahead.
+Your other leads are not affected. If you have any questions, please contact the JKP CP team.
+
+Thanks,
+John Keells Properties</textOnly>
+    <type>custom</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

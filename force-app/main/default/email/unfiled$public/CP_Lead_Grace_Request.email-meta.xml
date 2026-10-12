@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Asks the CP Manager to approve more time (a grace period) on a channel partner lead&apos;s freezing window.</description>
+    <encodingKey>UTF-8</encodingKey>
+    <name>CP Lead Grace Request</name>
+    <style>none</style>
+    <subject>More time requested on lead {!Partner_Access_Request__c.Lead__c}</subject>
+    <type>text</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

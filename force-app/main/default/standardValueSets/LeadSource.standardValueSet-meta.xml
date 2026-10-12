@@ -16,4 +16,9 @@
         <default>false</default>
         <label>Manual</label>
     </standardValue>
+    <standardValue>
+        <fullName>Referral</fullName>
+        <default>false</default>
+        <label>Referral</label>
+    </standardValue>
 </StandardValueSet>

@@ -76,16 +76,6 @@
                 <identifier>RecordBefore_AOS_Demand_Letter_cField</identifier>
             </fieldInstance>
         </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.No_of_Days_to_Trigger_Prior_Milestone__c</fieldItem>
-                <identifier>RecordNo_of_Days_to_Trigger_Prior_Milestone_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
         <name>Facet-557fa553-67ff-48c8-a32a-47cb1b50d8bc</name>
         <type>Facet</type>
     </flexiPageRegions>
@@ -106,28 +96,8 @@
                     <name>uiBehavior</name>
                     <value>none</value>
                 </fieldInstanceProperties>
-                <fieldItem>Record.Company__c</fieldItem>
-                <identifier>RecordCompany_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
                 <fieldItem>Record.Description__c</fieldItem>
                 <identifier>RecordDescription_cField</identifier>
-            </fieldInstance>
-        </itemInstances>
-        <itemInstances>
-            <fieldInstance>
-                <fieldInstanceProperties>
-                    <name>uiBehavior</name>
-                    <value>none</value>
-                </fieldInstanceProperties>
-                <fieldItem>Record.Block__c</fieldItem>
-                <identifier>RecordBlock_cField</identifier>
             </fieldInstance>
         </itemInstances>
         <name>Facet-d336d2b2-af37-421b-8ff4-c3490a001734</name>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CP_Executive_Username__c</fullName>
+    <description>Username of the CP Executive who records the offline signature and uploads the signed contract. Blank: the partner account&apos;s owner.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Username of the CP Executive who records the offline signature and uploads the signed contract. Blank: the partner account&apos;s owner.</inlineHelpText>
+    <label>CP Executive Username</label>
+    <length>80</length>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

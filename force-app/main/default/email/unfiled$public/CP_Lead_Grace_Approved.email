@@ -1,0 +1,11 @@
+Dear partner,
+
+Your request for more time on this lead was approved.
+
+Lead: {!Partner_Access_Request__c.Lead__c}
+More days: {!Partner_Access_Request__c.Extension_Days__c}
+New freezing date: {!Partner_Access_Request__c.New_End_Date__c}
+
+Please complete a site visit with the customer before that date.
+
+John Keells Properties

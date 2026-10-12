@@ -1,11 +1,45 @@
 import { LightningElement, track, wire } from 'lwc';
 import { refreshApex } from '@salesforce/apex';
 import getLeads from '@salesforce/apex/partnerWebPortalLeadController.getLeads';
-import getStageOptions from '@salesforce/apex/partnerWebPortalLeadController.getStageOptions';
+import getLeadFilters from '@salesforce/apex/partnerWebPortalLeadController.getLeadFilters';
 import getProjectOptions from '@salesforce/apex/partnerWebPortalLeadController.getProjectOptions';
 import getBudgetOptions from '@salesforce/apex/partnerWebPortalLeadController.getBudgetOptions';
 import exportCSV from '@salesforce/apex/partnerWebPortalLeadController.exportCSV';
 import createLead from '@salesforce/apex/partnerWebPortalLeadController.createLead';
+import PENDING_APPROVAL_STAGE from '@salesforce/label/c.CP_Lead_Pending_Stage';
+import PHONE_INVALID from '@salesforce/label/c.CP_Lead_Phone_Invalid';
+
+const EXPORT_ERROR = 'The leads could not be exported. Please try again.';
+
+// The Mobile Number check Salesforce makes (LeadLogicController.isPhoneNumber): digits with spaces, brackets or dashes
+// and an optional leading +, holding 9 to 15 digits without a leading 0
+const PHONE_PATTERN = /^\+?[0-9 ()-]+$/;
+const MIN_PHONE_DIGITS = 9;
+const MAX_PHONE_DIGITS = 15;
+
+function isPhone(value) {
+    const text = (value || '').trim();
+    const digits = text.replace(/\D/g, '').replace(/^0+/, '').length;
+    return PHONE_PATTERN.test(text) && digits >= MIN_PHONE_DIGITS && digits <= MAX_PHONE_DIGITS;
+}
+
+// Stage badge colours by Lead Status, in the groups of the page's filters
+const BADGES = {
+    'Site Visit Scheduled': 'badge badge-scheduled',
+    New: 'badge badge-active',
+    Assigned: 'badge badge-active',
+    'In-Discussion': 'badge badge-active',
+    Contacted: 'badge badge-active',
+    Qualified: 'badge badge-active',
+    Visited: 'badge badge-visited',
+    Converted: 'badge badge-booked',
+    'Not Reachable': 'badge badge-active',
+    'Not Interested': 'badge badge-lost',
+    'Not Qualified': 'badge badge-lost',
+    'Site Visit Done by Other Agent': 'badge badge-cancelled',
+    // A CP lead waiting for the Direct Sales Manager's and JKP CP Manager's approval
+    [PENDING_APPROVAL_STAGE]: 'badge badge-pending'
+};
 
 export default class PartnerWebPortalLead extends LightningElement {
 
@@ -13,17 +47,26 @@ export default class PartnerWebPortalLead extends LightningElement {
 
     // ---------- LIST STATE ----------
     @track searchKey = '';
-    @track activeFilter = 'All';
+    // A filter's key, or blank for all the team's leads (the first chip) until one is chosen
+    @track activeFilter = '';
     @track currentPage = 1;
     @track successMessage = '';
     @track errorMessage = '';
+    // The lead in the Edit popup, and the confirmation once it is saved
+    editLeadId = null;
+    docsLeadId = null;
+    infoMessage = '';
+    // Brings the error banner into view once it is rendered (showError)
+    scrollToError = false;
+    // The channel partner lead rules' notice: { message, approval } (approval: no lead yet, it awaits approval)
+    leadNotice = null;
 
     leads = [];
     totalRecords = 0;
     totalPages = 0;
     pageSize = this.PAGE_SIZE;
 
-    filterTabs = ['All'];
+    filterTabs = [];
     wiredLeadsResult;
     searchTimeout;
 
@@ -34,7 +77,6 @@ export default class PartnerWebPortalLead extends LightningElement {
     @track form = {
         fullName: '',
         company: '',
-        leadSource: 'Partner Portal',
         email: '',
         phone: '',
         address: '',
@@ -70,16 +112,16 @@ export default class PartnerWebPortalLead extends LightningElement {
         }
     }
 
-    // ---------- WIRE: FILTER TABS ----------
-    @wire(getStageOptions)
-    wiredStages({ data, error }) {
+    // ---------- WIRE: FILTER TABS (Partner Portal Lead Filter records) ----------
+    @wire(getLeadFilters)
+    wiredFilters({ data, error }) {
         if (data) this.filterTabs = data;
-        else if (error) console.error('Stage options error:', error);
+        else if (error) console.error('Lead filters error:', error);
     }
 
     // ---------- WIRE: LEADS ----------
     @wire(getLeads, {
-        stageFilter: '$activeFilter',
+        filterKey: '$activeFilter',
         searchKey: '$searchKey',
         pageNumber: '$currentPage',
         pageSize: '$pageSize'
@@ -93,7 +135,10 @@ export default class PartnerWebPortalLead extends LightningElement {
             var self = this;
             this.leads = data.leads.map(function(l) {
                 return Object.assign({}, l, {
-                    badgeClass: self.getBadgeClass(l.stage)
+                    badgeClass: self.getBadgeClass(l.stage),
+                    editLabel: 'Edit ' + l.leadName,
+                    documentsLabel: 'Documents of ' + l.leadName,
+                    viewLabel: 'View only: ' + (l.readOnlyReason || l.leadName)
                 });
             });
             this.totalRecords = data.totalRecords;
@@ -109,13 +154,20 @@ export default class PartnerWebPortalLead extends LightningElement {
     // ---------- GETTERS ----------
     get filterButtons() {
         var self = this;
-        return this.filterTabs.map(function(tab) {
+        return this.filterTabs.map(function(tab, index) {
+            var active = tab.key === self.activeFilter || (!self.activeFilter && index === 0);
             return {
-                label: tab,
-                value: tab,
-                className: tab === self.activeFilter ? 'filter-btn active' : 'filter-btn'
+                label: tab.label,
+                value: tab.key,
+                pressed: String(active),
+                className: active ? 'filter-btn active' : 'filter-btn'
             };
         });
+    }
+
+    get activeFilterLabel() {
+        var active = this.filterButtons.find(function(tab) { return tab.pressed === 'true'; });
+        return active ? active.label : 'All';
     }
 
     get hasLeads() { return this.leads && this.leads.length > 0; }
@@ -148,26 +200,7 @@ export default class PartnerWebPortalLead extends LightningElement {
     }
 
     getBadgeClass(stage) {
-        var map = {
-            'Open - Not Contacted': 'badge badge-scheduled',
-            'Working - Contacted': 'badge badge-active',
-            'Closed - Converted': 'badge badge-booked',
-            'Closed - Not Converted': 'badge badge-lost',
-            Active: 'badge badge-active',
-            Visited: 'badge badge-visited',
-            Booked: 'badge badge-booked',
-            Scheduled: 'badge badge-scheduled',
-            Lost: 'badge badge-lost',
-            New: 'badge badge-scheduled',
-            Open: 'badge badge-scheduled',
-            Contacted: 'badge badge-active',
-            Working: 'badge badge-active',
-            Qualified: 'badge badge-booked',
-            Converted: 'badge badge-booked',
-            Unqualified: 'badge badge-lost',
-            Cancelled: 'badge badge-cancelled'
-        };
-        return map[stage] || 'badge badge-neutral';
+        return BADGES[stage] || 'badge badge-neutral';
     }
 
     // ---------- LIST HANDLERS ----------
@@ -175,7 +208,6 @@ export default class PartnerWebPortalLead extends LightningElement {
         this.form = {
             fullName: '',
             company: '',
-            leadSource: 'Partner Portal',
             email: '',
             phone: '',
             address: '',
@@ -209,20 +241,40 @@ export default class PartnerWebPortalLead extends LightningElement {
     handlePrev() { if (this.currentPage > 1) this.currentPage--; }
     handleNext() { if (this.currentPage < this.totalPages) this.currentPage++; }
 
+    // Downloads the leads of the chosen filter and search as a CSV file Excel opens (UTF-8 with a byte-order mark)
     async handleExport() {
+        this.errorMessage = '';
         try {
-            var base64 = await exportCSV({
-                stageFilter: this.activeFilter,
+            var csv = await exportCSV({
+                filterKey: this.activeFilter,
                 searchKey: this.searchKey
             });
+            var content = '\uFEFF' + csv;
             var link = document.createElement('a');
-            link.href = 'data:text/csv;base64,' + base64;
-            link.download = 'leads_export.csv';
+            var url;
+            try {
+                url = URL.createObjectURL(new Blob([content], { type: 'text/csv;charset=utf-8' }));
+            } catch (blobError) {
+                url = 'data:text/csv;charset=utf-8,' + encodeURIComponent(content);
+            }
+            link.href = url;
+            link.download = this.exportFileName;
             link.click();
+            if (url.indexOf('blob:') === 0) {
+                window.setTimeout(function() { URL.revokeObjectURL(url); }, 1000);
+            }
         } catch (e) {
             console.error('Export error:', e);
-            this.errorMessage = 'Failed to export CSV';
+            this.errorMessage = EXPORT_ERROR;
         }
+    }
+
+    // For example "Leads - Active-Nurturing - 2026-10-03.csv"
+    get exportFileName() {
+        var today = new Date();
+        var pad = function(n) { return n < 10 ? '0' + n : String(n); };
+        var date = today.getFullYear() + '-' + pad(today.getMonth() + 1) + '-' + pad(today.getDate());
+        return 'Leads - ' + this.activeFilterLabel.replace(/[\\/:*?"<>|]/g, '-') + ' - ' + date + '.csv';
     }
 
     // ---------- FORM HANDLERS ----------
@@ -245,8 +297,71 @@ export default class PartnerWebPortalLead extends LightningElement {
         this.errorMessage = '';
     }
 
+    get showSuccess() {
+        return Boolean(this.successMessage || this.leadNotice);
+    }
+
+    get isApprovalRequested() {
+        return Boolean(this.leadNotice && this.leadNotice.approval);
+    }
+
+    get successTitle() {
+        return this.isApprovalRequested ? 'Approval requested' : 'New Lead has been created!';
+    }
+
+    // ---------- EDIT POPUP ----------
+
+    handleEdit(event) {
+        this.infoMessage = '';
+        this.editLeadId = event.currentTarget.dataset.id;
+    }
+
+    // ---------- DOCUMENTS POPUP ----------
+
+    handleDocuments(event) {
+        this.infoMessage = '';
+        this.docsLeadId = event.currentTarget.dataset.id;
+    }
+
+    handleDocumentsClose() {
+        this.docsLeadId = null;
+        if (this.wiredLeadsResult) {
+            refreshApex(this.wiredLeadsResult);
+        }
+    }
+
+    // The list is refreshed too: a lead the popup refused (changed meanwhile) shows its current state
+    handleEditClose() {
+        this.editLeadId = null;
+        if (this.wiredLeadsResult) {
+            refreshApex(this.wiredLeadsResult);
+        }
+    }
+
+    handleEditSaved(event) {
+        this.editLeadId = null;
+        this.infoMessage = event.detail && event.detail.message ? event.detail.message : '';
+        if (this.wiredLeadsResult) {
+            refreshApex(this.wiredLeadsResult);
+        }
+        if (this.infoMessage) {
+            const shown = this.infoMessage;
+            // eslint-disable-next-line @lwc/lwc/no-async-operation
+            window.setTimeout(() => {
+                if (this.infoMessage === shown) {
+                    this.infoMessage = '';
+                }
+            }, 6000);
+        }
+    }
+
+    handleCloseInfo() {
+        this.infoMessage = '';
+    }
+
     handleCloseSuccess() {
         this.successMessage = '';
+        this.leadNotice = null;
     }
 
     async handleRegisterLead() {
@@ -262,29 +377,36 @@ export default class PartnerWebPortalLead extends LightningElement {
 
         // Client-side Validations
         if (!this.form.fullName || !this.form.fullName.trim()) {
-            this.errorMessage = 'Full Name is required.';
+            this.showError('Full Name is required.');
             return;
         }
         if (!this.form.phone || !this.form.phone.trim()) {
-            this.errorMessage = 'Mobile Number is required.';
+            this.showError('Mobile Number is required.');
+            return;
+        }
+        if (!isPhone(this.form.phone)) {
+            this.showError(PHONE_INVALID);
+            return;
+        }
+        if (!this.form.email || !this.form.email.trim()) {
+            this.showError('Email ID is required.');
             return;
         }
         if (!this.form.project) {
-            this.errorMessage = 'Please select an Interested Project.';
+            this.showError('Please select an Interested Project.');
             return;
         }
         if (!this.form.budget) {
-            this.errorMessage = 'Please select a valid Budget Aligned.';
+            this.showError('Please select a valid Budget Aligned.');
             return;
         }
 
         this.isSaving = true;
 
         try {
-            var leadId = await createLead({
+            var result = await createLead({
                 fullName:    this.form.fullName ? this.form.fullName.trim() : '',
                 company:     this.form.company ? this.form.company.trim() : '',
-                leadSource:  this.form.leadSource ? this.form.leadSource.trim() : 'Partner Portal',
                 email:       this.form.email ? this.form.email.trim() : '',
                 phone:       this.form.phone ? this.form.phone.trim() : '',
                 address:     this.form.address ? this.form.address.trim() : '',
@@ -293,21 +415,26 @@ export default class PartnerWebPortalLead extends LightningElement {
                 description: this.form.description ? this.form.description.trim() : ''
             });
 
-            console.log('Lead created successfully:', leadId);
-
-            // Set success message for list view
-            this.successMessage = 'Lead created successfully! Lead ID: ' + leadId;
             this.isFormView = false;
+            if (result && result.outcome === 'APPROVAL_REQUESTED') {
+                // Direct Sales has the customer: the lead is saved as Pending approval and waits for both managers
+                this.successMessage = 'Lead ID: ' + result.leadId + ' (' + PENDING_APPROVAL_STAGE + ')';
+                this.leadNotice = { message: result.message, approval: true };
+            } else {
+                this.successMessage = 'Lead created successfully! Lead ID: ' + (result ? result.leadId : '');
+                this.leadNotice = result && result.outcome === 'CREATED_WITH_NOTICE' ? { message: result.message, approval: false } : null;
+                if (!this.leadNotice) {
+                    // Auto-hide success message after 7 seconds; a notice stays until it is closed
+                    var self = this;
+                    window.setTimeout(function() {
+                        self.successMessage = '';
+                    }, 7000);
+                }
+            }
 
             if (this.wiredLeadsResult) {
                 refreshApex(this.wiredLeadsResult);
             }
-
-            // Auto-hide success message after 7 seconds
-            var self = this;
-            window.setTimeout(function() {
-                self.successMessage = '';
-            }, 7000);
 
         } catch (err) {
             console.error('Lead creation error:', err);
@@ -317,9 +444,30 @@ export default class PartnerWebPortalLead extends LightningElement {
             } else if (err && err.message) {
                 msg = err.message;
             }
-            this.errorMessage = msg;
+            this.showError(msg);
         } finally {
             this.isSaving = false;
+        }
+    }
+
+    // Shows the form's error banner and brings it into view: Register Lead is at the bottom of a long form, the
+    // banner at its top
+    showError(message) {
+        this.errorMessage = message;
+        this.scrollToError = true;
+    }
+
+    renderedCallback() {
+        if (!this.scrollToError) {
+            return;
+        }
+        const banner = this.template.querySelector('.error-banner');
+        if (banner) {
+            this.scrollToError = false;
+            if (typeof banner.scrollIntoView === 'function') {
+                banner.scrollIntoView({ behavior: 'smooth', block: 'center' });
+            }
+            banner.focus();
         }
     }
 }

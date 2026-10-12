@@ -27,7 +27,11 @@
         <template lwc:if={hasProjects}>
             <div class="card-grid">
                 <template for:each={projects} for:item="project">
-                    <article key={project.id} class="project-card">
+                    <article key={project.id}
+                             class="project-card"
+                             data-id={project.id}
+                             onmouseenter={handleCardEnter}
+                             onmouseleave={handleCardLeave}>
 
                         <!-- MEDIA -->
                         <div class="carousel">

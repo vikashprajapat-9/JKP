@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>CP_Manager_Approver__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>The CP Manager who decides the request when the CP Executive rejects it: the partner account owner&apos;s manager, else the Partner Portal Setting JKP CP Manager.</description>
+    <label>CP Manager Approver</label>
+    <referenceTo>User</referenceTo>
+    <relationshipName>Visits_To_Approve_As_CP_Manager</relationshipName>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

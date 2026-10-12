@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>64.0</apiVersion>
+    <isExposed>false</isExposed>
+    <description>The payout stages of one split of a commission configuration: the 100 % bar, one row per stage (paid when, % of commission), add, remove and reorder. Used by the Commission Setup editor.</description>
+</LightningComponentBundle>

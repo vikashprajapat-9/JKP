@@ -1,0 +1,497 @@
+<template>
+    <article class={cardClass}>
+        <!-- ================= HEADER ================= -->
+        <header class="pc-header">
+            <div class="pc-heading">
+                <span class="pc-heading-icon" aria-hidden="true">
+                    <lightning-icon icon-name="utility:home" size="x-small" variant="inverse"></lightning-icon>
+                </span>
+                <div class="pc-heading-text">
+                    <h2 class="pc-title">{cardTitle}</h2>
+                    <template lwc:if={hasConfigurations}>
+                        <p class="pc-subtitle">{summaryText}</p>
+                    </template>
+                </div>
+            </div>
+            <button type="button"
+                    class="icon-btn"
+                    title="Refresh"
+                    aria-label="Refresh configurations"
+                    disabled={isBusy}
+                    onclick={handleRefresh}>
+                <lightning-icon icon-name="utility:refresh" size="x-small"></lightning-icon>
+            </button>
+        </header>
+
+        <!-- ================= STATES ================= -->
+        <template lwc:if={showSkeleton}>
+            <div class="pc-skeleton" aria-busy="true">
+                <template for:each={skeletonRows} for:item="k">
+                    <div key={k} class="skeleton-row">
+                        <span class="skeleton-block skeleton-block_badge"></span>
+                        <span class="skeleton-block skeleton-block_text"></span>
+                        <span class="skeleton-block skeleton-block_pill"></span>
+                    </div>
+                </template>
+            </div>
+        </template>
+
+        <template lwc:if={loadError}>
+            <div class="pc-alert" role="alert">
+                <lightning-icon icon-name="utility:error" size="x-small" variant="error"></lightning-icon>
+                <span>{loadError}</span>
+            </div>
+        </template>
+
+        <template lwc:if={showNoAccess}>
+            <div class="pc-info">
+                <lightning-icon icon-name="utility:lock" size="x-small"></lightning-icon>
+                <span>You don't have access to Project Configurations. Ask your Salesforce administrator for access.</span>
+            </div>
+        </template>
+
+        <!-- ================= ADD BUTTON ================= -->
+        <template lwc:if={showAddButton}>
+            <button type="button" class="add-config-btn" onclick={handleAddConfiguration}>
+                <span class="add-config-plus" aria-hidden="true">
+                    <lightning-icon icon-name="utility:add" size="xx-small" variant="inverse"></lightning-icon>
+                </span>
+                <span>Add Configuration</span>
+            </button>
+        </template>
+
+        <!-- ================= ADD FORM ================= -->
+        <template lwc:if={isAdding}>
+            <section class="pc-form" aria-label="New configurations">
+                <div class="form-head">
+                    <div>
+                        <p class="form-title">New configurations</p>
+                        <p class="form-hint">Unit Type is required. Empty rows are skipped.</p>
+                    </div>
+                    <span class="form-count">{newRowCountLabel}</span>
+                </div>
+
+                <template lwc:if={isTable}>
+                    <div class="grid-head" aria-hidden="true">
+                        <span>Sr.No</span>
+                        <span>Unit Type</span>
+                        <span>Starting Price</span>
+                        <span>Square Ft</span>
+                        <span>Upload</span>
+                        <span></span>
+                    </div>
+                </template>
+
+                <ol class="form-rows">
+                    <template for:each={newRowViews} for:item="row">
+                        <li key={row.key} class="grid-row form-row">
+                            <div class="cell cell-sr">
+                                <span class="cell-caption">Sr.No</span>
+                                <span class="sr-badge">{row.srNo}</span>
+                            </div>
+                            <div class="cell cell-unit">
+                                <lightning-combobox label="Unit Type"
+                                                    placeholder="Select type"
+                                                    options={unitTypeOptions}
+                                                    value={row.unitType}
+                                                    variant={inputVariant}
+                                                    required={row.unitRequired}
+                                                    disabled={isSaving}
+                                                    data-scope="new"
+                                                    data-key={row.key}
+                                                    data-field="unitType"
+                                                    data-focus={row.focusKey}
+                                                    onchange={handleNewRowChange}></lightning-combobox>
+                            </div>
+                            <div class="cell cell-price">
+                                <lightning-input type="number"
+                                                 label="Starting Price"
+                                                 formatter="currency"
+                                                 step="0.01"
+                                                 min="0.01"
+                                                 max="9999999999999.99"
+                                                 value={row.startingPrice}
+                                                 variant={inputVariant}
+                                                 disabled={isSaving}
+                                                 message-when-range-underflow="Enter an amount greater than zero."
+                                                 message-when-range-overflow="The price can have at most 13 digits before the decimal point."
+                                                 message-when-step-mismatch="Use at most 2 decimal places."
+                                                 data-scope="new"
+                                                 data-key={row.key}
+                                                 data-field="startingPrice"
+                                                 onchange={handleNewRowChange}></lightning-input>
+                            </div>
+                            <div class="cell cell-area">
+                                <lightning-input type="number"
+                                                 label="Square Ft"
+                                                 step="1"
+                                                 min="1"
+                                                 max="999999999999999"
+                                                 value={row.squareFt}
+                                                 variant={inputVariant}
+                                                 disabled={isSaving}
+                                                 message-when-range-underflow="Enter a value greater than zero."
+                                                 message-when-range-overflow="The area can have at most 15 digits."
+                                                 message-when-step-mismatch="Enter a whole number."
+                                                 data-scope="new"
+                                                 data-key={row.key}
+                                                 data-field="squareFt"
+                                                 onchange={handleNewRowChange}></lightning-input>
+                            </div>
+                            <div class="cell cell-upload">
+                                <span class="slds-form-element__label upload-caption">Upload</span>
+                                <template lwc:if={canEdit}>
+                                <template lwc:if={row.hasFile}>
+                                    <div class="file-chip file-chip_pending" title={row.fileName}>
+                                        <lightning-icon icon-name={row.fileIcon} size="x-small"></lightning-icon>
+                                        <span class="file-chip-text">
+                                            <span class="file-chip-name">{row.fileName}</span>
+                                            <span class="file-chip-meta">{row.fileMeta}</span>
+                                        </span>
+                                        <button type="button"
+                                                class="chip-remove"
+                                                title="Remove file"
+                                                aria-label="Remove file"
+                                                disabled={isSaving}
+                                                data-target={row.target}
+                                                onclick={handleRemoveChosenFile}>
+                                            <lightning-icon icon-name="utility:close" size="xx-small"></lightning-icon>
+                                        </button>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <button type="button"
+                                            class={row.uploadClass}
+                                            title="Choose a PDF or image; it uploads into this configuration's folder after you save"
+                                            disabled={isSaving}
+                                            data-target={row.target}
+                                            onclick={handleChooseFile}>
+                                        <lightning-icon icon-name="utility:upload" size="x-small"></lightning-icon>
+                                        <span>{row.uploadLabel}</span>
+                                    </button>
+                                </template>
+                                <template lwc:if={row.fileError}>
+                                    <p class="file-error">{row.fileError}</p>
+                                </template>
+                                </template>
+                                <template lwc:else>
+                                    <p class="no-upload">Files can be added by users who can edit configurations.</p>
+                                </template>
+                            </div>
+                            <div class="cell cell-actions">
+                                <button type="button"
+                                        class="icon-btn icon-btn_danger"
+                                        title="Delete row"
+                                        aria-label={row.deleteLabel}
+                                        disabled={row.deleteDisabled}
+                                        data-key={row.key}
+                                        onclick={handleDeleteRow}>
+                                    <lightning-icon icon-name="utility:delete" size="x-small"></lightning-icon>
+                                </button>
+                            </div>
+                        </li>
+                    </template>
+                </ol>
+
+                <template lwc:if={formError}>
+                    <div class="pc-alert pc-alert_form" role="alert">
+                        <lightning-icon icon-name="utility:error" size="x-small" variant="error"></lightning-icon>
+                        <span>{formError}</span>
+                    </div>
+                </template>
+
+                <div class="form-footer">
+                    <button type="button" class="add-row-btn" disabled={cannotAddRow} onclick={handleAddRow}>
+                        <lightning-icon icon-name="utility:add" size="xx-small"></lightning-icon>
+                        <span>Add Row</span>
+                    </button>
+                    <div class="footer-actions">
+                        <lightning-button label="Cancel" disabled={isSaving} onclick={handleCancelAdd}></lightning-button>
+                        <lightning-button variant="brand"
+                                          label={saveLabel}
+                                          icon-name="utility:save"
+                                          disabled={isSaving}
+                                          onclick={handleSave}></lightning-button>
+                    </div>
+                </div>
+                <p class="pc-footnote">{footnote}</p>
+            </section>
+        </template>
+
+        <template lwc:if={showEmptyState}>
+            <div class="pc-empty">
+                <span class="pc-empty-art" aria-hidden="true">
+                    <lightning-icon icon-name="utility:home" size="small"></lightning-icon>
+                </span>
+                <p class="pc-empty-title">No configurations yet</p>
+                <p class="pc-empty-text">Add this project's unit types with their starting price, size and a document.</p>
+            </div>
+        </template>
+
+        <!-- ================= SAVED CONFIGURATIONS ================= -->
+        <template lwc:if={hasConfigurations}>
+            <div class="list-head">
+                <span class="list-title">Saved configurations</span>
+            </div>
+
+            <template lwc:if={showUploadBanner}>
+                <p class="upload-banner" role="status">
+                    <lightning-icon icon-name="utility:upload" size="xx-small"></lightning-icon>
+                    <span>{uploadBannerText}</span>
+                </p>
+            </template>
+
+            <template lwc:if={isTable}>
+                <div class="grid-head grid-head_list" aria-hidden="true">
+                    <span>Sr.No</span>
+                    <span>Unit Type</span>
+                    <span>Starting Price</span>
+                    <span>Square Ft</span>
+                    <span>Document</span>
+                    <span></span>
+                </div>
+            </template>
+
+            <ol class="pc-list">
+                <template for:each={configurationRows} for:item="row">
+                    <li key={row.id} class={row.rowClass}>
+                        <template lwc:if={row.isEditing}>
+                            <div class="grid-row edit-row">
+                                <div class="cell cell-sr">
+                                    <span class="cell-caption">Sr.No</span>
+                                    <span class="sr-badge sr-badge_edit">{row.srNo}</span>
+                                </div>
+                                <div class="cell cell-unit">
+                                    <lightning-combobox label="Unit Type"
+                                                        placeholder="Select type"
+                                                        options={unitTypeOptions}
+                                                        value={row.draft.unitType}
+                                                        variant={inputVariant}
+                                                        required
+                                                        disabled={row.draft.inputsDisabled}
+                                                        data-scope="edit"
+                                                        data-id={row.id}
+                                                        data-field="unitType"
+                                                        data-focus={row.draft.focusKey}
+                                                        onchange={handleEditChange}></lightning-combobox>
+                                </div>
+                                <div class="cell cell-price">
+                                    <lightning-input type="number"
+                                                     label="Starting Price"
+                                                     formatter="currency"
+                                                     step="0.01"
+                                                     min="0.01"
+                                                     max="9999999999999.99"
+                                                     value={row.draft.startingPrice}
+                                                     variant={inputVariant}
+                                                     disabled={row.draft.inputsDisabled}
+                                                     message-when-range-underflow="Enter an amount greater than zero."
+                                                     message-when-range-overflow="The price can have at most 13 digits before the decimal point."
+                                                     message-when-step-mismatch="Use at most 2 decimal places."
+                                                     data-scope="edit"
+                                                     data-id={row.id}
+                                                     data-field="startingPrice"
+                                                     onchange={handleEditChange}></lightning-input>
+                                </div>
+                                <div class="cell cell-area">
+                                    <lightning-input type="number"
+                                                     label="Square Ft"
+                                                     step="1"
+                                                     min="1"
+                                                     max="999999999999999"
+                                                     value={row.draft.squareFt}
+                                                     variant={inputVariant}
+                                                     disabled={row.draft.inputsDisabled}
+                                                     message-when-range-underflow="Enter a value greater than zero."
+                                                     message-when-range-overflow="The area can have at most 15 digits."
+                                                     message-when-step-mismatch="Enter a whole number."
+                                                     data-scope="edit"
+                                                     data-id={row.id}
+                                                     data-field="squareFt"
+                                                     onchange={handleEditChange}></lightning-input>
+                                </div>
+                                <div class="cell cell-upload">
+                                    <span class="slds-form-element__label upload-caption">Upload</span>
+                                    <template lwc:if={row.draft.showPending}>
+                                        <div class="file-chip file-chip_pending" title={row.draft.pendingName}>
+                                            <lightning-icon icon-name={row.draft.pendingIcon} size="x-small"></lightning-icon>
+                                            <span class="file-chip-text">
+                                                <span class="file-chip-name">{row.draft.pendingName}</span>
+                                                <span class="file-chip-meta">{row.draft.pendingMeta}</span>
+                                            </span>
+                                            <button type="button"
+                                                    class="chip-remove"
+                                                    title="Remove file"
+                                                    aria-label="Remove the chosen file"
+                                                    disabled={row.draft.inputsDisabled}
+                                                    data-target={row.draft.target}
+                                                    onclick={handleRemoveChosenFile}>
+                                                <lightning-icon icon-name="utility:close" size="xx-small"></lightning-icon>
+                                            </button>
+                                        </div>
+                                    </template>
+                                    <template lwc:elseif={row.draft.showCurrent}>
+                                        <div class="file-chip" title={row.draft.currentName}>
+                                            <lightning-icon icon-name={row.draft.currentIcon} size="x-small"></lightning-icon>
+                                            <a class="file-chip-name" href={row.draft.currentUrl} target="_blank" rel="noopener noreferrer">{row.draft.currentName}</a>
+                                            <button type="button"
+                                                    class="chip-action"
+                                                    title="Replace with a new file"
+                                                    aria-label="Replace the file"
+                                                    disabled={row.draft.inputsDisabled}
+                                                    data-target={row.draft.target}
+                                                    onclick={handleChooseFile}>
+                                                <lightning-icon icon-name="utility:upload" size="xx-small"></lightning-icon>
+                                            </button>
+                                            <button type="button"
+                                                    class="chip-remove"
+                                                    title="Remove file"
+                                                    aria-label="Remove the file from this configuration"
+                                                    disabled={row.draft.inputsDisabled}
+                                                    data-target={row.draft.target}
+                                                    onclick={handleRemoveCurrentFile}>
+                                                <lightning-icon icon-name="utility:close" size="xx-small"></lightning-icon>
+                                            </button>
+                                        </div>
+                                    </template>
+                                    <template lwc:else>
+                                        <button type="button"
+                                                class={row.draft.uploadClass}
+                                                title="Choose a PDF or image; it uploads into this configuration's folder when you save"
+                                                disabled={row.draft.inputsDisabled}
+                                                data-target={row.draft.target}
+                                                onclick={handleChooseFile}>
+                                            <lightning-icon icon-name="utility:upload" size="x-small"></lightning-icon>
+                                            <span>{row.draft.uploadLabel}</span>
+                                        </button>
+                                    </template>
+                                    <template lwc:if={row.draft.fileError}>
+                                        <p class="file-error">{row.draft.fileError}</p>
+                                    </template>
+                                </div>
+                                <div class="cell cell-actions">
+                                    <button type="button"
+                                            class="icon-btn icon-btn_save"
+                                            title="Save changes"
+                                            aria-label="Save changes"
+                                            disabled={row.draft.saving}
+                                            data-id={row.id}
+                                            onclick={handleEditSave}>
+                                        <lightning-icon icon-name="utility:check" size="x-small"></lightning-icon>
+                                    </button>
+                                    <button type="button"
+                                            class="icon-btn"
+                                            title="Cancel"
+                                            aria-label="Cancel editing"
+                                            disabled={row.draft.saving}
+                                            data-id={row.id}
+                                            onclick={handleEditCancel}>
+                                        <lightning-icon icon-name="utility:close" size="x-small"></lightning-icon>
+                                    </button>
+                                </div>
+                            </div>
+                            <p class="row-folder">
+                                <lightning-icon icon-name="utility:open_folder" size="xx-small"></lightning-icon>
+                                <span>{row.draft.folderText}</span>
+                            </p>
+                            <template lwc:if={row.draft.error}>
+                                <p class="row-error" role="alert">{row.draft.error}</p>
+                            </template>
+                        </template>
+                        <template lwc:else>
+                            <div class="grid-row view-row">
+                                <div class="cell cell-sr">
+                                    <span class="sr-badge">{row.srNo}</span>
+                                </div>
+                                <div class="view-main">
+                                    <div class="cell cell-unit">
+                                        <span class={row.unitClass}>{row.unitType}</span>
+                                    </div>
+                                    <div class="view-meta">
+                                        <div class="cell cell-price">
+                                            <span class="price" title="Starting Price">{row.priceText}</span>
+                                        </div>
+                                        <div class="cell cell-area">
+                                            <span class="area" title="Square Ft">{row.areaText}</span>
+                                        </div>
+                                        <div class={row.uploadCellClass}>
+                                            <template lwc:if={row.hasUpload}>
+                                                <template lwc:if={row.upload.isError}>
+                                                    <div class="upload-box upload-box_error">
+                                                        <span class="upload-box-text">{row.upload.error}</span>
+                                                        <button type="button"
+                                                                class="retry-btn"
+                                                                data-id={row.id}
+                                                                onclick={handleRetryUpload}>Retry</button>
+                                                        <button type="button"
+                                                                class="chip-remove"
+                                                                title="Dismiss"
+                                                                aria-label="Dismiss this upload"
+                                                                data-id={row.id}
+                                                                onclick={handleCancelUpload}>
+                                                            <lightning-icon icon-name="utility:close" size="xx-small"></lightning-icon>
+                                                        </button>
+                                                    </div>
+                                                </template>
+                                                <template lwc:else>
+                                                    <div class="upload-box">
+                                                        <div class="upload-box-top">
+                                                            <lightning-icon icon-name={row.upload.icon} size="xx-small"></lightning-icon>
+                                                            <span class="upload-box-name">{row.upload.name}</span>
+                                                            <span class="upload-box-status">{row.upload.statusText}</span>
+                                                            <button type="button"
+                                                                    class="chip-remove"
+                                                                    title="Cancel upload"
+                                                                    aria-label="Cancel upload"
+                                                                    data-id={row.id}
+                                                                    onclick={handleCancelUpload}>
+                                                                <lightning-icon icon-name="utility:close" size="xx-small"></lightning-icon>
+                                                            </button>
+                                                        </div>
+                                                        <div class="bar"
+                                                             role="progressbar"
+                                                             aria-valuemin="0"
+                                                             aria-valuemax="100"
+                                                             aria-valuenow={row.upload.progress}
+                                                             aria-valuetext={row.upload.statusText}
+                                                             aria-label={row.upload.progressLabel}>
+                                                            <div class={row.upload.fillClass} style={row.upload.progressStyle}></div>
+                                                        </div>
+                                                    </div>
+                                                </template>
+                                            </template>
+                                            <template lwc:elseif={row.hasFile}>
+                                                <a class="file-link" href={row.fileUrl} target="_blank" rel="noopener noreferrer" title={row.fileName}>
+                                                    <lightning-icon icon-name={row.fileIcon} size="xx-small"></lightning-icon>
+                                                    <span class="file-link-name">{row.fileName}</span>
+                                                </a>
+                                            </template>
+                                            <template lwc:else>
+                                                <span class="no-file">No document</span>
+                                            </template>
+                                        </div>
+                                    </div>
+                                </div>
+                                <div class="cell cell-actions">
+                                    <template lwc:if={canEdit}>
+                                        <button type="button"
+                                                class="icon-btn icon-btn_edit"
+                                                title={row.editTitle}
+                                                aria-label={row.editLabel}
+                                                disabled={row.editDisabled}
+                                                data-id={row.id}
+                                                onclick={handleEdit}>
+                                            <lightning-icon icon-name="utility:edit" size="x-small"></lightning-icon>
+                                        </button>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+                    </li>
+                </template>
+            </ol>
+        </template>
+
+        <input class="file-input" type="file" accept={acceptedTypes} onchange={handleFileSelected} />
+    </article>
+</template>

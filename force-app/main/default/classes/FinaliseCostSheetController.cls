@@ -72,7 +72,7 @@ public without sharing class FinaliseCostSheetController {
         Cost_Scheme_Linking__c getSchemeLinking = [select id,Payment_Scheme__c,Cost_Sheet_Template__c,Cost_Sheet_Template__r.Amount__c,Cost_Sheet_Template__r.Tax_Amount__c  from Cost_Scheme_Linking__c Where id =:getCostSheet.Cost_Scheme_Linking__c Limit 1];
         System.debug('Scheme Liking: ' + getSchemeLinking);
         
-        List<Payment_Scheme_Installment__c> getPaymetSchemeRecords = [select id,Payment_Scheme__c,Payment_Scheme__r.Name,Installment__c,Name, Payment_Schedule_Master__r.No_of_Days_to_Trigger_Prior_Milestone__c, Payment_Schedule_Master__c,Payment_Schedule_Master__r.Name,Display_Order__c,Payment_Schedule_Master__r.Installment_Code__c, 
+        List<Payment_Scheme_Installment__c> getPaymetSchemeRecords = [select id,Payment_Scheme__c,Payment_Scheme__r.Name,Installment__c,Name, Payment_Schedule_Master__c,Payment_Schedule_Master__r.Name,Display_Order__c,Payment_Schedule_Master__r.Installment_Code__c, 
         Payment_Schedule_Master__r.Before_AOS_Demand_Letter__c,
         Payment_Schedule_Master__r.Installment_Sequence__c,Type__c,Payment_Schedule_Master__r.Description__c  from Payment_Scheme_Installment__c Where Payment_Scheme__c  =:getSchemeLinking.Payment_Scheme__c];
         System.debug('Received Record Id: ' + recordId);
@@ -127,7 +127,6 @@ public without sharing class FinaliseCostSheetController {
             }
 
             ps.Before_AOS_Demand_Letter__c = psi.Payment_Schedule_Master__r.Before_AOS_Demand_Letter__c;
-            ps.No_of_Days_to_Trigger_Prior_Milestone__c = psi.Payment_Schedule_Master__r.No_of_Days_to_Trigger_Prior_Milestone__c;
             allPaymentSchedules.add(ps);
         }
         
@@ -189,8 +188,8 @@ public without sharing class FinaliseCostSheetController {
         List<Payment_Schedule__c> existingSchedules = new List<Payment_Schedule__c>();
         if (cs.finalize_CostSheet__c == true) {
             existingSchedules = [select Id, Name, Installment__c, Agreement_Value__c, Tax_Amount__c, Due_Date__c, Pay_Date__c,
-                                 Other_Charges__c, Other_Tax_Amount__c, Opportunity__c, Opportunity__r.Name from Payment_Schedule__c
-                                 where Opportunity__c = :cs.Opportunity__c];
+                                Other_Charges__c, Other_Tax_Amount__c, Opportunity__c, Opportunity__r.Name from Payment_Schedule__c
+                                where Opportunity__c = :cs.Opportunity__c];
         }
         
         CostSheetWrapper wrapper = new CostSheetWrapper();
@@ -202,71 +201,42 @@ public without sharing class FinaliseCostSheetController {
     
     
     @AuraEnabled
-    public static String sendApproval(Id recordId) {
+    public static String updateTaskAndOpportunity(Id recordId) {
         try {
-            System.debug('taskId==>'+recordId);
-            // Retrieve the Task and associated Opportunity
-            Task ts = [SELECT Id, WhatId,Status FROM Task WHERE Id = :recordId AND Subject =: 'Finalise Cost Sheet & Generate Payment Schedule' LIMIT 1];
-            System.debug('Task: ' + ts);
-            
-            ts.Status = 'Completed';
-            try {
-                update ts;
-            } catch (DmlException e) {
-                System.debug('DML Exception: ' + e.getMessage());
-                System.debug('Task Record ID: ' + ts.Id);
-                
-                System.debug('WhatId: ' + ts.WhatId);
+            if (recordId == null) {
+                throw new AuraHandledException('Opportunity Id is required.');
             }
-            
-            Opportunity opp = [SELECT Id, Payment_Scheme__c, Cost_Sheet_Finalised__c,OwnerId, CreatedDate, Cost_Sheet_Approval_Status__c, Cost_Sheet_Template__c from Opportunity where Id = :ts.WhatId 
-                            LIMIT 1];
-            
-            System.debug('opportunityId ==>'+opp);
+
+            List<Task> finaliseTasks = [
+                SELECT Id, Status
+                FROM Task
+                WHERE WhatId = :recordId
+                    AND Subject = 'Finalise Cost Sheet & Generate Payment Schedule'
+                    AND Status != 'Completed'
+            ];
+            for (Task finaliseTask : finaliseTasks) {
+                finaliseTask.Status = 'Completed';
+            }
+            if (!finaliseTasks.isEmpty()) {
+                update finaliseTasks;
+            }
+
+            Opportunity opp = [
+                SELECT Id, Payment_Scheme__c, Cost_Sheet_Finalised__c, OwnerId, CreatedDate,
+                    Cost_Sheet_Approval_Status__c, Cost_Sheet_Template__c
+                FROM Opportunity
+                WHERE Id = :recordId
+                LIMIT 1
+            ];
             opp.Cost_Sheet_Finalised__c = true;
             opp.StageName = 'Offer Letter and Deposit Collection';
-           // opp.Cost_Sheet_Approval_Status__c = 'Approved';
-            update opp;  
-
-            // Task t = new Task();
-            //     t.Subject = 'Sales Head Approval and Assign to CRM';
-            //     t.WhatId = opp.Id;
-            //     t.OwnerId = opp.OwnerId;
-            //     t.Status = 'Not Started';
-            //     t.ActivityDate = opp.CreatedDate.date().addDays(4);
-            //     insert t;
-
+            update opp;
             return 'Success';
-            
-            // Opportunity opp = [SELECT Id, Payment_Scheme__c, Cost_Sheet_Template__c from Opportunity where Id = :ts.WhatId 
-            //                    LIMIT 1];
-            
-            // System.debug('opportunityId ==>'+opp);
-            // opp.Cost_Sheet_Finalised__c = true;
-            // update opp;                
-            
-            // if (opp != null && opp.Id != null) {
-            //     Approval.ProcessSubmitRequest req = new Approval.ProcessSubmitRequest();
-            //     req.setComments('Submitting Opportunity Cost Sheet record for approval.');
-            //     req.setObjectId(opp.Id);
-            //     req.setProcessDefinitionNameOrId('Opportunity_Cost_Sheet_Approval_Process');
-            //     req.setSubmitterId(UserInfo.getUserId());
-                
-            //     Approval.ProcessResult result = Approval.process(req);
-                
-            //     if (result.isSuccess()) {
-            //         System.debug('Approval request submitted successfully.');
-            //         return 'Approval request submitted successfully for Opportunity ID: ' + opp.Id;
-            //     } else {
-            //         System.debug('Approval request submission failed.');
-            //         return 'Approval request submission failed for Opportunity ID: ' + opp.Id;
-            //     }
-            // } else {
-            //     throw new AuraHandledException('Opportunity not found or not associated with the given Task.');
-            // }
+        } catch (AuraHandledException e) {
+            throw e;
         } catch (Exception e) {
-            System.debug('Exception when submitting for approval: ' + e.getMessage());
-            throw new AuraHandledException('Approval submission failed: ' + e.getMessage());
+            System.debug('Error updating Task and Opportunity: ' + e.getMessage());
+            throw new AuraHandledException('Unable to update finalization records: ' + e.getMessage());
         }
     }
     
@@ -274,13 +244,13 @@ public without sharing class FinaliseCostSheetController {
     @AuraEnabled
     public static List<Payment_Schedule__c> generatePaymentSchedulePreview(Id costSheetId) {
         Cost_Sheet__c getCostSheet = [select Id, Opportunity__c, Total_Pricing_Value_Excluding_Tax__c, Total_Tax_Value__c, Cost_Scheme_Linking__r.Payment_Scheme__c
-                                      from Cost_Sheet__c where Id = :costSheetId limit 1];
+                                from Cost_Sheet__c where Id = :costSheetId limit 1];
         
         List<Payment_Scheme_Installment__c> schemeInstallments = [SELECT Installment__c, Name, Type__c, Payment_Schedule_Master__r.Name,
-                                                                  Payment_Schedule_Master__r.Installment_Sequence__c, Display_Order__c
-                                                                  from Payment_Scheme_Installment__c
-                                                                  where Payment_Scheme__c = :getCostSheet.Cost_Scheme_Linking__r.Payment_Scheme__c
-                                                                  AND Type__c = 'Agreement'];
+                                                                Payment_Schedule_Master__r.Installment_Sequence__c, Display_Order__c
+                                                                from Payment_Scheme_Installment__c
+                                                                where Payment_Scheme__c = :getCostSheet.Cost_Scheme_Linking__r.Payment_Scheme__c
+                                                                AND Type__c = 'Agreement'];
         
         List<Payment_Schedule__c> previewList = new List<Payment_Schedule__c>();
     
@@ -344,6 +314,53 @@ public without sharing class FinaliseCostSheetController {
     }
 
     @AuraEnabled
+    public static Id tagActiveBankDetail(Id costSheetId) {
+        if (costSheetId == null) {
+            throw new AuraHandledException('Cost Sheet Id is required.');
+        }
+
+        Cost_Sheet__c costSheet = [
+            SELECT Id, Opportunity__c, Opportunity__r.Project__c
+            FROM Cost_Sheet__c
+            WHERE Id = :costSheetId
+            LIMIT 1
+        ];
+        if (costSheet.Opportunity__c == null) {
+            throw new AuraHandledException('Opportunity is missing on Cost Sheet.');
+        }
+        if (costSheet.Opportunity__r.Project__c == null) {
+            throw new AuraHandledException('Project is not tagged on the Opportunity.');
+        }
+
+        List<Bank_Detail__c> activeBankDetails = [
+            SELECT Id
+            FROM Bank_Detail__c
+            WHERE Project__c = :costSheet.Opportunity__r.Project__c
+                AND Active__c = true
+            LIMIT 2
+        ];
+        if (activeBankDetails.isEmpty()) {
+            throw new AuraHandledException('No active Bank Detail was found for the Opportunity project.');
+        }
+        if (activeBankDetails.size() > 1) {
+            throw new AuraHandledException('More than one active Bank Detail was found for the Opportunity project. Please ensure only one is active.');
+        }
+
+        Opportunity opportunity = [
+            SELECT Id, Bank_Detail__c
+            FROM Opportunity
+            WHERE Id = :costSheet.Opportunity__c
+            LIMIT 1
+        ];
+        Id bankDetailId = activeBankDetails[0].Id;
+        if (opportunity.Bank_Detail__c != bankDetailId) {
+            opportunity.Bank_Detail__c = bankDetailId;
+            update opportunity;
+        }
+        return bankDetailId;
+    }
+
+    @AuraEnabled
     public static Id createEscrowAccount(Id costSheetId) {
         if (costSheetId == null) {
             throw new AuraHandledException('Cost Sheet Id is required.');
@@ -373,7 +390,7 @@ public without sharing class FinaliseCostSheetController {
             escrow.Unit__c = costSheet.Unit__c;
             escrow.Status__c = true;
 
-            insert escrow;
+            insert escrow;                                                                 
         }
 
         System.debug('Escrow Account ==> ' + escrow );

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Bookings_After_Stage__c</fullName>
+    <description>A partner&apos;s opportunity counts as a booking on the portal once its Stage comes after this stage in the order of the Opportunity Stage picklist. Without a stage that exists and is active, nothing counts as a booking.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Opportunities in a stage after this one (in the Stage picklist order) count as bookings on the portal. Enter the stage as it appears in the picklist.</inlineHelpText>
+    <label>Bookings After Stage</label>
+    <length>255</length>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

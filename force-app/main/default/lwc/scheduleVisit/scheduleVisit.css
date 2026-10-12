@@ -84,25 +84,33 @@
 .table-wrapper {
     width: 100%;
     overflow-x: auto;
+    overflow-y: hidden;
 
     border: 1px solid #d8dde6;
     border-radius: 5px;
     background: #ffffff;
+
+    /* Smooth horizontal scrolling */
+    scrollbar-width: thin;
 }
 
-
+/* Actual table */
 .visit-table {
     width: 100%;
+    min-width: 1050px;
     border-collapse: collapse;
     table-layout: fixed;
 }
 
+/* =========================================================
+   TABLE HEADER
+========================================================= */
 
 .visit-table th {
     background: #f3f3f3;
     color: #181818;
 
-    padding: 10px 10px;
+    padding: 11px 12px;
 
     text-align: left;
 
@@ -114,9 +122,12 @@
     white-space: nowrap;
 }
 
+/* =========================================================
+   TABLE BODY
+========================================================= */
 
 .visit-table td {
-    padding: 10px;
+    padding: 11px 12px;
 
     color: #181818;
 
@@ -126,57 +137,64 @@
 
     vertical-align: middle;
 
-    word-wrap: break-word;
+    overflow: hidden;
+    text-overflow: ellipsis;
 }
-
 
 .visit-table tbody tr:last-child td {
     border-bottom: none;
 }
-
 
 .visit-table tbody tr:hover {
     background: #fafafa;
 }
 
 
-/* Column widths */
+/* =========================================================
+COLUMN WIDTHS
+========================================================= */
 
+/* Visit Name */
 .visit-table th:nth-child(1),
 .visit-table td:nth-child(1) {
-    width: 14%;
+    width: 130px;
 }
 
+/* Visit Date */
 .visit-table th:nth-child(2),
 .visit-table td:nth-child(2) {
-    width: 12%;
+    width: 120px;
 }
 
+/* Visit Time */
 .visit-table th:nth-child(3),
 .visit-table td:nth-child(3) {
-    width: 11%;
+    width: 110px;
 }
 
+/* Requirement Type */
 .visit-table th:nth-child(4),
 .visit-table td:nth-child(4) {
-    width: 17%;
+    width: 160px;
 }
 
+/* Project */
 .visit-table th:nth-child(5),
 .visit-table td:nth-child(5) {
-    width: 15%;
+    width: 160px;
 }
 
+/* Status */
 .visit-table th:nth-child(6),
 .visit-table td:nth-child(6) {
-    width: 10%;
+    width: 120px;
 }
 
+/* Action */
 .visit-table th:nth-child(7),
 .visit-table td:nth-child(7) {
-    width: 21%;
+    width: 270px;
 }
-
 
 /* Visit link */
 
@@ -192,51 +210,79 @@
 
 
 /* =========================================================
-   ACTION BUTTONS
+ACTION BUTTONS
 ========================================================= */
 
 .action-buttons {
     display: flex;
     align-items: center;
-    gap: 6px;
-    white-space: nowrap;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: nowrap;
 }
-
 
 .action-btn {
-    border: 1px solid #c9c9c9;
+    border: 1px solid #d8dde6;
+    border-radius: 6px;
+    padding: 7px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.2;
     background: #ffffff;
-
-    border-radius: 4px;
-
-    padding: 5px 9px;
-
-    font-size: 11px;
-    font-weight: 600;
-
     cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
 }
 
-
-.action-btn:hover {
-    background: #f3f3f3;
-}
-
-
+/* Completed */
 .completed-btn {
     color: #2e844a;
+    border-color: #b7d8c1;
 }
 
+.completed-btn:hover {
+    background: #eaf6ed;
+    border-color: #2e844a;
+}
 
+/* Cancelled */
 .cancelled-btn {
     color: #ba0517;
+    border-color: #e2b4b9;
 }
 
-
-.no-action {
-    color: #666666;
+.cancelled-btn:hover {
+    background: #fcebec;
+    border-color: #ba0517;
 }
 
+/* Rescheduled */
+.reschedule-btn {
+    color: #7c3aed;
+    border-color: #c9b8f5;
+}
+
+.reschedule-btn:hover {
+    background: #f3efff;
+    border-color: #7c3aed;
+}
+
+/* Click effect */
+.action-btn:active {
+    transform: scale(0.97);
+}
+
+/* Smaller screens */
+@media screen and (max-width: 900px) {
+    .action-buttons {
+        gap: 5px;
+    }
+
+    .action-btn {
+        padding: 6px 8px;
+        font-size: 12px;
+    }
+}
 
 /* =========================================================
    PAGINATION

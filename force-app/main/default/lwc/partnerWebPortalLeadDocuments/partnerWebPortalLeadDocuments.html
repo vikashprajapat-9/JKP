@@ -1,0 +1,156 @@
+<template>
+    <div class="modal-backdrop" onclick={handleBackdrop}></div>
+    <section class="docs-modal" role="dialog" aria-modal="true" aria-labelledby="leadDocsTitle">
+
+        <!-- HEADER -->
+        <header class="docs-head">
+            <div class="head-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22">
+                    <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path>
+                    <path d="M14 3v5h5M9 13h6M9 17h6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                </svg>
+            </div>
+            <div class="head-text">
+                <p class="eyebrow">Customer documents</p>
+                <h2 id="leadDocsTitle" class="docs-title">{leadName}</h2>
+                <template lwc:if={stage}>
+                    <p class="docs-sub">
+                        Stage <span class="stage-pill">{stage}</span>
+                        <template lwc:if={projectName}><span class="dot">•</span>{projectName}</template>
+                    </p>
+                </template>
+            </div>
+            <button class="modal-close" onclick={handleClose} type="button" aria-label="Close" disabled={busy}>
+                <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+                    <path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+                </svg>
+            </button>
+        </header>
+
+        <!-- BODY -->
+        <div class="docs-body">
+            <template lwc:if={errorMessage}>
+                <div class="alert-banner error-banner" role="alert">
+                    <lightning-icon icon-name="utility:error" size="x-small" class="alert-icon"></lightning-icon>
+                    <span class="alert-text">{errorMessage}</span>
+                    <button class="banner-close-btn" onclick={handleCloseError} type="button" aria-label="Close">✕</button>
+                </div>
+            </template>
+            <template lwc:if={successMessage}>
+                <div class="alert-banner success-banner" role="status">
+                    <lightning-icon icon-name="utility:success" size="x-small" class="alert-icon"></lightning-icon>
+                    <span class="alert-text">{successMessage}</span>
+                    <button class="banner-close-btn" onclick={handleCloseSuccess} type="button" aria-label="Close">✕</button>
+                </div>
+            </template>
+
+            <template lwc:if={loading}>
+                <div class="loading" role="status">
+                    <span class="spinner" aria-hidden="true"></span>
+                    Loading the documents…
+                </div>
+            </template>
+
+            <template lwc:elseif={options}>
+                <template lwc:if={readOnly}>
+                    <div class="read-only-note" role="note">
+                        <lightning-icon icon-name="utility:lock" size="x-small" class="note-icon"></lightning-icon>
+                        {readOnlyReason}
+                    </div>
+                </template>
+
+                <!-- STEP 1: CUSTOMER TYPE -->
+                <p class="step-title"><span class="step-num">1</span>Who is the customer?</p>
+                <div class="type-grid" role="radiogroup" aria-label="Customer type">
+                    <template for:each={typeCards} for:item="type">
+                        <button key={type.value} type="button" role="radio" class={type.className} aria-checked={type.ariaChecked}
+                            disabled={type.disabled} data-value={type.value} onclick={handleType}>
+                            <span class="type-icon" aria-hidden="true">
+                                <template lwc:if={type.isCompany}>
+                                    <svg viewBox="0 0 24 24" width="26" height="26">
+                                        <path d="M4 21V5a1 1 0 0 1 1-1h8a1 1 0 0 1 1 1v16M14 9h5a1 1 0 0 1 1 1v11M3 21h18M8 8h2M8 12h2M8 16h2M17 13h0M17 17h0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+                                    </svg>
+                                </template>
+                                <template lwc:else>
+                                    <svg viewBox="0 0 24 24" width="26" height="26">
+                                        <circle cx="12" cy="8" r="4" fill="none" stroke="currentColor" stroke-width="1.8"></circle>
+                                        <path d="M4 21a8 8 0 0 1 16 0" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+                                    </svg>
+                                </template>
+                            </span>
+                            <span class="type-text">
+                                <span class="type-name">{type.label}</span>
+                                <span class="type-desc">{type.description}</span>
+                            </span>
+                            <template lwc:if={type.selected}>
+                                <svg class="type-check" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                                    <circle cx="12" cy="12" r="10" fill="currentColor"></circle>
+                                    <path d="M7.5 12.5l3 3 6-6.5" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </template>
+                        </button>
+                    </template>
+                </div>
+                <template lwc:if={typeLockedNote}>
+                    <p class="small-note">{typeLockedNote}</p>
+                </template>
+
+                <!-- STEP 2: DOCUMENTS -->
+                <p class="step-title"><span class="step-num">2</span>Upload the documents</p>
+                <template lwc:if={notice}>
+                    <p class="info-note" role="note">
+                        <lightning-icon icon-name="utility:info" size="x-small" class="note-icon"></lightning-icon>
+                        {notice}
+                    </p>
+                </template>
+                <template lwc:if={hasCategories}>
+                    <p class="small-note">{hint}</p>
+                    <ul class="doc-list">
+                        <template for:each={categories} for:item="category">
+                            <li key={category.key} class="doc-card">
+                                <div class="doc-top">
+                                    <div class="doc-title">
+                                        <span class="doc-name">{category.name}</span>
+                                        <span class={category.statusClass}>{category.statusLabel}</span>
+                                    </div>
+                                    <template lwc:if={canUpload}>
+                                        <button type="button" class="upload-btn" data-category={category.name} onclick={handlePick}
+                                            disabled={category.uploadDisabled}>
+                                            <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                                                <path d="M12 16V4M7 9l5-5 5 5M5 20h14" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round" stroke-linejoin="round"></path>
+                                            </svg>
+                                            Upload
+                                        </button>
+                                        <input type="file" class="file-input" multiple accept={acceptTypes} data-category={category.name}
+                                            onchange={handleFiles} tabindex="-1" aria-hidden="true" />
+                                    </template>
+                                </div>
+                                <template lwc:if={category.uploading}>
+                                    <div class="progress" role="progressbar" aria-label="Upload progress">
+                                        <span class="progress-name">{uploadingFile}</span>
+                                        <span class="progress-track"><span class="progress-bar" style={category.progressStyle}></span></span>
+                                    </div>
+                                </template>
+                                <template lwc:if={category.hasFiles}>
+                                    <ul class="file-list">
+                                        <template for:each={category.files} for:item="file">
+                                            <li key={file.key} class="file-row">
+                                                <a href={file.url} target="_blank" rel="noopener noreferrer" class="file-link">{file.name}</a>
+                                                <span class="file-date">{file.uploadedOn}</span>
+                                            </li>
+                                        </template>
+                                    </ul>
+                                </template>
+                            </li>
+                        </template>
+                    </ul>
+                </template>
+            </template>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="docs-foot">
+            <button class="done-btn" type="button" onclick={handleClose} disabled={busy}>Done</button>
+        </footer>
+    </section>
+</template>

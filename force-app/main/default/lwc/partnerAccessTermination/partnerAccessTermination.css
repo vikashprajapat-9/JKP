@@ -1,0 +1,21 @@
+/* Standard Lightning look; only the layout the base components do not give */
+.panel-body {
+    position: relative;
+    min-height: 5rem;
+}
+
+.loading {
+    position: relative;
+    min-height: 6rem;
+}
+
+.partner-type {
+    display: flex;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 0.5rem;
+}
+
+.role-badge {
+    margin: 0;
+}

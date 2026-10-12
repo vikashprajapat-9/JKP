@@ -1,4 +1,4 @@
-public with sharing class customerPortalController {
+public without sharing class CustomerPortalController {
 
     public class MenuItem {
         @AuraEnabled public String label;
@@ -516,6 +516,7 @@ public with sharing class customerPortalController {
     public class MyProperty {
         @AuraEnabled public String id;
         @AuraEnabled public String projectName;
+        @AuraEnabled public String projectId;
         @AuraEnabled public String description;
         @AuraEnabled public String unitNumber;
         @AuraEnabled public String carParks;
@@ -533,172 +534,131 @@ public with sharing class customerPortalController {
         @AuraEnabled public List<MyProperty> properties;
     }
  
-    @AuraEnabled(cacheable=true)
+   @AuraEnabled(cacheable=true)
     public static MyPropertiesPageData getMyProperties() {
         MyPropertiesPageData data = new MyPropertiesPageData();
- 
         data.pageTitle = 'My Properties';
         data.description = 'Easily manage your property bookings with John Keels Properties . View your current reservations, check the status of your applications, and stay updated on the next steps. Our dedicated team is here to ensure a smooth and hassle-free booking experience. For any assistance, feel free to contact our support team anytime.';
- 
-        data.projectFilters = new List<PropertyOption>{
-            buildOption('JK Pallaciya', 'JK Pallaciya'),
-            buildOption('JK Kingsland', 'JK Kingsland'),
-            buildOption('Savera Residency', 'Savera Residency')
-        };
- 
-        data.properties = buildMyProperties();
- 
+        data.projectFilters = new List<PropertyOption>();
+        data.properties = new List<MyProperty>();
+
+        Id accountId = getCurrentAccountId();
+        if (accountId == null) return data;
+
+        Set<Id> unitIds = new Set<Id>();
+        for (Opportunity o : [SELECT Unit__c FROM Opportunity WHERE AccountId = :accountId AND Unit__c != null WITH SYSTEM_MODE]) {
+            unitIds.add(o.Unit__c);
+        }
+        if (unitIds.isEmpty()) return data;
+
+        Map<Id, String> projectNames = new Map<Id, String>();
+        for (Unit__c u : [SELECT Id, Unit_Name_Code__c, Unit_Type__c, Default_Parking__c,Floor__r.Block__r.Project__c, Floor__r.Block__r.Project__r.Name FROM Unit__c WHERE Id IN :unitIds WITH SYSTEM_MODE ORDER BY Unit_Name_Code__c]) {
+            Project__c prj = (u.Floor__r != null && u.Floor__r.Block__r != null)? u.Floor__r.Block__r.Project__r : null;
+
+            MyProperty p = new MyProperty();
+            p.id          = u.Id;                      
+            p.projectId   = prj != null ? prj.Id : null; 
+            p.projectName = prj != null ? prj.Name : '';
+            p.description = p.projectName;
+            p.unitNumber  = u.Unit_Name_Code__c;
+            p.carParks    = u.Default_Parking__c != null ? String.valueOf(u.Default_Parking__c) : '';
+            p.type        = picklistLabel(Unit__c.Unit_Type__c, u.Unit_Type__c);
+            data.properties.add(p);
+
+            if (prj != null && !projectNames.containsKey(prj.Id)) {
+                projectNames.put(prj.Id, prj.Name);
+                data.projectFilters.add(buildOption(prj.Name, String.valueOf(prj.Id)));
+            }
+        }
         return data;
     }
- 
-    private static List<MyProperty> buildMyProperties() {
-        List<MyProperty> properties = new List<MyProperty>();
-        properties.add(buildJkKingslandProperty());
-        properties.add(buildSaveraResidencyProperty());
-        return properties;
-    }
- 
-    private static MyProperty buildJkKingslandProperty() {
+
+    @AuraEnabled(cacheable=true)
+    public static MyProperty getMyPropertyDetails(String propertyId) {
+        Id accountId = getCurrentAccountId();
+        if (accountId == null || String.isBlank(propertyId)) {
+            throw buildAuraException('Property not found.');
+        }
+
+        List<Opportunity> opps = [SELECT Id, SPA_Signed_Date__c, Amount FROM Opportunity WHERE Unit__c = :propertyId AND AccountId = :accountId WITH SYSTEM_MODE ORDER BY CreatedDate DESC LIMIT 1];
+        if (opps.isEmpty()) throw buildAuraException('Property not found.');
+        Opportunity opp = opps[0];
+
+        Unit__c unit = [SELECT Id, Unit_Name_Code__c, Unit_Type__c, Salable_Area_sqft__c,Default_Parking__c, Floor__r.Block__r.Name FROM Unit__c WHERE Id = :propertyId WITH SYSTEM_MODE LIMIT 1];
+
         MyProperty prop = new MyProperty();
-        prop.id = 'MYPROP-001';
-        prop.projectName = 'JK Kingsland';
-        prop.description = 'JK Kingsland';
-        prop.unitNumber = 'B2-210';
-        prop.carParks = '2';
-        prop.type = '2 BHK';
- 
-        Applicant a1 = new Applicant();
-        a1.name = 'Nimal Perera';
-        a1.applicantType = 'First Applicant';
-        a1.dateOfBirth = '23-10-1994';
-        a1.mobileNumber = '+94 71 *** ****';
-        a1.email = 'nirmalperera@gmail.com';
-        a1.address = 'No. 24, Flower Road, Colombo 07, Sri Lanka';
-        a1.nic = '199845612345';
-        a1.tin = 'TIN-456789123';
-        a1.passport = 'P9876543';
- 
-        Applicant a2 = new Applicant();
-        a2.name = 'Sanduni Jayasinghe';
-        a2.applicantType = 'Second Applicant';
-        a2.companyName = 'ULabs Pvt.Ltd';
-        a2.mobileNumber = '+94 71 *** ****';
-        a2.email = 'sanduni@Ulabs.com';
-        a2.address = 'No. 24, Flower Road, Colombo 07, Sri Lanka';
-        a2.vatNumber = '123456789';
-        a2.businessRegistrationNumber = '199845612345';
- 
-        prop.applicants = new List<Applicant>{ a1, a2 };
- 
-        BankDetails bank = new BankDetails();
-        bank.accountName = 'Nimal Perera';
-        bank.accountNo = '1234567890';
-        bank.bankName = 'Commercial Bank of Ceylon PLC';
-        bank.branchName = 'Colombo 01 Branch';
-        bank.swiftCode = 'CCEYLKLX';
- 
-        BookingDetail booking = new BookingDetail();
-        booking.id = 'BOOK-001';
-        booking.description = 'JK Kingsland';
-        booking.unitNumber = 'B2-210';
-        booking.carParks = '2';
-        booking.type = '2 BHK';
-        booking.spaDate = '12/06/2024';
-        booking.flatVilla = 'Flat';
-        booking.towerBlockVilla = 'Block B';
-        booking.squareFeet = '1235';
-        booking.purchasedPrice = 'LKR 2,11,69,460.00';
-        booking.escrowAccountNumber = '1889089787828UP';
-        booking.bankDetails = bank;
- 
-        prop.bookingDetails = new List<BookingDetail>{ booking };
- 
-        PaymentPlanRow row1 = new PaymentPlanRow();
-        row1.description = 'Token amount towards application for Sale';
-        row1.percentage = '5';
-        row1.trancheDate = '20/08/2026';
-        row1.amount = 'LKR 540,667.00';
- 
-        PaymentPlanRow row2 = new PaymentPlanRow();
-        row2.description = '10% on completion of excavation';
-        row2.percentage = '20';
-        row2.trancheDate = '21/09/2026';
-        row2.amount = 'LKR 540,667.00';
- 
-        PaymentPlanRow row3 = new PaymentPlanRow();
-        row3.description = '10% on completion of Ground floor slab';
-        row3.percentage = '65';
-        row3.trancheDate = '21/10/2026';
-        row3.amount = 'LKR 540,667.00';
- 
-        prop.paymentPlan = new List<PaymentPlanRow>{ row1, row2, row3 };
-        prop.paymentPlanTotal = 'LKR 90,088,034';
- 
+        prop.id = unit.Id;
+
+        prop.applicants = new List<Applicant>();
+        Integer pos = 0;
+        for (Applicant__c ap : [SELECT Name, Account__r.Name, Account__r.Phone, Account__r.Email__c,Account__r.ShippingStreet, Account__r.ShippingCity,Account__r.ShippingCountry,Account__r.TIN_Tax_Identification_Number__c, Account__r.Passport__c FROM Applicant__c WHERE Opportunity__c = :opp.Id WITH SYSTEM_MODE ORDER BY CreatedDate ASC]) {
+            Applicant a = new Applicant();
+            a.name          = ap.Account__r.Name;
+            a.applicantType = ordinal(pos++) + ' Applicant';
+            a.mobileNumber  = ap.Account__r.Phone;
+            a.email         = ap.Account__r.Email__c;
+            a.address       = joinNonBlank(new List<String>{ ap.Account__r.ShippingStreet,ap.Account__r.ShippingCity, ap.Account__r.ShippingCountry });
+            a.tin           = ap.Account__r.TIN_Tax_Identification_Number__c;
+            a.passport      = ap.Account__r.Passport__c;
+            prop.applicants.add(a);
+        }
+
+        prop.paymentPlan = new List<PaymentPlanRow>();
+        Decimal total = 0;
+        for (Cost_Sheet_Payment_Schedule__c s : [SELECT Description__c, Installment__c, Pay_Date__c, Due_Date__c,Total_Amount_Inclusive_Of_Tax__c FROM Cost_Sheet_Payment_Schedule__c WHERE Opportunity__c = :opp.Id WITH SYSTEM_MODE ORDER BY Installment_Sequence__c ASC NULLS LAST, CreatedDate ASC]) {
+            PaymentPlanRow r = new PaymentPlanRow();
+            r.description = s.Description__c;
+            r.percentage  = s.Installment__c != null ? String.valueOf(s.Installment__c) : '';
+            r.trancheDate = fmtDate(s.Due_Date__c != null ? s.Due_Date__c : s.Pay_Date__c);
+            r.amount      = fmtMoney(s.Total_Amount_Inclusive_Of_Tax__c);
+            prop.paymentPlan.add(r);
+            total += s.Total_Amount_Inclusive_Of_Tax__c != null ? s.Total_Amount_Inclusive_Of_Tax__c : 0;
+        }
+        prop.paymentPlanTotal = fmtMoney(total);
+
+        List<Escrow_Account__c> escrow = [SELECT Name FROM Escrow_Account__c WHERE (Unit__c = :unit.Id OR Opportunity__c = :opp.Id) AND Status__c = true WITH SYSTEM_MODE ORDER BY CreatedDate DESC LIMIT 1];
+
+        BookingDetail b = new BookingDetail();
+        b.id                  = unit.Id;
+        b.unitNumber          = unit.Unit_Name_Code__c;
+        b.carParks            = unit.Default_Parking__c != null ? String.valueOf(unit.Default_Parking__c) : '';
+        b.type                = picklistLabel(Unit__c.Unit_Type__c, unit.Unit_Type__c);
+        b.spaDate             = fmtDate(opp.SPA_Signed_Date__c);
+        b.towerBlockVilla     = unit.Floor__r.Block__r.Name;
+        b.squareFeet          = unit.Salable_Area_sqft__c != null ? String.valueOf(unit.Salable_Area_sqft__c) : '';
+        b.purchasedPrice      = fmtMoney(total > 0 ? total : opp.Amount);
+        b.escrowAccountNumber = escrow.isEmpty() ? '' : escrow[0].Name;
+        b.bankDetails         = new BankDetails();   // no source in the APIs yet, see gaps below
+        prop.bookingDetails   = new List<BookingDetail>{ b };
         return prop;
     }
- 
-    private static MyProperty buildSaveraResidencyProperty() {
-        MyProperty prop = new MyProperty();
-        prop.id = 'MYPROP-002';
-        prop.projectName = 'Savera Residency';
-        prop.description = 'Savera Residency';
-        prop.unitNumber = 'B3-310';
-        prop.carParks = '2';
-        prop.type = '2 BHK';
- 
-        Applicant a1 = new Applicant();
-        a1.name = 'Kasun Fernando';
-        a1.applicantType = 'First Applicant';
-        a1.dateOfBirth = '14-02-1990';
-        a1.mobileNumber = '+94 77 *** ****';
-        a1.email = 'kasunf@gmail.com';
-        a1.address = 'No. 8, Lake Drive, Colombo 05, Sri Lanka';
-        a1.nic = '199012345678';
-        a1.tin = 'TIN-321654987';
-        a1.passport = 'P1122334';
- 
-        prop.applicants = new List<Applicant>{ a1 };
- 
-        BankDetails bank = new BankDetails();
-        bank.accountName = 'Kasun Fernando';
-        bank.accountNo = '9988776655';
-        bank.bankName = 'Sampath Bank PLC';
-        bank.branchName = 'Colombo 05 Branch';
-        bank.swiftCode = 'BSAMLKLX';
- 
-        BookingDetail booking = new BookingDetail();
-        booking.id = 'BOOK-002';
-        booking.description = 'Savera Residency';
-        booking.unitNumber = 'B3-310';
-        booking.carParks = '2';
-        booking.type = '2 BHK';
-        booking.spaDate = '05/09/2024';
-        booking.flatVilla = 'Flat';
-        booking.towerBlockVilla = 'Block C';
-        booking.squareFeet = '1180';
-        booking.purchasedPrice = 'LKR 1,95,40,000.00';
-        booking.escrowAccountNumber = '2299887766554UP';
-        booking.bankDetails = bank;
- 
-        prop.bookingDetails = new List<BookingDetail>{ booking };
- 
-        PaymentPlanRow row1 = new PaymentPlanRow();
-        row1.description = 'Token amount towards application for Sale';
-        row1.percentage = '5';
-        row1.trancheDate = '15/09/2026';
-        row1.amount = 'LKR 500,000.00';
- 
-        PaymentPlanRow row2 = new PaymentPlanRow();
-        row2.description = '10% on completion of excavation';
-        row2.percentage = '20';
-        row2.trancheDate = '15/10/2026';
-        row2.amount = 'LKR 500,000.00';
- 
-        prop.paymentPlan = new List<PaymentPlanRow>{ row1, row2 };
-        prop.paymentPlanTotal = 'LKR 19,540,000';
- 
-        return prop;
+
+    private static Id getCurrentAccountId() {
+        List<User> us = [SELECT Contact.AccountId FROM User WHERE Id = :UserInfo.getUserId() LIMIT 1];
+        return (us.isEmpty() || us[0].Contact == null) ? null : us[0].Contact.AccountId;
     }
+    private static String fmtDate(Date d) {
+        return d == null ? '' : Datetime.newInstance(d, Time.newInstance(0,0,0,0)).format('dd/MM/yyyy');
+    }
+    private static String fmtMoney(Decimal v) {
+        return v == null ? '' : 'LKR ' + v.setScale(2, RoundingMode.HALF_UP).format();
+    }
+    private static String ordinal(Integer i) {
+        List<String> w = new List<String>{'First','Second','Third','Fourth','Fifth'};
+        return i < w.size() ? w[i] : String.valueOf(i + 1) + 'th';
+    }
+    private static String picklistLabel(Schema.SObjectField f, String v) {
+        for (Schema.PicklistEntry e : f.getDescribe().getPicklistValues()) {
+            if (e.getValue() == v) return e.getLabel();
+        }
+        return v;
+    }
+    private static String joinNonBlank(List<String> parts) {
+        List<String> out = new List<String>();
+        for (String s : parts) if (String.isNotBlank(s)) out.add(s);
+        return String.join(out, ', ');
+    }
+ 
 
    public class ConstructionImage {
         @AuraEnabled public String id;

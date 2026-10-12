@@ -1,19 +1,22 @@
-import { LightningElement, wire } from 'lwc';
-import getMarketingProjects from '@salesforce/apex/partnerWebPortalProjectController.getMarketingProjects';
-// Placeholder stock-photo URLs are not shown; the card falls back to a styled block.
-const PLACEHOLDER_HOSTS = ['picsum.photos'];
+import { LightningElement, api } from 'lwc';
+// Same project cards as the Marketing screen: active projects with their "Project Images" folder photos
+import getMarketingProjects from '@salesforce/apex/partnerWebPortalMarketingController.getMarketingProjects';
+// The Customer Portal shows this page too, for every active project
+import getCustomerProjects from '@salesforce/apex/CustomerPortalProjectController.getProjects';
 
-function realImageUrls(urls) {
-    return (urls || []).filter(
-        url => url && !PLACEHOLDER_HOSTS.some(host => url.includes(host))
-    );
-}
+// Card photos move to the next image on their own every few seconds
+const AUTO_SLIDE_MS = 2500;
 
 function projectInitial(name) {
     return name ? name.trim().charAt(0).toUpperCase() : '';
 }
 
 export default class PartnerWebPortalProject extends LightningElement {
+
+    // Which portal shows the page: 'partner' (the default) or 'customer'. It decides whose projects and files are read.
+    @api portal = 'partner';
+    // Text under the title; the Partner Portal's own text when none is given
+    @api subtitle;
 
     projects = [];
     error;
@@ -29,21 +32,30 @@ export default class PartnerWebPortalProject extends LightningElement {
 
     // Project shown on the detail page; null shows the list
     selectedProject = null;
+    autoSlideTimer = null;
+    pausedProjectId = null;
+    // Counts the auto slides; each card shows photo slideTick % its photo count, which keeps them in step
+    slideTick = 0;
 
-    @wire(getMarketingProjects)
-    wiredProjects({ data, error }) {
-        if (data) {
-            this.isLoaded = true;
+    // Not wired: the OneDrive image links are short-lived, so every visit loads fresh ones
+    connectedCallback() {
+        this.loadProjects();
+        // Started here, not after the load, so leaving before the projects arrive leaves no timer running
+        this.startAutoSlide();
+    }
+
+    async loadProjects() {
+        try {
+            const data = await (this.portal === 'customer' ? getCustomerProjects() : getMarketingProjects());
             this.projects = data.map(p => {
-                const realImages = realImageUrls(p.imageUrls);
-                const slideImages = realImages.map((url, i) => ({
-                    url,
+                const images = (p.images || []).filter(img => img.mediaUrl);
+                const slideImages = images.map((img, i) => ({
+                    url: img.mediaUrl,
                     key: p.id + '-slide-' + i,
                     slideClass: i === 0 ? 'carousel-slide active' : 'carousel-slide'
                 }));
 
-                const dots = realImages.map((url, i) => ({
-                    url,
+                const dots = images.map((img, i) => ({
                     key: p.id + '-dot-' + i,
                     index: i,
                     dotClass: i === 0 ? 'dot active' : 'dot'
@@ -61,10 +73,51 @@ export default class PartnerWebPortalProject extends LightningElement {
                     hasMultipleImages: slideImages.length > 1
                 };
             });
-        } else if (error) {
+        } catch (error) {
+            this.error = error && error.body ? error.body.message : 'Failed to load projects';
+        } finally {
             this.isLoaded = true;
-            this.error = error.body ? error.body.message : 'Failed to load projects';
-            console.error('Projects wire error:', error);
+        }
+    }
+
+    disconnectedCallback() {
+        clearInterval(this.autoSlideTimer);
+        this.autoSlideTimer = null;
+    }
+
+    startAutoSlide() {
+        const reduceMotion = window.matchMedia && window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (this.autoSlideTimer || reduceMotion) {
+            return;
+        }
+        // eslint-disable-next-line @lwc/lwc/no-async-operation
+        this.autoSlideTimer = setInterval(() => this.advanceSlides(), AUTO_SLIDE_MS);
+    }
+
+    advanceSlides() {
+        if (this.selectedProject || !this.projects.length) {
+            return;
+        }
+        // One shared count for every card, so all of them change photo at the same moment
+        this.slideTick++;
+        this.projects = this.projects.map((p) =>
+            p.hasMultipleImages && p.id !== this.pausedProjectId
+                ? this.withSlide(p, this.slideTick % p.carouselImages.length)
+                : p
+        );
+    }
+
+    // Hovering a card pauses its slideshow so the user can look at a photo
+    handleCardEnter(event) {
+        this.pausedProjectId = event.currentTarget.dataset.id;
+    }
+
+    handleCardLeave(event) {
+        this.pausedProjectId = null;
+        // Rejoin the other cards, also after this card's arrows or dots were used
+        const project = this.projects.find((p) => p.id === event.currentTarget.dataset.id);
+        if (project && project.hasMultipleImages) {
+            this.setSlide(project.id, this.slideTick % project.carouselImages.length);
         }
     }
 
@@ -95,18 +148,19 @@ export default class PartnerWebPortalProject extends LightningElement {
         this.setSlide(projectId, newIndex);
     }
     setSlide(projectId, newIndex) {
-        this.projects = this.projects.map(p => {
-            if (p.id !== projectId) return p;
-            const carouselImages = p.carouselImages.map((img, i) => ({
-                ...img,
-                slideClass: i === newIndex ? 'carousel-slide active' : 'carousel-slide'
-            }));
-            const dots = p.dots.map((dot, i) => ({
-                ...dot,
-                dotClass: i === newIndex ? 'dot active' : 'dot'
-            }));
-            return { ...p, activeIndex: newIndex, carouselImages, dots };
-        });
+        this.projects = this.projects.map((p) => (p.id === projectId ? this.withSlide(p, newIndex) : p));
+    }
+
+    withSlide(p, newIndex) {
+        const carouselImages = p.carouselImages.map((img, i) => ({
+            ...img,
+            slideClass: i === newIndex ? 'carousel-slide active' : 'carousel-slide'
+        }));
+        const dots = p.dots.map((dot, i) => ({
+            ...dot,
+            dotClass: i === newIndex ? 'dot active' : 'dot'
+        }));
+        return { ...p, activeIndex: newIndex, carouselImages, dots };
     }
 
     // ---------- DETAIL PAGE ----------
@@ -114,6 +168,8 @@ export default class PartnerWebPortalProject extends LightningElement {
         const projectId = event.currentTarget.dataset.id;
         const project = this.projects.find(p => p.id === projectId);
         if (!project) return;
+        // The card leaves the page without a mouseleave, so its hover pause would otherwise stay after Back
+        this.pausedProjectId = null;
 
         this.selectedProject = {
             id: project.id,

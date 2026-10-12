@@ -1,0 +1,75 @@
+@import 'c/commissionStyles';
+
+/* Layout of this screen only (the approved mock-up review.html) */
+.screen { position: relative; }
+.pagehead { flex-wrap: wrap; }
+.headstate { display: flex; flex-direction: column; align-items: flex-end; gap: 4px; }
+.headstate .small { line-height: 1.25; }
+.gap { margin-left: 0.3em; }
+
+/* The buttons are real buttons */
+button { font-family: inherit; cursor: pointer; }
+button:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px; }
+button.tab { border: 0; background: transparent; line-height: 1.4; }
+button.tab:not(.active):hover { color: var(--navy); background: var(--row-alt); }
+button.link { border: 0; background: transparent; padding: 0; }
+button.link:hover { text-decoration: underline; }
+.btn.primary:hover, .btn.success:hover { filter: brightness(1.08); }
+.btn:not(.primary):not(.success):hover { background: var(--row-alt); }
+.btn:disabled { background: var(--grey-bg); border-color: var(--grey-line); color: #7a8496; box-shadow: none; cursor: default; filter: none; }
+
+/* Loading and error states */
+.state { position: relative; min-height: 10rem; }
+.stateaction { display: flex; gap: 8px; margin-top: 10px; }
+.note.red { background: var(--red-bg); border-color: var(--red-line); color: var(--red); }
+.actionerror { margin-top: 12px; }
+/* The spinner covers the screen while a decision is sent */
+.busy { position: absolute; top: 0; right: 0; bottom: 0; left: 0; z-index: 5; }
+
+/* What this version does, and the reason */
+.returned { margin-bottom: 8px; }
+.reason { display: flex; align-items: baseline; gap: 12px; margin-top: 10px; padding: 0 12px; font-size: 14px; }
+.reason .label { flex: none; }
+.reasontext { min-width: 0; overflow-wrap: anywhere; }
+
+/* Card title with a hint and a switch on the right */
+.sectitle.switch { margin-bottom: 8px; flex-wrap: wrap; }
+.cardtitle { margin: 0; font-size: inherit; font-weight: inherit; line-height: inherit; color: inherit; }
+.sectitle.switch .hint { margin-left: 6px; }
+.sectitle.switch .tabs { margin-left: auto; padding: 2px; border-radius: 9px; }
+.sectitle.switch .tab { font-size: 13px; padding: 4px 11px; border-radius: 7px; }
+
+/* The comparison: 13.5px so that a long rate row keeps clear gaps between the columns */
+.tablewrap { overflow-x: auto; }
+table.changes td { padding: 10px 8px; font-size: 13.5px; vertical-align: baseline; line-height: 20px; }
+table.changes tr:last-child td { padding-bottom: 1px; }
+table.changes th { padding-left: 8px; padding-right: 8px; }
+table.changes th:first-child, table.changes td:first-child { padding-left: 10px; }
+table.changes th:last-child, table.changes td:last-child { padding-right: 10px; }
+table.changes td.item { font-weight: 700; color: var(--navy); padding-right: 14px; white-space: nowrap; }
+table.changes td.v1 { color: var(--muted); }
+table.changes td.r { white-space: nowrap; }
+table.changes .dash { color: #7a8496; }
+/* A value is a row of pieces with a dot between them; a line breaks between pieces, never inside one */
+.part { display: inline-block; white-space: nowrap; }
+.part:not(:last-child)::after { content: "\00b7"; margin: 0 4px; color: var(--muted); font-weight: 400; }
+.tag.added { background: var(--green-bg); color: var(--green-ink); border-color: var(--green-line); }
+.tag.removed { background: var(--red-bg); color: var(--red); border-color: var(--red-line); }
+tr.removed td.v1 { text-decoration: line-through; text-decoration-color: #b9c0cc; }
+.empty { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 72px; padding: 12px; text-align: center; }
+
+/* The decision: comment on the left, the two buttons beside it */
+.decide { display: flex; align-items: flex-start; gap: 20px; flex-wrap: wrap; }
+.decide .field { flex: 1 1 20rem; }
+/* 21px = label line + gap, so that the buttons sit level with the comment box */
+.decide .actions { flex: none; display: flex; align-items: center; gap: 10px; min-height: 64px; margin-top: 21px; }
+.decide .actions .btn { min-width: 104px; }
+.locknote { display: flex; align-items: center; gap: 7px; margin-top: 10px; font-size: 13px; color: var(--muted); }
+.locknote svg { flex: none; width: 14px; height: 14px; margin-left: -2px; }
+
+/* Footer: Back on the left, what can be done with this configuration on the right */
+.footerbar { flex-wrap: wrap; }
+.footerbar .actions { display: flex; align-items: center; flex-wrap: wrap; gap: 8px; }
+
+/* Text for screen readers only */
+.assistive { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

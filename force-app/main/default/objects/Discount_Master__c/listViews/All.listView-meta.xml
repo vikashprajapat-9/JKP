@@ -3,7 +3,6 @@
     <fullName>All</fullName>
     <columns>NAME</columns>
     <columns>Active__c</columns>
-    <columns>Pricing_Element_Master__c</columns>
     <columns>Project__c</columns>
     <columns>CREATEDBY_USER</columns>
     <filterScope>Everything</filterScope>

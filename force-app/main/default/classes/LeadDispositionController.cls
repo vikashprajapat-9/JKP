@@ -130,6 +130,12 @@ public with sharing class LeadDispositionController {
             }
             if(disposition == 'Not Interested') {
                 lead.Status = 'Not Interested';
+                lead.Loss_Reason__c = lossReason;
+                if (lossReason == 'Other') {
+                    lead.Other_Loss_Reason__c = otherLossReason;
+                } else {
+                    lead.Other_Loss_Reason__c = null;
+                }
                 Group marketingQueue = [SELECT Id  FROM Group WHERE Type = 'Queue' AND DeveloperName = 'Re_Marketing_Queue' LIMIT 1];
                         lead.OwnerId = marketingQueue.Id;
             }

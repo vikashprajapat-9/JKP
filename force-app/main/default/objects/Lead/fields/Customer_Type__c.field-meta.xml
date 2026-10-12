@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Customer_Type__c</fullName>
+    <description>Whether the customer buys as an Individual or as a Company. The channel partner chooses it on the Partner Portal when uploading the customer&apos;s documents; it decides which documents are collected (Partner Portal Setting: Lead Individual / Company Document Master).</description>
+    <inlineHelpText>Individual or Company: decides which customer documents are collected.</inlineHelpText>
+    <label>Customer Type</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Individual</fullName>
+                <default>false</default>
+                <label>Individual</label>
+            </value>
+            <value>
+                <fullName>Company</fullName>
+                <default>false</default>
+                <label>Company</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

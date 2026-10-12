@@ -30,12 +30,17 @@ node_modules/
 # ==========================================
 # Experience Cloud
 # ==========================================
-# These components hard-reference a Network (Community). Network metadata
-# cannot be retrieved by the CLI ("You do not have the proper permissions to
-# access Network"), so it can never live in the repo. Without it, every
-# Network-dependent component fails to deploy. They are still tracked in
-# source control -- only excluded from the deployment payload.
-**/sites/**
-**/navigationMenus/**
-**/digitalExperienceConfigs/**
-**/digitalExperiences/**
+# Inaccessible Network infrastructure metadata:
+# The deployment user does not have administrative permissions to retrieve or deploy Network
+# records. Therefore, infrastructure metadata types that directly create or reference the Network
+# boundary (CustomSite, NavigationMenu, DigitalExperienceConfig, Audience, NetworkBranding)
+# are excluded from deployment. The target sandbox already has the Experience Cloud site created.
+#
+# Experience Cloud Site Content (ALLOWED):
+# **/digitalExperiences/** (DigitalExperienceBundle & DigitalExperience) IS PRESERVED and deployed.
+# It updates site views, pages, routes, and CMS content on the existing target-org site.
+# **/sites/**
+# **/navigationMenus/**
+# **/digitalExperienceConfigs/**
+# **/audience/**
+**/networkBranding/**

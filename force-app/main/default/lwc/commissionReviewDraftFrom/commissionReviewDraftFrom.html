@@ -1,0 +1,54 @@
+<template>
+    <lightning-modal-header label={heading}></lightning-modal-header>
+    <lightning-modal-body>
+        <p class="hint muted">{labels.hint}</p>
+        <fieldset class="choices">
+            <legend class="assistive">{labels.choicesLabel}</legend>
+            <template for:each={cards} for:item="card">
+                <div key={card.value} class="slot">
+                    <label class={card.cardClass} data-choice={card.value}>
+                        <input
+                            type="radio"
+                            name="choice"
+                            class="assistive"
+                            value={card.value}
+                            checked={card.selected}
+                            disabled={card.disabled}
+                            onchange={handleChoice}
+                        />
+                        <span class={card.radioClass} aria-hidden="true"></span>
+                        <span class="grow">
+                            <span class="strong title">{card.title}</span>
+                            <span class="small muted text">{card.text}</span>
+                            <template lwc:if={card.showNoProject}>
+                                <span class="small text none">{labels.noProject}</span>
+                            </template>
+                        </span>
+                    </label>
+                    <template lwc:if={card.showProject}>
+                        <div class="project">
+                            <lightning-combobox
+                                data-id="project"
+                                label={labels.project}
+                                placeholder={labels.projectPlaceholder}
+                                options={projectOptions}
+                                value={projectId}
+                                required
+                                onchange={handleProject}
+                            ></lightning-combobox>
+                        </div>
+                    </template>
+                </div>
+            </template>
+        </fieldset>
+        <template lwc:if={hasError}>
+            <div class="error-text" role="alert" data-id="error">{error}</div>
+        </template>
+    </lightning-modal-body>
+    <lightning-modal-footer>
+        <div class="actions">
+            <button type="button" class="btn" data-id="cancel" onclick={handleCancel}>{labels.cancel}</button>
+            <button type="button" class="btn primary" data-id="create" onclick={handleCreate}>{labels.create}</button>
+        </div>
+    </lightning-modal-footer>
+</template>

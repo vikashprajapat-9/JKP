@@ -1,0 +1,242 @@
+<template>
+    <article class="dm-card">
+        <!-- ================= HEADER ================= -->
+        <header class="dm-header">
+            <div class="dm-heading">
+                <span class="dm-heading-icon">
+                    <lightning-icon icon-name="utility:open_folder" size="x-small" variant="inverse"></lightning-icon>
+                </span>
+                <div>
+                    <h2 class="dm-title">{cardTitle}</h2>
+                    <template lwc:if={hasDocuments}>
+                        <p class="dm-subtitle">{summaryText}</p>
+                    </template>
+                </div>
+            </div>
+            <lightning-button label="Refresh" icon-name="utility:refresh" onclick={handleRefresh} disabled={isBusy} class="dm-refresh"></lightning-button>
+        </header>
+
+        <!-- ================= STATES ================= -->
+        <template lwc:if={showSkeleton}>
+            <ul class="dm-list">
+                <template for:each={skeletonRows} for:item="k">
+                    <li key={k} class="skeleton-row">
+                        <span class="skeleton-block skeleton-block_icon"></span>
+                        <span class="skeleton-block skeleton-block_text"></span>
+                        <span class="skeleton-block skeleton-block_button"></span>
+                    </li>
+                </template>
+            </ul>
+        </template>
+
+        <template lwc:if={loadError}>
+            <div class="dm-alert" role="alert">
+                <lightning-icon icon-name="utility:error" size="x-small" variant="error"></lightning-icon>
+                <span>{loadError}</span>
+            </div>
+        </template>
+
+        <template lwc:if={showEmptyState}>
+            <div class="dm-empty">
+                <span class="dm-empty-art">
+                    <lightning-icon icon-name="doctype:folder" size="large"></lightning-icon>
+                </span>
+                <p class="dm-empty-title">No document folders yet</p>
+                <p class="dm-empty-text">Folders are created from the Document Master categories. Refresh in a minute if this record was just created.</p>
+            </div>
+        </template>
+
+        <!-- ================= DOCUMENT LIST ================= -->
+        <template lwc:if={hasDocuments}>
+            <ul class="dm-list">
+                <template for:each={rows} for:item="doc">
+                    <li key={doc.id} class={doc.rowClass}>
+                        <div class="doc-main">
+                            <button type="button"
+                                    class="doc-toggle"
+                                    data-id={doc.id}
+                                    aria-expanded={doc.ariaExpanded}
+                                    title={doc.toggleTitle}
+                                    onclick={handleToggle}>
+                                <lightning-icon icon-name="utility:chevronright" size="xx-small" class={doc.chevronClass}></lightning-icon>
+                                <span class="doc-icon">
+                                    <lightning-icon icon-name={doc.folderIcon} size="x-small"></lightning-icon>
+                                </span>
+                                <span class="doc-name">{doc.name}</span>
+                                <template lwc:if={doc.hasSubfolders}>
+                                    <span class="doc-count doc-count_folders">{doc.folderCountLabel}</span>
+                                </template>
+                                <template lwc:if={doc.hasFiles}>
+                                    <span class="doc-count">{doc.countLabel}</span>
+                                </template>
+                            </button>
+
+                            <div class="doc-actions">
+                                <template lwc:if={doc.hasContent}>
+                                    <span class="done-badge" title="Files uploaded">
+                                        <lightning-icon icon-name="utility:check" size="xx-small" variant="inverse"></lightning-icon>
+                                    </span>
+                                </template>
+                                <button type="button"
+                                        class={doc.uploadClass}
+                                        data-id={doc.id}
+                                        disabled={doc.uploadDisabled}
+                                        title={doc.uploadTitle}
+                                        onclick={handleUploadClick}>
+                                    <lightning-icon icon-name="utility:upload" size="x-small" class="upload-icon"></lightning-icon>
+                                    <span>{doc.uploadLabel}</span>
+                                </button>
+                            </div>
+                        </div>
+
+                        <template lwc:if={doc.notReady}>
+                            <p class="doc-hint">OneDrive folder is being created — refresh in a minute.</p>
+                        </template>
+
+                        <template lwc:if={doc.uploading}>
+                            <div class="doc-progress">
+                                <div class="bar"><div class="bar-fill" style={doc.progressStyle}></div></div>
+                                <p class="progress-text">{doc.progressText}</p>
+                            </div>
+                        </template>
+
+                        <template lwc:if={doc.expanded}>
+                            <div class="doc-files">
+                                <!-- Sub-folders, for example one per configuration inside Project Configurations -->
+                                <template lwc:if={doc.hasSubfolders}>
+                                    <ul class="sub-list">
+                                        <template for:each={doc.subfolders} for:item="sub">
+                                            <li key={sub.id} class={sub.rowClass}>
+                                                <div class="doc-main doc-main_sub">
+                                                    <button type="button"
+                                                            class="doc-toggle"
+                                                            data-id={sub.id}
+                                                            aria-expanded={sub.ariaExpanded}
+                                                            title={sub.toggleTitle}
+                                                            onclick={handleToggle}>
+                                                        <lightning-icon icon-name="utility:chevronright" size="xx-small" class={sub.chevronClass}></lightning-icon>
+                                                        <span class="doc-icon doc-icon_sub">
+                                                            <lightning-icon icon-name={sub.folderIcon} size="x-small"></lightning-icon>
+                                                        </span>
+                                                        <span class="doc-name doc-name_sub">{sub.name}</span>
+                                                        <template lwc:if={sub.hasFiles}>
+                                                            <span class="doc-count">{sub.countLabel}</span>
+                                                        </template>
+                                                    </button>
+                                                    <div class="doc-actions">
+                                                        <template lwc:if={sub.hasFiles}>
+                                                            <span class="done-badge done-badge_sub" title="Files uploaded">
+                                                                <lightning-icon icon-name="utility:check" size="xx-small" variant="inverse"></lightning-icon>
+                                                            </span>
+                                                        </template>
+                                                        <button type="button"
+                                                                class={sub.uploadClass}
+                                                                data-id={sub.id}
+                                                                disabled={sub.uploadDisabled}
+                                                                title={sub.uploadTitle}
+                                                                onclick={handleUploadClick}>
+                                                            <lightning-icon icon-name="utility:upload" size="x-small" class="upload-icon"></lightning-icon>
+                                                            <span>{sub.uploadLabel}</span>
+                                                        </button>
+                                                    </div>
+                                                </div>
+
+                                                <template lwc:if={sub.notReady}>
+                                                    <p class="doc-hint doc-hint_sub">OneDrive folder is being created — refresh in a minute.</p>
+                                                </template>
+
+                                                <template lwc:if={sub.uploading}>
+                                                    <div class="doc-progress doc-progress_sub">
+                                                        <div class="bar"><div class="bar-fill" style={sub.progressStyle}></div></div>
+                                                        <p class="progress-text">{sub.progressText}</p>
+                                                    </div>
+                                                </template>
+
+                                                <template lwc:if={sub.expanded}>
+                                                    <div class="doc-files doc-files_sub">
+                                                        <template lwc:if={sub.hasFiles}>
+                                                            <ul>
+                                                                <template for:each={sub.files} for:item="file">
+                                                                    <li key={file.id} class={file.itemClass}>
+                                                                        <lightning-icon icon-name={file.icon} size="small"></lightning-icon>
+                                                                        <div class="file-text">
+                                                                            <a href={file.url} target="_blank" rel="noopener noreferrer" class="file-name" title={file.name}>{file.name}</a>
+                                                                            <lightning-formatted-date-time value={file.uploadedOn}
+                                                                                                           year="numeric" month="short" day="2-digit"
+                                                                                                           hour="2-digit" minute="2-digit"
+                                                                                                           class="file-date"></lightning-formatted-date-time>
+                                                                        </div>
+                                                                        <a href={file.url} target="_blank" rel="noopener noreferrer" class="open-pill">
+                                                                            Open
+                                                                            <lightning-icon icon-name="utility:new_window" size="xx-small" class="open-icon"></lightning-icon>
+                                                                        </a>
+                                                                        <template lwc:if={file.canDelete}>
+                                                                            <button type="button"
+                                                                                    class="file-delete"
+                                                                                    data-id={file.id}
+                                                                                    title="Delete file"
+                                                                                    aria-label={file.deleteLabel}
+                                                                                    disabled={file.deleting}
+                                                                                    onclick={handleDeleteFile}>
+                                                                                <lightning-icon icon-name="utility:delete" size="x-small"></lightning-icon>
+                                                                            </button>
+                                                                        </template>
+                                                                    </li>
+                                                                </template>
+                                                            </ul>
+                                                        </template>
+                                                        <template lwc:else>
+                                                            <p class="no-files">No Documents Uploaded</p>
+                                                        </template>
+                                                    </div>
+                                                </template>
+                                            </li>
+                                        </template>
+                                    </ul>
+                                </template>
+
+                                <template lwc:if={doc.hasFiles}>
+                                    <ul>
+                                        <template for:each={doc.files} for:item="file">
+                                            <li key={file.id} class={file.itemClass}>
+                                                <lightning-icon icon-name={file.icon} size="small"></lightning-icon>
+                                                <div class="file-text">
+                                                    <a href={file.url} target="_blank" rel="noopener noreferrer" class="file-name" title={file.name}>{file.name}</a>
+                                                    <lightning-formatted-date-time value={file.uploadedOn}
+                                                                                   year="numeric" month="short" day="2-digit"
+                                                                                   hour="2-digit" minute="2-digit"
+                                                                                   class="file-date"></lightning-formatted-date-time>
+                                                </div>
+                                                <a href={file.url} target="_blank" rel="noopener noreferrer" class="open-pill">
+                                                    Open
+                                                    <lightning-icon icon-name="utility:new_window" size="xx-small" class="open-icon"></lightning-icon>
+                                                </a>
+                                                <template lwc:if={file.canDelete}>
+                                                    <button type="button"
+                                                            class="file-delete"
+                                                            data-id={file.id}
+                                                            title="Delete file"
+                                                            aria-label={file.deleteLabel}
+                                                            disabled={file.deleting}
+                                                            onclick={handleDeleteFile}>
+                                                        <lightning-icon icon-name="utility:delete" size="x-small"></lightning-icon>
+                                                    </button>
+                                                </template>
+                                            </li>
+                                        </template>
+                                    </ul>
+                                </template>
+                                <template lwc:if={doc.showNoFiles}>
+                                    <p class="no-files">No Documents Uploaded</p>
+                                </template>
+                            </div>
+                        </template>
+                    </li>
+                </template>
+            </ul>
+            <p class="dm-footnote">PDF, JPG, JPEG, PNG and MP4 · up to 200 MB each · saved to OneDrive with a public preview link</p>
+        </template>
+
+        <input class="file-input" type="file" multiple accept={acceptedTypes} onchange={handleFilesSelected} />
+    </article>
+</template>

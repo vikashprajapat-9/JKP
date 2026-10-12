@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Hand_Over_Lead_Status__c</fullName>
+    <description>Lead Status at which the JKP CP team takes a channel partner lead over: the lead goes to the JKP CP Executive (the CP Executive Username, else the partner account owner), who gets a task and an email (the CP Manager too) to convert it. Blank: no hand-over.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Lead Status at which the JKP CP team takes a channel partner lead over: the lead goes to the JKP CP Executive (the CP Executive Username, else the partner account owner), who gets a task and an email (the CP Manager too) to convert it. Blank: no hand-over.</inlineHelpText>
+    <label>Hand Over Lead Status</label>
+    <length>80</length>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

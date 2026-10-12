@@ -1,0 +1,94 @@
+<template>
+    <div class="card intro">
+        <h2 class="sectitle">{labels.title}</h2>
+        <p class="small muted">{labels.subtitle}</p>
+    </div>
+
+    <template lwc:if={loading}>
+        <div class="card state" aria-busy="true">
+            <lightning-spinner alternative-text={labels.loading} size="medium"></lightning-spinner>
+        </div>
+    </template>
+
+    <template lwc:elseif={hasError}>
+        <div class="card">
+            <div class="note red" role="alert"><span>{error}</span></div>
+            <div class="stateaction">
+                <button type="button" class="btn" data-id="retry" onclick={handleRetry}>{labels.retry}</button>
+            </div>
+        </div>
+    </template>
+
+    <template lwc:elseif={isEmpty}>
+        <div class="card">
+            <div class="empty muted" data-id="empty">{labels.empty}</div>
+        </div>
+    </template>
+
+    <template lwc:else>
+        <!-- One card per configuration in force that pays this user -->
+        <template for:each={terms} for:item="term">
+            <div key={term.key} class="card term">
+                <div class="sectitle">
+                    <span>{term.projectName}</span>
+                    <span class="pill plain blue">{term.designationLabel}</span>
+                    <span class="hint num">{term.configLine}</span>
+                </div>
+
+                <dl class="facts">
+                    <template lwc:if={term.isFlat}>
+                        <div class="fact">
+                            <dt class="label">{labels.fee}</dt>
+                            <dd class="value num">{term.feeText}</dd>
+                        </div>
+                    </template>
+                    <template lwc:else>
+                        <div class="fact">
+                            <dt class="label">{labels.target}</dt>
+                            <dd class="value num">{term.targetText}</dd>
+                        </div>
+                        <div class="fact">
+                            <dt class="label">{labels.currentRate}</dt>
+                            <dd class="value num">{term.currentRateText}</dd>
+                        </div>
+                        <div class="fact">
+                            <dt class="label">{labels.exceedRate}</dt>
+                            <dd class="value num">{term.exceedRateText}</dd>
+                        </div>
+                    </template>
+                    <div class="fact wide">
+                        <dt class="label">{labels.claimOpens}</dt>
+                        <dd class="value">{term.claimText}</dd>
+                    </div>
+                </dl>
+
+                <div class="label stagetitle">{labels.stages}</div>
+                <template lwc:if={term.hasStages}>
+                    <div class="tablewrap">
+                        <table class="grid">
+                            <thead>
+                                <tr>
+                                    <th scope="col" class="c-stage">{labels.colStage}</th>
+                                    <th scope="col">{labels.colPaidWhen}</th>
+                                    <th scope="col" class="r c-percent">{labels.colPercent}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={term.stages} for:item="stage">
+                                    <tr key={stage.key}>
+                                        <td class="strong nowrap">{stage.name}</td>
+                                        <td>{stage.paidWhen}</td>
+                                        <td class="r num">{stage.percentText}</td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </template>
+                <template lwc:else>
+                    <div class="small muted">{labels.noStages}</div>
+                </template>
+            </div>
+        </template>
+    </template>
+</template>

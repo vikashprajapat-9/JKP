@@ -18,7 +18,7 @@
 
             <!-- INLINE ERROR BANNER (FOR FORM VIEW) -->
             <template lwc:if={errorMessage}>
-                <div class="alert-banner error-banner" role="alert">
+                <div class="alert-banner error-banner" role="alert" tabindex="-1">
                     <lightning-icon icon-name="utility:error" size="x-small" class="alert-icon"></lightning-icon>
                     <span class="alert-text">{errorMessage}</span>
                     <button class="banner-close-btn" onclick={handleCloseError} type="button" aria-label="Close">✕</button>
@@ -59,7 +59,7 @@
                     </div>
                 </div>
                 <div class="field">
-                    <label for="email">Email ID</label>
+                    <label for="email">Email ID <span class="req">*</span></label>
                     <input id="email"
                            class="jk-input"
                            type="email"
@@ -176,8 +176,8 @@
     <template lwc:else>
         <div class="container">
 
-            <!-- SUCCESS MODAL (FOR LIST VIEW) -->
-            <template lwc:if={successMessage}>
+            <!-- SUCCESS / NOTICE MODAL (FOR LIST VIEW) -->
+            <template lwc:if={showSuccess}>
                 <div class="modal-backdrop" onclick={handleCloseSuccess}></div>
                 <div class="modal" role="dialog" aria-modal="true" aria-labelledby="leadSuccessTitle">
                     <button class="modal-close" onclick={handleCloseSuccess} type="button" aria-label="Close">
@@ -185,19 +185,72 @@
                             <path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
                         </svg>
                     </button>
-                    <div class="modal-illustration" aria-hidden="true">
-                        <svg viewBox="0 0 120 120" width="120" height="120">
-                            <circle cx="60" cy="60" r="56" fill="#e4edff"></circle>
-                            <circle cx="60" cy="60" r="40" fill="#112149"></circle>
-                            <path d="M42 61l12 12 24-26" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"></path>
-                        </svg>
-                    </div>
-                    <h3 id="leadSuccessTitle" class="modal-title">New Lead has been created!</h3>
-                    <p class="modal-text">
-                        Your new lead has been created successfully! Please wait for approval from
-                        John Keells Properties. You'll be notified once the lead is approved and ready for follow-up.
-                    </p>
-                    <p class="modal-subtext">{successMessage}</p>
+                    <template lwc:if={isApprovalRequested}>
+                        <div class="modal-illustration" aria-hidden="true">
+                            <svg viewBox="0 0 120 120" width="120" height="120">
+                                <circle cx="60" cy="60" r="56" fill="#e4edff"></circle>
+                                <circle cx="60" cy="60" r="40" fill="#112149"></circle>
+                                <circle cx="60" cy="44" r="5" fill="#fff"></circle>
+                                <path d="M60 56v24" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round"></path>
+                            </svg>
+                        </div>
+                    </template>
+                    <template lwc:else>
+                        <div class="modal-illustration" aria-hidden="true">
+                            <svg viewBox="0 0 120 120" width="120" height="120">
+                                <circle cx="60" cy="60" r="56" fill="#e4edff"></circle>
+                                <circle cx="60" cy="60" r="40" fill="#112149"></circle>
+                                <path d="M42 61l12 12 24-26" fill="none" stroke="#fff" stroke-width="7" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </div>
+                    </template>
+                    <h3 id="leadSuccessTitle" class="modal-title">{successTitle}</h3>
+                    <template lwc:if={isApprovalRequested}>
+                        <p class="modal-text notice-text">{leadNotice.message}</p>
+                        <p class="modal-subtext">{successMessage}</p>
+                    </template>
+                    <template lwc:else>
+                        <p class="modal-text">
+                            Your new lead has been created successfully and is now in your Leads list.
+                        </p>
+                        <template lwc:if={leadNotice}>
+                            <p class="modal-notice notice-text" role="note">{leadNotice.message}</p>
+                        </template>
+                        <p class="modal-subtext">{successMessage}</p>
+                    </template>
+                </div>
+            </template>
+
+            <!-- EDIT POPUP: the lead's new stage and what it needs -->
+            <template lwc:if={editLeadId}>
+                <c-partner-web-portal-lead-edit lead-id={editLeadId} onsaved={handleEditSaved} onclose={handleEditClose}>
+                </c-partner-web-portal-lead-edit>
+            </template>
+
+            <!-- DOCUMENTS POPUP (on hold since 2026-10-07: document collection is hidden on the portal until the client
+                 confirms it; to switch it back on, remove this comment around the block below and around the row's
+                 Documents button)
+            <template lwc:if={docsLeadId}>
+                <c-partner-web-portal-lead-documents lead-id={docsLeadId} onclose={handleDocumentsClose}>
+                </c-partner-web-portal-lead-documents>
+            </template>
+            -->
+
+            <!-- SAVED BANNER (LIST VIEW) -->
+            <template lwc:if={infoMessage}>
+                <div class="alert-banner info-banner" role="status">
+                    <lightning-icon icon-name="utility:success" size="x-small" class="alert-icon"></lightning-icon>
+                    <span class="alert-text">{infoMessage}</span>
+                    <button class="banner-close-btn" onclick={handleCloseInfo} type="button" aria-label="Close">✕</button>
+                </div>
+            </template>
+
+            <!-- ERROR BANNER (LIST VIEW) -->
+            <template lwc:if={errorMessage}>
+                <div class="alert-banner error-banner" role="alert" tabindex="-1">
+                    <lightning-icon icon-name="utility:error" size="x-small" class="alert-icon"></lightning-icon>
+                    <span class="alert-text">{errorMessage}</span>
+                    <button class="banner-close-btn" onclick={handleCloseError} type="button" aria-label="Close">✕</button>
                 </div>
             </template>
 
@@ -235,7 +288,7 @@
                         oninput={handleSearch} />
                 </div>
                 <div class="action-buttons">
-                    <button class="btn-export" type="button" onclick={handleExport}>
+                    <button class="btn-export" type="button" onclick={handleExport} disabled={noLeads}>
                         <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
                             <path d="M12 15V3M7.5 7.5L12 3l4.5 4.5M8 11H5v10h14V11h-3" fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path>
                         </svg>
@@ -252,6 +305,7 @@
                         type="button"
                         class={tab.className}
                         data-value={tab.value}
+                        aria-pressed={tab.pressed}
                         onclick={handleFilterClick}>
                         {tab.label}
                     </button>
@@ -268,8 +322,10 @@
                             <th>Lead No.</th>
                             <th>Lead Name</th>
                             <th>Channel Partner/Company Name</th>
+                            <th>Project Name</th>
                             <th>Lead Mobile No.</th>
                             <th>Lead Stage</th>
+                            <th class="col-actions">Action</th>
                         </tr>
                     </thead>
                     <tbody>
@@ -279,17 +335,55 @@
                                     <td class="col-sr">{lead.rowNo}</td>
                                     <td>{lead.createdDate}</td>
                                     <td class="col-leadno">{lead.leadNo}</td>
-                                    <td>{lead.leadName}</td>
-                                    <td>{lead.partner}</td>
+                                    <td class="col-name">{lead.leadName}</td>
+                                    <td class="col-name">{lead.partner}</td>
+                                    <td class="col-name">{lead.project}</td>
                                     <td>{lead.mobile}</td>
                                     <td><span class={lead.badgeClass}>{lead.stage}</span></td>
+                                    <td class="col-actions">
+                                        <div class="row-actions">
+                                        <template lwc:if={lead.canEdit}>
+                                            <button type="button" class="row-edit-btn" data-id={lead.leadId} onclick={handleEdit}
+                                                aria-label={lead.editLabel} title="Update the lead stage">
+                                                <svg viewBox="0 0 24 24" width="16" height="16" aria-hidden="true">
+                                                    <path d="M4 20h4l10.5-10.5a2.1 2.1 0 0 0-3-3L5 17v3z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"></path>
+                                                    <path d="M13.5 7.5l3 3" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linecap="round"></path>
+                                                </svg>
+                                                Edit
+                                            </button>
+                                        </template>
+                                        <template lwc:else>
+                                            <!-- Opens the popup, which says why the lead cannot be edited (a tooltip alone is not seen on phones) -->
+                                            <button type="button" class="row-locked" data-id={lead.leadId} onclick={handleEdit}
+                                                title={lead.readOnlyReason} aria-label={lead.viewLabel}>
+                                                <svg viewBox="0 0 24 24" width="14" height="14" aria-hidden="true">
+                                                    <rect x="5" y="11" width="14" height="9" rx="2" fill="none" stroke="currentColor" stroke-width="1.9"></rect>
+                                                    <path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="1.9"></path>
+                                                </svg>
+                                                View only
+                                            </button>
+                                        </template>
+                                        <!-- DOCUMENTS BUTTON (on hold since 2026-10-07, see the Documents popup above)
+                                        <template lwc:if={lead.canUploadDocuments}>
+                                            <button type="button" class="row-docs-btn" data-id={lead.leadId} onclick={handleDocuments}
+                                                aria-label={lead.documentsLabel} title="Upload the customer's documents">
+                                                <svg viewBox="0 0 24 24" width="15" height="15" aria-hidden="true">
+                                                    <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"></path>
+                                                    <path d="M14 3v5h5" fill="none" stroke="currentColor" stroke-width="1.9" stroke-linejoin="round"></path>
+                                                </svg>
+                                                Documents
+                                            </button>
+                                        </template>
+                                        -->
+                                        </div>
+                                    </td>
                                 </tr>
                             </template>
                         </template>
 
                         <template if:true={noLeads}>
                             <tr>
-                                <td colspan="7" class="no-data">No leads found</td>
+                                <td colspan="9" class="no-data">No leads found</td>
                             </tr>
                         </template>
                     </tbody>

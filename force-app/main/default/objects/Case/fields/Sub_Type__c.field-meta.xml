@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Sub_Type__c</fullName>
+    <label>Sub Type</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Adding car park</fullName>
+                <default>false</default>
+                <label>Adding car park</label>
+            </value>
+            <value>
+                <fullName>Removing car park</fullName>
+                <default>false</default>
+                <label>Removing car park</label>
+            </value>
+            <value>
+                <fullName>Unit customization</fullName>
+                <default>false</default>
+                <label>Unit customization</label>
+            </value>
+            <value>
+                <fullName>Removing co-purchaser</fullName>
+                <default>false</default>
+                <label>Removing co-purchaser</label>
+            </value>
+            <value>
+                <fullName>Rectification</fullName>
+                <default>false</default>
+                <label>Rectification</label>
+            </value>
+            <value>
+                <fullName>Other Price change</fullName>
+                <default>false</default>
+                <label>Other Price change</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

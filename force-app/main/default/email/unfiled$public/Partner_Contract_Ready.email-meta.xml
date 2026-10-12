@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Tells a channel partner that their exclusive agent contract is ready on the Partner Portal for signature (Partner Portal Setting: Contract Ready Email Template).</description>
+    <encodingKey>UTF-8</encodingKey>
+    <name>Partner Contract Ready</name>
+    <style>none</style>
+    <subject>Your John Keells Properties partner contract is ready to sign</subject>
+    <type>text</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

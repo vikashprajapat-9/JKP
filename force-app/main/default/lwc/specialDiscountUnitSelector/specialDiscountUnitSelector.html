@@ -1,0 +1,123 @@
+<template>
+    <lightning-card title="Select Applicable Units" icon-name="standard:product">
+
+        <div class="slds-p-around_medium">
+
+            <!-- FILTERS -->
+            <div class="slds-grid slds-wrap slds-gutters">
+
+                <div class="slds-col slds-size_1-of-4">
+                    <lightning-combobox
+                        label="Tower"
+                        value={selectedBlock}
+                        options={blockOptions}
+                        onchange={handleBlockChange}>
+                    </lightning-combobox>
+                </div>
+
+                <div class="slds-col slds-size_1-of-4">
+                    <lightning-combobox
+                        label="Floor"
+                        value={selectedFloor}
+                        options={floorOptions}
+                        onchange={handleFloorChange}>
+                    </lightning-combobox>
+                </div>
+
+                <div class="slds-col slds-size_1-of-4">
+                    <lightning-combobox
+                        label="Unit Type"
+                        value={selectedUnitType}
+                        options={unitTypeOptions}
+                        onchange={handleUnitTypeChange}>
+                    </lightning-combobox>
+                </div>
+
+                <div class="slds-col slds-size_1-of-4">
+                    <lightning-input
+                        type="search"
+                        label="Search Unit"
+                        value={searchTerm}
+                        placeholder="Search unit name / code"
+                        onchange={handleSearch}>
+                    </lightning-input>
+                </div>
+
+            </div>
+
+
+            <!-- COUNTS -->
+            <div class="slds-m-top_medium slds-m-bottom_small">
+
+                <strong>{totalCount}</strong>
+                Matching Units
+
+                &nbsp; • &nbsp;
+
+                <strong>{selectedCount}</strong>
+                Selected
+
+            </div>
+
+
+            <!-- TABLE -->
+            <lightning-datatable
+                key-field="unitId"
+                data={units}
+                columns={columns}
+                selected-rows={selectedRows}
+                onrowselection={handleRowSelection}>
+            </lightning-datatable>
+
+
+            <!-- PAGINATION -->
+            <div class="slds-grid slds-grid_align-spread slds-m-top_medium">
+
+                <lightning-button
+                    label="Previous"
+                    onclick={handlePrevious}
+                    disabled={disablePrevious}>
+                </lightning-button>
+
+
+                <div class="slds-align_absolute-center">
+                    Page {pageNumber} of {totalPages}
+                </div>
+
+
+                <lightning-button
+                    label="Next"
+                    onclick={handleNext}
+                    disabled={disableNext}>
+                </lightning-button>
+
+            </div>
+
+
+            <!-- SAVE -->
+            <div class="slds-text-align_right slds-m-top_medium">
+
+                <lightning-button
+                    label="Save Selected Units"
+                    variant="brand"
+                    onclick={handleSave}
+                    disabled={disableSave}>
+                </lightning-button>
+
+            </div>
+
+        </div>
+
+
+        <!-- SPINNER -->
+        <template if:true={loading}>
+
+            <lightning-spinner
+                alternative-text="Loading Units"
+                size="medium">
+            </lightning-spinner>
+
+        </template>
+
+    </lightning-card>
+</template>

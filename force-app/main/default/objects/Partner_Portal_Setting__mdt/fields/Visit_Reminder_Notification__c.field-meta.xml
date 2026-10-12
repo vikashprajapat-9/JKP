@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Visit_Reminder_Notification__c</fullName>
+    <description>The Custom Notification Type (API name) of the site visit reminders sent to the channel partner agent: on the visit day, and the day after a visit that is not updated.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Custom Notification Type API name, for example CP_Site_Visit_Reminder. Blank: no Salesforce notifications (the portal still shows the reminders).</inlineHelpText>
+    <label>Visit Reminder Notification</label>
+    <length>80</length>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

@@ -1,0 +1,47 @@
+@import 'c/commissionStyles';
+
+/* Layout of the stage rows (the mock-up's .stages grid); colours and looks come from commissionStyles */
+.stagelist { display: block; }
+.assistive { position: absolute; width: 1px; height: 1px; margin: -1px; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }
+
+.stages { display: grid; grid-template-columns: 58px minmax(170px, 236px) minmax(124px, 190px) 112px 1fr; column-gap: 12px; align-items: center; margin-top: 6px; }
+.stages.short { grid-template-columns: 58px minmax(170px, 236px) 112px 1fr; }
+.stages .name { font-weight: 600; font-size: 14px; }
+.stages .label { align-self: end; margin-bottom: -3px; white-space: nowrap; }
+.stages .pct, .stages .par { display: flex; align-items: center; gap: 6px; min-width: 0; }
+.stages .end { display: flex; align-items: center; gap: 2px; }
+.fld { min-width: 0; flex: 1 1 auto; }
+.fld.narrow { flex: none; width: 76px; }
+.input.fixed { width: 76px; height: 32px; }
+
+/* A field with an issue: red border on the Lightning input inside */
+.fld.haserror {
+    --slds-c-input-color-border: var(--red);
+    --slds-c-input-shadow: 0 0 0 2px rgba(186, 5, 23, 0.12);
+    --sds-c-input-color-border: var(--red);
+    --sds-c-input-shadow: 0 0 0 2px rgba(186, 5, 23, 0.12);
+}
+
+.rowerrors { margin: 2px 0 2px 70px; }
+.splitissues { margin-top: 4px; }
+.bottom { display: flex; align-items: baseline; justify-content: space-between; gap: 12px; flex-wrap: wrap; margin-top: 6px; }
+.adds, .status { display: flex; align-items: center; gap: 14px; flex-wrap: wrap; }
+.status { justify-content: flex-end; }
+.ok-text { display: flex; align-items: center; gap: 6px; }
+.ico { flex: none; width: 14px; height: 14px; }
+
+button { font-family: inherit; cursor: pointer; }
+button[disabled] { cursor: default; opacity: 0.45; }
+button.link { background: none; border: 0; padding: 0; }
+button.link:hover { text-decoration: underline; }
+.btn.arrow { padding: 0 5px; }
+.btn.arrow svg { width: 12px; height: 12px; }
+button:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }
+
+/* Narrow regions (a record page column, a phone): the row wraps instead of squeezing the inputs */
+@media (max-width: 720px) {
+    .stages, .stages.short { grid-template-columns: 58px 1fr; row-gap: 6px; }
+    .stages .par, .stages .pct, .stages .end { grid-column: 2; }
+    .stages.head { display: none; }
+    .rowerrors { margin-left: 0; }
+}

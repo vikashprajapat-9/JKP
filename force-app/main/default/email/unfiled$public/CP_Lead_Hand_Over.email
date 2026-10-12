@@ -1,0 +1,14 @@
+Hello,
+
+A channel partner has completed the site visit with this customer. The lead is now assigned to the JKP CP Executive to take over.
+
+Customer: {!Lead.Name}
+Mobile: {!Lead.Phone}
+Email: {!Lead.Email}
+Project: {!Lead.Project__c}
+Channel partner: {!Lead.Channel_Partner__c}
+Customer type: {!Lead.Customer_Type__c}
+
+Open the lead: {!Lead.Link}
+
+Next step: check the customer's documents (Documents panel on the lead) and convert the lead to an Opportunity.

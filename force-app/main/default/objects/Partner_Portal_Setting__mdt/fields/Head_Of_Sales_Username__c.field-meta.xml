@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Head_Of_Sales_Username__c</fullName>
+    <description>Username of the Head of Sales, who gets a verification task for each contract draft with the CP Manager. Blank: no Head of Sales task.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Username of the Head of Sales, who gets a verification task for each contract draft with the CP Manager. Blank: no Head of Sales task.</inlineHelpText>
+    <label>Head of Sales Username</label>
+    <length>80</length>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

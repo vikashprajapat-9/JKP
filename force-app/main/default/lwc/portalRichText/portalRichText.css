@@ -1,0 +1,147 @@
+:host {
+    display: block;
+}
+
+/* The Salesforce editor writes paragraphs without spacing (an empty line is its own paragraph), so the portal
+   shows them the same way */
+.rich-text {
+    font-family: var(--jk-font);
+    font-size: 16px;
+    line-height: 24px;
+    color: var(--jk-text);
+    overflow-wrap: anywhere;
+}
+
+.rich-text p,
+.rich-text div,
+.rich-text li {
+    margin: 0;
+}
+
+.rich-text ul,
+.rich-text ol {
+    margin: 0;
+    padding: 0 0 0 32px;
+}
+
+.rich-text ul {
+    list-style: disc;
+}
+
+.rich-text ol {
+    list-style: decimal;
+}
+
+.rich-text ul ul {
+    list-style: circle;
+}
+
+/* Indent levels from the Salesforce editor (same steps as SLDS rich text output) */
+.rich-text .ql-indent-1 { padding-left: 3em; }
+.rich-text .ql-indent-2 { padding-left: 6em; }
+.rich-text .ql-indent-3 { padding-left: 9em; }
+.rich-text .ql-indent-4 { padding-left: 12em; }
+.rich-text .ql-indent-5 { padding-left: 15em; }
+.rich-text .ql-indent-6 { padding-left: 18em; }
+.rich-text .ql-indent-7 { padding-left: 21em; }
+.rich-text .ql-indent-8 { padding-left: 24em; }
+.rich-text .ql-indent-9 { padding-left: 27em; }
+
+.rich-text li.ql-indent-1 { padding-left: 0; margin-left: 3em; list-style-type: circle; }
+.rich-text li.ql-indent-2 { padding-left: 0; margin-left: 6em; list-style-type: square; }
+.rich-text li.ql-indent-3 { padding-left: 0; margin-left: 9em; }
+.rich-text li.ql-indent-4 { padding-left: 0; margin-left: 12em; }
+.rich-text li.ql-indent-5,
+.rich-text li.ql-indent-6,
+.rich-text li.ql-indent-7,
+.rich-text li.ql-indent-8,
+.rich-text li.ql-indent-9 { padding-left: 0; margin-left: 15em; }
+
+.rich-text h1,
+.rich-text h2,
+.rich-text h3,
+.rich-text h4,
+.rich-text h5,
+.rich-text h6 {
+    margin: 16px 0 6px;
+    font-family: var(--jk-font);
+    font-weight: 700;
+    line-height: 1.3;
+    color: var(--jk-navy-soft);
+}
+
+.rich-text h1 { font-size: 24px; }
+.rich-text h2 { font-size: 20px; }
+.rich-text h3 { font-size: 18px; }
+.rich-text h4,
+.rich-text h5,
+.rich-text h6 { font-size: 16px; }
+
+.rich-text b,
+.rich-text strong {
+    font-weight: 700;
+    color: var(--jk-text-strong, var(--jk-text));
+}
+
+.rich-text a {
+    color: var(--jk-navy);
+    text-decoration: underline;
+    text-underline-offset: 2px;
+}
+
+.rich-text a:hover {
+    color: var(--jk-navy-soft);
+}
+
+.rich-text blockquote {
+    margin: 8px 0;
+    padding: 4px 0 4px 16px;
+    border-left: 3px solid var(--jk-gold, var(--jk-divider));
+    color: var(--jk-text-muted);
+}
+
+.rich-text hr {
+    margin: 16px 0;
+    border: 0;
+    border-top: 1px solid var(--jk-divider);
+}
+
+.rich-text table {
+    width: 100%;
+    margin: 8px 0;
+    border-collapse: collapse;
+}
+
+.rich-text th,
+.rich-text td {
+    padding: 6px 10px;
+    border: 1px solid var(--jk-divider);
+    text-align: left;
+    vertical-align: top;
+}
+
+.rich-text th {
+    background: var(--jk-tint);
+    font-weight: 600;
+}
+
+.rich-text pre,
+.rich-text code {
+    font-family: ui-monospace, SFMono-Regular, Menlo, monospace;
+    font-size: 14px;
+}
+
+.rich-text pre {
+    margin: 8px 0;
+    padding: 10px 12px;
+    overflow-x: auto;
+    border-radius: var(--jk-radius-sm);
+    background: var(--jk-tint);
+}
+
+@media (max-width: 640px) {
+    .rich-text {
+        font-size: 15px;
+        line-height: 22px;
+    }
+}

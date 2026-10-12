@@ -1,0 +1,73 @@
+<template>
+    <template lwc:if={showSection}>
+        <section class={sectionClass} aria-label={labels.title}>
+            <template lwc:if={message}>
+                <div class="banner banner_success" role="status">
+                    <lightning-icon icon-name="utility:success" size="x-small" class="banner-icon"></lightning-icon>
+                    <span class="banner-text">{message}</span>
+                    <button class="banner-close" type="button" aria-label="Close" onclick={handleCloseMessage}>✕</button>
+                </div>
+            </template>
+            <template lwc:if={error}>
+                <div class="banner banner_error" role="alert">
+                    <lightning-icon icon-name="utility:error" size="x-small" class="banner-icon"></lightning-icon>
+                    <span class="banner-text">{error}</span>
+                    <button class="banner-close" type="button" aria-label="Close" onclick={handleCloseError}>✕</button>
+                </div>
+            </template>
+
+            <template lwc:if={loading}>
+                <div class="loading" role="status"><span class="spinner" aria-hidden="true"></span>Loading reminders…</div>
+            </template>
+            <template lwc:elseif={hasReminders}>
+                <div class="groups">
+                    <template for:each={groups} for:item="group">
+                        <div key={group.key} class={group.className}>
+                            <div class="group-head">
+                                <span class="group-icon" aria-hidden="true">
+                                    <lightning-icon icon-name={group.icon} size="x-small"></lightning-icon>
+                                </span>
+                                <h3 class="group-title">{group.title}</h3>
+                                <span class="group-count">{group.count}</span>
+                            </div>
+                            <template lwc:if={group.hint}><p class="group-hint">{group.hint}</p></template>
+                            <ul class="items">
+                                <template for:each={group.items} for:item="item">
+                                    <li key={item.visitId} class="item">
+                                        <div class="item-when">
+                                            <span class="item-date">{item.dateText}</span>
+                                            <span class="item-time">{item.timeText}</span>
+                                        </div>
+                                        <div class="item-who">
+                                            <span class="item-customer">{item.customerName}</span>
+                                            <span class="item-meta">{item.metaText}</span>
+                                            <template lwc:if={item.note}><span class="item-note">{item.note}</span></template>
+                                        </div>
+                                        <template lwc:if={item.showActions}>
+                                            <div class="item-actions">
+                                                <template lwc:if={item.confirming}>
+                                                    <span class="confirm-text">{item.confirmText}</span>
+                                                    <button class="btn btn_ghost" type="button" disabled={busy} onclick={handleBack}>Back</button>
+                                                    <button class={item.confirmClass} type="button" disabled={busy} onclick={handleConfirm}>{confirmLabel}</button>
+                                                </template>
+                                                <template lwc:else>
+                                                    <button class="btn btn_primary" type="button" disabled={item.disabled}
+                                                        data-id={item.visitId} data-action="visited" onclick={handleAsk}>{labels.visited}</button>
+                                                    <button class="btn btn_ghost" type="button" disabled={item.disabled}
+                                                        data-id={item.visitId} data-action="notVisited" onclick={handleAsk}>{labels.notVisited}</button>
+                                                </template>
+                                            </div>
+                                        </template>
+                                    </li>
+                                </template>
+                            </ul>
+                        </div>
+                    </template>
+                </div>
+            </template>
+            <template lwc:elseif={compact}>
+                <p class="empty">{labels.none}</p>
+            </template>
+        </section>
+    </template>
+</template>

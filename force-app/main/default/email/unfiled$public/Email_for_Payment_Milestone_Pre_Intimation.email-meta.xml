@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <encodingKey>UTF-8</encodingKey>
+    <name>Email for Payment Milestone – Pre-Intimation</name>
+    <style>none</style>
+    <subject>Payment Milestone – Pre-Intimation</subject>
+    <textOnly>Upcoming Payment Milestone – Pre-Intimation
+
+PAYMENT NOTIFICATION
+PRE-INTIMATION
+
+UPCOMING PAYMENT
+Upcoming Payment
+Milestone – Pre-Intimation
+Dear {!Contact.Name},
+
+This is a pre-intimation regarding your upcoming payment milestone/tranche under your booking. The payment milestone is scheduled for {!Milestone_Date}, which is more than 15 days from today.
+PAYMENT DETAILS
+
+Project    {!Project.Name}
+Unit    {!Unit.Name}
+Milestone / Tranche    {!Milestone_Name}
+Due Date    {!Milestone_Date}
+Amount Due    {!Amount_Due}
+
+IMPORTANT
+We request you to kindly take note of the upcoming due date and make the required payment on or before the scheduled date to ensure a smooth payment process.
+
+A formal payment reminder will be shared closer to the due date, if applicable.
+
+For any clarification or assistance, please contact our Customer Service team.
+
+Regards,
+Customer Service Team
+{!Company__c.Name}
+
+Creating New Worlds
+Customer Service Team
+
+This is an automated payment notification.
+{!Company__c.Name}</textOnly>
+    <type>custom</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

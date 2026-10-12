@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<StandardValueSet xmlns="http://soap.sforce.com/2006/04/metadata">
+    <sorted>false</sorted>
+    <standardValue>
+        <fullName>Deed of Assignment</fullName>
+        <default>false</default>
+        <label>Deed of Assignment</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Deed of Cancellation</fullName>
+        <default>false</default>
+        <label>Deed of Cancellation</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Addendum (Adding Co purchaser)</fullName>
+        <default>false</default>
+        <label>Addendum (Adding Co purchaser)</label>
+    </standardValue>
+    <standardValue>
+        <fullName>Sale Order Cancellation</fullName>
+        <default>false</default>
+        <label>Sale Order Cancellation</label>
+    </standardValue>
+    <standardValue>
+        <fullName>DLP Issue</fullName>
+        <default>false</default>
+        <label>DLP Issue</label>
+    </standardValue>
+</StandardValueSet>

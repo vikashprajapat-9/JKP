@@ -1,0 +1,42 @@
+<template>
+    <div class="visit-modal">
+        <!-- ================= HEADER ================= -->
+        <div class="modal-header">
+            <div class="logo-container">
+                <img src={logoWhite} alt="Logo" class="logo" />
+            </div>
+            <div class="header-title">{pageTitle}</div>
+        </div>
+
+        <!-- ================= BODY ================= -->
+        <div class="modal-body">
+            <div class="form-container">
+                <p class="section-title">Proof of Communication</p>
+                <p class="slds-text-body_small slds-m-bottom_small slds-text-color_weak">
+                    Please upload the customer confirmation or communication screenshot for payment.
+                </p>
+
+                <!-- File Upload Component -->
+                <lightning-file-upload
+                    label="Attach Payment Proof Document"
+                    name="fileUploader"
+                    accept={acceptedFormats}
+                    record-id={recordId}
+                    onuploadfinished={handleUploadFinished}
+                    multiple
+                >
+                </lightning-file-upload>
+            </div>
+        </div>
+
+        <!-- ================= FOOTER ================= -->
+        <div class="modal-footer">
+            <div class="footer-copyright">
+                🔒 John Keells Properties™ • All Rights Reserved
+            </div>
+            <div class="footer-actions">
+                <button class="footer-btn cancel-btn" onclick={handleCancel}>Cancel</button>
+            </div>
+        </div>
+    </div>
+</template>

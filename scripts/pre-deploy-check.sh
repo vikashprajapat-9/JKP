@@ -180,7 +180,58 @@ check_approval_users() {
 }
 
 # ---------------------------------------------------------------------------
-# 4. Report what .forceignore is holding back, so exclusions stay visible.
+# 4. Block known secret-bearing metadata before it reaches the remote.
+#    GitHub push protection rejects the whole push when a secret is committed,
+#    and a retrieve can silently reintroduce one. Catch it here instead.
+# ---------------------------------------------------------------------------
+check_secrets() {
+    echo
+    echo "Checking for committed secrets..."
+
+    local found=0
+
+    # Custom Metadata records holding OAuth / API credentials.
+    if [ -d "${SOURCE_DIR}/customMetadata" ]; then
+        local f
+        for f in "${SOURCE_DIR}"/customMetadata/*.md-meta.xml; do
+            [ -f "$f" ] || continue
+            # Evaluate each <values> block on its own: a credential field is
+            # leaking only if the value in ITS OWN block is non-empty.
+            # Use a non-greedy-safe match: split on the closing tag first, so a
+            # block can't span across sibling <values> elements.
+            local block
+            block=$(tr '\n' ' ' < "$f" \
+                | sed 's|</values>|</values>\n|g' \
+                | grep -oE '<values>[^!]*?</values>' 2>/dev/null)
+            for b in $block; do
+                if echo "$b" | grep -qE '<field>[A-Za-z0-9_]*(ClientSecret|Secret|ApiKey|Password|AccessToken|PrivateKey)[A-Za-z0-9_]*</field>'; then
+                    # A value is safe only if empty or explicitly nil.
+                    if ! echo "$b" | grep -qE '<value[^>]*>[[:space:]]*</value>|nil="true"'; then
+                        fail "Possible secret in $(basename "$f") -- a credential field has a non-empty value."
+                        echo "         Blank the value and add the file to .forceignore, then rotate the credential."
+                        found=1
+                    fi
+                fi
+            done
+        done
+    fi
+
+    # .env style files anywhere in the tree.
+    local envs
+    envs=$(find . -name '.env*' -not -path './node_modules/*' 2>/dev/null)
+    if [ -n "$envs" ]; then
+        fail "Environment file(s) present: $(echo "$envs" | tr '\n' ' ')"
+        echo "         Add them to .gitignore and .forceignore."
+        found=1
+    fi
+
+    if [ "$found" -eq 0 ]; then
+        pass "No committed secrets detected in deployable metadata"
+    fi
+}
+
+# ---------------------------------------------------------------------------
+# 5. Report what .forceignore is holding back, so exclusions stay visible.
 # ---------------------------------------------------------------------------
 check_ignore_rules() {
     echo
@@ -198,6 +249,7 @@ check_ignore_rules() {
 check_references
 check_lwc_imports
 check_approval_users
+check_secrets
 check_ignore_rules
 
 echo

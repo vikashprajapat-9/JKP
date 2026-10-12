@@ -51,6 +51,30 @@
     height: 16px;
 }
 
+/* Until the partnership is Exclusive a quiet note stands where Add Executive would be, as tall as the button
+   (colours of the portal's info note) */
+.exclusive-note {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    max-width: 480px;
+    min-height: 44px;
+    box-sizing: border-box;
+    margin: 0;
+    padding: 10px 16px;
+    border: 1px solid #c9dfe3;
+    border-radius: var(--jk-radius);
+    background: var(--jk-tint);
+    color: var(--jk-navy-muted);
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.exclusive-note-icon {
+    flex-shrink: 0;
+    color: var(--jk-navy);
+}
+
 .team-subtitle {
     font-size: 15px;
     line-height: 24px;
@@ -205,6 +229,28 @@
     margin: 0 0 24px;
     font-size: 15px;
     color: var(--jk-text-muted);
+}
+
+/* Same banner as the Leads page */
+.alert-banner {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    margin-bottom: 24px;
+    border-radius: var(--jk-radius);
+    font-size: 14px;
+}
+
+.error-banner {
+    background: #fdecea;
+    border: 1px solid #f5c2bd;
+    color: #8c1d18;
+    --slds-c-icon-color-foreground-default: #d93025;
+}
+
+.alert-text {
+    flex: 1;
 }
 
 /* ---------- Pagination (matches Leads) ---------- */
@@ -381,4 +427,5 @@
     .stat-label { font-size: 12px; }
     .stat-value { font-size: 30px; line-height: 36px; }
     .add-exec-btn { width: 100%; }
+    .exclusive-note { max-width: none; width: 100%; }
 }

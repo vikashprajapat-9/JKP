@@ -1,0 +1,316 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Sub_category__c</fullName>
+    <label>Sub category</label>
+    <required>false</required>
+    <trackFeedHistory>false</trackFeedHistory>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Main Door</fullName>
+                <default>false</default>
+                <label>Main Door</label>
+            </value>
+            <value>
+                <fullName>Main door Ironmongery</fullName>
+                <default>false</default>
+                <label>Main door Ironmongery</label>
+            </value>
+            <value>
+                <fullName>Lockset</fullName>
+                <default>false</default>
+                <label>Lockset</label>
+            </value>
+            <value>
+                <fullName>Sealant / Silicone</fullName>
+                <default>false</default>
+                <label>Sealant / Silicone</label>
+            </value>
+            <value>
+                <fullName>Wall</fullName>
+                <default>false</default>
+                <label>Wall</label>
+            </value>
+            <value>
+                <fullName>Ceiling</fullName>
+                <default>false</default>
+                <label>Ceiling</label>
+            </value>
+            <value>
+                <fullName>Floor tile</fullName>
+                <default>false</default>
+                <label>Floor tile</label>
+            </value>
+            <value>
+                <fullName>Grouting</fullName>
+                <default>false</default>
+                <label>Grouting</label>
+            </value>
+            <value>
+                <fullName>Skirting</fullName>
+                <default>false</default>
+                <label>Skirting</label>
+            </value>
+            <value>
+                <fullName>Sliding door</fullName>
+                <default>false</default>
+                <label>Sliding door</label>
+            </value>
+            <value>
+                <fullName>Sliding door Ironmongery</fullName>
+                <default>false</default>
+                <label>Sliding door Ironmongery</label>
+            </value>
+            <value>
+                <fullName>Lighting</fullName>
+                <default>false</default>
+                <label>Lighting</label>
+            </value>
+            <value>
+                <fullName>Switches</fullName>
+                <default>false</default>
+                <label>Switches</label>
+            </value>
+            <value>
+                <fullName>Socket Outlets</fullName>
+                <default>false</default>
+                <label>Socket Outlets</label>
+            </value>
+            <value>
+                <fullName>Distribution Board</fullName>
+                <default>false</default>
+                <label>Distribution Board</label>
+            </value>
+            <value>
+                <fullName>Ceiling Fan</fullName>
+                <default>false</default>
+                <label>Ceiling Fan</label>
+            </value>
+            <value>
+                <fullName>Cooling Issue</fullName>
+                <default>false</default>
+                <label>Cooling Issue</label>
+            </value>
+            <value>
+                <fullName>AC Leakage</fullName>
+                <default>false</default>
+                <label>AC Leakage</label>
+            </value>
+            <value>
+                <fullName>AC Servicing</fullName>
+                <default>false</default>
+                <label>AC Servicing</label>
+            </value>
+            <value>
+                <fullName>External Wall Seepage</fullName>
+                <default>false</default>
+                <label>External Wall Seepage</label>
+            </value>
+            <value>
+                <fullName>Smoke Detector</fullName>
+                <default>false</default>
+                <label>Smoke Detector</label>
+            </value>
+            <value>
+                <fullName>Sprinkler</fullName>
+                <default>false</default>
+                <label>Sprinkler</label>
+            </value>
+            <value>
+                <fullName>Fire Sounder</fullName>
+                <default>false</default>
+                <label>Fire Sounder</label>
+            </value>
+            <value>
+                <fullName>Pest control</fullName>
+                <default>false</default>
+                <label>Pest control</label>
+            </value>
+            <value>
+                <fullName>Door</fullName>
+                <default>false</default>
+                <label>Door</label>
+            </value>
+            <value>
+                <fullName>Door Ironmongery</fullName>
+                <default>false</default>
+                <label>Door Ironmongery</label>
+            </value>
+            <value>
+                <fullName>Wall tile</fullName>
+                <default>false</default>
+                <label>Wall tile</label>
+            </value>
+            <value>
+                <fullName>Sink</fullName>
+                <default>false</default>
+                <label>Sink</label>
+            </value>
+            <value>
+                <fullName>Mixer Tap</fullName>
+                <default>false</default>
+                <label>Mixer Tap</label>
+            </value>
+            <value>
+                <fullName>Drainage down pipe</fullName>
+                <default>false</default>
+                <label>Drainage down pipe</label>
+            </value>
+            <value>
+                <fullName>Water Pressure</fullName>
+                <default>false</default>
+                <label>Water Pressure</label>
+            </value>
+            <value>
+                <fullName>Water Heater</fullName>
+                <default>false</default>
+                <label>Water Heater</label>
+            </value>
+            <value>
+                <fullName>Exhaust Fan</fullName>
+                <default>false</default>
+                <label>Exhaust Fan</label>
+            </value>
+            <value>
+                <fullName>Pantry Cabinet TOP</fullName>
+                <default>false</default>
+                <label>Pantry Cabinet TOP</label>
+            </value>
+            <value>
+                <fullName>Pantry Cabinet BOTTOM</fullName>
+                <default>false</default>
+                <label>Pantry Cabinet BOTTOM</label>
+            </value>
+            <value>
+                <fullName>Shelving</fullName>
+                <default>false</default>
+                <label>Shelving</label>
+            </value>
+            <value>
+                <fullName>Drawer Mechanism</fullName>
+                <default>false</default>
+                <label>Drawer Mechanism</label>
+            </value>
+            <value>
+                <fullName>Hinges &amp; Accessories</fullName>
+                <default>false</default>
+                <label>Hinges &amp; Accessories</label>
+            </value>
+            <value>
+                <fullName>Ceiling Seepage</fullName>
+                <default>false</default>
+                <label>Ceiling Seepage</label>
+            </value>
+            <value>
+                <fullName>Heat Detector</fullName>
+                <default>false</default>
+                <label>Heat Detector</label>
+            </value>
+            <value>
+                <fullName>Gas Detector</fullName>
+                <default>false</default>
+                <label>Gas Detector</label>
+            </value>
+            <value>
+                <fullName>Hood</fullName>
+                <default>false</default>
+                <label>Hood</label>
+            </value>
+            <value>
+                <fullName>Hob</fullName>
+                <default>false</default>
+                <label>Hob</label>
+            </value>
+            <value>
+                <fullName>Oven</fullName>
+                <default>false</default>
+                <label>Oven</label>
+            </value>
+            <value>
+                <fullName>Refrigerator (provision)</fullName>
+                <default>false</default>
+                <label>Refrigerator (provision)</label>
+            </value>
+            <value>
+                <fullName>Washing Machine (provision)</fullName>
+                <default>false</default>
+                <label>Washing Machine (provision)</label>
+            </value>
+            <value>
+                <fullName>Dishwasher (provision)</fullName>
+                <default>false</default>
+                <label>Dishwasher (provision)</label>
+            </value>
+            <value>
+                <fullName>Window</fullName>
+                <default>false</default>
+                <label>Window</label>
+            </value>
+            <value>
+                <fullName>Hinges</fullName>
+                <default>false</default>
+                <label>Hinges</label>
+            </value>
+            <value>
+                <fullName>Handles</fullName>
+                <default>false</default>
+                <label>Handles</label>
+            </value>
+            <value>
+                <fullName>Window Alignment</fullName>
+                <default>false</default>
+                <label>Window Alignment</label>
+            </value>
+            <value>
+                <fullName>WC / Commode</fullName>
+                <default>false</default>
+                <label>WC / Commode</label>
+            </value>
+            <value>
+                <fullName>Bidet Shower</fullName>
+                <default>false</default>
+                <label>Bidet Shower</label>
+            </value>
+            <value>
+                <fullName>Shower Mixer</fullName>
+                <default>false</default>
+                <label>Shower Mixer</label>
+            </value>
+            <value>
+                <fullName>Floor Trap</fullName>
+                <default>false</default>
+                <label>Floor Trap</label>
+            </value>
+            <value>
+                <fullName>Sanitary Fittings</fullName>
+                <default>false</default>
+                <label>Sanitary Fittings</label>
+            </value>
+            <value>
+                <fullName>Balcony Floor</fullName>
+                <default>false</default>
+                <label>Balcony Floor</label>
+            </value>
+            <value>
+                <fullName>Balcony Drainage</fullName>
+                <default>false</default>
+                <label>Balcony Drainage</label>
+            </value>
+            <value>
+                <fullName>Railing</fullName>
+                <default>false</default>
+                <label>Railing</label>
+            </value>
+            <value>
+                <fullName>External Paint</fullName>
+                <default>false</default>
+                <label>External Paint</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

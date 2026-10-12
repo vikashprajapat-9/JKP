@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Carry_Over_Targets__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Next Period only: at approval, the personal targets still in force at the end of the previous period are copied to this one.</description>
+    <inlineHelpText>For a next period: copy the personal targets of the previous period when this one is approved.</inlineHelpText>
+    <label>Carry Over Personal Targets</label>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Checkbox</type>
+</CustomField>

@@ -1,0 +1,724 @@
+<template>
+    <div class="editor">
+        <!-- Loading, no access, could not load -->
+        <template lwc:if={isLoading}>
+            <div class="card loadstate" data-id="loading">
+                <lightning-spinner alternative-text={labels.loading} size="medium"></lightning-spinner>
+                <span class="muted">{labels.loading}</span>
+            </div>
+        </template>
+        <template lwc:elseif={noAccess}>
+            <div class="note amber" data-id="no-access"><span>{labels.noAccess}</span></div>
+        </template>
+        <template lwc:elseif={loadError}>
+            <div class="note red" role="alert" data-id="load-error">
+                <span class="grow">{loadError}</span>
+            </div>
+            <div class="row stateactions">
+                <button type="button" class="btn" data-id="back" onclick={handleBack}>{labels.back}</button>
+                <button type="button" class="btn primary" data-id="retry" onclick={handleRetry}>{labels.retry}</button>
+            </div>
+        </template>
+        <template lwc:elseif={showNothing}>
+            <div class="note grey" data-id="nothing"><span>{labels.nothingToShow}</span></div>
+            <div class="row stateactions">
+                <button type="button" class="btn" data-id="back" onclick={handleBack}>{labels.back}</button>
+            </div>
+        </template>
+
+        <template lwc:if={showForm}>
+            <!-- Top row: back, project, configuration and version, state, when it was saved -->
+            <div class="pagehead">
+                <div class="row">
+                    <button type="button" class="link back" data-id="back" onclick={handleBack}>{labels.backOverview}</button>
+                    <div>
+                        <div class="row">
+                            <h1 data-id="title">{vm.head.title}</h1>
+                            <span class={vm.head.pillClass} data-id="state">{vm.head.pillText}</span>
+                        </div>
+                        <div class="sub" data-id="sub">{vm.head.sub}</div>
+                    </div>
+                </div>
+                <span class="small muted nowrap" aria-live="polite" data-id="saved">{vm.head.savedText}</span>
+            </div>
+
+            <template lwc:if={vm.head.banner}>
+                <div class="note red banner" data-id="returned">
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" aria-hidden="true"><circle cx="8" cy="8" r="6.2"></circle><path d="M8 4.8v3.8M8 11v.2"></path></svg>
+                    <span>{vm.head.banner}</span>
+                </div>
+            </template>
+            <template lwc:if={vm.head.hasConsequence}>
+                <div class="note banner" data-id="consequence">
+                    <template lwc:if={vm.head.changeLabel}><strong class="nowrap">{vm.head.changeLabel}</strong></template>
+                    <span>{vm.head.consequence}</span>
+                </div>
+            </template>
+            <template lwc:if={vm.note}>
+                <div class={vm.note.className} data-id="note"><span>{vm.note.text}</span></div>
+            </template>
+
+            <!-- What stopped the last save or submit -->
+            <div class="alerts" aria-live="polite">
+                <template lwc:if={saveError}>
+                    <div class="note red banner" role="alert" data-id="save-error">
+                        <span class="grow">{saveError}</span>
+                        <template lwc:if={showReload}>
+                            <button type="button" class="link" data-id="reload" onclick={handleReload}>{labels.reload}</button>
+                        </template>
+                    </div>
+                </template>
+                <template lwc:if={showBlockNote}>
+                    <div class="note red banner" role="alert" data-id="block-note"><span>{blockNote}</span></div>
+                </template>
+                <template lwc:if={vm.hasGeneral}>
+                    <div class="note red banner" role="alert" data-id="general-issues">
+                        <ul class="plainlist">
+                            <template for:each={vm.general} for:item="problem">
+                                <li key={problem.key}>{problem.message}</li>
+                            </template>
+                        </ul>
+                    </div>
+                </template>
+            </div>
+
+            <div class="cols">
+                <!-- Checklist: one line per card, done or what is still open -->
+                <nav class="rail" aria-label={labels.checklist}>
+                    <div class="card">
+                        <h2 class="sectitle">{labels.checklist}</h2>
+                        <ul class="plainlist">
+                            <template for:each={vm.checklist} for:item="item">
+                                <li key={item.key} class="checkitem" data-id="check" data-section={item.section}>
+                                    <button type="button" class="check" data-section={item.section} title={item.goTo} onclick={handleChecklist}>
+                                        <span class={item.markClass}>
+                                            <template lwc:if={item.isTodo}>
+                                                <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M6 2.4v4.4M6 9.6v.1"></path></svg>
+                                            </template>
+                                            <template lwc:elseif={item.isOff}>
+                                                <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true"><path d="M3 6h6"></path></svg>
+                                            </template>
+                                            <template lwc:else>
+                                                <svg viewBox="0 0 12 12" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 6.3l2.4 2.4 4.6-5.2"></path></svg>
+                                            </template>
+                                        </span>
+                                        <span class="what">{item.label}</span>
+                                        <template lwc:if={item.state}><span class={item.stateClass}>{item.state}</span></template>
+                                        <template lwc:if={item.assistive}><span class="assistive">{item.assistive}</span></template>
+                                    </button>
+                                    <template lwc:if={item.first}>
+                                        <div class="first" data-id="check-first">{item.first}</div>
+                                    </template>
+                                </li>
+                            </template>
+                        </ul>
+                        <template lwc:if={vm.showChecklistFoot}>
+                            <div class="small muted foot" aria-live="polite" data-id="checklist-foot">{vm.checklistFoot}</div>
+                        </template>
+                    </div>
+                </nav>
+
+                <div class="main">
+                    <!-- 1. Project and period -->
+                    <div class="card" data-card="period">
+                        <h2 class="sectitle"><span class="n">1</span>{labels.sectionPeriod}</h2>
+                        <div class="f3">
+                            <div class="field">
+                                <span class="label" aria-hidden="true">{labels.project}</span>
+                                <template lwc:if={vm.period.showProjectPicker}>
+                                    <div class={vm.period.projectClass}>
+                                        <lightning-combobox
+                                            data-id="project"
+                                            variant="label-hidden"
+                                            label={labels.project}
+                                            placeholder={labels.chooseProject}
+                                            options={vm.period.projectOptions}
+                                            value={vm.period.projectId}
+                                            onchange={handleProject}
+                                        ></lightning-combobox>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <span class="input readonly" data-id="project-text">{vm.period.projectName}</span>
+                                </template>
+                                <template lwc:if={vm.period.projectError}>
+                                    <span class="error-text" role="alert">{vm.period.projectError}</span>
+                                </template>
+                            </div>
+                            <div class="field">
+                                <span class="label" aria-hidden="true">{labels.startDate}</span>
+                                <template lwc:if={vm.period.startEditable}>
+                                    <div class={vm.period.startClass}>
+                                        <lightning-input
+                                            data-id="start"
+                                            data-field="startDate"
+                                            type="date"
+                                            date-style="medium"
+                                            variant="label-hidden"
+                                            label={labels.startDate}
+                                            value={vm.period.startDate}
+                                            onchange={handleDate}
+                                        ></lightning-input>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <span class="input readonly" data-id="start-text">{vm.period.startText}</span>
+                                </template>
+                                <template lwc:if={vm.period.startError}>
+                                    <span class="error-text" role="alert" data-id="start-error">{vm.period.startError}</span>
+                                </template>
+                            </div>
+                            <div class="field">
+                                <span class="label" aria-hidden="true">{labels.endDate}</span>
+                                <template lwc:if={vm.period.endEditable}>
+                                    <div class={vm.period.endClass}>
+                                        <lightning-input
+                                            data-id="end"
+                                            data-field="endDate"
+                                            type="date"
+                                            date-style="medium"
+                                            variant="label-hidden"
+                                            label={labels.endDate}
+                                            value={vm.period.endDate}
+                                            onchange={handleDate}
+                                        ></lightning-input>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <span class="input readonly" data-id="end-text">{vm.period.endText}</span>
+                                </template>
+                                <template lwc:if={vm.period.endError}>
+                                    <span class="error-text" role="alert" data-id="end-error">{vm.period.endError}</span>
+                                </template>
+                            </div>
+                        </div>
+                        <!-- The overlap hint: the server decides finally -->
+                        <div class="hintline" aria-live="polite">
+                            <template lwc:if={vm.period.overlapError}>
+                                <span class="error-text" data-id="overlap-error">{vm.period.overlapError}</span>
+                            </template>
+                            <template lwc:elseif={vm.period.overlapOk}>
+                                <span class="ok-text" data-id="overlap-ok">
+                                    <svg class="ico" viewBox="0 0 14 14" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true"><path d="M2.5 7.4l3 3 6-6.8"></path></svg>
+                                    {labels.noOverlap}
+                                </span>
+                            </template>
+                            <template lwc:elseif={vm.period.overlapUnknown}>
+                                <span class="small muted" data-id="overlap-unknown">{labels.overlapOnSave}</span>
+                            </template>
+                        </div>
+                        <template for:each={vm.period.others} for:item="problem">
+                            <div key={problem.key} class="error-text" role="alert">{problem.message}</div>
+                        </template>
+                    </div>
+
+                    <!-- 2. Payout stages shared by the internal team -->
+                    <div class="card" data-card="stages">
+                        <h2 class="sectitle">
+                            <span class="n">2</span>{labels.sectionStages}
+                            <span class="hint" data-id="stages-hint">{vm.shared.hint}</span>
+                        </h2>
+                        <c-commission-stage-list
+                            data-id="shared-stages"
+                            stages={vm.shared.stages}
+                            triggers={triggers}
+                            installments={installments}
+                            final-required={vm.shared.finalRequired}
+                            read-only={vm.locked}
+                            issues={vm.shared.issues}
+                            onchange={handleSharedStages}
+                        ></c-commission-stage-list>
+                        <template for:each={vm.shared.others} for:item="problem">
+                            <div key={problem.key} class="error-text" role="alert">{problem.message}</div>
+                        </template>
+                    </div>
+
+                    <!-- 3. Rates and targets of the designations that follow the shared stages -->
+                    <div class="card" data-card="rates">
+                        <h2 class="sectitle"><span class="n">3</span>{labels.sectionRates}</h2>
+                        <div class="settings">
+                            <div class="field">
+                                <span class="label" aria-hidden="true">{labels.targetBasis}</span>
+                                <div class={vm.rates.basisClass}>
+                                    <lightning-combobox
+                                        data-id="basis"
+                                        variant="label-hidden"
+                                        label={labels.targetBasis}
+                                        placeholder={labels.choose}
+                                        options={vm.rates.basisOptions}
+                                        value={vm.rates.basis}
+                                        disabled={vm.locked}
+                                        onchange={handleBasis}
+                                    ></lightning-combobox>
+                                </div>
+                                <template lwc:if={vm.rates.basisError}>
+                                    <span class="error-text" role="alert" data-id="basis-error">{vm.rates.basisError}</span>
+                                </template>
+                            </div>
+                            <div class="field">
+                                <span class="label" aria-hidden="true">{labels.targetPeriod}</span>
+                                <div class={vm.rates.periodClass}>
+                                    <lightning-combobox
+                                        data-id="target-period"
+                                        variant="label-hidden"
+                                        label={labels.targetPeriod}
+                                        placeholder={labels.choose}
+                                        options={vm.rates.periodOptions}
+                                        value={vm.rates.period}
+                                        disabled={vm.locked}
+                                        onchange={handleTargetPeriod}
+                                    ></lightning-combobox>
+                                </div>
+                                <template lwc:if={vm.rates.periodError}>
+                                    <span class="error-text" role="alert">{vm.rates.periodError}</span>
+                                </template>
+                            </div>
+                            <fieldset class="field plain">
+                                <legend class="label">{labels.exceedMode}</legend>
+                                <div class="radios">
+                                    <template for:each={vm.rates.modes} for:item="mode">
+                                        <label key={mode.value} class="opt">
+                                            <input
+                                                type="radio"
+                                                class="assistive"
+                                                name="commission-exceed-mode"
+                                                data-id="exceed-mode"
+                                                value={mode.value}
+                                                checked={mode.checked}
+                                                disabled={vm.locked}
+                                                onchange={handleExceedMode}
+                                            />
+                                            <span class={mode.radioClass}></span>{mode.label}
+                                        </label>
+                                    </template>
+                                </div>
+                                <template lwc:if={vm.rates.modeError}>
+                                    <span class="error-text" role="alert" data-id="mode-error">{vm.rates.modeError}</span>
+                                </template>
+                            </fieldset>
+                        </div>
+
+                        <template lwc:if={vm.rates.hasRows}>
+                            <div class="tablewrap">
+                                <table class="grid rates">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col" class="pay">{labels.colPay}</th>
+                                            <th scope="col">{labels.colDesignation}</th>
+                                            <th scope="col" class="r">{labels.colTarget}</th>
+                                            <th scope="col" class="r">{labels.colCurrent}</th>
+                                            <th scope="col" class="r">{labels.colExceed}</th>
+                                            <th scope="col">{labels.colClaim}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <template for:each={vm.rates.rows} for:item="row">
+                                            <tr key={row.key} class={row.rowClass} data-id="rate-row" data-key={row.designation}>
+                                                <td>
+                                                    <label class="switch">
+                                                        <input
+                                                            type="checkbox"
+                                                            role="switch"
+                                                            class="assistive"
+                                                            data-id="pay"
+                                                            data-key={row.designation}
+                                                            aria-label={row.payLabel}
+                                                            checked={row.paid}
+                                                            disabled={vm.locked}
+                                                            onchange={handlePaid}
+                                                        />
+                                                        <span class={row.toggleClass}></span>
+                                                    </label>
+                                                </td>
+                                                <th scope="row" class="des">{row.label}</th>
+                                                <template lwc:if={row.paid}>
+                                                    <td class="r">
+                                                        <template lwc:if={row.showTarget}>
+                                                            <template lwc:if={row.teamTotal}><span class="tt">{labels.teamTotal}</span></template>
+                                                            <div class={row.target.className}>
+                                                                <lightning-input
+                                                                    data-id="target"
+                                                                    data-key={row.designation}
+                                                                    data-field="target"
+                                                                    type="number"
+                                                                    step="any"
+                                                                    format-fraction-digits={row.target.digits}
+                                                                    variant="label-hidden"
+                                                                    label={row.targetLabel}
+                                                                    value={row.target.value}
+                                                                    disabled={vm.locked}
+                                                                    onchange={handleRateNumber}
+                                                                ></lightning-input>
+                                                            </div>
+                                                        </template>
+                                                    </td>
+                                                    <td class="r">
+                                                        <div class={row.current.className}>
+                                                            <lightning-input
+                                                                data-id="current"
+                                                                data-key={row.designation}
+                                                                data-field="currentRate"
+                                                                type="number"
+                                                                step="any"
+                                                                format-fraction-digits={row.current.digits}
+                                                                variant="label-hidden"
+                                                                label={row.currentLabel}
+                                                                value={row.current.value}
+                                                                disabled={vm.locked}
+                                                                onchange={handleRateNumber}
+                                                            ></lightning-input>
+                                                        </div>
+                                                    </td>
+                                                    <td class="r">
+                                                        <div class={row.exceed.className}>
+                                                            <lightning-input
+                                                                data-id="exceed"
+                                                                data-key={row.designation}
+                                                                data-field="exceedRate"
+                                                                type="number"
+                                                                step="any"
+                                                                format-fraction-digits={row.exceed.digits}
+                                                                variant="label-hidden"
+                                                                label={row.exceedLabel}
+                                                                value={row.exceed.value}
+                                                                disabled={vm.locked}
+                                                                onchange={handleRateNumber}
+                                                            ></lightning-input>
+                                                        </div>
+                                                    </td>
+                                                    <td class="claim">{row.claimLabel}</td>
+                                                </template>
+                                                <template lwc:else>
+                                                    <td class="r dash">{labels.none}</td>
+                                                    <td class="r dash">{labels.none}</td>
+                                                    <td class="r dash">{labels.none}</td>
+                                                    <td class="claim">{labels.notPaid}</td>
+                                                </template>
+                                            </tr>
+                                            <template lwc:if={row.errors}>
+                                                <tr key={row.errorKey} class="errors">
+                                                    <td></td>
+                                                    <td colspan="5"><span class="error-text" role="alert" data-id="rate-error">{row.errors}</span></td>
+                                                </tr>
+                                            </template>
+                                        </template>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <div class="small muted">{labels.noDesignations}</div>
+                        </template>
+                        <template for:each={vm.rates.others} for:item="problem">
+                            <div key={problem.key} class="error-text" role="alert" data-id="rates-error">{problem.message}</div>
+                        </template>
+                    </div>
+
+                    <!-- 4. One card per designation with its own release -->
+                    <template for:each={vm.own} for:item="card">
+                        <div key={card.key} class="card" data-card={card.section} data-id="own-card">
+                            <h2 class="sectitle"><span class="n">{card.number}</span>{card.title}</h2>
+                            <label class="tline switch">
+                                <input
+                                    type="checkbox"
+                                    role="switch"
+                                    class="assistive"
+                                    data-id="own-pay"
+                                    data-key={card.designation}
+                                    checked={card.paid}
+                                    disabled={vm.locked}
+                                    onchange={handlePaid}
+                                />
+                                <span class={card.toggleClass}></span>{card.payLabel}
+                            </label>
+                            <template lwc:if={card.paid}>
+                                <div class="cp">
+                                    <div class="field">
+                                        <span class="label" aria-hidden="true">{labels.rate}</span>
+                                        <div class="rate">
+                                            <div class={card.rate.className}>
+                                                <lightning-input
+                                                    data-id="own-rate"
+                                                    data-key={card.designation}
+                                                    data-field="currentRate"
+                                                    type="number"
+                                                    step="any"
+                                                    format-fraction-digits={card.rate.digits}
+                                                    variant="label-hidden"
+                                                    label={card.rateLabel}
+                                                    value={card.rate.value}
+                                                    disabled={vm.locked}
+                                                    onchange={handleRateNumber}
+                                                ></lightning-input>
+                                            </div>
+                                            <span class="suffix">{labels.percentSuffix}</span>
+                                        </div>
+                                    </div>
+                                    <div class="field">
+                                        <span class="label" aria-hidden="true">{labels.contractReference}</span>
+                                        <lightning-input
+                                            data-id="own-contract"
+                                            data-key={card.designation}
+                                            type="text"
+                                            max-length="80"
+                                            variant="label-hidden"
+                                            label={card.contractLabel}
+                                            value={card.contract}
+                                            disabled={vm.locked}
+                                            onchange={handleContract}
+                                        ></lightning-input>
+                                    </div>
+                                    <fieldset class="field plain">
+                                        <legend class="label">{labels.whenToRelease}</legend>
+                                        <div class="rcards">
+                                            <template for:each={card.modes} for:item="mode">
+                                                <label key={mode.value} class={mode.cardClass}>
+                                                    <input
+                                                        type="radio"
+                                                        class="assistive"
+                                                        name={card.radioName}
+                                                        data-id="release-mode"
+                                                        data-key={card.designation}
+                                                        value={mode.value}
+                                                        checked={mode.checked}
+                                                        disabled={vm.locked}
+                                                        onchange={handleReleaseMode}
+                                                    />
+                                                    <span class={mode.radioClass}></span>{mode.label}
+                                                </label>
+                                            </template>
+                                        </div>
+                                    </fieldset>
+                                </div>
+                                <template lwc:if={card.rate.error}>
+                                    <div class="error-text" role="alert" data-id="own-rate-error">{card.rate.error}</div>
+                                </template>
+                                <template lwc:if={card.modeError}>
+                                    <div class="error-text" role="alert" data-id="own-mode-error">{card.modeError}</div>
+                                </template>
+
+                                <!-- A contract with a target has an exceed rate too -->
+                                <template lwc:if={card.showTargetToggle}>
+                                    <div class="targetline">
+                                        <label class="tline switch">
+                                            <input
+                                                type="checkbox"
+                                                role="switch"
+                                                class="assistive"
+                                                data-id="own-has-target"
+                                                data-key={card.designation}
+                                                checked={card.hasTarget}
+                                                disabled={vm.locked}
+                                                onchange={handleHasTarget}
+                                            />
+                                            <span class={card.targetToggleClass}></span>{labels.contractHasTarget}
+                                        </label>
+                                        <template lwc:if={card.hasTarget}>
+                                            <div class="field inline">
+                                                <span class="label" aria-hidden="true">{labels.colTarget}</span>
+                                                <div class={card.target.className}>
+                                                    <lightning-input
+                                                        data-id="own-target"
+                                                        data-key={card.designation}
+                                                        data-field="target"
+                                                        type="number"
+                                                        step="any"
+                                                        format-fraction-digits={card.target.digits}
+                                                        variant="label-hidden"
+                                                        label={card.targetLabel}
+                                                        value={card.target.value}
+                                                        disabled={vm.locked}
+                                                        onchange={handleRateNumber}
+                                                    ></lightning-input>
+                                                </div>
+                                            </div>
+                                            <div class="field inline">
+                                                <span class="label" aria-hidden="true">{labels.colExceed}</span>
+                                                <div class={card.exceed.className}>
+                                                    <lightning-input
+                                                        data-id="own-exceed"
+                                                        data-key={card.designation}
+                                                        data-field="exceedRate"
+                                                        type="number"
+                                                        step="any"
+                                                        format-fraction-digits={card.exceed.digits}
+                                                        variant="label-hidden"
+                                                        label={card.exceedLabel}
+                                                        value={card.exceed.value}
+                                                        disabled={vm.locked}
+                                                        onchange={handleRateNumber}
+                                                    ></lightning-input>
+                                                </div>
+                                            </div>
+                                        </template>
+                                    </div>
+                                    <template lwc:if={card.target.error}>
+                                        <div class="error-text" role="alert">{card.target.error}</div>
+                                    </template>
+                                    <template lwc:if={card.exceed.error}>
+                                        <div class="error-text" role="alert">{card.exceed.error}</div>
+                                    </template>
+                                </template>
+
+                                <!-- Its own payout stages: one at 100 %, or Initial and Final -->
+                                <template lwc:if={card.showStages}>
+                                    <div class="split">
+                                        <c-commission-stage-list
+                                            data-id="own-stages"
+                                            data-key={card.designation}
+                                            designation={card.designation}
+                                            stages={card.stages}
+                                            triggers={triggers}
+                                            installments={installments}
+                                            allow-mid={no}
+                                            final-required
+                                            single={card.isAllAtInitial}
+                                            read-only={vm.locked}
+                                            issues={card.issues}
+                                            onchange={handleOwnStages}
+                                        ></c-commission-stage-list>
+                                    </div>
+                                </template>
+                            </template>
+                            <template lwc:else>
+                                <div class="small muted" data-id="own-off">{labels.notPaid}</div>
+                            </template>
+                            <template for:each={card.others} for:item="problem">
+                                <div key={problem.key} class="error-text" role="alert">{problem.message}</div>
+                            </template>
+                        </div>
+                    </template>
+
+                    <!-- 5. One card per fixed fee, and 6. the options -->
+                    <div class="pair">
+                        <template for:each={vm.fees} for:item="card">
+                            <div key={card.key} class="card c5" data-card={card.section} data-id="fee-card">
+                                <h2 class="sectitle"><span class="n">{card.number}</span>{card.title}</h2>
+                                <label class="tline switch">
+                                    <input
+                                        type="checkbox"
+                                        role="switch"
+                                        class="assistive"
+                                        data-id="fee-pay"
+                                        data-key={card.designation}
+                                        checked={card.paid}
+                                        disabled={vm.locked}
+                                        onchange={handlePaid}
+                                    />
+                                    <span class={card.toggleClass}></span>{card.payLabel}
+                                </label>
+                                <template lwc:if={card.paid}>
+                                    <div class="feeline">
+                                        <div class="field">
+                                            <span class="label" aria-hidden="true">{card.amountLabel}</span>
+                                            <div class={card.amount.className}>
+                                                <lightning-input
+                                                    data-id="fee-amount"
+                                                    data-key={card.designation}
+                                                    data-field="flatAmount"
+                                                    type="number"
+                                                    step="any"
+                                                    format-fraction-digits={card.amount.digits}
+                                                    variant="label-hidden"
+                                                    label={card.amountLabel}
+                                                    value={card.amount.value}
+                                                    disabled={vm.locked}
+                                                    onchange={handleRateNumber}
+                                                ></lightning-input>
+                                            </div>
+                                        </div>
+                                        <template lwc:if={card.claimLabel}>
+                                            <span class="pill blue plain">{card.claimLabel}</span>
+                                        </template>
+                                    </div>
+                                    <template lwc:if={card.amount.error}>
+                                        <div class="error-text" role="alert" data-id="fee-error">{card.amount.error}</div>
+                                    </template>
+                                </template>
+                                <template lwc:else>
+                                    <div class="small muted">{labels.notPaid}</div>
+                                </template>
+                                <template for:each={card.others} for:item="problem">
+                                    <div key={problem.key} class="error-text" role="alert">{problem.message}</div>
+                                </template>
+                            </div>
+                        </template>
+
+                        <div class="card c6" data-card="options">
+                            <h2 class="sectitle"><span class="n">{vm.options.number}</span>{labels.sectionOptions}</h2>
+                            <label class="tline switch">
+                                <input
+                                    type="checkbox"
+                                    role="switch"
+                                    class="assistive"
+                                    data-id="price-tax"
+                                    checked={vm.options.priceExcludesTax}
+                                    disabled={vm.locked}
+                                    onchange={handlePriceTax}
+                                />
+                                <span class={vm.options.priceClass}></span>{labels.priceExcludesTax}
+                            </label>
+                            <template lwc:if={vm.options.showCarryOver}>
+                                <label class="tline switch">
+                                    <input
+                                        type="checkbox"
+                                        role="switch"
+                                        class="assistive"
+                                        data-id="carry-over"
+                                        checked={vm.options.carryOver}
+                                        disabled={vm.readOnly}
+                                        onchange={handleCarryOver}
+                                    />
+                                    <span class={vm.options.carryClass}></span>{labels.carryOver}
+                                </label>
+                            </template>
+                            <div class="field">
+                                <span class="label" aria-hidden="true">{labels.changeReason}</span>
+                                <div class={vm.options.reasonClass}>
+                                    <lightning-input
+                                        data-id="reason"
+                                        type="text"
+                                        max-length="255"
+                                        variant="label-hidden"
+                                        label={labels.changeReason}
+                                        placeholder={vm.options.reasonPlaceholder}
+                                        value={vm.options.reason}
+                                        disabled={vm.readOnly}
+                                        onchange={handleReason}
+                                    ></lightning-input>
+                                </div>
+                                <template lwc:if={vm.options.reasonError}>
+                                    <span class="error-text" role="alert" data-id="reason-error">{vm.options.reasonError}</span>
+                                </template>
+                            </div>
+                            <template for:each={vm.options.others} for:item="problem">
+                                <div key={problem.key} class="error-text" role="alert">{problem.message}</div>
+                            </template>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <!-- Footer: discard on the left; what is left, save and submit on the right -->
+            <div class="footerbar">
+                <div class="row">
+                    <template lwc:if={vm.footer.showDiscard}>
+                        <button type="button" class="btn danger" data-id="discard" disabled={busy} onclick={handleDiscard}>{labels.discard}</button>
+                    </template>
+                    <template lwc:else>
+                        <button type="button" class="btn" data-id="back-footer" onclick={handleBack}>{labels.back}</button>
+                    </template>
+                </div>
+                <template lwc:if={vm.editable}>
+                    <div class="row actions">
+                        <span class="small muted lefttext" aria-live="polite" data-id="left-text">{vm.footer.leftText}</span>
+                        <button type="button" class="btn" data-id="save" disabled={vm.footer.saveDisabled} onclick={handleSave}>{labels.saveDraft}</button>
+                        <button type="button" class={vm.footer.submitClass} data-id="submit" disabled={vm.footer.submitDisabled} onclick={handleSubmit}>
+                            {labels.submit}
+                        </button>
+                    </div>
+                </template>
+            </div>
+        </template>
+    </div>
+</template>

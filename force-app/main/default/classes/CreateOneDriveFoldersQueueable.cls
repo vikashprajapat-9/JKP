@@ -83,6 +83,8 @@ public class CreateOneDriveFoldersQueueable implements Queueable, Database.Allow
                     System.debug('Skipping folder creation: folderName is null');
                     return;
                 }
+                // OneDrive refuses names with \\ / : * ? " < > | # % (for example "M/s Perera Holdings")
+                folderName = OneDriveDocumentManagerController.folderName(folderName);
                 OneDriveService svc = new OneDriveService();
                 String token = svc.getAccessToken();
                 System.debug('token==>'+token);
@@ -111,11 +113,8 @@ public class CreateOneDriveFoldersQueueable implements Queueable, Database.Allow
                 req.setBody(body);
                 req.setTimeout(60000);
 
-                Http http = new Http();
-                HttpResponse res = new HttpResponse();
-                if (!Test.isRunningTest()) {
-                    res = http.send(req);
-                }
+                // Tests answer with a mock (HttpCalloutMock); without one the callout fails and is caught below
+                HttpResponse res = new Http().send(req);
 
                 if (res.getStatusCode() >= 200 && res.getStatusCode() < 300) {
                     Map<String, Object> responseBody = (Map<String, Object>) JSON.deserializeUntyped(res.getBody());
@@ -146,6 +145,9 @@ public class CreateOneDriveFoldersQueueable implements Queueable, Database.Allow
                         DocumentCreationHandler dch = new DocumentCreationHandler();
                         dch.CreateDocuments(docRec);
                     }
+                } else {
+                    System.debug(LoggingLevel.ERROR, 'OneDrive did not create the folder "' + folderName + '" for ' + docId
+                        + ': HTTP ' + res.getStatusCode() + ' ' + res.getBody());
                 }
             }
         } catch(Exception e) {

@@ -1,0 +1,361 @@
+<template>
+    <div class="modal-backdrop" onclick={handleBackdrop}></div>
+    <section class="edit-modal" role="dialog" aria-modal="true" aria-labelledby="leadEditTitle">
+
+        <!-- HEADER -->
+        <header class="edit-head">
+            <div class="head-icon" aria-hidden="true">
+                <svg viewBox="0 0 24 24" width="22" height="22">
+                    <path d="M4 20h4l10.5-10.5a2.1 2.1 0 0 0-3-3L5 17v3z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path>
+                    <path d="M13.5 7.5l3 3" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+                </svg>
+            </div>
+            <div class="head-text">
+                <p class="eyebrow">Update lead stage</p>
+                <h2 id="leadEditTitle" class="edit-title">{leadName}</h2>
+                <template lwc:if={currentStatus}>
+                    <p class="edit-sub">
+                        Current stage <span class="stage-pill">{currentStatus}</span>
+                        <template lwc:if={projectName}><span class="dot">•</span>{projectName}</template>
+                    </p>
+                </template>
+            </div>
+            <button class="modal-close" onclick={handleCancel} type="button" aria-label="Close" disabled={locked}>
+                <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+                    <path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"></path>
+                </svg>
+            </button>
+        </header>
+
+        <!-- BODY -->
+        <div class="edit-body">
+            <template lwc:if={errorMessage}>
+                <div class="alert-banner error-banner" role="alert" tabindex="-1">
+                    <lightning-icon icon-name="utility:error" size="x-small" class="alert-icon"></lightning-icon>
+                    <span class="alert-text">{errorMessage}</span>
+                    <button class="banner-close-btn" onclick={handleCloseError} type="button" aria-label="Close">✕</button>
+                </div>
+            </template>
+
+            <template lwc:if={loading}>
+                <div class="loading" role="status">
+                    <span class="spinner" aria-hidden="true"></span>
+                    Loading the lead…
+                </div>
+            </template>
+
+            <template lwc:elseif={readOnly}>
+                <div class="read-only">
+                    <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true">
+                        <rect x="5" y="11" width="14" height="9" rx="2" fill="none" stroke="currentColor" stroke-width="1.8"></rect>
+                        <path d="M8 11V8a4 4 0 0 1 8 0v3" fill="none" stroke="currentColor" stroke-width="1.8"></path>
+                    </svg>
+                    <p>{readOnlyReason}</p>
+                </div>
+            </template>
+
+            <template lwc:elseif={canEdit}>
+                <!-- LEAD FREEZING WINDOW -->
+                <template lwc:if={showFreeze}>
+                    <div class="freeze-card" role="note">
+                        <div class="freeze-top">
+                            <span class="freeze-icon" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" width="18" height="18">
+                                    <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"></circle>
+                                    <path d="M12 7v5l3 2" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </span>
+                            <span class="freeze-text">{freeze.note}</span>
+                            <template lwc:if={showGraceButton}>
+                                <button class="link-btn" type="button" onclick={handleGraceOpen} disabled={saving}>{labels.graceButton}</button>
+                            </template>
+                        </div>
+                        <template lwc:if={freeze.pending}>
+                            <p class="freeze-pending">{freeze.pendingNote}</p>
+                        </template>
+                        <template lwc:if={graceOpen}>
+                            <div class="grace-form">
+                                <p class="grace-label">{labels.graceDays} <span class="req">*</span></p>
+                                <div class="grace-days" role="radiogroup" aria-label={labels.graceDays}>
+                                    <template for:each={graceDayOptions} for:item="option">
+                                        <button key={option.value} type="button" role="radio" class={option.className}
+                                            aria-checked={option.ariaChecked} data-value={option.value} onclick={handleGraceDays}>{option.label}</button>
+                                    </template>
+                                </div>
+                                <div class="field field_wide">
+                                    <label for="graceReason">{labels.graceReason} <span class="req">*</span></label>
+                                    <textarea id="graceReason" class="jk-input jk-textarea" maxlength="1000" value={graceReason}
+                                        placeholder="Why does the customer need more time before the site visit?" oninput={handleGraceReason}></textarea>
+                                </div>
+                                <div class="grace-actions">
+                                    <button class="small-btn small-btn_secondary" type="button" onclick={handleGraceCancel} disabled={saving}>Back</button>
+                                    <button class="small-btn" type="button" onclick={handleGraceSend} disabled={saving}>{graceSendLabel}</button>
+                                </div>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+
+                <!-- STEP 1: THE STAGE -->
+                <p class="step-title"><span class="step-num">1</span>Choose the new stage</p>
+                <div class="status-grid" role="radiogroup" aria-label="New stage">
+                    <template for:each={statusCards} for:item="status">
+                        <button
+                            key={status.value}
+                            type="button"
+                            role="radio"
+                            class={status.className}
+                            aria-checked={status.ariaChecked}
+                            disabled={status.disabled}
+                            data-value={status.value}
+                            onclick={handleSelect}>
+                            <span class="status-top">
+                                <span class="status-name">{status.label}</span>
+                                <template lwc:if={status.selected}>
+                                    <svg class="status-check" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                                        <circle cx="12" cy="12" r="10" fill="currentColor"></circle>
+                                        <path d="M7.5 12.5l3 3 6-6.5" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </template>
+                                <template lwc:elseif={status.current}><span class="status-tag">Current</span></template>
+                                <template lwc:elseif={status.unavailable}><span class="status-tag">Not now</span></template>
+                            </span>
+                            <span class="status-desc">{status.cardText}</span>
+                        </button>
+                    </template>
+                </div>
+
+                <!-- STEP 2: WHAT THE STAGE NEEDS -->
+                <template lwc:if={hasSelection}>
+                    <p class="step-title"><span class="step-num">2</span>Add the details</p>
+
+                    <template lwc:if={hasCallLog}>
+                        <div class="section-card">
+                            <div class="section-head">
+                                <span class="section-name">Call log <span class="optional-tag">{labels.optional}</span></span>
+                                <span class="chip">Call Disposition: {selected.callDisposition}</span>
+                            </div>
+                            <p class="optional-note">{labels.callLogNote}</p>
+                            <div class="two-col">
+                                <div class="field">
+                                    <label for="callDateTime">Call Date &amp; Time</label>
+                                    <input id="callDateTime" type="datetime-local" class="jk-input" data-field="callDateTime"
+                                        value={callDateTime} max={nowLocal} oninput={handleInput} />
+                                </div>
+                                <div class="field">
+                                    <label for="subject">Subject</label>
+                                    <input id="subject" type="text" class="jk-input" data-field="subject" maxlength={subjectMaxLength}
+                                        value={subject} oninput={handleInput} />
+                                </div>
+                                <template lwc:if={followUpRequired}>
+                                    <div class="field">
+                                        <label for="followUp">Follow-up Date &amp; Time</label>
+                                        <input id="followUp" type="datetime-local" class="jk-input" data-field="followUpDateTime"
+                                            value={followUpDateTime} min={nowLocal} oninput={handleInput} />
+                                    </div>
+                                </template>
+                            </div>
+                            <div class="field field_wide">
+                                <label for="description">Description</label>
+                                <textarea id="description" class="jk-input jk-textarea" data-field="description"
+                                    placeholder="What did you discuss? (optional)" value={description} oninput={handleInput}></textarea>
+                            </div>
+                        </div>
+                    </template>
+
+                    <template lwc:if={isVisitRequest}>
+                        <div class="section-card">
+                            <div class="section-head">
+                                <span class="section-name">Site visit request</span>
+                                <span class="chip chip_info">Needs JKP approval</span>
+                            </div>
+                            <div class="two-col">
+                                <div class="field">
+                                    <!-- The lead's project, read-only: its site visits are for that project only -->
+                                    <template lwc:if={visitProjectFromLead}>
+                                        <label for="visitProjectName">{visitForm.projectLabel} <span class="req">*</span></label>
+                                        <div class="readonly-wrap">
+                                            <input id="visitProjectName" type="text" class="jk-input jk-input_readonly" data-field="visitProjectId"
+                                                value={visitForm.projectName} readonly aria-readonly="true" aria-describedby="visitProjectHint" />
+                                            <lightning-icon icon-name="utility:lock" size="x-small" class="readonly-icon"></lightning-icon>
+                                        </div>
+                                        <span id="visitProjectHint" class="field-hint">{labels.projectHint}</span>
+                                    </template>
+                                    <!-- An old lead without a project: the partner chooses one of their projects, as before -->
+                                    <template lwc:else>
+                                        <label for="visitProject">{visitForm.projectLabel} <span class="req">*</span></label>
+                                        <div class="select-wrap">
+                                            <select id="visitProject" class="jk-input jk-select" data-field="visitProjectId" onchange={handleInput}
+                                                aria-describedby="visitProjectChooseHint">
+                                                <option value="">Select…</option>
+                                                <template for:each={visitProjects} for:item="project">
+                                                    <option key={project.value} value={project.value} selected={project.selected}>{project.label}</option>
+                                                </template>
+                                            </select>
+                                            <svg class="chevron" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                                                <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                            </svg>
+                                        </div>
+                                        <span id="visitProjectChooseHint" class="field-hint">{labels.projectChooseHint}</span>
+                                    </template>
+                                </div>
+                                <div class="field">
+                                    <label for="visitRequirementType">{visitForm.requirementTypeLabel} <span class="req">*</span></label>
+                                    <div class="select-wrap">
+                                        <select id="visitRequirementType" class="jk-input jk-select" data-field="visitRequirementType" onchange={handleInput}>
+                                            <option value="">Select…</option>
+                                            <template for:each={visitRequirementTypes} for:item="type">
+                                                <option key={type.value} value={type.value} selected={type.selected}>{type.label}</option>
+                                            </template>
+                                        </select>
+                                        <svg class="chevron" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                                            <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                        </svg>
+                                    </div>
+                                </div>
+                                <div class="field">
+                                    <label for="visitDate">{visitForm.dateLabel} <span class="req">*</span></label>
+                                    <input id="visitDate" type="date" class="jk-input" data-field="visitDate" min={visitForm.today}
+                                        value={visitDate} oninput={handleInput} onchange={handleInput} />
+                                </div>
+                                <div class="field">
+                                    <label for="visitTime">{visitForm.timeLabel} <span class="req">*</span></label>
+                                    <input id="visitTime" type="time" step="300" class="jk-input" data-field="visitTime"
+                                        value={visitTime} oninput={handleInput} onchange={handleInput} />
+                                </div>
+                            </div>
+                            <div class="field field_wide">
+                                <label for="visitDescription">{visitForm.descriptionLabel}</label>
+                                <textarea id="visitDescription" class="jk-input jk-textarea" data-field="visitDescription"
+                                    placeholder="Anything JKP should know for the visit (optional)" value={visitDescription} oninput={handleInput}></textarea>
+                            </div>
+                        </div>
+                        <p class="info-note" role="note">
+                            <lightning-icon icon-name="utility:info" size="x-small" class="info-note-icon"></lightning-icon>
+                            {visitForm.requestNote}
+                        </p>
+                    </template>
+
+                    <template lwc:if={isVisitComplete}>
+                        <div class="section-card">
+                            <div class="section-head">
+                                <span class="section-name">Which visit took place?</span>
+                            </div>
+                            <div class="visit-list" role="radiogroup" aria-label="Scheduled visits">
+                                <template for:each={scheduledVisits} for:item="visit">
+                                    <button
+                                        key={visit.id}
+                                        type="button"
+                                        role="radio"
+                                        class={visit.className}
+                                        aria-checked={visit.ariaChecked}
+                                        disabled={visit.disabled}
+                                        data-id={visit.id}
+                                        onclick={handleVisitChoice}>
+                                        <span class="visit-radio" aria-hidden="true"></span>
+                                        <span class="visit-text">
+                                            <span class="visit-when">{visit.whenText}</span>
+                                            <span class="visit-meta">{visit.name}<template lwc:if={visit.projectName}> · {visit.projectName}</template></span>
+                                            <template lwc:if={visit.note}><span class="visit-note">{visit.note}</span></template>
+                                        </span>
+                                    </button>
+                                </template>
+                            </div>
+                        </div>
+                        <p class="info-note" role="note">
+                            <lightning-icon icon-name="utility:info" size="x-small" class="info-note-icon"></lightning-icon>
+                            {visitForm.completeNote}
+                        </p>
+                        <!-- Visited? No -->
+                        <template lwc:if={canMarkNotVisited}>
+                            <div class="not-visited">
+                                <template lwc:if={confirmNotVisited}>
+                                    <span class="not-visited-text">{labels.notVisitedConfirm}</span>
+                                    <div class="grace-actions">
+                                        <button class="small-btn small-btn_secondary" type="button" onclick={handleNotVisitedBack} disabled={saving}>Back</button>
+                                        <button class="small-btn small-btn_warn" type="button" onclick={handleNotVisitedConfirm} disabled={saving}>{notVisitedLabel}</button>
+                                    </div>
+                                </template>
+                                <template lwc:else>
+                                    <span class="not-visited-text">The customer did not come to the chosen visit?</span>
+                                    <button class="small-btn small-btn_secondary" type="button" onclick={handleNotVisited} disabled={saving}>{labels.notVisitedButton}</button>
+                                </template>
+                            </div>
+                        </template>
+                    </template>
+
+                    <template lwc:if={hasLeadFields}>
+                        <div class="section-card">
+                            <div class="section-head">
+                                <span class="section-name">Lead details <span class="optional-tag">{labels.optional}</span></span>
+                            </div>
+                            <p class="optional-note">{labels.optionalNote}</p>
+                            <div class="two-col">
+                                <template for:each={leadFields} for:item="field">
+                                    <div key={field.apiName} class={field.wrapClass}>
+                                        <label for={field.inputId}>{field.label}</label>
+                                        <template lwc:if={field.isPicklist}>
+                                            <div class="select-wrap">
+                                                <select id={field.inputId} class="jk-input jk-select" data-field={field.apiName} onchange={handleInput}>
+                                                    <option value="">Select…</option>
+                                                    <template for:each={field.choices} for:item="choice">
+                                                        <option key={choice.value} value={choice.value} selected={choice.selected}>{choice.label}</option>
+                                                    </template>
+                                                </select>
+                                                <svg class="chevron" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                                                    <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                </svg>
+                                            </div>
+                                        </template>
+                                        <template lwc:elseif={field.isNumber}>
+                                            <input id={field.inputId} type="number" min="1" step="any" class="jk-input" data-field={field.apiName}
+                                                value={field.value} oninput={handleInput} />
+                                        </template>
+                                        <template lwc:elseif={field.isTextarea}>
+                                            <textarea id={field.inputId} class="jk-input jk-textarea" data-field={field.apiName} value={field.value}
+                                                oninput={handleInput}></textarea>
+                                        </template>
+                                        <template lwc:else>
+                                            <input id={field.inputId} type="text" class="jk-input" data-field={field.apiName} maxlength={field.maxLength}
+                                                value={field.value} oninput={handleInput} />
+                                        </template>
+                                    </div>
+                                </template>
+                            </div>
+                            <template lwc:if={showOtherLossReason}>
+                                <div class="field field_wide">
+                                    <label for="otherLossReason">{otherLossReasonLabel}</label>
+                                    <input id="otherLossReason" type="text" class="jk-input" data-field="Other_Loss_Reason__c"
+                                        value={otherLossReasonValue} oninput={handleInput} />
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+
+                    <template lwc:if={handsOver}>
+                        <p class="handover" role="note">
+                            <lightning-icon icon-name="utility:info" size="x-small" class="handover-icon"></lightning-icon>
+                            {labels.handover}
+                        </p>
+                    </template>
+                </template>
+            </template>
+        </div>
+
+        <!-- A change got no answer: looking whether it arrived -->
+        <div class="checking-bar" role="status">
+            <template lwc:if={checking}>
+                <lightning-icon icon-name="utility:sync" size="x-small" class="checking-icon"></lightning-icon>
+                <span>{labels.checking}</span>
+            </template>
+        </div>
+
+        <!-- FOOTER -->
+        <footer class="edit-foot">
+            <button class="cancel-btn" type="button" onclick={handleCancel} disabled={locked}>Cancel</button>
+            <template lwc:if={canEdit}>
+                <button class="save-btn" type="button" disabled={saveDisabled} onclick={handleSave}>{saveLabel}</button>
+            </template>
+        </footer>
+    </section>
+</template>

@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomNotificationType xmlns="http://soap.sforce.com/2006/04/metadata">
+    <customNotifTypeName>CP Site Visit Reminder</customNotifTypeName>
+    <description>Site visit reminders to the channel partner agent: the visit day, and the day after for a visit not updated.</description>
+    <desktop>true</desktop>
+    <masterLabel>CP Site Visit Reminder</masterLabel>
+    <mobile>true</mobile>
+    <slack>false</slack>
+</CustomNotificationType>

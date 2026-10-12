@@ -73,8 +73,6 @@ public with sharing class paymentSchemeNewButtonController {
         }
     }
 
-   
-
     @AuraEnabled
     public static List<String> insertPaymentScheme(Payment_Scheme__c paymentScheme, List<Payment_Scheme_Installment__c> installments, Boolean editValue, List<String> block) {
     System.debug('paymentScheme ==> ' + paymentScheme);
@@ -110,6 +108,7 @@ public with sharing class paymentSchemeNewButtonController {
                 ps.Name = paymentScheme.Name;
                 ps.From_Date__c = paymentScheme.From_Date__c;
                 ps.To_Date__c = paymentScheme.To_Date__c;
+                ps.Token_Type__c = paymentScheme.Token_Type__c;
 
                 paymentSchemesToInsert.add(ps);
             }
@@ -142,18 +141,19 @@ public with sharing class paymentSchemeNewButtonController {
                     li.Payment_Schedule_Master__c = installment.Payment_Schedule_Master__c;
                     li.Installment__c = installment.Installment__c;
                     li.Payment_Scheme__c = paymentScheme.Id;
+                    li.Milestone_Completion_Date__c  = installment.Milestone_Completion_Date__c ;
                     
                     installmentsToInsert.add(li);
                 }
 
             }
             System.debug('installmentsToUpdate==>'+installmentsToUpdate);
-             System.debug('installmentsToInsert==>'+installmentsToInsert);
+            System.debug('installmentsToInsert==>'+installmentsToInsert);
 
             if (!installmentsToInsert.isEmpty()) {
                 system.debug('insert..'+installmentsToInsert);
                 insert installmentsToInsert;
-                 system.debug('insert..'+installmentsToInsert);
+                system.debug('insert..'+installmentsToInsert);
             
             }
 
@@ -163,10 +163,6 @@ public with sharing class paymentSchemeNewButtonController {
             
         }
 
-
-
-           
-       
         }
 
         // Process installments for each inserted payment scheme
@@ -233,15 +229,15 @@ public with sharing class paymentSchemeNewButtonController {
             System.debug('recordId ===>'+recordId);
             // Query for Payment Schemes
             wrapper.paymentSchemes = [SELECT Id, Name, Company__c, Project__c, Block__c, Token_Amount__c, From_Date__c, To_Date__c,
-                                      Company__r.Name, Block__r.Name, Project__r.Name,Approval_Status__c
-                                      FROM Payment_Scheme__c 
-                                      WHERE Id = :recordId Limit 1];
+                                    Company__r.Name, Block__r.Name, Project__r.Name,Approval_Status__c,	Token_Type__c
+                                    FROM Payment_Scheme__c 
+                                    WHERE Id = :recordId Limit 1];
 
-                                      System.debug('wrapper.paymentSchemes==>'+wrapper.paymentSchemes);
+                                    System.debug('wrapper.paymentSchemes==>'+wrapper.paymentSchemes);
 
             // Query for Payment Scheme Installments
             wrapper.paymentInstallments = [SELECT Id, Name, Payment_Scheme__c, Payment_Scheme__r.Name, Display_Order__c,Type__c,
-                                            Installment__c, Payment_Schedule_Master__r.Name
+                                            Installment__c, Payment_Schedule_Master__r.Name,Milestone_Completion_Date__c 
                                             FROM Payment_Scheme_Installment__c   
                                             WHERE Payment_Scheme__c = :recordId];
 
@@ -256,85 +252,132 @@ public with sharing class paymentSchemeNewButtonController {
         }
     }
 
-    // Method to initiate the approval process
-    public static void initiateApprovalProcess(Id paymentSchemeId,List<Payment_Scheme_Installment__c>installments) {
-        System.debug('installments==>'+installments);
-        Approval.ProcessSubmitRequest req = new Approval.ProcessSubmitRequest();
-                req.setComments('Submitting Cost Scheme Linking record for approval.');
-                req.setObjectId(paymentSchemeId);
-                req.setProcessDefinitionNameOrId('Payment_Scheme_Approval_Process');
-                req.setSubmitterId(UserInfo.getUserId());
-                req.setSubmitterId(UserInfo.getUserId());
+    // public static void initiateApprovalProcess(Id paymentSchemeId,List<Payment_Scheme_Installment__c>installments) {
+    //     System.debug('installments==>'+installments);
+    //     Approval.ProcessSubmitRequest req = new Approval.ProcessSubmitRequest();
+    //             req.setComments('Submitting Cost Scheme Linking record for approval.');
+    //             req.setObjectId(paymentSchemeId);
+    //             req.setProcessDefinitionNameOrId('Payment_Scheme_Approval_Process');
+    //             req.setSubmitterId(UserInfo.getUserId());
+    //             req.setSubmitterId(UserInfo.getUserId());
 
-                try {
-                    Approval.ProcessResult result = Approval.process(req);
+    //             try {
+    //                 Approval.ProcessResult result = Approval.process(req);
                     
-                    if (result.isSuccess()) {
-                        System.debug('Approval request submitted successfully.');
-                        Payment_Scheme__c costSheetRecord = new Payment_Scheme__c();
-                        costSheetRecord.Id = paymentSchemeId;
-                        costSheetRecord.Approval_Status__c = 'Sent';
-                        update costSheetRecord;
+    //                 if (result.isSuccess()) {
+    //                     System.debug('Approval request submitted successfully.');
+    //                     Payment_Scheme__c costSheetRecord = new Payment_Scheme__c();
+    //                     costSheetRecord.Id = paymentSchemeId;
+    //                     costSheetRecord.Approval_Status__c = 'Sent';
+    //                     update costSheetRecord;
 
-                        List<Payment_Scheme_Installment__c> installmentsToInsert = new List<Payment_Scheme_Installment__c>();
-                        List<Payment_Scheme_Installment__c> installmentsToUpdate = new List<Payment_Scheme_Installment__c>();
+    //                     List<Payment_Scheme_Installment__c> installmentsToInsert = new List<Payment_Scheme_Installment__c>();
+    //                     List<Payment_Scheme_Installment__c> installmentsToUpdate = new List<Payment_Scheme_Installment__c>();
 
 
-                        for (Payment_Scheme_Installment__c installment : installments) {
-                            if (installment == null) {
-                                throw new AuraHandledException('Installment cannot be null.');
-                            }
+    //                     for (Payment_Scheme_Installment__c installment : installments) {
+    //                         if (installment == null) {
+    //                             throw new AuraHandledException('Installment cannot be null.');
+    //                         }
 
-                            installment.Payment_Scheme__c = paymentSchemeId; // Link the installment to the payment scheme
-                            System.debug('installment==>'+installment);
-                            System.debug('installment.Id==>'+installment.Id);
-                            if (installment.Id == null) {
-                                installmentsToInsert.add(installment);
-                            } else {
-                                installmentsToUpdate.add(installment);
-                            }
-                        }
+    //                         installment.Payment_Scheme__c = paymentSchemeId; // Link the installment to the payment scheme
+    //                         System.debug('installment==>'+installment);
+    //                         System.debug('installment.Id==>'+installment.Id);
+    //                         if (installment.Id == null) {
+    //                             installmentsToInsert.add(installment);
+    //                         } else {
+    //                             installmentsToUpdate.add(installment);
+    //                         }
+    //                     }
 
-                        if (!installmentsToInsert.isEmpty()) {
-                            System.debug('installmentsToInsert==>');
-                            insert installmentsToInsert;
-                            System.debug('Inserted installments: ' + installmentsToInsert);
+    //                     if (!installmentsToInsert.isEmpty()) {
+    //                         System.debug('installmentsToInsert==>');
+    //                         insert installmentsToInsert;
+    //                         System.debug('Inserted installments: ' + installmentsToInsert);
 
-                             for (Payment_Scheme_Installment__c installment : installmentsToInsert) {
-                                    installment.Id = null;
-                                }
-                        }
+    //                         for (Payment_Scheme_Installment__c installment : installmentsToInsert) {
+    //                                 installment.Id = null;
+    //                             }
+    //                     }
 
-                        if (!installmentsToUpdate.isEmpty()) {
-                            update installmentsToUpdate;
-                            System.debug('Updated installments: ' + installmentsToUpdate);
-                        }
+    //                     if (!installmentsToUpdate.isEmpty()) {
+    //                         update installmentsToUpdate;
+    //                         System.debug('Updated installments: ' + installmentsToUpdate);
+    //                     }
 
-                    } else {
-                        System.debug('Approval request submission failed.');
-                    }
-                } catch (Exception e) {
-                    System.debug('Exception when submitting for approval: ' + e.getMessage());
+    //                 } else {
+    //                     System.debug('Approval request submission failed.');
+    //                 }
+    //             } catch (Exception e) {
+    //                 System.debug('Exception when submitting for approval: ' + e.getMessage());
+    //             }
+    // }
+    public static void initiateApprovalProcess(Id paymentSchemeId, List<Payment_Scheme_Installment__c> installments) {
+        System.debug('paymentSchemeId ==> ' + paymentSchemeId);
+        System.debug('installments ==> ' + installments);
+        try {
+            if (paymentSchemeId == null) {
+                throw new AuraHandledException('Payment Scheme Id cannot be null.');
+            }
+            List<Payment_Scheme_Installment__c> installmentsToInsert = new List<Payment_Scheme_Installment__c>();
+            List<Payment_Scheme_Installment__c> installmentsToUpdate = new List<Payment_Scheme_Installment__c>();
+            for (Payment_Scheme_Installment__c installment : installments) {
+                if (installment == null) {
+                    throw new AuraHandledException('Installment cannot be null.');
                 }
+                installment.Payment_Scheme__c = paymentSchemeId;
+                System.debug('Installment ==> ' + installment );
+                System.debug('Installment Id ==> ' + installment.Id );
+                if (installment.Id == null) {
+                    installmentsToInsert.add(installment);
+                }
+                else {
+                    installmentsToUpdate.add(installment);
+                }
+            }
+            if (!installmentsToInsert.isEmpty()) {
+                insert installmentsToInsert;
+                System.debug('Inserted installments ==> ' + installmentsToInsert);
+            }
+
+            if (!installmentsToUpdate.isEmpty()) {
+                update installmentsToUpdate;
+                System.debug('Updated installments ==> ' + installmentsToUpdate);
+            }
+
+            // Payment_Scheme__c paymentScheme =
+            //     new Payment_Scheme__c(  Id = paymentSchemeId,
+            //         Approval_Status__c = 'Sent'
+            //     );
+
+            // update paymentScheme;
+
+            System.debug( 'Payment Scheme updated successfully ==> ' + paymentSchemeId );
+
+        } catch (Exception e) {
+            System.debug( 'Exception ==> ' + e.getMessage()   );
+            System.debug('Stack Trace ==> ' + e.getStackTraceString() );
+            throw new AuraHandledException('Unable to save Payment Scheme installments: ' + e.getMessage() );
+        }
     }
     
     
     public static void testData(){
         Integer i=0;
         i++;i++;
-         i++;i++;
-         i++;i++;
-         i++;i++; i++;i++;
-         i++;i++;
-         i++;i++;
-         i++;i++;
-         i++;i++;
-         i++;i++; i++;i++;
+        i++;i++;
+        i++;i++;
         i++;i++; i++;i++;
-         i++;i++;
-         i++;i++;
-         i++;i++;
-         i++;i++;
-         i++;i++; i++;i++;
+        i++;i++;
+        i++;i++;
+        i++;i++;
+        i++;i++;
+        i++;i++; i++;i++;
+        i++;i++; i++;i++;
+        i++;i++;
+        i++;i++;
+        i++;i++;
+        i++;i++;
+        i++;i++; i++;i++;
     }
 }

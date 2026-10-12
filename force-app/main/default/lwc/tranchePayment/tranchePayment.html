@@ -1,0 +1,43 @@
+<template>
+    <lightning-card title="Demand Letter Generation" icon-name="standard:opportunity">
+
+        <div class="table-container">
+            <div class="button-container">
+                <lightning-button label="Generate Demand Letter"  variant="brand"  onclick={handleGenerateDemandLetter} disabled={isGenerateDisabled}></lightning-button>
+            </div>
+            <table class="payment-table">
+                <thead>
+                    <tr>
+                        <th> <lightning-input type="checkbox" variant="label-hidden" checked={selectAll} onchange={handleSelectAll}></lightning-input></th>
+                        <th>Customer Name</th>
+                        <th>Unit</th>
+                        <th>Floor</th>
+                        <th>Block</th>
+                        <th>Total Due Amount</th>
+                        <th>Total Amount Inclusive Of Tax</th>
+                        <th>Action</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template for:each={paymentSchedules} for:item="row">
+                        <tr key={row.id}>
+                            <td><lightning-input type="checkbox" variant="label-hidden" data-id={row.id} checked={row.selected} onchange={handleRowSelection}></lightning-input> </td>
+                            <td>{row.customerName}</td>
+                            <td>{row.unitName}</td>
+                            <td>{row.floorName}</td>
+                            <td>{row.blockName}</td>
+                            <td>{row.totalDueAmount}</td>
+                            <td>{row.totalAmountInclusiveOfTax}</td>
+                            <td> <lightning-button label="View Demand Letter" variant="brand" data-id={row.id} onclick={handleViewDemandLetter}></lightning-button></td>
+                        </tr>
+                    </template>
+                </tbody>
+            </table>
+        </div>
+        <template if:true={noRecords}>
+            <div class="no-records">
+                No payment schedules found.
+            </div>
+        </template>
+    </lightning-card>
+</template>

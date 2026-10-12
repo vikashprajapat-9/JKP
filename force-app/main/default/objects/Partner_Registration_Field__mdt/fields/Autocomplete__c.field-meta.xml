@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Autocomplete__c</fullName>
+    <description>Browser autofill hint, for example name, email, tel, organization or street-address.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Browser autofill hint, for example name, email, tel, organization or street-address.</inlineHelpText>
+    <label>Autocomplete</label>
+    <length>40</length>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

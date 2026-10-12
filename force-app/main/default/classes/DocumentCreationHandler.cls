@@ -1,35 +1,75 @@
-public with sharing class DocumentCreationHandler {
+// Creates the Document records of new accounts, projects and opportunities. Without sharing because the OneDrive job
+// that calls it runs as whoever created the record, which can be a portal partner adding an executive: partners have
+// no sharing access to Document categories or to the new account, and the Documents would silently not be created.
+public without sharing class DocumentCreationHandler {
+
+    // Record types (lower case) whose records get Documents: those a Document Master with categories names in its
+    // Record Type, for example "Channel partner" for Channel Partner accounts
+    public static Set<String> recordTypesWithDocuments() {
+        Set<String> names = new Set<String>();
+        for (Document_Category__c category : new Categories().withRecordType()) {
+            names.add(category.Document_Master__r.Record_Type__c.toLowerCase());
+        }
+        return names;
+    }
+
+    // The categories, by name, of the Document Master for this record type (in any capitalisation)
+    public static List<Document_Category__c> categoriesForRecordType(String recordTypeName) {
+        List<Document_Category__c> categories = new List<Document_Category__c>();
+        if (String.isBlank(recordTypeName)) {
+            return categories;
+        }
+        for (Document_Category__c category : new Categories().withRecordType()) {
+            if (category.Document_Master__r.Record_Type__c.equalsIgnoreCase(recordTypeName.trim())) {
+                categories.add(category);
+            }
+        }
+        return categories;
+    }
+
+    // Reads every category whoever runs it: the Partner Portal's guest user registers channel partners but has no
+    // sharing access to Document categories
+    private without sharing class Categories {
+        List<Document_Category__c> withRecordType() {
+            return [
+                SELECT Id, Name, Document_Master__r.Record_Type__c
+                FROM Document_Category__c
+                WHERE Document_Master__r.Record_Type__c != null
+                WITH SYSTEM_MODE
+                ORDER BY Name
+            ];
+        }
+    }
+
     public void CreateDocuments(List<SObject> sObjectList){
         try {
             System.debug('sObjectList==>'+sObjectList); 
             List<Document__c> documentsToInsert = new List<Document__c>();
             List<String> docIds = new List<String>();
             Map<String,List<Document_Category__c>> getAllData = new Map<String,List<Document_Category__c>>();
-            List<Document_Category__c> getAllDocumentCategorys  = [SELECT Id, Name, Document_Master__r.Name, Document_Master__c, Document_Master__r.Record_Type__c FROM Document_Category__c WITH SYSTEM_MODE ORDER BY Name];
+            // Categories left without a master (it was deleted) are skipped
+            List<Document_Category__c> getAllDocumentCategorys  = [SELECT Id, Name, Document_Master__r.Name, Document_Master__c, Document_Master__r.Record_Type__c FROM Document_Category__c WHERE Document_Master__c != null WITH SYSTEM_MODE ORDER BY Name];
             for(Document_Category__c docCat : getAllDocumentCategorys){
-                String docMasterName = docCat.Document_Master__r.Name;
-                String docMasterRecordType = docCat.Document_Master__r.Record_Type__c;
-                if(docMasterRecordType != null && !getAllData.containsKey(docMasterRecordType)) {
-                    getAllData.put(docMasterRecordType, new List<Document_Category__c>());
+                // Keyed by the master's Record Type when it has one, otherwise by its Name - in lower case, because the
+                // Record Type picklist ("Channel partner") need not match the record type's own name ("Channel Partner")
+                String key = (docCat.Document_Master__r.Record_Type__c != null
+                    ? docCat.Document_Master__r.Record_Type__c
+                    : docCat.Document_Master__r.Name).toLowerCase();
+                if(!getAllData.containsKey(key)) {
+                    getAllData.put(key, new List<Document_Category__c>());
                 }
-                else if(docMasterRecordType == null && !getAllData.containsKey(docMasterName)) {
-                    getAllData.put(docMasterName, new List<Document_Category__c>());
-                }
-                if(docMasterRecordType != null && getAllData.get(docMasterRecordType) != null) {
-                    getAllData.get(docMasterRecordType).add(docCat);
-                }
-                else if(docMasterRecordType == null && getAllData.get(docMasterName) != null){
-                    getAllData.get(docMasterName).add(docCat);
-                }
+                getAllData.get(key).add(docCat);
             }
             System.debug('getAllData==>'+getAllData);
             
             for (SObject record : sObjectList){
                 String recordName = record.getSObjectType().getDescribe().getLabel(); 
                 System.debug('recordName==>'+recordName);
-                if (getAllData.containsKey(recordName)){
+                // Accounts take their categories from a master that names their record type (the branch below); a master
+                // named "Account" without a Record Type is not used for them
+                if (recordName != 'Account' && getAllData.containsKey(recordName.toLowerCase())){
                     System.debug('Inside if condition in DocumentCreationHandler');
-                    List<Document_Category__c> relatedCategories = getAllData.get(recordName);          
+                    List<Document_Category__c> relatedCategories = getAllData.get(recordName.toLowerCase());
                     for (Document_Category__c category : relatedCategories) {
                         Document__c newDoc = new Document__c();
                         newDoc.Name = category.Name;
@@ -52,7 +92,7 @@ public with sharing class DocumentCreationHandler {
                 else if(recordName == 'Account'){
                     Account acc = (Account) record;
                     Account acc1 = [SELECT Id,Name, RecordTypeId FROM Account WHERE Id = :acc.Id WITH SYSTEM_MODE LIMIT 1];
-                    String recordType = Schema.SObjectType.Account.getRecordTypeInfosById().get(acc1.RecordTypeId).getName();
+                    String recordType = Schema.SObjectType.Account.getRecordTypeInfosById().get(acc1.RecordTypeId).getName().toLowerCase();
                     System.debug('recordType==>'+recordType);
                     if (getAllData.containsKey(recordType)){
                         List<Document_Category__c> relatedCategories = getAllData.get(recordType);
@@ -72,8 +112,8 @@ public with sharing class DocumentCreationHandler {
                     newDoc.Project__c = record.Id;  
                     documentsToInsert.add(newDoc);
                      // ---- ADDED: also create documents from Document Category records for Project ----
-                    if (getAllData.containsKey('Project')) {
-                        List<Document_Category__c> relatedCategories = getAllData.get('Project');
+                    if (getAllData.containsKey('project')) {
+                        List<Document_Category__c> relatedCategories = getAllData.get('project');
                         for (Document_Category__c category : relatedCategories) {
                             Document__c catDoc = new Document__c();
                             catDoc.Name = category.Name;

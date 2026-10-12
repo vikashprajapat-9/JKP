@@ -4,7 +4,6 @@
     <columns>NAME</columns>
     <columns>Active__c</columns>
     <columns>Project__c</columns>
-    <columns>Pricing_Element_Master__c</columns>
     <filterScope>Everything</filterScope>
     <filters>
         <field>Project__c</field>

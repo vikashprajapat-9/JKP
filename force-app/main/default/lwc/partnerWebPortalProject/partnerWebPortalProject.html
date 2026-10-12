@@ -1,6 +1,6 @@
 <template>
     <template lwc:if={selectedProject}>
-        <c-partner-web-portal-project-detail project={selectedProject} onback={handleBackToList}>
+        <c-partner-web-portal-project-detail portal={portal} project={selectedProject} onback={handleBackToList}>
         </c-partner-web-portal-project-detail>
     </template>
 
@@ -9,7 +9,8 @@
         <!-- HEADER -->
         <header class="page-header">
             <h1 class="page-title">Projects</h1>
-            <p class="page-subtitle">
+            <p class="page-subtitle" lwc:if={subtitle}>{subtitle}</p>
+            <p class="page-subtitle" lwc:else>
                 Explore our exclusive project listings tailored for our channel partners.
                 You can access detailed information on each project. Stay informed and
                 provide your clients with the best options using the comprehensive
@@ -28,7 +29,11 @@
         <template lwc:if={hasProjects}>
             <div class="card-grid">
                 <template for:each={projects} for:item="project">
-                    <article key={project.id} class="project-card">
+                    <article key={project.id}
+                             class="project-card"
+                             data-id={project.id}
+                             onmouseenter={handleCardEnter}
+                             onmouseleave={handleCardLeave}>
 
                         <!-- MEDIA -->
                         <div class="carousel">

@@ -182,6 +182,13 @@ button {
     background: var(--jk-tint);
 }
 
+/* Nothing to export */
+.btn-export:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: #fff;
+}
+
 /* ---------- Filter chips ---------- */
 .filter-tabs {
     display: flex;
@@ -266,6 +273,10 @@ button {
     width: 56px;
 }
 
+.visits-table .col-date {
+    white-space: nowrap;
+}
+
 .visits-table .col-status {
     text-align: center;
     width: 120px;
@@ -300,6 +311,12 @@ button {
 .badge-scheduled {
     background: var(--jk-badge-scheduled);
     color: var(--jk-badge-scheduled-text);
+}
+
+.badge-requested {
+    background: #fff4d6;
+    color: #8a5a00;
+    box-shadow: inset 0 0 0 1px #f5c26b;
 }
 
 .badge-incomplete {
@@ -492,8 +509,26 @@ button {
     color: var(--jk-text);
 }
 
+/* Required fields carry a red star (the abbr reads "required" to screen readers) */
 .required-star {
+    border: 0;
     color: var(--jk-badge-cancelled);
+    text-decoration: none;
+    cursor: default;
+}
+
+/* A required field that is missing or wrong */
+.field-error {
+    display: block;
+    margin-top: 8px;
+    font-size: 13px;
+    color: var(--jk-badge-cancelled);
+}
+
+.form-control.invalid,
+.time-picker-box.invalid {
+    border-color: var(--jk-badge-cancelled);
+    box-shadow: 0 0 0 1px var(--jk-badge-cancelled);
 }
 
 .field-subtext {
@@ -549,6 +584,29 @@ button {
     border-bottom: 2px solid var(--jk-text);
     transform: rotate(45deg);
     pointer-events: none;
+}
+
+/* The chosen lead's project: shown like the other fields, read-only, with a lock */
+.readonly-wrap {
+    position: relative;
+}
+
+.form-control-readonly {
+    padding-right: 44px;
+    background: var(--jk-tint);
+    font-weight: 500;
+    color: var(--jk-text-strong);
+    text-overflow: ellipsis;
+    cursor: default;
+}
+
+.readonly-icon {
+    position: absolute;
+    right: 18px;
+    top: 50%;
+    transform: translateY(-50%);
+    pointer-events: none;
+    --slds-c-icon-color-foreground-default: var(--jk-text-muted);
 }
 
 input[type='date'].form-control {
@@ -822,4 +880,15 @@ input[type='date'].form-control::-webkit-calendar-picker-indicator {
     .btn-confirm {
         width: 100%;
     }
+}
+
+/* A missing or wrong field stays red while it has the cursor (after the :focus rules above) */
+.form-control.invalid:focus,
+.time-picker-box.invalid:focus-within {
+    border-color: var(--jk-badge-cancelled);
+    box-shadow: 0 0 0 1px var(--jk-badge-cancelled);
+}
+
+.time-num-input::placeholder {
+    color: var(--jk-placeholder);
 }

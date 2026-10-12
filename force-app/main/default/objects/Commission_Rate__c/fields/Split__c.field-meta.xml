@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Split__c</fullName>
+    <description>How the designation is paid (copied from the designation when saved): Shared, Own or Single.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Shared = on the shared payout stages. Own = on its own payout stages. Single = once, on a fixed event.</inlineHelpText>
+    <label>Split</label>
+    <length>20</length>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

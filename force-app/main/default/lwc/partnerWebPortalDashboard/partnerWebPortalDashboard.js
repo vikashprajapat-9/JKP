@@ -1,13 +1,29 @@
 import { LightningElement, wire } from 'lwc';
-import getTotalLead from '@salesforce/apex/PartnerPortalDashboard.getLeaddetail';
-import getTotalVisit from '@salesforce/apex/PartnerPortalDashboard.getSitedetail';
+import getDashboard from '@salesforce/apex/PartnerPortalDashboard.getDashboard';
 import getCurrentUser from '@salesforce/apex/PartnerPortalDashboard.getCurrentUser';
 
+const NO_VALUE = '–';
+const LOAD_ERROR = 'Your dashboard could not be loaded right now. Please try again.';
+
 export default class PartnerWebPortalDashboard extends LightningElement {
-    leadcount = '';
-    visitcount = '';
+    // The team's figures (the partner's and their executives'), or null until they arrive
+    figures = null;
     error;
     userName = '';
+
+    connectedCallback() {
+        this.loadFigures();
+    }
+
+    async loadFigures() {
+        try {
+            this.figures = await getDashboard();
+            this.error = undefined;
+        } catch (e) {
+            this.figures = null;
+            this.error = (e && e.body && e.body.message) || LOAD_ERROR;
+        }
+    }
 
     // ================= PRESENTATION =================
     get greeting() {
@@ -44,50 +60,43 @@ export default class PartnerWebPortalDashboard extends LightningElement {
     }
 
     get kpis() {
+        const f = this.figures;
+        const number = value => (f ? String(Number(value) || 0) : NO_VALUE);
         return [
-            { key: 'leads', label: 'Total Leads', value: this.leadcount, icon: 'utility:groups' },
-            { key: 'pipeline', label: 'Active Pipeline', value: '38', icon: 'utility:activity' },
-            { key: 'visits', label: 'Site Visits', value: this.visitcount, icon: 'utility:location' },
-            { key: 'bookings', label: 'Bookings', value: '07', icon: 'utility:ribbon' },
-            { key: 'sales', label: 'Sales', value: '21', icon: 'utility:chart' },
+            { key: 'leads', label: 'Total Leads', value: number(f && f.totalLeads), icon: 'utility:groups' },
+            { key: 'pipeline', label: 'Active Pipeline', value: number(f && f.activePipeline), icon: 'utility:activity' },
+            { key: 'visits', label: 'Site Visits', value: number(f && f.siteVisits), icon: 'utility:location' },
+            { key: 'bookings', label: 'Bookings', value: number(f && f.bookings), icon: 'utility:ribbon' },
+            { key: 'sales', label: 'Sales', value: number(f && f.sales), icon: 'utility:chart' },
             {
                 key: 'conversion',
                 label: 'Conversion rate (site visits to sales)',
-                value: '78%',
+                value: f ? (Number(f.conversionRate) || 0) + '%' : NO_VALUE,
                 icon: 'utility:trending'
             },
             {
                 key: 'revenue',
                 label: 'Total sales revenue generated',
-                value: 'LKR 5,000',
+                value: f ? this.money(f.salesRevenue, f.currencyCode) : NO_VALUE,
                 icon: 'utility:currency'
             },
-            { key: 'commission', label: 'Commission income', value: 'LKR 12,000', icon: 'utility:moneybag' }
-        ];
+            {
+                key: 'commission',
+                label: 'Commission income',
+                value: 'Development in progress',
+                icon: 'utility:moneybag',
+                valueClass: 'kpi-value kpi-value_note'
+            }
+        ].map(kpi => ({ valueClass: 'kpi-value', ...kpi }));
+    }
+
+    // For example "LKR 1,250,000"
+    money(amount, currencyCode) {
+        const whole = new Intl.NumberFormat('en-US', { maximumFractionDigits: 0 }).format(Number(amount) || 0);
+        return (currencyCode ? currencyCode + ' ' : '') + whole;
     }
 
     // ================= WIRES =================
-    @wire(getTotalLead)
-    wiredLead({ data, error }) {
-        if (data) {
-            this.leadcount = data;
-            this.error = undefined;
-        } else if (error) {
-            this.error = error;
-            this.leadcount = undefined;
-        }
-    }
-
-    @wire(getTotalVisit)
-    wiredVisit({ data, error }) {
-        if (data) {
-            this.visitcount = data;
-            this.error = undefined;
-        } else if (error) {
-            this.error = error;
-            this.visitcount = undefined;
-        }
-    }
 
     @wire(getCurrentUser)
     wireduser({ data }) {

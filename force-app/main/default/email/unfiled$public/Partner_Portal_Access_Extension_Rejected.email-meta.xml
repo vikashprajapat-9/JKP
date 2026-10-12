@@ -1,0 +1,20 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<EmailTemplate xmlns="http://soap.sforce.com/2006/04/metadata">
+    <available>true</available>
+    <description>Sent to a channel partner when its access extension is rejected (Partner Portal Setting: Extension Rejected Email Template).</description>
+    <encodingKey>UTF-8</encodingKey>
+    <name>Partner Portal Access Extension Rejected</name>
+    <style>none</style>
+    <subject>Your John Keells Properties Partner Portal access extension</subject>
+    <textOnly>Dear {!Contact.Name},
+
+Your request to extend the Partner Portal access of {!Account.Name} was not approved.
+
+QUESTIONS?
+If you have any questions, please contact the JKP CP team.
+
+Thanks,
+John Keells Properties</textOnly>
+    <type>custom</type>
+    <uiType>Aloha</uiType>
+</EmailTemplate>

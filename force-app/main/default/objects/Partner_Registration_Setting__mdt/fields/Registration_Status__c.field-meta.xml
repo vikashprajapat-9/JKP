@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Registration_Status__c</fullName>
+    <description>Onboarding Status given to new registrations. The login page shows Registration Under Review to partners whose account has this status.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Onboarding Status given to new registrations. The login page shows Registration Under Review to partners whose account has this status.</inlineHelpText>
+    <label>Registration Status</label>
+    <length>80</length>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

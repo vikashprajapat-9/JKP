@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Hand_Over_Email_Template__c</fullName>
+    <description>Developer name of the Lead email template sent to the JKP CP Executive and CP Manager when a channel partner lead is handed over. Blank: no email (the task is still created).</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Developer name of the Lead email template sent to the JKP CP Executive and CP Manager when a channel partner lead is handed over. Blank: no email (the task is still created).</inlineHelpText>
+    <label>Hand Over Email Template</label>
+    <length>80</length>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

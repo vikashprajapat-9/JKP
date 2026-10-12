@@ -154,8 +154,9 @@
     <externalSharingModel>Private</externalSharingModel>
     <label>Amenties</label>
     <nameField>
-        <label>Amenties Name</label>
-        <type>Text</type>
+        <displayFormat>AM-{0000}</displayFormat>
+        <label>Amenity Number</label>
+        <type>AutoNumber</type>
     </nameField>
     <pluralLabel>Amenties</pluralLabel>
     <searchLayouts></searchLayouts>

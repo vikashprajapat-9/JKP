@@ -325,3 +325,33 @@ input {
         grid-template-columns: 1fr;
     }
 }
+
+/* Same look as the Leads page's error banner */
+.form-error {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    padding: 12px 16px;
+    margin-top: 20px;
+    border-radius: var(--jk-radius);
+    background: #fdecea;
+    border: 1px solid #f5c2bd;
+    color: #8c1d18;
+    font-size: 14px;
+    --slds-c-icon-color-foreground-default: #d93025;
+}
+
+/* Required fields carry a red star, as on the registration form (the abbr reads "required" to screen readers) */
+.required-mark {
+    margin-left: 3px;
+    border: 0;
+    color: var(--jk-badge-cancelled);
+    font-weight: 600;
+    text-decoration: none;
+    cursor: default;
+}
+
+.project-error {
+    display: block;
+    margin-top: 10px;
+}

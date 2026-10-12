@@ -48,7 +48,7 @@
             <value>
                 <fullName>open</fullName>
                 <default>false</default>
-                <label>open</label>
+                <label>Open</label>
             </value>
         </valueSetDefinition>
     </valueSet>

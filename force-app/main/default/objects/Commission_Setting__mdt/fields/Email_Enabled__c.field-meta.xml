@@ -1,0 +1,10 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Email_Enabled__c</fullName>
+    <defaultValue>false</defaultValue>
+    <description>Also send every notification as an email. Bell notifications are always sent.</description>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Also send every notification as an email. Bell notifications are always sent.</inlineHelpText>
+    <label>Email Enabled</label>
+    <type>Checkbox</type>
+</CustomField>

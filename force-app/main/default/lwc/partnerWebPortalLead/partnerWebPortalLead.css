@@ -138,6 +138,13 @@ textarea {
     background: var(--jk-tint);
 }
 
+/* Nothing to export */
+.btn-export:disabled {
+    opacity: 0.5;
+    cursor: not-allowed;
+    background: #fff;
+}
+
 /* ============================ FILTER CHIPS ============================ */
 .filter-tabs {
     display: flex;
@@ -229,10 +236,23 @@ textarea {
     width: 32px;
 }
 
+/* With the Project Name column the table is wider than a laptop screen when every title and name stays on one line:
+   the titles and the three names take a second line first, and the table scrolls sideways only after that */
+.leads-table thead th {
+    white-space: normal;
+}
+
+.leads-table tbody td.col-name {
+    min-width: 96px;
+    padding-top: 6px;
+    padding-bottom: 6px;
+    line-height: 20px;
+    white-space: normal;
+}
+
+/* The Lead No. is what a partner quotes and searches by: always in full, on one line */
 .leads-table .col-leadno {
-    max-width: 150px;
-    overflow: hidden;
-    text-overflow: ellipsis;
+    white-space: nowrap;
 }
 
 .leads-table tbody tr:hover td {
@@ -271,6 +291,7 @@ textarea {
 .badge-scheduled { background: var(--jk-badge-scheduled); color: var(--jk-badge-scheduled-text); }
 .badge-cancelled { background: var(--jk-badge-cancelled); color: #fff; }
 .badge-neutral   { background: var(--jk-divider); color: var(--jk-text); }
+.badge-pending   { background: #fff7e6; color: #8a5a00; box-shadow: inset 0 0 0 1px #f5c26b; }
 
 /* ============================ PAGINATION ============================ */
 .pagination {
@@ -343,6 +364,97 @@ textarea {
     color: #fff;
 }
 
+/* ============================ ROW ACTIONS ============================ */
+.leads-table .col-actions {
+    width: 1%;
+    white-space: nowrap;
+    text-align: center;
+}
+
+.row-edit-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 34px;
+    padding: 0 14px;
+    border: 1px solid var(--jk-navy);
+    border-radius: 999px;
+    background: #fff;
+    color: var(--jk-navy);
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.row-edit-btn:hover {
+    background: var(--jk-navy);
+    color: #fff;
+}
+
+.row-edit-btn:focus-visible {
+    outline: 2px solid var(--jk-gold);
+    outline-offset: 2px;
+}
+
+.row-actions {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.row-docs-btn {
+    display: inline-flex;
+    align-items: center;
+    gap: 6px;
+    height: 34px;
+    padding: 0 14px;
+    border: 1px solid var(--jk-gold, #b8860b);
+    border-radius: 999px;
+    background: #fff;
+    color: #7a5a00;
+    font: inherit;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    transition: background 0.15s ease, color 0.15s ease;
+}
+
+.row-docs-btn:hover {
+    background: #fff7e6;
+}
+
+.row-docs-btn:focus-visible {
+    outline: 2px solid var(--jk-gold);
+    outline-offset: 2px;
+}
+
+.row-locked {
+    display: inline-flex;
+    align-items: center;
+    gap: 5px;
+    padding: 6px 10px;
+    border: none;
+    border-radius: 999px;
+    background: var(--jk-divider);
+    color: var(--jk-text-muted);
+    font: inherit;
+    font-size: 12px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.row-locked:hover {
+    color: var(--jk-text);
+}
+
+.row-locked:focus-visible {
+    outline: 2px solid var(--jk-gold);
+    outline-offset: 2px;
+}
+
 /* ============================ SUCCESS MODAL ============================ */
 .modal-backdrop {
     position: fixed;
@@ -398,6 +510,19 @@ textarea {
     font-size: 14px;
     line-height: 20px;
     color: var(--jk-text);
+}
+
+/* The channel partner lead rules' notice under the confirmation (another CP has the customer) */
+.modal-notice {
+    margin: 12px 0;
+    padding: 12px 14px;
+    border-radius: 8px;
+    background: #fff7e6;
+    border: 1px solid #f5c26b;
+    color: #7a4b00;
+    font-size: 14px;
+    line-height: 20px;
+    text-align: left;
 }
 
 .modal-subtext {
@@ -635,11 +760,23 @@ textarea {
     font-size: 14px;
 }
 
+.info-banner {
+    background: #e8f5e9;
+    border: 1px solid #b7dfb9;
+    color: #1e5e22;
+    --slds-c-icon-color-foreground-default: #238723;
+}
+
 .error-banner {
     background: #fdecea;
     border: 1px solid #f5c2bd;
     color: #8c1d18;
     --slds-c-icon-color-foreground-default: #d93025;
+}
+
+/* Focused by the page to bring it into view; the red banner itself shows where it is */
+.error-banner:focus {
+    outline: none;
 }
 
 .alert-text {
@@ -662,6 +799,11 @@ textarea {
 
 /* ============================ RESPONSIVE ============================ */
 @media (max-width: 768px) {
+    /* On a phone the table scrolls sideways anyway: the names keep room for two lines instead of a word per line */
+    .leads-table tbody td.col-name {
+        min-width: 150px;
+    }
+
     .two-col {
         grid-template-columns: 1fr;
     }

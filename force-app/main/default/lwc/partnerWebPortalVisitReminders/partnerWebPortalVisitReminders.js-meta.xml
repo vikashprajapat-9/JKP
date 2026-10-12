@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>64.0</apiVersion>
+    <isExposed>false</isExposed>
+    <description>Site Visit Reminders of the Partner Portal: today's, tomorrow's and not updated visits, on the Home page and in the bell.</description>
+</LightningComponentBundle>
