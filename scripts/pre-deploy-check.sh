@@ -42,16 +42,28 @@ check_references() {
     # CustomTabs referenced by CustomApplications
     if [ -d "${SOURCE_DIR}/applications" ]; then
         local tabs
-        tabs=$(grep -ho '<tab>[^<]*</tab>' "${SOURCE_DIR}/applications"/*.app-meta.xml 2>/dev/null \
-            | sed 's|<tab>||; s|</tab>||' | sort -u)
+        # Extract both <tab> and <tabs> entries from application definitions
+        tabs=$(grep -hoE '<(tab|tabs)>[^<]*</(tab|tabs)>' "${SOURCE_DIR}/applications"/*.app-meta.xml 2>/dev/null \
+            | sed -E 's|<tabs?>||; s|</tabs?>||' | sort -u)
 
+        local missing_tabs=0
         for tab in $tabs; do
+            # Standard Salesforce tabs (e.g. standard-Account, standard-home, standard-report)
+            # are built into Salesforce and do not have local .tab-meta.xml files.
+            case "$tab" in
+                standard-*)
+                    continue
+                    ;;
+            esac
+
+            # Custom tabs must have a corresponding local .tab-meta.xml file
             if [ ! -f "${SOURCE_DIR}/tabs/${tab}.tab-meta.xml" ]; then
-                fail "CustomApplication references tab '${tab}' but ${SOURCE_DIR}/tabs/${tab}.tab-meta.xml is missing."
+                fail "CustomApplication references custom tab '${tab}' but ${SOURCE_DIR}/tabs/${tab}.tab-meta.xml is missing."
                 echo "         Fix: sf project retrieve start --metadata CustomTab:${tab} --target-org <source-org>"
+                missing_tabs=1
             fi
         done
-        [ -n "$tabs" ] && pass "Application tab references resolved"
+        [ "$missing_tabs" -eq 0 ] && [ -n "$tabs" ] && pass "Application tab references resolved"
     fi
 
     # CustomFields referenced by Profiles
@@ -170,13 +182,13 @@ check_approval_users() {
         return
     fi
 
-    echo "  Approval processes hard-code these users:"
+    echo "  [NOTICE] Approval processes reference the following user email(s):"
     for u in $users; do
         echo "         - ${u}"
     done
-    echo "  These must exist as active users in the TARGET org or the deploy fails."
-    echo "  If one is missing, update the .approvalProcess-meta.xml to a user that exists."
-    pass "Approver list reported for manual verification against the target org"
+    echo "  Manual verification notice: Confirm these users exist as active users in the TARGET org."
+    echo "  If a user is absent in the target org, update the approver/submitter in the .approvalProcess-meta.xml."
+    pass "Approval process users surfaced for target-org verification (advisory notice, not failed)"
 }
 
 # ---------------------------------------------------------------------------
@@ -207,8 +219,11 @@ check_secrets() {
                 if echo "$b" | grep -qE '<field>[A-Za-z0-9_]*(ClientSecret|Secret|ApiKey|Password|AccessToken|PrivateKey)[A-Za-z0-9_]*</field>'; then
                     # A value is safe only if empty or explicitly nil.
                     if ! echo "$b" | grep -qE '<value[^>]*>[[:space:]]*</value>|nil="true"'; then
-                        fail "Possible secret in $(basename "$f") -- a credential field has a non-empty value."
-                        echo "         Blank the value and add the file to .forceignore, then rotate the credential."
+                        local fld_name
+                        fld_name=$(echo "$b" | grep -oE '<field>[^<]+</field>' | sed -E 's|<field>||; s|</field>||')
+                        fail "Possible secret in $(basename "$f") -- credential field '${fld_name}' has a non-empty value."
+                        echo "         Do not commit credentials to Git. Add this file to .forceignore and .sgdignore,"
+                        echo "         populate credentials directly in the target org, and rotate any previously exposed secret."
                         found=1
                     fi
                 fi
