@@ -1,0 +1,55 @@
+<template>
+    <aside id="portalSidebar" class={sidebarClass} aria-label={labels.menu}>
+        <div class="sidebar-logo">
+            <img src={logoUrl} alt={labels.logoAlt} class="logo-image" width="135" height="32" />
+
+            <!-- Mobile only: closes the drawer (the header's menu button opens it) -->
+            <button
+                type="button"
+                class="menu-toggle"
+                onclick={handleToggleClick}
+                aria-label={toggleAriaLabel}
+                aria-expanded={ariaExpanded}
+                aria-controls="portalSidebar"
+            >
+                <span class={bar1Class}></span>
+                <span class={bar2Class}></span>
+                <span class={bar3Class}></span>
+            </button>
+        </div>
+
+        <nav class="sidebar-nav" aria-label={labels.menu}>
+            <ul class="menu-list">
+                <template for:each={menuItemsToRender} for:item="item">
+                    <li key={item.value} class="menu-entry">
+                        <button
+                            type="button"
+                            class={item.itemClass}
+                            data-value={item.value}
+                            aria-current={item.ariaCurrent}
+                            onclick={handleItemClick}
+                        >
+                            <span class="menu-icon" aria-hidden="true">
+                                <template lwc:if={item.hasSvg}>
+                                    <svg viewBox="0 0 20 20" width="20" height="20" focusable="false">
+                                        <template for:each={item.paths} for:item="path">
+                                            <path key={path.key} d={path.d} fill-rule={path.rule}></path>
+                                        </template>
+                                    </svg>
+                                </template>
+                                <template lwc:else>
+                                    <lightning-icon icon-name={item.icon} size="x-small"></lightning-icon>
+                                </template>
+                            </span>
+                            <span class="menu-label">{item.label}</span>
+                        </button>
+                    </li>
+                </template>
+            </ul>
+        </nav>
+    </aside>
+
+    <template lwc:if={isMobileMenuOpen}>
+        <div class="sidebar-backdrop" onclick={closeMobileMenu}></div>
+    </template>
+</template>

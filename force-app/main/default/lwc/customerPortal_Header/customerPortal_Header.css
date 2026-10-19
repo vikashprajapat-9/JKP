@@ -1,0 +1,365 @@
+@import 'c/customerPortalStyles';
+
+/* Figma p7: white 83px header with a soft bottom shadow; bell (26px) and 50px round avatar on the right, both centred
+   24px + 25px from the top, 64px from the right edge. z-index 3 keeps the shadow above the scrolling page and is
+   higher than the sidebar's 2, so the notification panel (fixed, inside this header) also covers the sidebar. */
+:host {
+    position: relative;
+    z-index: 3;
+    display: block;
+    flex-shrink: 0;
+}
+
+.portal-header {
+    position: relative;
+    display: flex;
+    align-items: flex-start;
+    height: 83px;
+    padding: 24px 64px 0 24px;
+    background: var(--cp-surface);
+    box-shadow: var(--cp-shadow-header);
+    font-family: var(--cp-font);
+}
+
+.hamburger-btn {
+    display: none;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    margin: 0;
+    padding: 0;
+    border: 1px solid var(--cp-line);
+    border-radius: var(--cp-radius-sm);
+    background: var(--cp-surface);
+    color: var(--cp-navy);
+    cursor: pointer;
+}
+
+.hamburger-btn svg {
+    width: 22px;
+    height: 22px;
+    fill: currentColor;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 19px;
+    height: 50px;
+    margin-left: auto;
+}
+
+.bell-btn {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    color: #000000;
+    cursor: pointer;
+}
+
+.bell-icon {
+    display: block;
+    width: 26px;
+    height: 27px;
+    fill: currentColor;
+}
+
+.notification-badge {
+    position: absolute;
+    top: -3px;
+    right: -5px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border: 2px solid var(--cp-surface);
+    border-radius: 9px;
+    background: var(--cp-red);
+    color: #ffffff;
+    font-size: 10px;
+    line-height: 14px;
+    font-weight: 600;
+    text-align: center;
+}
+
+.user-profile {
+    display: block;
+    flex: 0 0 auto;
+    width: 50px;
+    height: 50px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.1);
+    overflow: hidden;
+    cursor: pointer;
+    transition: box-shadow 0.15s ease-in-out, transform 0.1s ease-in-out;
+}
+
+.user-profile:hover {
+    box-shadow: 0 0 0 3px var(--cp-tint);
+}
+
+.user-profile:active {
+    transform: scale(0.97);
+}
+
+.bell-btn:focus-visible,
+.user-profile:focus-visible,
+.hamburger-btn:focus-visible {
+    outline: 2px solid var(--cp-navy);
+    outline-offset: 2px;
+}
+
+.avatar-image {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    object-fit: cover;
+}
+
+/* ============== Notifications panel (Figma p6): 622px, docked right, rounded left corners ============== */
+.np-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9500;
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.np-panel {
+    position: fixed;
+    top: 0;
+    right: 0;
+    bottom: 0;
+    z-index: 9501;
+    display: flex;
+    flex-direction: column;
+    width: 622px;
+    max-width: 100vw;
+    border-radius: 12px 0 0 12px;
+    background: var(--cp-surface);
+    box-shadow: -8px 0 24px rgba(0, 0, 0, 0.12);
+    font-family: var(--cp-font);
+    color: var(--cp-ink);
+    animation: np-slide-in 0.2s ease-out;
+}
+
+.np-head {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    padding: 20px 24px 0;
+}
+
+.np-title {
+    margin: 0;
+    font-size: 32px;
+    line-height: 40px;
+    font-weight: 600;
+    color: var(--cp-title-brand);
+}
+
+.np-close {
+    margin-top: 8px; /* X centred 44px from the top and 29px from the right edge, as in Figma p6 */
+}
+
+.np-body {
+    flex: 1 1 auto;
+    min-height: 0;
+    padding: 0 24px 24px;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.np-group {
+    margin-top: 22px;
+}
+
+.np-group + .np-group {
+    margin-top: 18px;
+}
+
+.np-group-title {
+    margin: 0 0 14px;
+    font-size: 20px;
+    line-height: 24px;
+    font-weight: 500;
+    color: var(--cp-ink);
+}
+
+.np-list {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.np-card {
+    display: flex;
+    align-items: flex-start;
+    gap: 20px;
+    padding: 14px 16px 16px;
+    border-radius: var(--cp-radius);
+    background: var(--cp-surface);
+    box-shadow: var(--cp-shadow);
+}
+
+.np-icon {
+    display: block;
+    flex: 0 0 auto;
+    width: 32px;
+    height: 32px;
+    margin-top: 4px;
+}
+
+.np-icon svg {
+    display: block;
+    width: 32px;
+    height: 32px;
+}
+
+.np-icon-circle {
+    fill: var(--cp-navy);
+}
+
+.np-icon-bell {
+    fill: #ffffff;
+}
+
+.np-text {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.np-card-title {
+    margin: 0;
+    font-size: 20px;
+    line-height: 24px;
+    font-weight: 500;
+    color: #000000;
+    overflow-wrap: anywhere;
+}
+
+.np-card-message {
+    margin: 8px 0 0;
+    font-size: 16px;
+    line-height: 20px;
+    color: var(--cp-ink-soft);
+    overflow-wrap: anywhere;
+}
+
+.np-card-time {
+    margin: 7px 0 0;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--cp-muted);
+}
+
+.np-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 72px 16px;
+    text-align: center;
+}
+
+.np-empty-icon {
+    display: block;
+    width: 48px;
+    height: 48px;
+}
+
+.np-empty-text {
+    margin: 16px 0 0;
+    font-size: 16px;
+    line-height: 24px;
+    color: var(--cp-muted);
+}
+
+@keyframes np-slide-in {
+    from {
+        opacity: 0;
+        transform: translateX(32px);
+    }
+    to {
+        opacity: 1;
+        transform: translateX(0);
+    }
+}
+
+/* Phones: compact header with the menu button; panel takes the full width */
+@media (max-width: 768px) {
+    .portal-header {
+        align-items: center;
+        height: 64px;
+        padding: 0 16px;
+    }
+
+    .hamburger-btn {
+        display: inline-flex;
+    }
+
+    .header-actions {
+        gap: 12px;
+        height: auto;
+    }
+
+    .user-profile {
+        width: 40px;
+        height: 40px;
+    }
+
+    .np-panel {
+        width: 100vw;
+        border-radius: 0;
+    }
+
+    .np-head {
+        padding: 16px 16px 0;
+    }
+
+    .np-title {
+        font-size: 24px;
+        line-height: 32px;
+    }
+
+    .np-body {
+        padding: 0 16px 16px;
+    }
+
+    .np-card {
+        gap: 12px;
+        padding: 12px;
+    }
+
+    .np-card-title {
+        font-size: 16px;
+        line-height: 20px;
+    }
+
+    .np-card-message {
+        font-size: 14px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .np-panel {
+        animation: none;
+    }
+
+    .user-profile {
+        transition: none;
+    }
+}

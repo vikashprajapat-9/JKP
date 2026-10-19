@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Rejected_Status__c</fullName>
+    <description>Onboarding Status of rejected registrations. Their email may register again: the new registration is saved and goes to approval. Blank: an email used by any earlier registration cannot register again.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Onboarding Status of rejected registrations; their email may register again for a new approval. Blank: it cannot.</inlineHelpText>
+    <label>Rejected Status</label>
+    <length>80</length>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

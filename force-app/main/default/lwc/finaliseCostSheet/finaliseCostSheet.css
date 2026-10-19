@@ -1,0 +1,125 @@
+.slds-table {
+	width: 100%;
+    background-color: white;
+    border-radius: 8px;
+    font-size: 16px;
+}
+
+.slds-table th, .slds-table td {
+    padding: 10px;
+    text-align: left;
+}
+
+.slds-table thead th {
+    background-color: #5D5D5D;  /* Set the background color for the table header */
+    color: white;               /* Set the text color to white */
+}
+
+.slds-table td input[type="radio"] {
+    transform: scale(1.2);
+}
+.slds-table tbody tr:nth-child(even) {
+    background-color: #F4F4F4; /* Set the background color for even-numbered rows */
+}
+
+.lightning-card {
+    margin: 20px;
+}
+
+
+
+
+
+.scrollable-x {
+    overflow-x: auto;
+    margin-bottom: 20px;
+}
+
+/* Custom CSS to style and center the <h1> title */
+.center-title {
+    background-color: #252f4d;  /* Set the background color */
+    color: white;               /* Set the text color to white */
+    text-align: center;         /* Center the title */
+    margin: 0;                  /* Remove default margin */
+    padding: 10px;              /* Add some padding to the header */
+    font-size: 1.5rem;          /* Adjust the font size as needed */
+    font-weight: 600;           /* Adjust the weight if needed */
+}
+
+.action-buttons {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    width: 100%;
+    padding: 16px 20px;
+    box-sizing: border-box;
+}
+
+.action-buttons lightning-button {
+    display: inline-block;
+}
+.hold-confirmation-container {
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid #d8dde6;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.hold-confirmation-header {
+    padding: 20px;
+    text-align: center;
+    border-bottom: 1px solid #d8dde6;
+}
+
+.hold-confirmation-header h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 400;
+    color: #181818;
+}
+
+.hold-confirmation-footer {
+    padding: 16px 20px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    border-top: 1px solid #d8dde6;
+}.escrow-confirmation-container {
+    width: 100%;
+    background: #ffffff;
+    border: 1px solid #d8dde6;
+    border-radius: 4px;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.escrow-confirmation-header {
+    padding: 20px;
+    text-align: center;
+    border-bottom: 1px solid #d8dde6;
+}
+
+.escrow-confirmation-header h2 {
+    margin: 0;
+    font-size: 1.25rem;
+    font-weight: 400;
+    color: #181818;
+}
+
+.escrow-confirmation-content {
+    padding: 20px;
+}
+
+.escrow-question {
+    margin-bottom: 20px;
+    font-size: 1rem;
+    color: #181818;
+}
+
+.escrow-confirmation-footer {
+    padding: 16px 20px;
+    display: flex;
+    justify-content: flex-end;
+    align-items: center;
+    border-top: 1px solid #d8dde6;
+}

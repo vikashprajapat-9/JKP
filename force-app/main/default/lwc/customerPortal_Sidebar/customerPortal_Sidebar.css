@@ -1,0 +1,256 @@
+@import 'c/customerPortalStyles';
+
+/* Figma p7: 216px white menu with a soft shadow, logo at 42/42, first row at y=109, 48px rows (icon box at 24px,
+   label at 52px, 16px navy), selected row = light #f4f9fa background + 3px navy bar on the left + filled icon.
+   109 + 15 x 48 = 829px, so the whole menu fits the 832px Figma frame. */
+:host {
+    position: relative;
+    z-index: 2;
+    display: block;
+    flex: 0 0 auto;
+    height: 100%;
+}
+
+.portal-sidebar {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    width: 216px;
+    height: 100%;
+    background: var(--cp-surface);
+    box-shadow: var(--cp-shadow-sidebar);
+    font-family: var(--cp-font);
+    transition: transform 0.25s ease-in-out;
+}
+
+.sidebar-logo {
+    position: relative;
+    display: flex;
+    flex: 0 0 auto;
+    align-items: flex-start;
+    justify-content: space-between;
+    height: 109px;
+    padding: 41px 16px 0 41px; /* logo.svg has a 1px margin: the mark itself starts at 42/42 as in Figma */
+}
+
+.logo-image {
+    display: block;
+    width: 135px;
+    max-width: 100%;
+    height: 32px;
+}
+
+.sidebar-nav {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow-x: hidden;
+    overflow-y: auto;
+    overscroll-behavior: contain;
+    scrollbar-width: thin;
+    -webkit-overflow-scrolling: touch;
+}
+
+.menu-list {
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.menu-entry {
+    margin: 0;
+    padding: 0;
+}
+
+.menu-item {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    width: 100%;
+    height: 48px;
+    margin: 0;
+    padding: 0 12px 0 24px;
+    border: 0;
+    border-radius: 0;
+    background: transparent;
+    color: var(--cp-navy);
+    font-family: var(--cp-font);
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 500; /* as heavy as the Figma menu (measured) */
+    text-align: left;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+    transition: background-color 0.15s ease;
+}
+
+.menu-item:hover {
+    background: var(--cp-tint);
+}
+
+.menu-item:focus-visible {
+    outline: 2px solid var(--cp-navy);
+    outline-offset: -2px;
+}
+
+.menu-item_active {
+    background: var(--cp-tint);
+    box-shadow: inset 3px 0 0 var(--cp-navy);
+}
+
+.menu-icon {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    color: var(--cp-navy);
+}
+
+.menu-icon svg {
+    display: block;
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+}
+
+.menu-label {
+    position: relative;
+    top: -2px; /* Figma places the label 2px above the row centre */
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* Mobile close button (bars that morph into an X) - hidden on desktop */
+.menu-toggle {
+    display: none;
+    flex: 0 0 auto;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 1px solid var(--cp-line);
+    border-radius: var(--cp-radius-sm);
+    background: var(--cp-surface);
+    cursor: pointer;
+}
+
+.menu-toggle:focus-visible {
+    outline: 2px solid var(--cp-navy);
+    outline-offset: 2px;
+}
+
+.bar {
+    display: block;
+    width: 18px;
+    height: 2px;
+    border-radius: 1px;
+    background: var(--cp-navy);
+    transition: transform 0.2s ease-in-out, opacity 0.2s ease-in-out;
+}
+
+.bar1.open {
+    transform: translateY(7px) rotate(45deg);
+}
+
+.bar2.open {
+    opacity: 0;
+}
+
+.bar3.open {
+    transform: translateY(-7px) rotate(-45deg);
+}
+
+.sidebar-backdrop {
+    display: none;
+}
+
+/* Shorter screens than the 832px Figma frame: keep all 15 entries in view */
+@media (min-width: 769px) and (max-height: 828px) {
+    .sidebar-logo {
+        height: 100px;
+        padding-top: 33px;
+    }
+
+    .menu-item {
+        height: 44px;
+    }
+}
+
+@media (min-width: 769px) and (max-height: 759px) {
+    .sidebar-logo {
+        height: 88px;
+        padding-top: 27px;
+    }
+
+    .menu-item {
+        height: 40px;
+    }
+}
+
+/* Phones: off-canvas drawer, opened by the header's menu button */
+@media (max-width: 768px) {
+    :host {
+        flex: 0 0 0;
+        width: 0;
+        height: auto;
+    }
+
+    .portal-sidebar {
+        position: fixed;
+        top: 0;
+        left: 0;
+        z-index: 220;
+        width: 280px;
+        max-width: 84vw;
+        height: 100vh;
+        height: 100dvh; /* excludes the collapsing mobile URL bar where supported */
+        box-shadow: 4px 0 16px rgba(0, 0, 0, 0.16);
+        transform: translateX(-100%);
+        visibility: hidden;
+        transition: transform 0.25s ease-in-out, visibility 0s linear 0.25s;
+    }
+
+    .portal-sidebar_open {
+        transform: translateX(0);
+        visibility: visible;
+        transition: transform 0.25s ease-in-out;
+    }
+
+    .sidebar-logo {
+        align-items: center;
+        height: 72px;
+        padding: 0 16px 0 24px;
+        border-bottom: 1px solid var(--cp-line);
+    }
+
+    .menu-toggle {
+        display: flex;
+    }
+
+    .sidebar-nav {
+        padding: 8px 0 16px;
+    }
+
+    .sidebar-backdrop {
+        display: block;
+        position: fixed;
+        inset: 0;
+        z-index: 210;
+        background: transparent;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .portal-sidebar,
+    .portal-sidebar_open,
+    .bar,
+    .menu-item {
+        transition: none;
+    }
+}

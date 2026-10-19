@@ -1,0 +1,53 @@
+<template>
+    <div class="dashboard">
+        <!-- ================= GREETING ================= -->
+        <h1 class="greeting">{greeting}, <strong>{userName}</strong></h1>
+
+        <!-- ================= HERO BANNER ================= -->
+        <section class="hero">
+            <div class="hero-copy">
+                <h2 class="hero-title">John Keells Properties<br />Channel Partner Portal</h2>
+                <p class="hero-sub">Unlock Premium Commissions by selling 5 or more units of Cinnamon Life and Viman</p>
+            </div>
+
+            <div class="slabs">
+                <template for:each={slabs} for:item="slab">
+                    <div key={slab.key} class={slab.cardClass}>
+                        <template lwc:if={slab.current}>
+                            <span class="slab-pill">CURRENT</span>
+                        </template>
+                        <svg class="slab-medal" viewBox="0 0 24 32" aria-hidden="true">
+                            <path d="M5 1h14v8.5c0 2.6-2.2 4.8-5 5.3V17h-4v-2.2c-2.8-.5-5-2.7-5-5.3V1zm3 2.5v6c0 1 .6 1.9 1.5 2.4V3.5H8zm4.5 0v8.4c.9-.5 1.5-1.4 1.5-2.4v-6h-1.5z"></path>
+                            <path d="M12 18.5l1.9 4 4.4.5-3.3 3 .9 4.3L12 28.1l-3.9 2.2.9-4.3-3.3-3 4.4-.5z"></path>
+                        </svg>
+                        <p class="slab-name">{slab.name}</p>
+                        <p class="slab-rate">{slab.rate}</p>
+                        <p class="slab-desc">{slab.desc}</p>
+                        <template lwc:if={slab.note}>
+                            <p class="slab-note">{slab.note}</p>
+                        </template>
+                    </div>
+                </template>
+            </div>
+        </section>
+
+        <!-- ================= KPI TILES ================= -->
+        <template lwc:if={error}>
+            <div class="alert-banner error-banner" role="alert">
+                <lightning-icon icon-name="utility:error" size="x-small" class="alert-icon"></lightning-icon>
+                <span class="alert-text">{error}</span>
+            </div>
+        </template>
+        <div class="kpi-grid">
+            <template for:each={kpis} for:item="kpi">
+                <div key={kpi.key} class="kpi">
+                    <span class="kpi-icon">
+                        <lightning-icon icon-name={kpi.icon} size="x-small" alternative-text={kpi.label}></lightning-icon>
+                    </span>
+                    <p class="kpi-label">{kpi.label}</p>
+                    <p class={kpi.valueClass}>{kpi.value}</p>
+                </div>
+            </template>
+        </div>
+    </div>
+</template>

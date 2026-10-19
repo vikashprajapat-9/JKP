@@ -1,0 +1,492 @@
+<template>
+    <!-- ================= CUSTOMER PORTAL (portal="customer", Figma p18) ================= -->
+    <template lwc:if={isCustomer}>
+        <div class="cpd-page">
+            <!-- Location view: the map of the project's address -->
+            <template lwc:if={isLocationView}>
+                <button class="cpd-back" type="button" onclick={handleBackToDetail} aria-label={customerText.backToProject} title={customerText.backToProject}>
+                    <svg viewBox="0 0 28 22" width="28" height="22" aria-hidden="true">
+                        <path d="M26 11.05H2M11.33 1.98L2 11.05l9.33 9.07" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </button>
+                <div class="cpd-body">
+                    <h1 class="cpd-title">{name}</h1>
+                    <div class="cpd-map">
+                        <template lwc:if={hasAddress}>
+                            <lightning-map map-markers={mapMarkers} zoom-level="14" list-view="hidden"></lightning-map>
+                        </template>
+                        <template lwc:else>
+                            <p class="cpd-map-empty">{customerText.noAddress}</p>
+                        </template>
+                    </div>
+                    <template lwc:if={hasAddress}>
+                        <div class="cpd-map-actions">
+                            <span class="cpd-map-address">{location}</span>
+                            <button class="cpd-btn cpd-btn_secondary" type="button" onclick={handleOpenMaps}>{customerText.openMaps}</button>
+                        </div>
+                    </template>
+                </div>
+            </template>
+
+            <!-- Project page -->
+            <template lwc:else>
+                <button class="cpd-back" type="button" onclick={handleBack} aria-label={customerText.back} title={customerText.back}>
+                    <svg viewBox="0 0 28 22" width="28" height="22" aria-hidden="true">
+                        <path d="M26 11.05H2M11.33 1.98L2 11.05l9.33 9.07" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                    </svg>
+                </button>
+
+                <div class="cpd-body">
+                    <template lwc:if={loadError}>
+                        <p class="cpd-alert" role="alert">{loadError}</p>
+                    </template>
+
+                    <!-- Photos: 928 x 329, arrows 38px, dots 20px above the bottom -->
+                    <div class="cpd-hero" onmouseenter={handleHeroEnter} onmouseleave={handleHeroLeave} onfocusin={handleHeroFocusIn} onfocusout={handleHeroFocusOut}>
+                        <template lwc:if={hasSlides}>
+                            <template for:each={slides} for:item="slide">
+                                <div key={slide.key} class={slide.custSlideClass}>
+                                    <!-- The photo opens at full size in the viewer (Figma p20) -->
+                                    <template lwc:if={slide.canOpen}>
+                                        <button class="cpd-photo-btn"
+                                                type="button"
+                                                data-index={slide.index}
+                                                tabindex={slide.custTabIndex}
+                                                aria-label={slide.openLabel}
+                                                title={customerText.viewPhoto}
+                                                onclick={handleOpenPhoto}>
+                                            <img class="cpd-photo" src={slide.url} alt={name} />
+                                        </button>
+                                    </template>
+                                    <template lwc:else>
+                                        <img class="cpd-photo" src={slide.url} alt={name} />
+                                    </template>
+                                </div>
+                            </template>
+                        </template>
+                        <template lwc:else>
+                            <div class="cpd-hero-placeholder" aria-hidden="true">
+                                <svg class="cpd-hero-building" viewBox="0 0 120 120">
+                                    <rect x="18" y="38" width="30" height="72" rx="2" fill="currentColor" opacity="0.55"></rect>
+                                    <rect x="52" y="14" width="34" height="96" rx="2" fill="currentColor" opacity="0.8"></rect>
+                                    <rect x="90" y="52" width="16" height="58" rx="2" fill="currentColor" opacity="0.45"></rect>
+                                </svg>
+                            </div>
+                        </template>
+
+                        <template lwc:if={hasMultipleSlides}>
+                            <button class="cpd-arrow cpd-arrow_prev" type="button" onclick={handlePrevSlide} aria-label={customerText.previousPhoto} title={customerText.previousPhoto}>
+                                <svg viewBox="0 0 38 38" width="38" height="38" aria-hidden="true">
+                                    <path d="M22.56 10.69L14.25 19l8.31 8.31" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </button>
+                            <button class="cpd-arrow cpd-arrow_next" type="button" onclick={handleNextSlide} aria-label={customerText.nextPhoto} title={customerText.nextPhoto}>
+                                <svg viewBox="0 0 38 38" width="38" height="38" aria-hidden="true">
+                                    <path d="M15.44 10.69L23.75 19l-8.31 8.31" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </button>
+                            <div class="cpd-dots">
+                                <template for:each={slides} for:item="slide">
+                                    <button key={slide.dotKey}
+                                            class={slide.custDotClass}
+                                            type="button"
+                                            data-index={slide.index}
+                                            aria-label={slide.dotLabel}
+                                            onclick={handleDotClick}></button>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Name; View Location (the map, kept from the shared page) and Download Brochure -->
+                    <div class="cpd-title-row">
+                        <h1 class="cpd-title">{name}</h1>
+                        <template lwc:if={hasTitleActions}>
+                            <div class="cpd-title-actions">
+                                <template lwc:if={hasAddress}>
+                                    <button class="cpd-btn cpd-btn_secondary" type="button" onclick={handleViewLocation}>{customerText.viewLocation}</button>
+                                </template>
+                                <template lwc:if={hasBrochure}>
+                                    <button class="cpd-btn" type="button" onclick={handleOpenBrochure}>{customerText.brochure}</button>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+
+                    <!-- Price, possession, land parcel -->
+                    <dl class="cpd-facts">
+                        <div class="cpd-fact cpd-fact_start">
+                            <dt class="cpd-fact-label">{custPriceLabel}</dt>
+                            <dd class="cpd-fact-value">{custPriceText}</dd>
+                        </div>
+                        <div class="cpd-fact cpd-fact_mid">
+                            <dt class="cpd-fact-label">{customerText.possession}</dt>
+                            <dd class="cpd-fact-value">{custPossessionText}</dd>
+                        </div>
+                        <div class="cpd-fact cpd-fact_end">
+                            <dt class="cpd-fact-label">{customerText.landParcel}</dt>
+                            <dd class="cpd-fact-value">{landParcelText}</dd>
+                        </div>
+                    </dl>
+
+                    <!-- Unit types, availability (Project Status), area: value over label in bordered cells -->
+                    <template lwc:if={hasCustSpecs}>
+                        <dl class="cpd-specs" style={custSpecsStyle}>
+                            <template for:each={custSpecs} for:item="spec">
+                                <div key={spec.key} class="cpd-spec">
+                                    <dt class="cpd-spec-label">{spec.label}</dt>
+                                    <dd class="cpd-spec-value">{spec.value}</dd>
+                                </div>
+                            </template>
+                        </dl>
+                    </template>
+
+                    <template lwc:if={hasAmenities}>
+                        <section class="cpd-section cpd-section_amenities">
+                            <h2 class="cpd-section-title">{customerText.amenities}</h2>
+                            <ul class="cpd-amenities">
+                                <template for:each={amenities} for:item="amenity">
+                                    <li key={amenity.key} class="cpd-amenity">
+                                        <svg class="cpd-amenity-icon" viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
+                                            <path d={amenity.icon} fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+                                        </svg>
+                                        <span class="cpd-amenity-label">{amenity.label}</span>
+                                    </li>
+                                </template>
+                            </ul>
+                        </section>
+                    </template>
+
+                    <!-- Configurations with their price sheets (not in the Figma page; kept from the shared page) -->
+                    <section class="cpd-section">
+                        <h2 class="cpd-section-title">{customerText.configurations}</h2>
+                        <template lwc:if={showSkeleton}>
+                            <div class="cpd-skeleton" aria-hidden="true">
+                                <span class="cpd-skeleton-line cpd-skeleton-line_wide"></span>
+                                <span class="cpd-skeleton-line"></span>
+                            </div>
+                        </template>
+                        <template lwc:if={hasConfigurations}>
+                            <div class="cpd-table-wrap">
+                                <table class="cpd-table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col">{customerText.type}</th>
+                                            <th scope="col">{customerText.area}</th>
+                                            <th scope="col">{customerText.startingPrice}</th>
+                                            <th scope="col" class="cpd-table-actions">{customerText.priceSheet}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <template for:each={configurations} for:item="config">
+                                            <tr key={config.key}>
+                                                <td>{config.type}</td>
+                                                <td class="cpd-nowrap">{config.custArea}</td>
+                                                <td class="cpd-nowrap">{config.custPrice}</td>
+                                                <td class="cpd-table-actions">
+                                                    <template lwc:if={config.hasPriceSheet}>
+                                                        <span class="cpd-actions">
+                                                            <button class="cpd-icon-btn cpd-icon-btn_view" type="button" data-id={config.priceSheetId} aria-label={config.viewLabel} title={customerText.view} onclick={handleViewFile}>
+                                                                <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+                                                                    <path d={actionIcons.view}></path>
+                                                                </svg>
+                                                            </button>
+                                                            <button class="cpd-icon-btn cpd-icon-btn_download" type="button" data-id={config.priceSheetId} aria-label={config.downloadLabel} title={customerText.download} onclick={handleDownloadFile}>
+                                                                <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+                                                                    <path d={actionIcons.download}></path>
+                                                                </svg>
+                                                            </button>
+                                                        </span>
+                                                    </template>
+                                                    <template lwc:else>
+                                                        <span class="cpd-muted">{customerText.sheetSoon}</span>
+                                                    </template>
+                                                </td>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </template>
+                        <template lwc:if={showNoConfigurations}>
+                            <p class="cpd-note">{customerText.noConfigurations}</p>
+                        </template>
+                    </section>
+
+                    <!-- Project documents (not in the Figma page; kept from the shared page) -->
+                    <section class="cpd-section">
+                        <h2 class="cpd-section-title">{customerText.documents}</h2>
+                        <template lwc:if={showSkeleton}>
+                            <div class="cpd-skeleton" aria-hidden="true">
+                                <span class="cpd-skeleton-line cpd-skeleton-line_wide"></span>
+                            </div>
+                        </template>
+                        <template lwc:if={hasDocuments}>
+                            <div class="cpd-table-wrap">
+                                <table class="cpd-table">
+                                    <thead>
+                                        <tr>
+                                            <th scope="col" class="cpd-table-num">{customerText.serial}</th>
+                                            <th scope="col">{customerText.document}</th>
+                                            <th scope="col" class="cpd-table-actions">{customerText.action}</th>
+                                        </tr>
+                                    </thead>
+                                    <tbody>
+                                        <template for:each={documents} for:item="doc">
+                                            <tr key={doc.key}>
+                                                <td class="cpd-table-num">{doc.serial}</td>
+                                                <td>
+                                                    <span class="cpd-doc">
+                                                        <svg class="cpd-doc-icon" viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                                                            <path d={doc.icon} fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path>
+                                                        </svg>
+                                                        <span class="cpd-doc-name" title={doc.label}>{doc.label}</span>
+                                                    </span>
+                                                </td>
+                                                <td class="cpd-table-actions">
+                                                    <span class="cpd-actions">
+                                                        <button class="cpd-icon-btn cpd-icon-btn_view" type="button" data-id={doc.id} aria-label={doc.viewLabel} title={customerText.view} onclick={handleViewFile}>
+                                                            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+                                                                <path d={actionIcons.view}></path>
+                                                            </svg>
+                                                        </button>
+                                                        <button class="cpd-icon-btn cpd-icon-btn_download" type="button" data-id={doc.id} aria-label={doc.downloadLabel} title={customerText.download} onclick={handleDownloadFile}>
+                                                            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+                                                                <path d={actionIcons.download}></path>
+                                                            </svg>
+                                                        </button>
+                                                    </span>
+                                                </td>
+                                            </tr>
+                                        </template>
+                                    </tbody>
+                                </table>
+                            </div>
+                        </template>
+                        <template lwc:if={showNoDocuments}>
+                            <p class="cpd-note">{customerText.noDocuments}</p>
+                        </template>
+                    </section>
+                </div>
+            </template>
+        </div>
+
+        <template lwc:if={viewerFile}>
+            <c-partner-web-portal-file-viewer portal={portal} file={viewerFile} onclose={handleCloseViewer}></c-partner-web-portal-file-viewer>
+        </template>
+    </template>
+
+    <!-- ================= LOCATION VIEW ================= -->
+    <template lwc:elseif={isLocationView}>
+        <button class="back-link" type="button" onclick={handleBackToDetail}>
+            <svg viewBox="0 0 24 24" width="28" height="28" aria-hidden="true">
+                <path d="M20 12H4M10 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+            <span>Back</span>
+        </button>
+
+        <div class="map-frame">
+            <template lwc:if={hasAddress}>
+                <lightning-map map-markers={mapMarkers} zoom-level="14" list-view="hidden"></lightning-map>
+            </template>
+            <template lwc:else>
+                <div class="map-empty">No address is available for this project yet.</div>
+            </template>
+        </div>
+
+        <template lwc:if={hasAddress}>
+            <div class="map-actions">
+                <span class="map-address">{location}</span>
+                <button class="btn-outline small" type="button" onclick={handleOpenMaps}>Open in Google Maps</button>
+            </div>
+        </template>
+    </template>
+
+    <!-- ================= DETAIL VIEW ================= -->
+    <template lwc:else>
+        <button class="back-icon" type="button" onclick={handleBack} aria-label="Back to projects">
+            <svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true">
+                <path d="M20 12H4M10 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+        </button>
+
+        <template lwc:if={loadError}>
+            <p class="load-error" role="alert">{loadError}</p>
+        </template>
+
+        <div class="detail-grid">
+            <!-- LEFT COLUMN -->
+            <div class="col-left">
+                <div class="hero" onmouseenter={handleHeroEnter} onmouseleave={handleHeroLeave} onfocusin={handleHeroFocusIn} onfocusout={handleHeroFocusOut}>
+                    <template lwc:if={hasSlides}>
+                        <template for:each={slides} for:item="slide">
+                            <div key={slide.key} class={slide.slideClass}>
+                                <img class="hero-img" src={slide.url} alt={name} />
+                            </div>
+                        </template>
+                    </template>
+                    <template lwc:else>
+                        <div class="hero-placeholder" aria-hidden="true">
+                            <svg class="hero-building" viewBox="0 0 120 120">
+                                <rect x="18" y="38" width="30" height="72" rx="2" fill="currentColor" opacity="0.55"></rect>
+                                <rect x="52" y="14" width="34" height="96" rx="2" fill="currentColor" opacity="0.8"></rect>
+                                <rect x="90" y="52" width="16" height="58" rx="2" fill="currentColor" opacity="0.45"></rect>
+                            </svg>
+                        </div>
+                    </template>
+
+                    <template lwc:if={statusBadge}>
+                        <span class="phase-badge">{statusBadge}</span>
+                    </template>
+
+                    <template lwc:if={hasMultipleSlides}>
+                        <button class="hero-nav hero-nav_prev" type="button" onclick={handlePrevSlide} aria-label="Previous photo">‹</button>
+                        <button class="hero-nav hero-nav_next" type="button" onclick={handleNextSlide} aria-label="Next photo">›</button>
+                        <div class="hero-dots">
+                            <template for:each={slides} for:item="slide">
+                                <button key={slide.dotKey}
+                                        class={slide.dotClass}
+                                        type="button"
+                                        data-index={slide.index}
+                                        aria-label={slide.dotLabel}
+                                        onclick={handleDotClick}></button>
+                            </template>
+                        </div>
+                    </template>
+
+                    <div class="hero-overlay">
+                        <h1 class="hero-name">{name}</h1>
+                        <template lwc:if={location}>
+                            <p class="hero-location">
+                                <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                                    <path d="M12 21s-7-6.2-7-11.5A7 7 0 0 1 19 9.5C19 14.8 12 21 12 21z" fill="none" stroke="currentColor" stroke-width="1.8"></path>
+                                    <circle cx="12" cy="9.5" r="2.5" fill="none" stroke="currentColor" stroke-width="1.8"></circle>
+                                </svg>
+                                <span>{location}</span>
+                            </p>
+                        </template>
+                    </div>
+                </div>
+
+                <button class="btn-outline" type="button" onclick={handleViewLocation}>View Location</button>
+
+                <div class="fact-row">
+                    <div class="fact-card">
+                        <span class="fact-label">POSSESSION</span>
+                        <span class="fact-value">{possessionText}</span>
+                    </div>
+                    <div class="fact-card">
+                        <span class="fact-label">LAND PARCEL</span>
+                        <span class="fact-value">{landParcelText}</span>
+                    </div>
+                </div>
+
+                <template lwc:if={hasAmenities}>
+                    <div class="panel">
+                        <h2 class="panel-title">Key Amenities</h2>
+                        <div class="amenity-row">
+                            <template for:each={amenities} for:item="amenity">
+                                <div key={amenity.key} class="amenity">
+                                    <span class="amenity-icon">
+                                        <svg viewBox="0 0 24 24" width="26" height="26" aria-hidden="true">
+                                            <path d={amenity.icon} fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path>
+                                        </svg>
+                                    </span>
+                                    <span class="amenity-label">{amenity.label}</span>
+                                </div>
+                            </template>
+                        </div>
+                    </div>
+                </template>
+            </div>
+
+            <!-- RIGHT COLUMN -->
+            <div class="col-right">
+                <h2 class="section-title">Configurations</h2>
+                <template lwc:if={showSkeleton}>
+                    <div class="config-card skeleton-card" aria-hidden="true">
+                        <span class="skeleton-line skeleton-line_wide"></span>
+                        <span class="skeleton-line"></span>
+                    </div>
+                    <div class="config-card skeleton-card" aria-hidden="true">
+                        <span class="skeleton-line skeleton-line_wide"></span>
+                        <span class="skeleton-line"></span>
+                    </div>
+                </template>
+                <template for:each={configurations} for:item="config">
+                    <div key={config.key} class="config-card">
+                        <div class="config-top">
+                            <div>
+                                <p class="config-type">{config.type}</p>
+                                <template lwc:if={config.hasArea}>
+                                    <p class="config-area">
+                                        <svg viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                                            <rect x="3" y="8" width="18" height="8" rx="1" fill="none" stroke="currentColor" stroke-width="1.6"></rect>
+                                            <path d="M7 8v3M11 8v4M15 8v3M19 8v4" stroke="currentColor" stroke-width="1.6"></path>
+                                        </svg>
+                                        {config.area}
+                                    </p>
+                                </template>
+                            </div>
+                            <div class="config-price">
+                                <span class="price-label">STARTING AT</span>
+                                <span class="price-value">{config.price}</span>
+                            </div>
+                        </div>
+                        <template lwc:if={config.hasPriceSheet}>
+                            <div class="doc-row">
+                                <button class="doc-row-view" type="button" data-id={config.priceSheetId} aria-label={config.viewLabel} onclick={handleViewFile}>
+                                    <svg viewBox="0 0 24 24" width="20" height="20" aria-hidden="true">
+                                        <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z M14 3v5h5 M9 13h6 M9 17h6" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"></path>
+                                    </svg>
+                                    View Price Sheet
+                                </button>
+                                <button class="doc-row-download" type="button" data-id={config.priceSheetId} aria-label={config.downloadLabel} title="Download" onclick={handleDownloadFile}>
+                                    <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+                                        <path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </button>
+                            </div>
+                        </template>
+                        <template lwc:else>
+                            <p class="doc-row-empty">Price sheet coming soon</p>
+                        </template>
+                    </div>
+                </template>
+                <template lwc:if={showNoConfigurations}>
+                    <p class="empty-note">Configurations will be listed here soon.</p>
+                </template>
+
+                <h2 class="section-title docs-title">Project Documents</h2>
+                <template lwc:if={showSkeleton}>
+                    <div class="doc-card skeleton-card" aria-hidden="true">
+                        <span class="skeleton-line skeleton-line_wide"></span>
+                    </div>
+                </template>
+                <template for:each={documents} for:item="doc">
+                    <div key={doc.key} class="doc-card">
+                        <span class="doc-icon">
+                            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+                                <path d={doc.icon} fill="none" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </span>
+                        <span class="doc-name" title={doc.label}>{doc.label}</span>
+                        <button class="doc-view" type="button" data-id={doc.id} aria-label={doc.viewLabel} onclick={handleViewFile}>View</button>
+                        <button class="doc-download" type="button" data-id={doc.id} aria-label={doc.downloadLabel} title="Download" onclick={handleDownloadFile}>
+                            <svg viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+                                <path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </button>
+                    </div>
+                </template>
+                <template lwc:if={showNoDocuments}>
+                    <p class="empty-note">No project documents have been shared yet.</p>
+                </template>
+            </div>
+        </div>
+
+        <template lwc:if={viewerFile}>
+            <c-partner-web-portal-file-viewer file={viewerFile} onclose={handleCloseViewer}></c-partner-web-portal-file-viewer>
+        </template>
+    </template>
+</template>

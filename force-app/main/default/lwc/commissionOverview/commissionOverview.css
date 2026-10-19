@@ -1,0 +1,49 @@
+@import 'c/commissionStyles';
+
+/* Layout of this screen only (the approved mock-up overview.html): six chips in one line and seven table columns */
+.card { padding: 13px 12px; }
+.filters { display: flex; align-items: center; flex-wrap: wrap; gap: 8px 12px; }
+.filters .chips { gap: 5px; }
+.filters .chip { padding: 0 9px; gap: 5px; font-size: 13px; }
+.filters .chip .count { min-width: 19px; padding: 0 5px; }
+.filters .today { margin-left: auto; white-space: nowrap; }
+
+/* The chips, links and row buttons are real buttons */
+button { font-family: inherit; cursor: pointer; }
+button:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px; }
+button.link { border: 0; background: transparent; padding: 0; }
+button.link:hover { text-decoration: underline; }
+/* A configuration name: looks like the text of the mock-up, opens the configuration */
+.textlink { border: 0; background: transparent; padding: 0; margin: 0; font-size: inherit; font-weight: inherit; line-height: inherit; color: inherit; text-align: left; white-space: nowrap; }
+.textlink.wrap { white-space: normal; }
+.textlink:hover, .textlink:focus-visible { color: var(--blue); text-decoration: underline; }
+.btn.primary:hover { filter: brightness(1.08); }
+.btn:not(.primary):hover { background: var(--row-alt); }
+
+/* A narrow page scrolls the table sideways instead of squeezing the columns */
+.tablewrap { overflow-x: auto; }
+table.grid { table-layout: fixed; min-width: 880px; font-size: 13px; }
+col.c-project { width: 15.5%; }
+col.c-current { width: 13.3%; }
+col.c-period { width: 19.4%; }
+col.c-days { width: 5.2%; }
+col.c-next { width: 16.5%; }
+col.c-status { width: 20.1%; }
+col.c-action { width: 10%; }
+table.grid th, table.grid td { padding-left: 6px; padding-right: 6px; }
+table.grid th { white-space: normal; vertical-align: bottom; line-height: 1.3; }
+table.grid td { height: 55px; padding-top: 8px; padding-bottom: 8px; line-height: 1.35; }
+table.grid th:first-child, table.grid td:first-child { padding-left: 2px; }
+table.grid th:last-child, table.grid td:last-child { padding-right: 0; }
+table.grid td.project { font-size: 13.5px; font-weight: 700; color: var(--navy); }
+table.grid td.next, table.grid th.next { padding-left: 10px; }
+table.grid .dash { color: #7a8496; }
+table.grid .warn { font-weight: 700; color: var(--amber); }
+table.grid .bad { font-weight: 600; color: var(--red); }
+table.grid .btn { display: flex; width: 100%; padding: 0 4px; }
+
+.empty { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 96px; padding: 12px; text-align: center; }
+.card .note { margin-top: 10px; }
+
+/* Text for screen readers only */
+.assistive { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

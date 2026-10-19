@@ -1,0 +1,11 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Parking_quantities_must_not_be_negative</fullName>
+    <active>true</active>
+    <errorConditionFormula>OR(
+    Total_Parking__c &lt; 0,
+    Available_Parking__c &lt; 0,
+    Total_Sold_Parking__c &lt; 0
+)</errorConditionFormula>
+    <errorMessage>Parking quantities cannot be negative.</errorMessage>
+</ValidationRule>

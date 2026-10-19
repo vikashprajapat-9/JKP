@@ -1,0 +1,46 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Input_Type__c</fullName>
+    <description>Text, Email or Phone: a text box (Email and Phone are checked). Project: the list of active projects. Documents: the upload box; files are saved on the Account. Hidden: not shown; writes the Default Value on every registration.</description>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Text, Email or Phone: a text box (Email and Phone are checked). Project: the list of active projects. Documents: the upload box; files are saved on the Account. Hidden: not shown; writes the Default Value on every registration.</inlineHelpText>
+    <label>Input Type</label>
+    <required>false</required>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Text</fullName>
+                <default>false</default>
+                <label>Text</label>
+            </value>
+            <value>
+                <fullName>Email</fullName>
+                <default>false</default>
+                <label>Email</label>
+            </value>
+            <value>
+                <fullName>Phone</fullName>
+                <default>false</default>
+                <label>Phone</label>
+            </value>
+            <value>
+                <fullName>Project</fullName>
+                <default>false</default>
+                <label>Project</label>
+            </value>
+            <value>
+                <fullName>Documents</fullName>
+                <default>false</default>
+                <label>Documents</label>
+            </value>
+            <value>
+                <fullName>Hidden</fullName>
+                <default>false</default>
+                <label>Hidden</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,296 @@
+<template>
+    <div class="auth-page">
+        <aside class="art-panel" aria-hidden="true">
+            <img class="art" src={illustrationUrl} alt="" />
+        </aside>
+
+        <main class="form-panel">
+            <div class={formColumnClass}>
+                <img class="logo" src={logoUrl} alt="John Keells Properties - Creating New Worlds" />
+
+                <!-- ================= LOGIN ================= -->
+                <template lwc:if={isLoginStep}>
+                    <section class="step">
+                        <p class="tagline">
+                            Unlock the door to unparalleled collaboration with our exclusive Channel Partner Portal.
+                            Access now and let's drive success together on every property venture!
+                        </p>
+
+                        <form class="login-form" novalidate onsubmit={handleLogin}>
+                            <label class="field-label" for="username">Username</label>
+                            <input id="username"
+                                   class={usernameClass}
+                                   data-field="username"
+                                   type="text"
+                                   name="username"
+                                   autocomplete="username"
+                                   autocapitalize="off"
+                                   spellcheck="false"
+                                   placeholder="Enter Username"
+                                   value={username}
+                                   disabled={isBusy}
+                                   aria-invalid={loginInvalid}
+                                   aria-describedby="login-error"
+                                   oninput={handleUsernameInput} />
+
+                            <label class="field-label field-label_spaced" for="password">Password</label>
+                            <div class={passwordBoxClass}>
+                                <input id="password"
+                                       class="password-input"
+                                       type={passwordType}
+                                       name="password"
+                                       autocomplete="current-password"
+                                       placeholder="Enter Password"
+                                       value={password}
+                                       disabled={isBusy}
+                                       aria-invalid={loginInvalid}
+                                       aria-describedby="login-error"
+                                       oninput={handlePasswordInput} />
+                                <button type="button" class="eye-btn" aria-label={passwordToggleLabel} aria-pressed={passwordShownState} onclick={handleTogglePassword}>
+                                    <template lwc:if={showPassword}>
+                                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3 3l18 18M10.6 10.6a2 2 0 0 0 2.8 2.8M9.9 5.2A9.6 9.6 0 0 1 12 5c5 0 9 4.5 10 7-0.4 1-1.3 2.4-2.6 3.7M6.2 6.3C4.2 7.7 2.7 9.8 2 12c1 2.5 5 7 10 7 1.6 0 3.1-0.4 4.4-1.1" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                                    </template>
+                                    <template lwc:else>
+                                        <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M2 12c1-2.5 5-7 10-7s9 4.5 10 7c-1 2.5-5 7-10 7S3 14.5 2 12z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path><circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"></circle></svg>
+                                    </template>
+                                </button>
+                            </div>
+                            <p id="login-error" class="field-error" role="alert">{loginError}</p>
+                            <a class="forgot-link" href={forgotPasswordUrl}>Forgot Password?</a>
+
+                            <button class="primary-btn primary-btn_login" type="submit" disabled={loginDisabled}>
+                                <template lwc:if={isBusy}><span class="spinner" aria-hidden="true"></span></template>
+                                <span>Login</span>
+                            </button>
+                        </form>
+
+                        <template lwc:if={showRegisterLink}>
+                            <p class="switch">Don't have an account? <button type="button" class="link-btn" onclick={handleRegister}>Register here</button></p>
+                        </template>
+                    </section>
+                </template>
+
+                <!-- ================= REGISTRATION (fields from the Partner Registration Field custom metadata) ================= -->
+                <template lwc:elseif={isRegisterStep}>
+                    <section class="step">
+                        <template lwc:if={notRegisteredText}>
+                            <p class="notice" role="status">
+                                <svg class="notice-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                    <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"></circle>
+                                    <path d="M12 11v5M12 8h.01" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+                                </svg>
+                                <span>{notRegisteredText}</span>
+                            </p>
+                        </template>
+                        <template lwc:if={formError}>
+                            <p class="notice notice_error" role="alert">
+                                <svg class="notice-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                    <circle cx="12" cy="12" r="9" fill="none" stroke="currentColor" stroke-width="1.8"></circle>
+                                    <path d="M12 7v6M12 16.5h.01" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+                                </svg>
+                                <span>Registration is unavailable right now. {formError}</span>
+                            </p>
+                        </template>
+                        <h1 class="welcome-title">Welcome to our community!</h1>
+                        <p class="welcome-text">
+                            Unlock the door to exclusive opportunities by registering with our Channel Partner Portal.
+                            Sign up now and let's embark on a journey of success together in every property venture!
+                        </p>
+
+                        <div class="field field_first">
+                            <span class="field-label" id="type-label">Channel Partner Registration Type<abbr class="required-mark" title="required">*</abbr></span>
+                            <div class="select" onfocusout={handleMenuFocusOut}>
+                                <button type="button"
+                                        class={typeButtonClass}
+                                        data-menu="type"
+                                        aria-haspopup="listbox"
+                                        aria-expanded={typeMenuExpanded}
+                                        aria-labelledby="type-label type-value"
+                                        disabled={formLocked}
+                                        onclick={handleMenuToggle}
+                                        onkeydown={handleMenuButtonKeyDown}>
+                                    <span id="type-value" class="select-value">{typeLabel}</span>
+                                    <svg class="chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                                </button>
+                                <template lwc:if={typeMenuOpen}>
+                                    <div class="menu" role="listbox" aria-labelledby="type-label">
+                                        <template for:each={typeOptions} for:item="option">
+                                            <button key={option.value}
+                                                    type="button"
+                                                    role="option"
+                                                    class={option.cssClass}
+                                                    aria-selected={option.selected}
+                                                    data-menu="type"
+                                                    data-value={option.value}
+                                                    onmousedown={handleOptionMouseDown}
+                                                    onclick={handleMenuSelect}
+                                                    onkeydown={handleMenuOptionKeyDown}>{option.label}</button>
+                                        </template>
+                                        <template lwc:if={typesLoading}>
+                                            <p class="menu-empty">Loading…</p>
+                                        </template>
+                                    </div>
+                                </template>
+                            </div>
+                        </div>
+
+                        <template for:each={registrationFields} for:item="field">
+                            <div key={field.key} class="field">
+                                <template lwc:if={field.isUpload}>
+                                    <span class="field-label field-label_tight">{field.label}<template lwc:if={field.required}><abbr class="required-mark" title="required">*</abbr></template></span>
+                                    <template lwc:if={field.helpText}>
+                                        <p class="field-hint">{field.helpText}</p>
+                                    </template>
+                                    <p class="field-hint">{fileRulesText}</p>
+                                    <div class={dropzoneClass} ondragover={handleDragOver} ondragleave={handleDragLeave} ondrop={handleDrop}>
+                                        <svg class="upload-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                            <path d="M12 15V4M7.5 8.5L12 4l4.5 4.5M5 20h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                                        </svg>
+                                        <p class="dropzone-text"><button type="button" class="upload-link" disabled={isSubmitting} onclick={handleChooseFiles}>Upload a file</button> or drag and drop</p>
+                                        <p class="dropzone-hint">{dropzoneHint}</p>
+                                        <input class="file-input" type="file" accept={fileAccept} multiple onchange={handleFilesChosen} />
+                                    </div>
+                                    <template lwc:if={hasFiles}>
+                                        <ul class="file-list">
+                                            <template for:each={fileRows} for:item="file">
+                                                <li key={file.key} class={file.itemClass}>
+                                                    <svg class="file-icon" viewBox="0 0 24 24" aria-hidden="true">
+                                                        <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z M14 3v5h5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"></path>
+                                                    </svg>
+                                                    <span class="file-name" title={file.name}>{file.name}</span>
+                                                    <span class="file-size">{file.size}</span>
+                                                    <template lwc:if={file.isUploading}>
+                                                        <span class="file-spinner" role="img" aria-label="Uploading"></span>
+                                                    </template>
+                                                    <template lwc:elseif={file.isDone}>
+                                                        <svg class="file-done" viewBox="0 0 24 24" role="img" aria-label="Uploaded"><path d="M5 12.5l4.5 4.5L19 7.5" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                                                    </template>
+                                                    <template lwc:elseif={file.canRemove}>
+                                                        <button type="button" class="file-remove" data-key={file.key} aria-label={file.removeLabel} onclick={handleRemoveFile}>
+                                                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg>
+                                                        </button>
+                                                    </template>
+                                                </li>
+                                            </template>
+                                        </ul>
+                                    </template>
+                                    <p class="field-error" role="alert">{uploadMessage}</p>
+                                </template>
+
+                                <template lwc:elseif={field.isProject}>
+                                    <span class="field-label" id="project-label">{field.label}<template lwc:if={field.required}><abbr class="required-mark" title="required">*</abbr></template></span>
+                                    <div class="select" onfocusout={handleMenuFocusOut}>
+                                        <button type="button"
+                                                class={field.selectClass}
+                                                data-menu="project"
+                                                aria-haspopup="listbox"
+                                                aria-expanded={projectMenuExpanded}
+                                                aria-labelledby="project-label project-value"
+                                                aria-invalid={field.invalid}
+                                                disabled={formLocked}
+                                                onclick={handleMenuToggle}
+                                                onkeydown={handleMenuButtonKeyDown}>
+                                            <span id="project-value" class={projectValueClass}>{projectLabel}</span>
+                                            <svg class="chevron" viewBox="0 0 24 24" aria-hidden="true"><path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                                        </button>
+                                        <template lwc:if={projectMenuOpen}>
+                                            <div class="menu menu_scroll" role="listbox" aria-labelledby="project-label">
+                                                <template for:each={projectMenuOptions} for:item="option">
+                                                    <button key={option.value}
+                                                            type="button"
+                                                            role="option"
+                                                            class={option.cssClass}
+                                                            aria-selected={option.selected}
+                                                            data-menu="project"
+                                                            data-value={option.value}
+                                                            onmousedown={handleOptionMouseDown}
+                                                            onclick={handleMenuSelect}
+                                                            onkeydown={handleMenuOptionKeyDown}>{option.label}</button>
+                                                </template>
+                                                <template lwc:if={noProjects}>
+                                                    <p class="menu-empty">No projects are open right now.</p>
+                                                </template>
+                                            </div>
+                                        </template>
+                                    </div>
+                                    <p class="field-error" role="alert">{field.error}</p>
+                                </template>
+
+                                <template lwc:else>
+                                    <label class="field-label" for={field.inputId}>{field.label}<template lwc:if={field.required}><abbr class="required-mark" title="required">*</abbr></template></label>
+                                    <input id={field.inputId}
+                                           class={field.inputClass}
+                                           type={field.inputType}
+                                           placeholder={field.placeholder}
+                                           value={field.value}
+                                           maxlength={field.maxLength}
+                                           autocomplete={field.autocomplete}
+                                           data-name={field.name}
+                                           aria-invalid={field.invalid}
+                                           aria-required={field.ariaRequired}
+                                           disabled={formLocked}
+                                           oninput={handleFieldInput} />
+                                    <p class="field-error" role="alert">{field.error}</p>
+                                </template>
+                            </div>
+                        </template>
+
+                        <label class={termsClass}>
+                            <input class="terms-input" type="checkbox" checked={termsAccepted} disabled={formLocked} onchange={handleTermsChange} />
+                            <span class="terms-box" aria-hidden="true">
+                                <svg viewBox="0 0 16 16"><path d="M3.5 8.5l3 3 6-7" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path></svg>
+                            </span>
+                            <span class="terms-text">By registering, I agree to <button type="button" class="terms-link" data-doc="terms" onclick={handleOpenDoc}>Terms of Service</button> &amp; <button type="button" class="terms-link" data-doc="privacy" onclick={handleOpenDoc}>Privacy Policy</button></span>
+                        </label>
+
+                        <p class="field-error form-error" role="alert">{submitError}</p>
+                        <button class="primary-btn primary-btn_submit" type="button" disabled={submitDisabled} aria-busy={isSubmitting} onclick={handleSubmitRegistration}>
+                            <template lwc:if={isSubmitting}><span class="spinner" aria-hidden="true"></span></template>
+                            <span>{submitLabel}</span>
+                        </button>
+                        <p class="switch">Already have an account? <button type="button" class="link-btn" disabled={isSubmitting} onclick={handleBackToLogin}>login</button></p>
+                    </section>
+                </template>
+
+                <!-- ================= STATUS (under review / access restricted / access denied / executive awaiting approval) ================= -->
+                <template lwc:else>
+                    <section class="step status">
+                        <img class="status-icon" src={statusIconUrl} alt="" />
+                        <h1 class="status-title">{statusTitle}</h1>
+                        <p class="status-text">{statusText}</p>
+                        <template lwc:if={statusNote}>
+                            <p class="notice notice_error status-note" role="status">{statusNote}</p>
+                        </template>
+                        <button class="primary-btn primary-btn_status" type="button" onclick={handleBackToLogin}>Back to Login</button>
+                    </section>
+                </template>
+            </div>
+        </main>
+    </div>
+
+    <!-- ================= TERMS OF SERVICE / PRIVACY POLICY ================= -->
+    <template lwc:if={docOpen}>
+        <div class="modal-backdrop" onclick={handleCloseDoc}></div>
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="doc-title" onkeydown={handleModalKeyDown}>
+            <div class="modal-head">
+                <h2 id="doc-title" class="modal-title">{docTitle}</h2>
+                <button type="button" class="modal-close" aria-label="Close" onclick={handleCloseDoc}>
+                    <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M6 6l12 12M18 6L6 18" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path></svg>
+                </button>
+            </div>
+            <div class="modal-body">
+                <template lwc:if={docLoading}>
+                    <div class="modal-skeleton" aria-hidden="true">
+                        <span></span><span></span><span class="short"></span><span></span>
+                    </div>
+                </template>
+                <template lwc:elseif={docHtml}>
+                    <c-portal-rich-text value={docHtml}></c-portal-rich-text>
+                </template>
+                <template lwc:else>
+                    <p class="modal-note">{docNote}</p>
+                </template>
+            </div>
+        </div>
+    </template>
+</template>

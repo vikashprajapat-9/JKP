@@ -1,0 +1,28 @@
+@import 'c/customerPortalStyles';
+
+/* The shared project components draw the Customer Portal look themselves when portal="customer" (Figma p16-p20),
+   with the cp- tokens set on this host by c/customerPortalStyles: custom properties inherit into their shadow trees.
+   The --jk-* tokens below are the Partner Portal's names for the same values; the parts both portals share (the file
+   viewer) read them. --jk-font is not set here: c/customerPortalStyles already gives it the portal font. */
+:host {
+    --jk-navy: var(--cp-navy);
+    --jk-navy-soft: var(--cp-navy-hover);
+    --jk-navy-muted: #414d6e;
+    --jk-text: var(--cp-ink);
+    --jk-text-strong: var(--cp-title);
+    --jk-text-muted: var(--cp-muted);
+    --jk-border: var(--cp-border);
+    --jk-divider: var(--cp-line);
+    --jk-tint: var(--cp-tint);
+    --jk-surface: var(--cp-surface);
+    --jk-radius-sm: var(--cp-radius-sm);
+    --jk-radius: var(--cp-radius-sm);
+    --jk-radius-lg: var(--cp-radius);
+    --jk-shadow: var(--cp-shadow);
+    --jk-badge-cancelled: var(--cp-red);
+    /* The file viewer is a full-screen layer like the screens' modals (z-index map in FOUNDATION.md): above the sidebar,
+       the header and the phone drawer (1000) */
+    --jk-viewer-z: 9000;
+
+    display: block;
+}

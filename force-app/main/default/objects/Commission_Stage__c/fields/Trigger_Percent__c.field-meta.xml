@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Trigger_Percent__c</fullName>
+    <description>For a payout event with a percentage: the share of the purchase price that must be paid.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Only for the event &quot;% of purchase price paid&quot;: for example 50 for 50%.</inlineHelpText>
+    <label>% of Price Paid</label>
+    <precision>7</precision>
+    <required>false</required>
+    <scale>2</scale>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Contract_Draft_Category__c</fullName>
+    <description>Document category (of the Contract Document Master) that holds the generated contract PDFs, for example Contract Generated Document.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Document category (of the Contract Document Master) that holds the generated contract PDFs, for example Contract Generated Document.</inlineHelpText>
+    <label>Contract Draft Category</label>
+    <length>80</length>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

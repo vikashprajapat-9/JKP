@@ -1,0 +1,76 @@
+<template>
+    <template if:true={showBar}>
+        <div class="aab-wrap">
+            <!-- one row: status, context, action -->
+            <div class="aab-head">
+                <div class="aab-head-left">
+                    <span class={statusClass}>{statusLabel}</span>
+                    <template if:true={summaryText}>
+                        <span class="aab-summary">{summaryText}</span>
+                    </template>
+                    <template if:true={processText}>
+                        <span class="aab-sub">{processText}</span>
+                    </template>
+                    <template if:true={submittedText}>
+                        <span class="aab-sub aab-sub-dim">{submittedText}</span>
+                    </template>
+                </div>
+                <template if:true={canAct}>
+                    <button class="aab-btn aab-btn-main" onclick={openModal}>
+                        <lightning-icon icon-name="utility:approval" size="xx-small" variant="inverse" class="aab-btn-ic"></lightning-icon>
+                        <span>Approve / Reject</span>
+                    </button>
+                </template>
+            </div>
+
+            <!-- approval trail as compact chips that wrap across the width -->
+            <template if:true={hasSteps}>
+                <!-- collapsed: cards wrap across the width, comment under each name -->
+                <template if:false={showDetail}>
+                    <div class="aab-trail">
+                        <template for:each={stepItems} for:item="step">
+                            <div key={step.key} class={step.cls} title={step.tooltip}>
+                                <div class="aab-chip-top">
+                                    <lightning-icon icon-name={step.icon} size="xx-small" variant={step.variant} class="aab-chip-ic"></lightning-icon>
+                                    <span class="aab-chip-name">{step.actorName}</span>
+                                    <template if:true={step.dateText}>
+                                        <span class="aab-chip-date">{step.dateText}</span>
+                                    </template>
+                                </div>
+                                <template if:true={step.hasComment}>
+                                    <div class="aab-chip-comment">{step.comments}</div>
+                                </template>
+                            </div>
+                        </template>
+                        <template if:true={hasMore}>
+                            <button class="aab-more" onclick={toggleSteps}>{moreLabel}</button>
+                        </template>
+                    </div>
+                </template>
+
+                <!-- expanded: every step in full, with its comment -->
+                <template if:true={showDetail}>
+                    <div class="aab-detail">
+                        <template for:each={allSteps} for:item="step">
+                            <div key={step.key} class="aab-row">
+                                <lightning-icon icon-name={step.icon} size="xx-small" variant={step.variant} class="aab-row-ic"></lightning-icon>
+                                <div class="aab-row-body">
+                                    <div class="aab-row-top">
+                                        <span class="aab-row-name">{step.actorName}</span>
+                                        <template if:true={step.dateText}>
+                                            <span class="aab-row-date">{step.dateText}</span>
+                                        </template>
+                                    </div>
+                                    <template if:true={step.hasComment}>
+                                        <div class="aab-row-comment">{step.comments}</div>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+                        <button class="aab-more" onclick={toggleSteps}>{moreLabel}</button>
+                    </div>
+                </template>
+            </template>
+        </div>
+    </template>
+</template>

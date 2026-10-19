@@ -1,0 +1,423 @@
+.visit-modal {
+    width: 100%;
+    background: #ffffff;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.20);
+}
+
+
+/* =========================================================
+   HEADER
+========================================================= */
+
+.modal-header {
+    height: 96px;
+    background: #1f315f;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    border-bottom: 3px solid #d7a928;
+}
+
+
+/* Logo */
+
+.logo-container {
+    width: 174px;
+    height: 62px;
+    background: #1a274d;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 5px;
+
+    display: flex;
+    align-items: center;
+    justify-content: center;
+
+    margin-right: 20px;
+}
+
+.logo {
+    max-width: 155px;
+    max-height: 50px;
+    object-fit: contain;
+}
+
+
+/* Header title */
+
+.header-title {
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+
+/* =========================================================
+   BODY
+========================================================= */
+
+.modal-body {
+    background: #ffffff;
+    padding: 18px 20px;
+    min-height: 250px;
+}
+
+
+/* =========================================================
+   SECTION TITLE
+========================================================= */
+
+.section-title {
+    margin: 0 0 14px 0;
+    font-size: 16px;
+    font-weight: 700;
+    color: #181818;
+}
+
+
+/* =========================================================
+   TABLE
+========================================================= */
+
+.table-wrapper {
+    width: 100%;
+    overflow-x: auto;
+    overflow-y: hidden;
+
+    border: 1px solid #d8dde6;
+    border-radius: 5px;
+    background: #ffffff;
+
+    /* Smooth horizontal scrolling */
+    scrollbar-width: thin;
+}
+
+/* Actual table */
+.visit-table {
+    width: 100%;
+    min-width: 1050px;
+    border-collapse: collapse;
+    table-layout: fixed;
+}
+
+/* =========================================================
+   TABLE HEADER
+========================================================= */
+
+.visit-table th {
+    background: #f3f3f3;
+    color: #181818;
+
+    padding: 11px 12px;
+
+    text-align: left;
+
+    font-size: 12px;
+    font-weight: 700;
+
+    border-bottom: 1px solid #d8dde6;
+
+    white-space: nowrap;
+}
+
+/* =========================================================
+   TABLE BODY
+========================================================= */
+
+.visit-table td {
+    padding: 11px 12px;
+
+    color: #181818;
+
+    font-size: 12px;
+
+    border-bottom: 1px solid #e5e5e5;
+
+    vertical-align: middle;
+
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.visit-table tbody tr:last-child td {
+    border-bottom: none;
+}
+
+.visit-table tbody tr:hover {
+    background: #fafafa;
+}
+
+
+/* =========================================================
+COLUMN WIDTHS
+========================================================= */
+
+/* Visit Name */
+.visit-table th:nth-child(1),
+.visit-table td:nth-child(1) {
+    width: 130px;
+}
+
+/* Visit Date */
+.visit-table th:nth-child(2),
+.visit-table td:nth-child(2) {
+    width: 120px;
+}
+
+/* Visit Time */
+.visit-table th:nth-child(3),
+.visit-table td:nth-child(3) {
+    width: 110px;
+}
+
+/* Requirement Type */
+.visit-table th:nth-child(4),
+.visit-table td:nth-child(4) {
+    width: 160px;
+}
+
+/* Project */
+.visit-table th:nth-child(5),
+.visit-table td:nth-child(5) {
+    width: 160px;
+}
+
+/* Status */
+.visit-table th:nth-child(6),
+.visit-table td:nth-child(6) {
+    width: 120px;
+}
+
+/* Action */
+.visit-table th:nth-child(7),
+.visit-table td:nth-child(7) {
+    width: 270px;
+}
+
+/* Visit link */
+
+.visit-link {
+    color: #1b5297;
+    text-decoration: none;
+    font-weight: 600;
+}
+
+.visit-link:hover {
+    text-decoration: underline;
+}
+
+
+/* =========================================================
+ACTION BUTTONS
+========================================================= */
+
+.action-buttons {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    flex-wrap: nowrap;
+}
+
+.action-btn {
+    border: 1px solid #d8dde6;
+    border-radius: 6px;
+    padding: 7px 12px;
+    font-size: 13px;
+    font-weight: 500;
+    line-height: 1.2;
+    background: #ffffff;
+    cursor: pointer;
+    white-space: nowrap;
+    transition: all 0.2s ease;
+}
+
+/* Completed */
+.completed-btn {
+    color: #2e844a;
+    border-color: #b7d8c1;
+}
+
+.completed-btn:hover {
+    background: #eaf6ed;
+    border-color: #2e844a;
+}
+
+/* Cancelled */
+.cancelled-btn {
+    color: #ba0517;
+    border-color: #e2b4b9;
+}
+
+.cancelled-btn:hover {
+    background: #fcebec;
+    border-color: #ba0517;
+}
+
+/* Rescheduled */
+.reschedule-btn {
+    color: #7c3aed;
+    border-color: #c9b8f5;
+}
+
+.reschedule-btn:hover {
+    background: #f3efff;
+    border-color: #7c3aed;
+}
+
+/* Click effect */
+.action-btn:active {
+    transform: scale(0.97);
+}
+
+/* Smaller screens */
+@media screen and (max-width: 900px) {
+    .action-buttons {
+        gap: 5px;
+    }
+
+    .action-btn {
+        padding: 6px 8px;
+        font-size: 12px;
+    }
+}
+
+/* =========================================================
+   PAGINATION
+========================================================= */
+
+.pagination-container {
+    width: 100%;
+
+    display: flex;
+    justify-content: center;
+    align-items: center;
+
+    padding: 10px 0 2px 0;
+}
+
+
+/* =========================================================
+   FORM
+========================================================= */
+
+.form-container {
+    padding: 4px 10px 10px 10px;
+}
+
+
+.form-container lightning-input,
+.form-container lightning-textarea,
+.form-container lightning-combobox,
+.form-container lightning-record-picker {
+    display: block;
+    margin-bottom: 16px;
+}
+
+
+/* =========================================================
+   FOOTER
+========================================================= */
+
+.modal-footer {
+    min-height: 68px;
+
+    background: #ffffff;
+
+    border-top: 1px solid #d8dde6;
+
+    display: flex;
+
+    justify-content: flex-end;
+    align-items: center;
+
+    padding: 0 20px;
+
+    gap: 12px;
+}
+
+
+/* =========================================================
+   FOOTER BUTTONS
+========================================================= */
+.modal-footer {
+    min-height: 68px;
+
+    /* Screenshot-like footer background */
+    background: #f3f3f3;
+
+    border-top: 1px solid #d8dde6;
+
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+
+    padding: 0 20px;
+}
+
+
+/* Copyright */
+
+.footer-copyright {
+    color: #1b5297;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+
+/* Footer buttons */
+
+.footer-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+
+.footer-btn {
+    min-width: 82px;
+    height: 36px;
+
+    padding: 0 18px;
+
+    border-radius: 4px;
+
+    font-size: 13px;
+    font-weight: 600;
+
+    cursor: pointer;
+}
+
+
+.cancel-btn {
+    background: #ffffff;
+    color: #181818;
+    border: 1px solid #c9c9c9;
+}
+
+
+.cancel-btn:hover {
+    background: #eaeaea;
+}
+
+
+.primary-btn {
+    background: #2f4f7f;
+    color: #ffffff;
+    border: 1px solid #2f4f7f;
+}
+
+
+.primary-btn:hover {
+    background: #243e65;
+}
+
+
+.primary-btn:disabled {
+    background: #c9c9c9;
+    border-color: #c9c9c9;
+    cursor: not-allowed;
+}

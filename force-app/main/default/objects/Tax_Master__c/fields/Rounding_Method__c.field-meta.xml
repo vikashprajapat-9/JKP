@@ -1,0 +1,30 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Rounding_Method__c</fullName>
+    <label>Rounding Method</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>No Rounding</fullName>
+                <default>false</default>
+                <label>No Rounding</label>
+            </value>
+            <value>
+                <fullName>Next Currency</fullName>
+                <default>false</default>
+                <label>Next Currency</label>
+            </value>
+            <value>
+                <fullName>Nearest Currency</fullName>
+                <default>false</default>
+                <label>Nearest Currency</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

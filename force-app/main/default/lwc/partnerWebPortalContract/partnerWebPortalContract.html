@@ -1,0 +1,185 @@
+<template>
+    <section class="contract-wrapper" aria-labelledby="contract-title" aria-busy={busy}>
+
+        <!-- ================= HEADER ================= -->
+        <div class="page-head">
+            <h1 id="contract-title" class="page-title">My Contract</h1>
+            <template lwc:if={showDescription}>
+                <p class="page-desc">
+                    Follow your exclusive channel partner contract with John Keells Properties, from preparation to
+                    completion. When it is ready, download it here, sign it on paper and hand the signed copy to your
+                    JKP CP Executive.
+                </p>
+            </template>
+        </div>
+
+        <!-- ================= ERROR BANNERS ================= -->
+        <template lwc:if={loadError}>
+            <div class="alert-banner error-banner" role="alert">
+                <lightning-icon icon-name="utility:error" size="x-small" class="alert-icon"></lightning-icon>
+                <span class="alert-text">{loadError}</span>
+                <button class="banner-action-btn" type="button" onclick={handleRetry}>Try again</button>
+            </div>
+        </template>
+
+        <template lwc:if={downloadError}>
+            <div class="alert-banner error-banner" role="alert">
+                <lightning-icon icon-name="utility:error" size="x-small" class="alert-icon"></lightning-icon>
+                <span class="alert-text">{downloadError}</span>
+                <button class="banner-close-btn" type="button" onclick={handleCloseError} aria-label="Close">✕</button>
+            </div>
+        </template>
+
+        <!-- ================= LOADING ================= -->
+        <template lwc:if={isLoading}>
+            <div class="spinner-holder">
+                <lightning-spinner alternative-text="Loading your contract" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <!-- ================= EXECUTIVES: THE MESSAGE ONLY ================= -->
+        <template lwc:elseif={showMessageOnly}>
+            <div class="contract-card notice-card">
+                <span class="card-icon" aria-hidden="true">
+                    <svg viewBox="0 0 24 24" width="26" height="26">
+                        <circle cx="12" cy="12" r="9.5" fill="none" stroke="currentColor" stroke-width="1.6"></circle>
+                        <path d="M12 11v6M12 7.5v.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+                    </svg>
+                </span>
+                <p class="notice-text">{message}</p>
+            </div>
+        </template>
+
+        <!-- ================= THE CONTRACT ================= -->
+        <template lwc:elseif={showContract}>
+            <article class="contract-card" aria-labelledby="contract-card-title">
+
+                <!-- Title, number and status -->
+                <header class="card-head">
+                    <div class="card-heading">
+                        <span class="card-icon" aria-hidden="true">
+                            <svg viewBox="0 0 24 24" width="26" height="26">
+                                <path d="M14 3H7a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h10a2 2 0 0 0 2-2V8z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"></path>
+                                <path d="M14 3v5h5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"></path>
+                                <path d="M8.5 11.5h7M8.5 14.5h4.5" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+                                <path d="M8.3 18.2c.9-1.3 1.7-1.3 2.3 0 .6 1.2 1.4 1.2 2.3 0 .6-.8 1.3-.9 2.3-.3" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                            </svg>
+                        </span>
+                        <div class="card-titles">
+                            <h2 id="contract-card-title" class="card-title">Exclusive Partner Contract</h2>
+                            <p class="card-subtitle">{subtitle}</p>
+                        </div>
+                    </div>
+                    <span class={statusClass}>{statusLabel}</span>
+                </header>
+
+                <!-- Progress -->
+                <ol class="steps" aria-label="Contract progress">
+                    <template for:each={steps} for:item="step">
+                        <li key={step.value} class={step.itemClass} aria-current={step.ariaCurrent}>
+                            <span class="step-marker" aria-hidden="true">
+                                <template lwc:if={step.done}>
+                                    <svg viewBox="0 0 24 24" width="18" height="18">
+                                        <path d="M5 12.5l4.2 4.2L19 7" fill="none" stroke="currentColor" stroke-width="2.6" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </template>
+                                <template lwc:else>{step.value}</template>
+                            </span>
+                            <span class="step-text">
+                                <span class="step-label">{step.label}</span>
+                                <span class="step-caption">{step.caption}</span>
+                                <span class="assistive-text">{step.stateText}</span>
+                            </span>
+                        </li>
+                    </template>
+                </ol>
+
+                <!-- Where it is, and what the partner does next -->
+                <div class={messageClass}>
+                    <template lwc:if={isActionMessage}>
+                        <svg class="message-icon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+                            <path d="M4 20h4L18.5 9.5a2.8 2.8 0 0 0-4-4L4 16z" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linejoin="round"></path>
+                            <path d="M13.5 6.5l4 4" fill="none" stroke="currentColor" stroke-width="1.6"></path>
+                        </svg>
+                    </template>
+                    <template lwc:elseif={isSuccessMessage}>
+                        <svg class="message-icon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+                            <circle cx="12" cy="12" r="9.5" fill="none" stroke="currentColor" stroke-width="1.6"></circle>
+                            <path d="M8 12.5l2.8 2.8 5.7-5.8" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                    </template>
+                    <template lwc:else>
+                        <svg class="message-icon" viewBox="0 0 24 24" width="22" height="22" aria-hidden="true">
+                            <circle cx="12" cy="12" r="9.5" fill="none" stroke="currentColor" stroke-width="1.6"></circle>
+                            <path d="M12 11v6M12 7.5v.5" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round"></path>
+                        </svg>
+                    </template>
+                    <p class="message-text">{message}</p>
+                </div>
+
+                <!-- Downloads -->
+                <template lwc:if={hasDownloads}>
+                    <div class="actions">
+                        <template lwc:if={canDownloadSigned}>
+                            <button type="button" class="btn btn-primary" data-kind="signed"
+                                    onclick={handleDownload} disabled={isDownloading}>
+                                <template lwc:if={isDownloadingSigned}>
+                                    <span class="btn-spinner" aria-hidden="true"></span>
+                                    <span>Downloading…</span>
+                                </template>
+                                <template lwc:else>
+                                    <svg class="btn-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                                        <path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19.5h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                    <span>Download signed contract</span>
+                                </template>
+                            </button>
+                        </template>
+                        <template lwc:if={canDownloadDraft}>
+                            <button type="button" class={draftButtonClass} data-kind="draft"
+                                    onclick={handleDownload} disabled={isDownloading}>
+                                <template lwc:if={isDownloadingDraft}>
+                                    <span class="btn-spinner" aria-hidden="true"></span>
+                                    <span>Downloading…</span>
+                                </template>
+                                <template lwc:else>
+                                    <svg class="btn-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                                        <path d="M12 4v11M7.5 10.5L12 15l4.5-4.5M5 19.5h14" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                    <span>Download contract</span>
+                                </template>
+                            </button>
+                        </template>
+                    </div>
+                </template>
+
+                <!-- Details -->
+                <template lwc:if={hasContract}>
+                    <section class="details" aria-labelledby="contract-details-title">
+                        <h3 id="contract-details-title" class="details-title">Contract details</h3>
+                        <dl class="details-grid">
+                            <template for:each={details} for:item="detail">
+                                <div key={detail.key} class="detail">
+                                    <dt class="detail-label">{detail.label}</dt>
+                                    <dd class="detail-value">{detail.value}</dd>
+                                </div>
+                            </template>
+                        </dl>
+                    </section>
+                </template>
+
+                <!-- Temporary access, until the signed contract makes the partner Exclusive -->
+                <template lwc:if={showTemporaryAccess}>
+                    <p class="access-note">
+                        <svg class="access-icon" viewBox="0 0 24 24" width="18" height="18" aria-hidden="true">
+                            <rect x="3.5" y="5" width="17" height="15" rx="2" fill="none" stroke="currentColor" stroke-width="1.6"></rect>
+                            <path d="M3.5 9.5h17M8 3v4M16 3v4" fill="none" stroke="currentColor" stroke-width="1.6" stroke-linecap="round"></path>
+                        </svg>
+                        <span class="access-label">Temporary access</span>
+                        <span class="access-dates">{temporaryAccess}</span>
+                    </p>
+                </template>
+            </article>
+        </template>
+    </section>
+</template>

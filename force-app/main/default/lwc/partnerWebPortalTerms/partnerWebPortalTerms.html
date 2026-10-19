@@ -1,0 +1,26 @@
+<template>
+    <section class="terms-wrapper" aria-labelledby="terms-title" aria-busy={busy}>
+
+        <h1 id="terms-title" class="terms-title">Terms &amp; Conditions</h1>
+
+        <template lwc:if={isLoading}>
+            <div class="skeleton" aria-hidden="true">
+                <span class="skeleton-line"></span>
+                <span class="skeleton-line"></span>
+                <span class="skeleton-line skeleton-line_short"></span>
+                <span class="skeleton-line"></span>
+                <span class="skeleton-line skeleton-line_short"></span>
+            </div>
+        </template>
+        <template lwc:elseif={hasContent}>
+            <c-portal-rich-text class="page-content" value={content}></c-portal-rich-text>
+        </template>
+        <template lwc:elseif={loadError}>
+            <p class="page-note page-note_error" role="alert">{loadError}</p>
+        </template>
+        <template lwc:else>
+            <p class="page-note">The Terms &amp; Conditions will be available here soon.</p>
+        </template>
+
+    </section>
+</template>

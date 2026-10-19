@@ -1,0 +1,299 @@
+<template>
+    <div class="cp-page sr-page">
+        <template lwc:if={isLoading}>
+            <div class="cp-loading">
+                <lightning-spinner alternative-text={labels.loading} size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template lwc:if={hasError}>
+            <div class="cp-alert cp-alert_error sr-alert" role="alert">
+                <p class="sr-alert__text">{labels.loadError}</p>
+                <button type="button" class="cp-btn cp-btn_sm" onclick={handleRetry}>{labels.retry}</button>
+            </div>
+        </template>
+
+        <template lwc:if={showContent}>
+            <!-- Figma p56 / p60: title + button on one line, the intro runs the full width underneath -->
+            <div class="cp-page-head sr-head">
+                <h1 class="cp-page-title sr-head__title">{labels.title}</h1>
+                <div class="cp-page-actions sr-head__actions">
+                    <button type="button" class="cp-btn sr-raise" onclick={handleOpenRequestModal}>{labels.raiseRequest}</button>
+                </div>
+                <template lwc:if={pageDescription}>
+                    <p class="cp-page-intro sr-head__intro">{pageDescription}</p>
+                </template>
+            </div>
+
+            <template lwc:if={showToolbar}>
+                <div class="sr-toolbar">
+                    <!-- One chip per booking whose defects liability period is still running -->
+                    <template for:each={dlpPeriods} for:item="dlp">
+                        <span key={dlp.opportunityId} class="cp-chip-info sr-dlp">{dlp.label}</span>
+                    </template>
+                    <div class="cp-filter sr-filter">
+                        <svg viewBox="0 0 17.4 17.2" width="17" height="17" aria-hidden="true" focusable="false">
+                            <path d={icons.funnel} fill="none" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"></path>
+                        </svg>
+                        <span class="sr-filter__label" aria-hidden="true">{selectedFilterLabel}</span>
+                        <select class="sr-filter__native" aria-label={labels.filter} onchange={handleFilterChange}>
+                            <template for:each={filterOptions} for:item="opt">
+                                <option key={opt.key} value={opt.value} selected={opt.selected}>{opt.label}</option>
+                            </template>
+                        </select>
+                    </div>
+                </div>
+            </template>
+
+            <template lwc:if={hasDisplayedRequests}>
+                <div class="cp-table-wrap">
+                    <table class="cp-table sr-table">
+                        <thead>
+                            <tr>
+                                <th scope="col" class="cp-table__num sr-col_num">{labels.colSr}</th>
+                                <th scope="col" class="sr-col_desc">{labels.colDescription}</th>
+                                <th scope="col" class="sr-col_project">{labels.colProject}</th>
+                                <th scope="col" class="sr-col_id">{labels.colRequestId}</th>
+                                <th scope="col" class="sr-col_date">{labels.colCreatedDate}</th>
+                                <th scope="col" class="sr-col_type">{labels.colType}</th>
+                                <th scope="col" class="sr-col_status">{labels.colStatus}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={displayedRequests} for:item="req">
+                                <tr key={req.key}>
+                                    <td class="cp-table__num sr-col_num">{req.srNo}</td>
+                                    <td class="sr-col_desc">{req.description}</td>
+                                    <td class="sr-col_project">{req.projectName}</td>
+                                    <td class="sr-col_id">{req.serviceRequestId}</td>
+                                    <td class="sr-col_date">{req.createdDate}</td>
+                                    <td class="sr-col_type">{req.type}</td>
+                                    <td class="sr-col_status"><span class={req.badgeClass}>{req.status}</span></td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+            </template>
+            <template lwc:else>
+                <div class="cp-empty sr-empty">
+                    <img class="cp-empty__img" src={emptyImageUrl} alt="" width="254" height="116" />
+                    <p class="cp-empty__text sr-empty__text">{labels.empty}</p>
+                </div>
+            </template>
+        </template>
+
+        <!-- Figma p57 (empty) / p58 (filled) -->
+        <template lwc:if={isRequestModalOpen}>
+            <div
+                class="cp-modal-overlay"
+                role="presentation"
+                onmousedown={handleOverlayMouseDown}
+                onclick={handleOverlayClick}
+                onkeydown={handleModalKeydown}
+            >
+                <section class="cp-modal sr-modal" role="dialog" aria-modal="true" aria-labelledby="sr-modal-title" tabindex="-1">
+                    <button
+                        type="button"
+                        class="cp-close cp-modal__close"
+                        title={labels.close}
+                        aria-label={labels.close}
+                        onclick={handleCloseRequestModal}
+                    >
+                        <svg viewBox="0 0 14 14" width="14" height="14" aria-hidden="true" focusable="false">
+                            <path d={icons.close}></path>
+                        </svg>
+                    </button>
+                    <h2 id="sr-modal-title" class="cp-modal__title">{labels.modalTitle}</h2>
+                    <p class="cp-modal__text">{labels.modalIntro}</p>
+
+                    <div class="cp-modal__body">
+                        <div class="cp-field">
+                            <label class="cp-label" for="sr-issue">{labels.issue}</label>
+                            <div class="cp-select-wrap">
+                                <select id="sr-issue" class={issueSelectClass} data-field="issue" onchange={handleFieldChange}>
+                                    <option value="" selected={isIssueEmpty}>{labels.issuePlaceholder}</option>
+                                    <template for:each={issueOptionsView} for:item="opt">
+                                        <option key={opt.value} value={opt.value} selected={opt.selected}>{opt.label}</option>
+                                    </template>
+                                </select>
+                            </div>
+                            <template lwc:if={errors.issue}>
+                                <p class="cp-error">{errors.issue}</p>
+                            </template>
+                        </div>
+
+                        <div class="cp-field">
+                            <label class="cp-label" for="sr-property">{labels.property}</label>
+                            <div class="cp-select-wrap">
+                                <select id="sr-property" class={propertySelectClass} data-field="property" onchange={handleFieldChange}>
+                                    <option value="" selected={isPropertyEmpty}>{labels.propertyPlaceholder}</option>
+                                    <template for:each={propertyOptionsView} for:item="opt">
+                                        <option key={opt.value} value={opt.value} selected={opt.selected}>{opt.label}</option>
+                                    </template>
+                                </select>
+                            </div>
+                            <template lwc:if={errors.property}>
+                                <p class="cp-error">{errors.property}</p>
+                            </template>
+                        </div>
+
+                        <div class="cp-field">
+                            <label class="cp-label" for="sr-unit">{labels.unit}</label>
+                            <div class="cp-select-wrap">
+                                <select id="sr-unit" class={unitSelectClass} data-field="unitNumber" onchange={handleFieldChange}>
+                                    <option value="" selected={isUnitEmpty}>{labels.unitPlaceholder}</option>
+                                    <template for:each={unitOptionsView} for:item="opt">
+                                        <option key={opt.value} value={opt.value} selected={opt.selected}>{opt.label}</option>
+                                    </template>
+                                </select>
+                            </div>
+                            <template lwc:if={errors.unitNumber}>
+                                <p class="cp-error">{errors.unitNumber}</p>
+                            </template>
+                        </div>
+
+                        <!-- DLP issue only (not in Figma): Location -> Master Category -> Sub Category -->
+                        <template lwc:if={isDlpIssue}>
+                            <div class="cp-field">
+                                <label class="cp-label" for="sr-location">{labels.location}</label>
+                                <div class="cp-select-wrap">
+                                    <select id="sr-location" class={dlpLocationSelectClass} data-field="dlpLocation" onchange={handleFieldChange}>
+                                        <option value="" selected={isDlpLocationEmpty}>{labels.location}</option>
+                                        <template for:each={dlpLocationOptionsView} for:item="opt">
+                                            <option key={opt.value} value={opt.value} selected={opt.selected}>{opt.label}</option>
+                                        </template>
+                                    </select>
+                                </div>
+                                <template lwc:if={errors.dlpLocation}>
+                                    <p class="cp-error">{errors.dlpLocation}</p>
+                                </template>
+                            </div>
+
+                            <template lwc:if={showMasterCategoryField}>
+                                <div class="cp-field">
+                                    <label class="cp-label" for="sr-master-category">{labels.masterCategory}</label>
+                                    <div class="cp-select-wrap">
+                                        <select
+                                            id="sr-master-category"
+                                            class={dlpMasterCategorySelectClass}
+                                            data-field="dlpMasterCategory"
+                                            onchange={handleFieldChange}
+                                        >
+                                            <option value="" selected={isDlpMasterCategoryEmpty}>{labels.masterCategory}</option>
+                                            <template for:each={dlpMasterCategoryOptionsView} for:item="opt">
+                                                <option key={opt.value} value={opt.value} selected={opt.selected}>{opt.label}</option>
+                                            </template>
+                                        </select>
+                                    </div>
+                                    <template lwc:if={errors.dlpMasterCategory}>
+                                        <p class="cp-error">{errors.dlpMasterCategory}</p>
+                                    </template>
+                                </div>
+                            </template>
+
+                            <template lwc:if={showSubCategoryField}>
+                                <div class="cp-field">
+                                    <label class="cp-label" for="sr-sub-category">{labels.subCategory}</label>
+                                    <div class="cp-select-wrap">
+                                        <select
+                                            id="sr-sub-category"
+                                            class={dlpSubCategorySelectClass}
+                                            data-field="dlpSubCategory"
+                                            onchange={handleFieldChange}
+                                        >
+                                            <option value="" selected={isDlpSubCategoryEmpty}>{labels.subCategory}</option>
+                                            <template for:each={dlpSubCategoryOptionsView} for:item="opt">
+                                                <option key={opt.value} value={opt.value} selected={opt.selected}>{opt.label}</option>
+                                            </template>
+                                        </select>
+                                    </div>
+                                    <template lwc:if={errors.dlpSubCategory}>
+                                        <p class="cp-error">{errors.dlpSubCategory}</p>
+                                    </template>
+                                </div>
+                            </template>
+                        </template>
+
+                        <template lwc:if={submitError}>
+                            <div class="cp-alert cp-alert_error sr-alert" role="alert">{submitError}</div>
+                        </template>
+
+                        <div class="cp-field">
+                            <label class="cp-label" for="sr-subject">{labels.subject}</label>
+                            <input
+                                type="text"
+                                id="sr-subject"
+                                class={subjectInputClass}
+                                placeholder={labels.subjectPlaceholder}
+                                value={form.subject}
+                                maxlength="255"
+                                data-field="subject"
+                                oninput={handleFieldChange}
+                            />
+                            <template lwc:if={errors.subject}>
+                                <p class="cp-error">{errors.subject}</p>
+                            </template>
+                        </div>
+
+                        <div class="cp-field">
+                            <label class="cp-label" for="sr-description">{labels.description}</label>
+                            <textarea
+                                id="sr-description"
+                                class={descriptionClass}
+                                placeholder={labels.descriptionPlaceholder}
+                                data-field="description"
+                                oninput={handleFieldChange}
+                            ></textarea>
+                            <template lwc:if={errors.description}>
+                                <p class="cp-error">{errors.description}</p>
+                            </template>
+                        </div>
+                    </div>
+
+                    <div class="cp-modal__footer">
+                        <button
+                            type="button"
+                            class="cp-btn cp-btn_lg sr-submit"
+                            aria-disabled={submitAriaDisabled}
+                            disabled={isSubmitting}
+                            onclick={handleSubmit}
+                        >
+                            {labels.submit}
+                        </button>
+                    </div>
+                </section>
+            </div>
+        </template>
+
+        <!-- Figma p59 -->
+        <template lwc:if={isSuccessModalOpen}>
+            <div
+                class="cp-modal-overlay"
+                role="presentation"
+                onmousedown={handleOverlayMouseDown}
+                onclick={handleOverlayClick}
+                onkeydown={handleModalKeydown}
+            >
+                <section class="cp-modal sr-done" role="dialog" aria-modal="true" aria-labelledby="sr-done-title" tabindex="-1">
+                    <button
+                        type="button"
+                        class="cp-close cp-modal__close"
+                        title={labels.close}
+                        aria-label={labels.close}
+                        onclick={handleCloseSuccessModal}
+                    >
+                        <svg viewBox="0 0 14 14" width="14" height="14" aria-hidden="true" focusable="false">
+                            <path d={icons.close}></path>
+                        </svg>
+                    </button>
+                    <div class="cp-success sr-done__body">
+                        <img class="cp-success__icon sr-done__icon" src={successImageUrl} alt="" width="80" height="80" />
+                        <h2 id="sr-done-title" class="cp-success__title sr-done__title">{successTitle}</h2>
+                        <p class="cp-success__text sr-done__text">{successMessage}</p>
+                    </div>
+                </section>
+            </div>
+        </template>
+    </div>
+</template>

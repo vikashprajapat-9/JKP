@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Rejection_Email_Template__c</fullName>
+    <description>Developer name of the email template sent to the applicant when a channel partner registration is rejected. Blank: no rejection email. In the template, [[Reason]] stands for the approver&apos;s comment; without a comment the part between &lt;!--reason--&gt; and &lt;!--/reason--&gt; is left out (text version: the line that holds [[Reason]]).</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Developer name of the email template sent to the applicant when a registration is rejected. Blank: none.</inlineHelpText>
+    <label>Rejection Email Template</label>
+    <length>80</length>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

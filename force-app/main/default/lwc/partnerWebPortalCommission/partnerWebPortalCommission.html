@@ -1,0 +1,99 @@
+<template>
+    <h1 class="page-title">Commission</h1>
+    <p class="page-subtitle">View and manage your commission details, claims, and payout status in one place.</p>
+
+    <template lwc:if={hasRows}>
+        <div class="table-wrapper">
+            <div class="table" role="table" aria-label="Commissions">
+                <div class="table-head" role="row">
+                    <span role="columnheader">Commission ID</span>
+                    <span role="columnheader">Project</span>
+                    <span role="columnheader">Unit Number</span>
+                    <span role="columnheader">Name of Buyer</span>
+                    <span role="columnheader">Type</span>
+                    <span role="columnheader" class="center">Status</span>
+                    <span role="columnheader" class="center">Action</span>
+                </div>
+
+                <template for:each={rows} for:item="row">
+                    <div key={row.id} class={row.rowClass}>
+                        <div class="row-main" role="row">
+                            <span role="cell" class="strong">{row.id}</span>
+                            <span role="cell">{row.project}</span>
+                            <span role="cell">{row.unit}</span>
+                            <span role="cell">{row.buyer}</span>
+                            <span role="cell">{row.type}</span>
+                            <span role="cell" class="center"><span class={row.badgeClass}>{row.status}</span></span>
+                            <span role="cell" class="center">
+                                <button type="button" class="toggle-btn" data-id={row.id}
+                                        onclick={handleToggle} aria-expanded={row.expanded}
+                                        aria-label={row.toggleLabel}>
+                                    <svg class={row.chevronClass} viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+                                        <path d="M6 9l6 6 6-6" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"></path>
+                                    </svg>
+                                </button>
+                            </span>
+                        </div>
+
+                        <template lwc:if={row.expanded}>
+                            <div class="row-detail">
+                                <div class="detail-item">
+                                    <span class="detail-label">Salesperson name:</span>
+                                    <span class="detail-value">{row.salesperson}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">S/O ID</span>
+                                    <span class="detail-value">{row.soId}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Purchase price:</span>
+                                    <span class="detail-value">{row.purchasePrice}</span>
+                                </div>
+                                <div class="detail-item">
+                                    <span class="detail-label">Commission amount and percentage:</span>
+                                    <span class="detail-value">{row.commission}</span>
+                                </div>
+                                <template lwc:if={row.canClaim}>
+                                    <button type="button" class="claim-btn" data-id={row.id}
+                                            onclick={handleRequestClaim}>Request Claim</button>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                </template>
+            </div>
+        </div>
+    </template>
+    <template lwc:else>
+        <p class="empty-state">No commissions yet.</p>
+    </template>
+
+    <!-- ================= REQUEST SUBMITTED ================= -->
+    <template lwc:if={showSuccess}>
+        <div class="modal-backdrop" onclick={handleCloseSuccess}></div>
+        <div class="modal" role="dialog" aria-modal="true" aria-labelledby="claimTitle">
+            <button class="close-btn" type="button" onclick={handleCloseSuccess} aria-label="Close">
+                <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true">
+                    <path d="M6 6l12 12M18 6L6 18" stroke="currentColor" stroke-width="1.8" stroke-linecap="round" fill="none"></path>
+                </svg>
+            </button>
+
+            <svg class="success-illustration" viewBox="0 0 240 240" aria-hidden="true">
+                <ellipse cx="120" cy="222" rx="70" ry="8" fill="#ebe9e9"></ellipse>
+                <circle cx="120" cy="118" r="86" fill="#f3f8f9"></circle>
+                <line x1="92" y1="214" x2="132" y2="34" stroke="#37474f" stroke-width="5" stroke-linecap="round"></line>
+                <circle cx="132" cy="32" r="5" fill="#37474f"></circle>
+                <path d="M131 38 C 150 30, 168 50, 186 62 C 196 68, 204 76, 214 70 C 204 88, 186 86, 172 80 C 158 74, 142 78, 124 72 Z" fill="#8bc53f"></path>
+                <path d="M129 50 C 142 48, 150 58, 160 66 C 150 72, 138 72, 124 72 Z" fill="#6aa12a"></path>
+                <circle cx="176" cy="150" r="24" fill="#238723"></circle>
+                <path d="M165 150 l8 8 l15 -16" fill="none" stroke="#ffffff" stroke-width="5" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+
+            <h2 id="claimTitle" class="success-title">Request Submitted</h2>
+            <p class="success-text">
+                Your claim request for Commission ID #{submittedId} has been submitted successfully.<br />
+                You can track the status of your request from the Commission Claims section.
+            </p>
+        </div>
+    </template>
+</template>

@@ -1,0 +1,429 @@
+@import 'c/customerPortalStyles';
+
+/* Figma p88-90 (measured at 1280 x 832): body 32px under the intro; left column 200px (170px round photo, name
+   32/40 600, 32px button), right column 252px from the left edge with two 320px field columns 24px apart;
+   section headings 20px navy, 26px above the first labels, 38px above "Account Details".
+   Fields: read-only = grey #ebeaea (shared .cp-input[readonly]), edit = white with a border. Username and Password
+   are never typed here, so they stay grey in both states (the password changes in its own popup). */
+
+.profile-layout {
+    display: flex;
+    align-items: flex-start;
+    gap: 52px;
+    padding-top: 8px; /* padding: a margin would collapse into the head's 24px */
+}
+
+/* saved / error message between the intro and the form */
+.profile-message {
+    margin: 0 0 16px;
+}
+
+.profile-load-error {
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.profile-retry {
+    font-size: 14px;
+}
+
+/* ---------- left column ---------- */
+.profile-side {
+    display: flex;
+    flex: 0 0 200px;
+    flex-direction: column;
+    align-items: center;
+    min-width: 0;
+    padding-top: 6px;
+    text-align: center;
+}
+
+.profile-photo {
+    position: relative;
+    width: 170px;
+    height: 170px;
+}
+
+.profile-photo__img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border-radius: 50%;
+    background: var(--cp-tint);
+    object-fit: cover;
+}
+
+/* while a chosen picture is being resized */
+.profile-photo__busy {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.6);
+}
+
+/* navy 38px "+" over the lower right of the photo (p89) */
+.profile-photo__add {
+    position: absolute;
+    top: 82.9%;
+    left: 70.6%;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: var(--cp-navy);
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.profile-photo__add:hover {
+    background: var(--cp-navy-hover);
+}
+
+.profile-photo__add:focus-visible {
+    outline: 2px solid var(--cp-navy);
+    outline-offset: 2px;
+}
+
+.profile-photo__add[disabled] {
+    opacity: 0.6;
+    cursor: not-allowed;
+}
+
+.profile-photo__add svg {
+    width: 18px; /* the Figma plus is 18px with 2.5px bars */
+    height: 18px;
+    fill: currentColor;
+}
+
+/* hidden but still clickable from the + button (some phone browsers ignore click() on display: none) */
+.profile-photo__input {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    opacity: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    pointer-events: none;
+}
+
+.profile-name {
+    max-width: 100%;
+    margin: 19px 0 0;
+    font-size: 32px;
+    line-height: 40px;
+    font-weight: 600;
+    color: var(--cp-title);
+    overflow-wrap: anywhere;
+}
+
+.profile-action {
+    height: 32px;
+    margin-top: 19px;
+    padding: 0 17px;
+}
+
+/* stays navy (with a spinner) while the server saves */
+.profile-action_busy[disabled],
+.profile-action_busy[disabled]:hover {
+    border-color: var(--cp-navy);
+    background: var(--cp-navy);
+    color: #ffffff;
+    cursor: progress;
+}
+
+.profile-spinner {
+    display: inline-block;
+    flex: 0 0 auto;
+    width: 14px;
+    height: 14px;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-top-color: #ffffff;
+    border-radius: 50%;
+    animation: cp-spin 0.8s linear infinite;
+}
+
+.profile-spinner_dark {
+    width: 32px;
+    height: 32px;
+    border-width: 3px;
+    border-color: rgba(18, 33, 74, 0.2);
+    border-top-color: var(--cp-navy);
+}
+
+.profile-cancel {
+    margin-top: 12px;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.profile-photo-note {
+    max-width: 200px;
+}
+
+/* ---------- right column ---------- */
+.profile-details {
+    flex: 0 1 664px;
+    min-width: 0;
+}
+
+.profile-section {
+    margin: 0 0 26px;
+    color: var(--cp-navy);
+}
+
+.profile-section_next {
+    margin-top: 38px;
+}
+
+/* phone: flag + country code + number in one field */
+.profile-phone {
+    display: flex;
+    align-items: center;
+    height: 48px;
+    min-width: 0;
+    padding: 0 16px 0 12px;
+    border: 1px solid var(--cp-border);
+    border-radius: var(--cp-radius-sm);
+    background: var(--cp-surface);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.profile-phone:focus-within {
+    border-color: var(--cp-navy);
+    box-shadow: var(--cp-focus);
+}
+
+.profile-phone_readonly,
+.profile-phone_readonly:focus-within {
+    border-color: var(--cp-disabled-field);
+    background: var(--cp-disabled-field);
+    box-shadow: none;
+}
+
+.profile-phone_invalid,
+.profile-phone_invalid:focus-within {
+    border-color: var(--cp-red);
+    box-shadow: none;
+}
+
+/* flag + code; in the edit state a transparent <select> lies over it, so a click or the keyboard opens the list */
+.profile-phone__country {
+    position: relative;
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    align-self: stretch;
+    margin-right: 18px;
+}
+
+.profile-phone__country_edit {
+    padding-right: 16px;
+    border-radius: 4px;
+    cursor: pointer;
+}
+
+.profile-phone__country_edit:focus-within {
+    outline: 2px solid var(--cp-navy);
+    outline-offset: 2px;
+}
+
+.profile-phone__flag {
+    display: block;
+    flex: 0 0 auto;
+    width: 22px;
+    height: 16px;
+    margin-right: 11px;
+}
+
+.profile-phone__code {
+    flex: 0 0 auto;
+    font-size: 16px;
+    line-height: 24px;
+    color: var(--cp-ink);
+}
+
+.profile-phone__chevron {
+    position: absolute;
+    top: 50%;
+    right: 2px;
+    width: 7px;
+    height: 7px;
+    margin-top: -5px;
+    border-right: 1.5px solid var(--cp-ink);
+    border-bottom: 1.5px solid var(--cp-ink);
+    transform: rotate(45deg);
+    pointer-events: none;
+}
+
+.profile-phone__select {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    opacity: 0;
+    font-size: 16px; /* no zoom on iPhone */
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.profile-phone__input {
+    flex: 1 1 auto;
+    min-width: 0;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--cp-ink);
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    outline: none;
+}
+
+.profile-change {
+    font-size: 16px;
+}
+
+/* ---------- change password popup ---------- */
+.profile-pw .cp-modal__body {
+    margin-top: 24px;
+}
+
+.profile-pw__error {
+    margin-bottom: 20px;
+}
+
+.profile-pw__control {
+    position: relative;
+}
+
+.profile-pw__input {
+    padding-right: 52px;
+}
+
+.profile-pw__eye {
+    position: absolute;
+    top: 50%;
+    right: 9px;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    margin-top: -16px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    color: var(--cp-ink-dark);
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.profile-pw__eye svg {
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+}
+
+.profile-pw__eye_empty {
+    color: var(--cp-placeholder);
+}
+
+.profile-pw__eye:hover {
+    background: var(--cp-tint);
+    color: var(--cp-navy);
+}
+
+.profile-pw__eye:focus-visible {
+    outline: 2px solid var(--cp-navy);
+    outline-offset: 0;
+}
+
+.profile-pw__rules {
+    margin-top: 8px;
+}
+
+.profile-pw__check {
+    display: block;
+    width: 72px;
+    height: 72px;
+    margin: 16px auto 20px;
+}
+
+.profile-pw__check circle {
+    fill: var(--cp-green);
+}
+
+.profile-pw__check path {
+    fill: none;
+    stroke: #ffffff;
+    stroke-width: 5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* ---------- smaller screens ---------- */
+@media (max-width: 1024px) {
+    .profile-layout {
+        gap: 32px;
+    }
+}
+
+@media (max-width: 768px) {
+    .profile-layout {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 32px;
+        padding-top: 0;
+    }
+
+    .profile-side {
+        flex: none;
+        padding-top: 0;
+    }
+
+    .profile-photo {
+        width: 140px;
+        height: 140px;
+    }
+
+    .profile-name {
+        margin-top: 16px;
+        font-size: 24px;
+        line-height: 32px;
+    }
+
+    .profile-action {
+        margin-top: 16px;
+    }
+
+    .profile-details {
+        flex: none;
+    }
+
+    .profile-photo-note {
+        max-width: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .profile-spinner {
+        animation-duration: 2s;
+    }
+}

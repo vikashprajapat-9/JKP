@@ -1,0 +1,9 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<PlatformEventSubscriberConfig xmlns="http://soap.sforce.com/2006/04/metadata">
+    <batchSize>200</batchSize>
+    <masterLabel>Partner Access Change Subscriber</masterLabel>
+    <numPartitions>1</numPartitions>
+    <partitionKey>EventUuid</partitionKey>
+    <platformEventConsumer>PartnerAccessChangeTrigger</platformEventConsumer>
+    <user>abhishek.dubey_cqu064klrdmsl4@utilitarianlabs.com.devthree</user>
+</PlatformEventSubscriberConfig>

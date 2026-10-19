@@ -1,0 +1,85 @@
+<template>
+    <div class="main-container">
+        <div class="left-section">
+            <div class="section-header">
+                <h2>Unit Selection</h2>
+            </div>
+            <div class="selection-item">
+                <label>Company</label>
+                <lightning-combobox name="company" value={selectedCompanyId} placeholder="Select Company" options={companyOptions} onchange={handleCompanyChange}> </lightning-combobox>
+            </div>
+            <!-- PROJECT -->
+            <div class="selection-item">
+                <label>Project</label>
+                <lightning-combobox name="project" value={selectedProjectId} placeholder="Select Project" options={projectOptions} onchange={handleProjectChange} disabled={isProjectDisabled}> </lightning-combobox>
+            </div>
+            <!-- TOWER -->
+            <div class="selection-item">
+                <label>Tower</label>
+                <lightning-combobox name="tower"  value={selectedTowerId} placeholder="Select Tower" options={towerOptions} onchange={handleTowerChange} disabled={isTowerDisabled}></lightning-combobox>
+            </div>
+            <!-- FLOOR -->
+            <div class="selection-item">
+                <label>Floor</label>
+                <lightning-combobox name="floor"  value={selectedFloorId} placeholder="Select Floor"  options={floorOptions} onchange={handleFloorChange} disabled={isFloorDisabled}> </lightning-combobox>
+            </div>
+            <!-- UNIT -->
+                <template if:true={showUnits}>
+                    <div class="units-section">
+                    <div class="units-header">
+                        <h3> Available Units <span class="unit-total"> ({unitOptions.length})</span></h3>
+                        <div class="select-all-section">
+                            <lightning-input type="checkbox"  label="Select All" checked={isAllUnitsSelected} onchange={handleSelectAll}></lightning-input>
+                        </div>
+                    </div>
+                <!-- UNIT LIST -->
+                <div class="unit-list">
+                    <template for:each={unitOptions} for:item="unit">
+                        <div key={unit.value} class={unit.cssClass} data-id={unit.value} onclick={handleUnitClick}>
+                            <div class="unit-name"> {unit.label} (<span class="unit-code">{unit.code}</span>) </div>
+                        </div>
+                    </template>
+                </div>
+            </div>
+            </template>
+        </div>
+        <!-- RIGHT SIDE -->
+        <div class="right-section">
+            <div class="section-header">
+                <div class="right-header">
+                    <div>
+                        <h2>Selected Units</h2>
+                        <span class="unit-count"> {selectedUnits.length} Selected </span>
+                    </div>
+                    <!-- UPDATE BUTTON -->
+                    <div class="action-section">
+                        <lightning-button variant="brand" label=" Mark Internal QC" onclick={handleUpdateInternalQC} disabled={isUpdating}> </lightning-button>
+                    </div>
+                </div>
+            </div>
+            <!-- SELECTED UNITS -->
+            <template if:true={hasSelectedUnits}>
+                <div class="selected-unit-list">
+                    <template for:each={selectedUnits} for:item="unit">
+                        <div key={unit.id} class="selected-unit-card">
+                            <div class="unit-info">
+                                <div class="selected-unit-name"> {unit.name}  (<span class="selected-unit-code">{unit.code}</span>) </div>
+                                <!-- <div class="selected-unit-code"> Unit Code: {unit.code} </div> -->
+                            </div>
+                            <lightning-button-icon icon-name="utility:close" alternative-text="Remove" title="Remove" data-id={unit.id} onclick={removeUnit}>
+                            </lightning-button-icon>
+                        </div>
+                    </template>
+                </div>
+
+            </template>
+            <!-- NO UNIT -->
+            <template if:false={hasSelectedUnits}>
+                <div class="empty-state">
+                    <lightning-icon icon-name="utility:home" size="medium"> </lightning-icon>
+                    <p>Select units from the left side. </p>
+                </div>
+            </template>
+        </div>
+    </div>
+</template>

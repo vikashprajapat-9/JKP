@@ -1,0 +1,97 @@
+<template>
+    <div class="profile-container">
+        
+        <!-- TOP TITLE & DESCRIPTION -->
+        <div class="profile-page-header">
+            <h1 class="page-title">Profile</h1>
+            <p class="page-subtitle">
+                View your personal information and the details of your account with John Keells Properties.
+                Keeping them up to date ensures smooth communication and access to all the features of the portal;
+                to change any of them, please contact the JKP CP team.
+            </p>
+        </div>
+
+        <template lwc:if={isLoading}>
+            <div class="spinner-holder">
+                <lightning-spinner alternative-text="Loading Profile" size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template lwc:if={error}>
+            <div class="alert-banner error-banner" role="alert">
+                <lightning-icon icon-name="utility:error" size="x-small" class="alert-icon"></lightning-icon>
+                <span class="alert-text">{error}</span>
+            </div>
+        </template>
+
+        <template lwc:if={profile}>
+            <div class="profile-card">
+            <!-- HERO CARD (DARK BLUE BRAND COLOR) -->
+            <div class="profile-hero-card">
+                <div class="avatar-circle" aria-hidden="true">
+                    <span>{profile.initials}</span>
+                </div>
+                <h2 class="user-fullname">{profile.name}</h2>
+                <template lwc:if={profile.companyName}>
+                    <p class="company-name">{profile.companyName}</p>
+                </template>
+                <template lwc:if={profile.partnerType}>
+                    <div class="partner-type-badge">{profile.partnerType}</div>
+                </template>
+            </div>
+
+            <!-- ACCOUNT DETAILS SECTION -->
+            <div class="account-details-section">
+                <h3 class="section-title">Account Details</h3>
+
+                <div class="details-card">
+                    <!-- EMAIL ROW -->
+                    <div class="detail-row">
+                        <div class="detail-left">
+                            <div class="icon-box">
+                                <lightning-icon icon-name="utility:email" size="x-small"></lightning-icon>
+                            </div>
+                            <div class="detail-texts">
+                                <span class="detail-label">EMAIL ADDRESS</span>
+                                <span class="detail-value">{profile.email}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- MOBILE ROW -->
+                    <div class="detail-row">
+                        <div class="detail-left">
+                            <div class="icon-box">
+                                <lightning-icon icon-name="utility:phone_portrait" size="x-small"></lightning-icon>
+                            </div>
+                            <div class="detail-texts">
+                                <span class="detail-label">MOBILE NUMBER</span>
+                                <span class="detail-value">{profile.mobile}</span>
+                            </div>
+                        </div>
+                    </div>
+
+                    <!-- CONTRACT EXPIRY DATE ROW -->
+                    <div class="detail-row last-row">
+                        <div class="detail-left">
+                            <div class="icon-box">
+                                <lightning-icon icon-name="utility:event" size="x-small"></lightning-icon>
+                            </div>
+                            <div class="detail-texts">
+                                <span class="detail-label">CONTRACT EXPIRY DATE</span>
+                                <span class="detail-value detail-value-regular">{profile.expiryDate}</span>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- LOGOUT ACTION BUTTON -->
+                <button class="logout-btn" onclick={handleLogout} type="button">
+                    <lightning-icon icon-name="utility:logout" size="x-small" class="logout-icon"></lightning-icon>
+                    <span>Logout</span>
+                </button>
+            </div>
+            </div>
+        </template>
+    </div>
+</template>

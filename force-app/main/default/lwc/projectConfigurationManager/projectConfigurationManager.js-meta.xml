@@ -1,0 +1,18 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>64.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>Project Configuration Manager</masterLabel>
+    <description>Adds several Project Configurations at once (unit type, starting price, square feet) and edits the saved ones. Each configuration has its own SharePoint folder under Project Configurations, and its uploaded file is saved there.</description>
+    <targets>
+        <target>lightning__RecordPage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__RecordPage">
+            <objects>
+                <object>Project__c</object>
+            </objects>
+            <property name="cardTitle" type="String" label="Title" default="Project Configurations"/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

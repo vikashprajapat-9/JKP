@@ -1,0 +1,285 @@
+<template>
+    <div class="cp-page mp">
+        <template lwc:if={isLoading}>
+            <div class="cp-loading">
+                <lightning-spinner alternative-text={text.loading} size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template lwc:elseif={hasError}>
+            <div class="cp-alert cp-alert_error" role="alert">{text.loadError}</div>
+        </template>
+
+        <template lwc:elseif={showContent}>
+            <!-- ===================== LIST (Figma p21) ===================== -->
+            <template lwc:if={isListView}>
+                <div class="cp-page-head mp-head">
+                    <div class="cp-page-head__text">
+                        <h1 class="cp-page-title">{pageData.pageTitle}</h1>
+                        <p class="cp-page-intro">{pageData.description}</p>
+                    </div>
+                </div>
+
+                <div class="mp-toolbar">
+                    <div class="mp-filter" onkeydown={handleFilterKeydown}>
+                        <button
+                            type="button"
+                            class="mp-filter__button"
+                            aria-haspopup="listbox"
+                            aria-expanded={filterExpanded}
+                            onclick={toggleFilterMenu}
+                        >
+                            <svg class="mp-filter__icon" viewBox="0 0 17 17" aria-hidden="true" focusable="false">
+                                <path d={icons.funnel}></path>
+                            </svg>
+                            <span class="mp-filter__label">{filterButtonLabel}</span>
+                            <svg class={filterCaretClass} viewBox="0 0 12 7" aria-hidden="true" focusable="false">
+                                <path d={icons.filterChevron}></path>
+                            </svg>
+                        </button>
+
+                        <template lwc:if={isFilterMenuOpen}>
+                            <div class="mp-filter__backdrop" onclick={closeFilterMenu}></div>
+                            <div class="mp-filter__menu" role="listbox" aria-label={text.filterPlaceholder}>
+                                <button
+                                    type="button"
+                                    role="option"
+                                    class={allProjectsOptionClass}
+                                    aria-selected={allProjectsSelected}
+                                    data-value=""
+                                    onclick={handleFilterSelect}
+                                >{text.allProjects}</button>
+                                <template for:each={filterOptionsDecorated} for:item="opt">
+                                    <button
+                                        key={opt.value}
+                                        type="button"
+                                        role="option"
+                                        class={opt.itemClass}
+                                        aria-selected={opt.ariaSelected}
+                                        data-value={opt.value}
+                                        onclick={handleFilterSelect}
+                                    >{opt.label}</button>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+                </div>
+
+                <template lwc:if={hasNoFilteredProperties}>
+                    <div class="cp-empty">
+                        <img class="cp-empty__img" src={emptyImageUrl} alt="" />
+                        <p class="cp-empty__text">{emptyText}</p>
+                    </div>
+                </template>
+                <template lwc:else>
+                    <div class="cp-table-wrap">
+                        <table class="cp-table mp-table mp-table_list">
+                            <thead>
+                                <tr>
+                                    <th class="mp-col-sr" scope="col">{text.colSr}</th>
+                                    <th class="mp-col-description" scope="col">{text.colDescription}</th>
+                                    <th class="mp-col-unit" scope="col">{text.colUnitNumber}</th>
+                                    <th class="mp-col-parks" scope="col">{text.colCarParks}</th>
+                                    <th class="mp-col-type" scope="col">{text.colType}</th>
+                                    <th class="mp-col-action" scope="col">{text.colAction}</th>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={filteredProperties} for:item="prop">
+                                    <tr key={prop.id}>
+                                        <td class="mp-col-sr">{prop.srNo}</td>
+                                        <td class="mp-col-description">{prop.displayProjectName}</td>
+                                        <td class="mp-col-unit" data-label={text.colUnitNumber}>{prop.displayUnitNumber}</td>
+                                        <td class="mp-col-parks" data-label={text.colCarParks}>{prop.displayCarParks}</td>
+                                        <td class="mp-col-type" data-label={text.colType}>{prop.displayType}</td>
+                                        <td class="mp-col-action">
+                                            <button
+                                                type="button"
+                                                class="cp-btn mp-view-btn"
+                                                data-id={prop.id}
+                                                onclick={handleOpenDetails}
+                                            >{text.viewDetails}</button>
+                                        </td>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </template>
+            </template>
+
+            <!-- ================== DETAILS (Figma p22-24) ================== -->
+            <template lwc:if={isDetailView}>
+                <div class="mp-back">
+                    <button type="button" class="mp-back__btn" aria-label={text.back} title={text.back} onclick={handleBack}>
+                        <svg viewBox="0 0 28 22" aria-hidden="true" focusable="false">
+                            <path d={icons.back}></path>
+                        </svg>
+                    </button>
+                    <h1 class="mp-back__title">{pageData.pageTitle}</h1>
+                </div>
+
+                <template lwc:if={isDetailsLoading}>
+                    <div class="cp-loading">
+                        <lightning-spinner alternative-text={text.loadingDetails} size="medium"></lightning-spinner>
+                    </div>
+                </template>
+
+                <template lwc:if={showDetailsAlert}>
+                    <div class="cp-alert cp-alert_error" role="alert">{text.detailsError}</div>
+                </template>
+
+                <template lwc:if={selectedProperty}>
+                    <!-- Applicant cards (Figma p22 / p23) -->
+                    <div class="mp-applicants">
+                        <template for:each={selectedProperty.applicants} for:item="applicant">
+                            <section class="cp-card ap-card" key={applicant.key}>
+                                <div class="ap-head">
+                                    <span class={applicant.avatarClass} aria-hidden="true">
+                                        <svg viewBox="0 0 56 56" focusable="false">
+                                            <path d={icons.person}></path>
+                                        </svg>
+                                    </span>
+                                    <div class="ap-heading">
+                                        <h2 class="ap-name">{applicant.displayName}</h2>
+                                        <p class="ap-type">{applicant.applicantType}</p>
+                                    </div>
+                                </div>
+                                <template for:each={applicant.rows} for:item="row">
+                                    <dl class={row.rowClass} key={row.key}>
+                                        <template for:each={row.fields} for:item="field">
+                                            <div class="mp-field" key={field.key}>
+                                                <dt class="mp-field__label">{field.label}</dt>
+                                                <dd class="mp-field__value">{field.value}</dd>
+                                            </div>
+                                        </template>
+                                    </dl>
+                                </template>
+                            </section>
+                        </template>
+                    </div>
+
+                    <!-- Tabs (Figma p22 / p24) -->
+                    <div class="cp-tabs mp-tabs" role="tablist" aria-label={text.tabsLabel}>
+                        <button
+                            type="button"
+                            role="tab"
+                            class={bookingTabClass}
+                            aria-selected={bookingTabSelected}
+                            onclick={handleShowBookingTab}
+                        >{text.tabBooking}</button>
+                        <button
+                            type="button"
+                            role="tab"
+                            class={paymentTabClass}
+                            aria-selected={paymentTabSelected}
+                            onclick={handleShowPaymentTab}
+                        >{text.tabPayment}</button>
+                    </div>
+
+                    <!-- Booking Details (Figma p22, row opened = p23) -->
+                    <template lwc:if={isBookingTab}>
+                        <div class="cp-table-wrap mp-tab-panel" role="tabpanel" aria-label={text.tabBooking}>
+                            <table class="cp-table mp-table mp-table_booking">
+                                <thead>
+                                    <tr>
+                                        <th class="mp-col-sr" scope="col">{text.colSr}</th>
+                                        <th class="mp-col-description" scope="col">{text.colDescription}</th>
+                                        <th class="mp-col-unit" scope="col">{text.colUnitNumber}</th>
+                                        <th class="mp-col-parks" scope="col">{text.colCarParks}</th>
+                                        <th class="mp-col-type" scope="col">{text.colType}</th>
+                                        <th class="mp-col-action" scope="col">{text.colAction}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template for:each={bookingRows} for:item="row">
+                                        <tr key={row.key} class={row.trClass}>
+                                            <template lwc:if={row.isDetail}>
+                                                <td colspan="6" class="bk-detail-cell">
+                                                    <div class="bk-panel">
+                                                        <template for:each={row.booking.panelRows} for:item="panelRow">
+                                                            <dl class={panelRow.rowClass} key={panelRow.key}>
+                                                                <template for:each={panelRow.fields} for:item="field">
+                                                                    <div class="mp-field" key={field.key}>
+                                                                        <dt class="mp-field__label">{field.label}</dt>
+                                                                        <dd class="mp-field__value">{field.value}</dd>
+                                                                    </div>
+                                                                </template>
+                                                            </dl>
+                                                        </template>
+
+                                                        <hr class="bk-divider" />
+
+                                                        <p class="bk-heading">{text.bankDetails}</p>
+                                                        <template for:each={row.booking.bankRows} for:item="bankRow">
+                                                            <dl class={bankRow.rowClass} key={bankRow.key}>
+                                                                <template for:each={bankRow.fields} for:item="field">
+                                                                    <div class="mp-field" key={field.key}>
+                                                                        <dt class="mp-field__label">{field.label}</dt>
+                                                                        <dd class="mp-field__value">{field.value}</dd>
+                                                                    </div>
+                                                                </template>
+                                                            </dl>
+                                                        </template>
+                                                    </div>
+                                                </td>
+                                            </template>
+                                            <template lwc:else>
+                                                <td class="mp-col-sr">{row.booking.srNo}</td>
+                                                <td class="mp-col-description">{row.booking.displayDescription}</td>
+                                                <td class="mp-col-unit" data-label={text.colUnitNumber}>{row.booking.displayUnitNumber}</td>
+                                                <td class="mp-col-parks" data-label={text.colCarParks}>{row.booking.displayCarParks}</td>
+                                                <td class="mp-col-type" data-label={text.colType}>{row.booking.displayType}</td>
+                                                <td class="mp-col-action">
+                                                    <button
+                                                        type="button"
+                                                        class="cp-btn mp-view-btn"
+                                                        data-id={row.booking.id}
+                                                        aria-expanded={row.booking.ariaExpanded}
+                                                        onclick={handleToggleBooking}
+                                                    >{text.viewDetails}</button>
+                                                </td>
+                                            </template>
+                                        </tr>
+                                    </template>
+                                </tbody>
+                            </table>
+                        </div>
+                    </template>
+
+                    <!-- Payment Plan (Figma p24) -->
+                    <template lwc:if={isPaymentTab}>
+                        <div class="cp-table-wrap mp-tab-panel mp-tab-panel_plan" role="tabpanel" aria-label={text.tabPayment}>
+                            <table class="pp-table">
+                                <thead>
+                                    <tr>
+                                        <th class="pp-col-description" scope="col">{text.payDescription}</th>
+                                        <th class="pp-col-percentage" scope="col">{text.payPercentage}</th>
+                                        <th class="pp-col-date" scope="col">{text.payTrancheDate}</th>
+                                        <th class="pp-col-amount" scope="col">{text.payAmount}</th>
+                                    </tr>
+                                </thead>
+                                <tbody>
+                                    <template for:each={selectedProperty.paymentPlan} for:item="row">
+                                        <tr key={row.key}>
+                                            <td class="pp-col-description">{row.displayDescription}</td>
+                                            <td data-label={text.payPercentage}>{row.displayPercentage}</td>
+                                            <td data-label={text.payTrancheDate}>{row.displayTrancheDate}</td>
+                                            <td data-label={text.payAmount}>{row.displayAmount}</td>
+                                        </tr>
+                                    </template>
+                                    <tr class="pp-total">
+                                        <td class="pp-col-description">{text.payTotal}</td>
+                                        <td data-label={text.payPercentage}>{selectedProperty.paymentPlanTotalPercentage}</td>
+                                        <td data-label={text.payTrancheDate}>{emptyValue}</td>
+                                        <td data-label={text.payAmount}>{selectedProperty.displayPaymentPlanTotal}</td>
+                                    </tr>
+                                </tbody>
+                            </table>
+                        </div>
+                    </template>
+                </template>
+            </template>
+        </template>
+    </div>
+</template>

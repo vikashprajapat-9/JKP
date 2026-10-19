@@ -1,0 +1,72 @@
+/* =========================================================
+   PAGINATION CONTAINER
+========================================================= */
+
+:host {
+    display: block;
+    width: 100%;
+}
+
+.pagination-container {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    flex-wrap: wrap;
+    gap: 10px;
+    width: 100%;
+    padding: 10px 0;
+}
+
+/* =========================================================
+   PAGINATION BUTTONS
+========================================================= */
+
+.pagination-btn {
+    display: inline-block;
+    flex-shrink: 0;
+    --slds-c-button-radius-border: 6px;
+    --slds-c-button-neutral-color-background: #ffffff;
+    --slds-c-button-neutral-color-border: #cbd5e1;
+    --slds-c-button-neutral-color-text: #30476e;
+    --slds-c-button-neutral-color-background-hover: #edf3fc;
+    --slds-c-button-neutral-color-border-hover: #8098bd;
+    --slds-c-button-neutral-color-text-hover: #1f315f;
+    --slds-c-button-neutral-color-background-disabled: #f3f5f8;
+    --slds-c-button-neutral-color-border-disabled: #e0e5ec;
+    --slds-c-button-text-color-disabled: #a3acba;
+}
+
+/* =========================================================
+   PAGE INFORMATION
+========================================================= */
+
+.showText {
+    margin: 0;
+    padding: 0 6px;
+    color: #475467;
+    font-size: 12px;
+    font-weight: 500;
+    line-height: 1.5;
+    text-align: center;
+    white-space: nowrap;
+}
+
+/* =========================================================
+   RESPONSIVE DESIGN
+========================================================= */
+
+@media screen and (max-width: 480px) {
+    .pagination-container {
+        gap: 5px;
+        padding: 12px 0;
+    }
+
+    .showText {
+        font-size: 11px;
+        padding: 0 2px;
+    }
+
+    .pagination-btn {
+        --slds-c-button-radius-border: 5px;
+    }
+}

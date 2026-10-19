@@ -1,0 +1,16 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>64.0</apiVersion>
+    <isExposed>true</isExposed>
+    <masterLabel>SharePoint Document Manager</masterLabel>
+    <description>Lists a record's Document folders and uploads PDF, image and MP4 files to SharePoint, saving each as a Sub Document with a public preview link. Works on any object that Document has a lookup to.</description>
+    <targets>
+        <target>lightning__RecordPage</target>
+    </targets>
+    <targetConfigs>
+        <targetConfig targets="lightning__RecordPage">
+            <property name="cardTitle" type="String" label="Title" default="Document List"/>
+            <property name="relationshipField" type="String" label="Document lookup field (optional)" description="API name of the lookup on Document that points to this object, for example Project__c. Leave blank to detect it automatically."/>
+        </targetConfig>
+    </targetConfigs>
+</LightningComponentBundle>

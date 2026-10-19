@@ -1,0 +1,352 @@
+<template>
+    <div class="cp-page cs">
+        <template lwc:if={isLoading}>
+            <div class="cp-loading">
+                <lightning-spinner alternative-text={text.loading} size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template lwc:elseif={hasError}>
+            <div class="cp-alert cp-alert_error" role="alert">{text.loadError}</div>
+        </template>
+
+        <template lwc:elseif={showContent}>
+            <!-- ===================== PROJECT CARDS (Figma p26) ===================== -->
+            <template lwc:if={isListView}>
+                <div class="cp-page-head">
+                    <div class="cp-page-head__text">
+                        <h1 class="cp-page-title">{pageData.title}</h1>
+                        <p class="cp-page-intro">{pageData.description}</p>
+                    </div>
+                </div>
+
+                <template lwc:if={hasProjects}>
+                    <div class="cs-grid">
+                        <template for:each={decoratedProjects} for:item="project">
+                            <article class="cp-card cp-card_flat cs-card" key={project.id}>
+                                <div class="cs-card__media">
+                                    <template lwc:if={project.showImage}>
+                                        <img
+                                            class="cs-card__img"
+                                            src={project.currentImageUrl}
+                                            data-src={project.currentImageUrl}
+                                            alt={project.name}
+                                            loading="lazy"
+                                            onerror={handleImageError}
+                                        />
+                                    </template>
+                                    <template lwc:if={project.hasMultipleImages}>
+                                        <button
+                                            type="button"
+                                            class="cs-card__arrow cs-card__arrow_prev"
+                                            data-id={project.id}
+                                            onclick={handlePrevProjectImage}
+                                            aria-label={text.previousImage}
+                                            title={text.previousImage}
+                                        >
+                                            <svg viewBox="0 0 8 12" aria-hidden="true" focusable="false">
+                                                <path d={icons.cardPrev}></path>
+                                            </svg>
+                                        </button>
+                                        <button
+                                            type="button"
+                                            class="cs-card__arrow cs-card__arrow_next"
+                                            data-id={project.id}
+                                            onclick={handleNextProjectImage}
+                                            aria-label={text.nextImage}
+                                            title={text.nextImage}
+                                        >
+                                            <svg viewBox="0 0 8 12" aria-hidden="true" focusable="false">
+                                                <path d={icons.cardNext}></path>
+                                            </svg>
+                                        </button>
+                                        <div class="cs-card__dots" aria-hidden="true">
+                                            <template for:each={project.dots} for:item="dot">
+                                                <span key={dot.key} class={dot.dotClass}></span>
+                                            </template>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <div class="cs-card__body">
+                                    <h2 class="cs-card__name">{project.name}</h2>
+                                    <p class="cs-card__unit">{project.unitNumber}</p>
+
+                                    <div class="cs-progress-head">
+                                        <span class="cs-progress-head__label">{text.progress}</span>
+                                        <span class="cs-progress-head__value">{project.progressLabel}</span>
+                                    </div>
+                                    <div
+                                        class="cp-progress cs-progress"
+                                        role="progressbar"
+                                        aria-label={text.progress}
+                                        aria-valuemin="0"
+                                        aria-valuemax="100"
+                                        aria-valuenow={project.progressValue}
+                                    >
+                                        <div class="cp-progress__bar" style={project.progressBarStyle}></div>
+                                    </div>
+
+                                    <button
+                                        type="button"
+                                        class="cp-btn cp-btn_block cs-card__action"
+                                        data-id={project.id}
+                                        onclick={handleOpenProject}
+                                    >{text.viewUpdates}</button>
+                                </div>
+                            </article>
+                        </template>
+                    </div>
+                </template>
+                <template lwc:else>
+                    <div class="cp-empty">
+                        <img class="cp-empty__img" src={emptyImageUrl} alt="" />
+                        <p class="cp-empty__text">{text.empty}</p>
+                    </div>
+                </template>
+            </template>
+
+            <!-- ===================== PROJECT UPDATES (Figma p27) ===================== -->
+            <template lwc:if={isDetailView}>
+                <template lwc:if={selectedProject}>
+                    <div class="cs-back">
+                        <button type="button" class="cs-back__btn" aria-label={text.back} title={text.back} onclick={handleBack}>
+                            <svg viewBox="0 0 28 22" aria-hidden="true" focusable="false">
+                                <path d={icons.back}></path>
+                            </svg>
+                        </button>
+                        <div class="cs-back__text">
+                            <h1 class="cs-back__title">{selectedProject.name}</h1>
+                            <template lwc:if={selectedProject.unitLabel}>
+                                <p class="cs-back__unit">{selectedProject.unitLabel}</p>
+                            </template>
+                        </div>
+                    </div>
+
+                    <div class="cs-progress-head cs-progress-head_detail">
+                        <span class="cs-progress-head__label">{text.progress}</span>
+                        <span class="cs-progress-head__value">{selectedProject.progressLabel}</span>
+                    </div>
+                    <div
+                        class="cp-progress cs-progress cs-progress_detail"
+                        role="progressbar"
+                        aria-label={text.progress}
+                        aria-valuemin="0"
+                        aria-valuemax="100"
+                        aria-valuenow={selectedProject.progressValue}
+                    >
+                        <div class="cp-progress__bar" style={selectedProject.progressBarStyle}></div>
+                    </div>
+
+                    <template lwc:if={hasUpdates}>
+                        <div class="cs-acc">
+                            <template for:each={decoratedUpdates} for:item="update">
+                                <section class="cs-acc__item" key={update.id}>
+                                    <button
+                                        type="button"
+                                        class={update.headerClass}
+                                        data-id={update.id}
+                                        aria-expanded={update.ariaExpanded}
+                                        onclick={handleToggleUpdate}
+                                    >
+                                        <span class="cs-acc__label">{update.monthLabel}</span>
+                                        <svg class="cs-acc__chevron" viewBox="0 0 24 14" aria-hidden="true" focusable="false">
+                                            <path d={update.chevronPath}></path>
+                                        </svg>
+                                    </button>
+
+                                    <template lwc:if={update.isActive}>
+                                        <div class="cs-acc__panel">
+                                            <template lwc:if={update.hasImages}>
+                                                <h3 class="cs-acc__heading">{text.images}</h3>
+                                                <div class="cs-tiles">
+                                                    <template for:each={update.displayImages} for:item="img">
+                                                        <button
+                                                            type="button"
+                                                            class="cs-tile"
+                                                            key={img.id}
+                                                            data-update-id={update.id}
+                                                            data-image-id={img.id}
+                                                            aria-label={img.ariaLabel}
+                                                            onclick={handleImageClick}
+                                                        >
+                                                            <template lwc:if={img.showImage}>
+                                                                <img
+                                                                    class="cs-tile__img"
+                                                                    src={img.imageUrl}
+                                                                    data-src={img.imageUrl}
+                                                                    alt=""
+                                                                    loading="lazy"
+                                                                    onerror={handleImageError}
+                                                                />
+                                                            </template>
+                                                            <template lwc:if={img.showOverlay}>
+                                                                <span class="cs-tile__more">{img.overlayLabel}</span>
+                                                            </template>
+                                                        </button>
+                                                    </template>
+                                                </div>
+                                            </template>
+
+                                            <template lwc:if={update.hasVideos}>
+                                                <h3 class="cs-acc__heading">{text.videos}</h3>
+                                                <div class="cs-tiles">
+                                                    <template for:each={update.videos} for:item="vid">
+                                                        <button
+                                                            type="button"
+                                                            class="cs-tile cs-tile_video"
+                                                            key={vid.id}
+                                                            data-update-id={update.id}
+                                                            data-video-id={vid.id}
+                                                            aria-label={text.playVideo}
+                                                            onclick={handleVideoClick}
+                                                        >
+                                                            <template lwc:if={vid.showThumb}>
+                                                                <img
+                                                                    class="cs-tile__img"
+                                                                    src={vid.thumbnailUrl}
+                                                                    data-src={vid.thumbnailUrl}
+                                                                    alt=""
+                                                                    loading="lazy"
+                                                                    onerror={handleImageError}
+                                                                />
+                                                            </template>
+                                                            <svg class="cs-tile__play" viewBox="0 0 24 24" aria-hidden="true" focusable="false">
+                                                                <path d={icons.play}></path>
+                                                            </svg>
+                                                        </button>
+                                                    </template>
+                                                </div>
+                                            </template>
+
+                                            <template lwc:if={update.hasNoMedia}>
+                                                <p class="cs-acc__empty">{text.noMedia}</p>
+                                            </template>
+                                        </div>
+                                    </template>
+                                </section>
+                            </template>
+                        </div>
+                    </template>
+                    <template lwc:else>
+                        <div class="cp-empty">
+                            <img class="cp-empty__img" src={emptyImageUrl} alt="" />
+                            <p class="cp-empty__text">{text.noUpdates}</p>
+                        </div>
+                    </template>
+                </template>
+            </template>
+        </template>
+
+        <!-- ===================== IMAGE VIEWER (Figma p28) ===================== -->
+        <template lwc:if={isImageModalOpen}>
+            <div
+                class="cs-viewer"
+                role="dialog"
+                aria-modal="true"
+                aria-label={text.imageViewer}
+                onclick={handleCloseImageModal}
+                onkeydown={handleViewerKeydown}
+            >
+                <div
+                    class="cs-viewer__stage"
+                    onclick={stopPropagation}
+                    ontouchstart={handleModalTouchStart}
+                    ontouchend={handleModalTouchEnd}
+                >
+                    <template lwc:if={hasMultipleModalImages}>
+                        <button
+                            type="button"
+                            class="cs-viewer__nav cs-viewer__nav_prev"
+                            onclick={handlePrevImage}
+                            aria-label={text.previous}
+                            title={text.previous}
+                        >
+                            <svg viewBox="0 0 12 20" aria-hidden="true" focusable="false">
+                                <path d={icons.viewerPrev}></path>
+                            </svg>
+                        </button>
+                    </template>
+
+                    <div class="cs-viewer__figure">
+                        <template lwc:if={showModalImage}>
+                            <img
+                                class="cs-viewer__img"
+                                src={currentModalImage.imageUrl}
+                                data-src={currentModalImage.imageUrl}
+                                alt={text.imageAlt}
+                                onerror={handleImageError}
+                            />
+                        </template>
+                        <template lwc:else>
+                            <div class="cs-viewer__img cs-viewer__img_missing"></div>
+                        </template>
+
+                        <button
+                            type="button"
+                            class="cs-viewer__close"
+                            onclick={handleCloseImageModal}
+                            aria-label={text.close}
+                            title={text.close}
+                        >
+                            <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+                                <path d={icons.close}></path>
+                            </svg>
+                        </button>
+
+                        <template lwc:if={hasMultipleModalImages}>
+                            <div class="cs-viewer__dots" aria-hidden="true">
+                                <template for:each={decoratedModalDots} for:item="dot">
+                                    <span key={dot.key} class={dot.dotClass}></span>
+                                </template>
+                            </div>
+                        </template>
+                    </div>
+
+                    <template lwc:if={hasMultipleModalImages}>
+                        <button
+                            type="button"
+                            class="cs-viewer__nav cs-viewer__nav_next"
+                            onclick={handleNextImage}
+                            aria-label={text.next}
+                            title={text.next}
+                        >
+                            <svg viewBox="0 0 12 20" aria-hidden="true" focusable="false">
+                                <path d={icons.viewerNext}></path>
+                            </svg>
+                        </button>
+                    </template>
+                </div>
+            </div>
+        </template>
+
+        <!-- ===================== VIDEO PLAYER (same frame as the viewer) ===================== -->
+        <template lwc:if={isVideoModalOpen}>
+            <div
+                class="cs-viewer"
+                role="dialog"
+                aria-modal="true"
+                aria-label={text.videoPlayer}
+                onclick={handleCloseVideoModal}
+                onkeydown={handleViewerKeydown}
+            >
+                <div class="cs-viewer__stage" onclick={stopPropagation}>
+                    <div class="cs-viewer__figure">
+                        <video class="cs-viewer__video" src={selectedVideo.videoUrl} controls autoplay playsinline></video>
+                        <button
+                            type="button"
+                            class="cs-viewer__close"
+                            onclick={handleCloseVideoModal}
+                            aria-label={text.close}
+                            title={text.close}
+                        >
+                            <svg viewBox="0 0 20 20" aria-hidden="true" focusable="false">
+                                <path d={icons.close}></path>
+                            </svg>
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+</template>

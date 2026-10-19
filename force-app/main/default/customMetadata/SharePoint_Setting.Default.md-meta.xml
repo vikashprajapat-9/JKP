@@ -1,0 +1,29 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Default</label>
+    <protected>false</protected>
+    <values>
+        <field>Credential__c</field>
+        <value xsi:type="xsd:string">SharePoint_Graph</value>
+    </values>
+    <values>
+        <field>Drive_Id__c</field>
+        <value xsi:type="xsd:string">b!MQmJf3a5ZEiT6gPWegVT1K7MqxsKLXFLgyHGU-25ijpPqTmmBzJOSKKrcX8lRxZC</value>
+    </values>
+    <values>
+        <field>Host__c</field>
+        <value xsi:type="xsd:string">keells.sharepoint.com</value>
+    </values>
+    <values>
+        <field>Max_Upload_MB__c</field>
+        <value xsi:type="xsd:double">200.0</value>
+    </values>
+    <values>
+        <field>Site_Id__c</field>
+        <value xsi:type="xsd:string">keells.sharepoint.com,7f890931-b976-4864-93ea-03d67a0553d4,1babccae-2d0a-4b71-8321-c653edb98a3a</value>
+    </values>
+    <values>
+        <field>Site_Url__c</field>
+        <value xsi:type="xsd:string">https://keells.sharepoint.com/sites/JKPConnectDataHub</value>
+    </values>
+</CustomMetadata>

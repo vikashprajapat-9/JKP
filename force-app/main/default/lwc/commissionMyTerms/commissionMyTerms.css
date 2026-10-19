@@ -1,0 +1,29 @@
+@import 'c/commissionStyles';
+
+.intro .sectitle { margin-bottom: 2px; }
+.intro p { margin: 0; }
+
+/* Loading, error and empty states */
+.state { position: relative; min-height: 8rem; }
+.stateaction { margin-top: 10px; }
+.empty { display: flex; align-items: center; justify-content: center; min-height: 96px; padding: 12px; text-align: center; }
+.note.red { background: var(--red-bg); border-color: var(--red-line); color: var(--red); }
+button { font-family: inherit; cursor: pointer; }
+button:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px; }
+
+/* One card: project and configuration, the figures, then the payout stages */
+.term .sectitle { flex-wrap: wrap; }
+.facts { display: flex; flex-wrap: wrap; gap: 10px 32px; margin: 0 0 12px; }
+.fact { min-width: 120px; }
+.fact dt { margin: 0; }
+.fact dd { margin: 2px 0 0; }
+.fact.wide { flex: 1 1 240px; }
+.value { font-size: 15px; font-weight: 600; color: var(--navy); }
+.stagetitle { margin-bottom: 2px; }
+.tablewrap { overflow-x: auto; }
+/* The same column widths in every card */
+table.grid { table-layout: fixed; min-width: 420px; }
+table.grid th.c-stage { width: 130px; }
+table.grid th.c-percent { width: 170px; }
+table.grid th:first-child, table.grid td:first-child { padding-left: 2px; }
+table.grid th:last-child, table.grid td:last-child { padding-right: 2px; }

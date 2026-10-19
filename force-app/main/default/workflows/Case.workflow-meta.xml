@@ -1,0 +1,110 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <alerts>
+        <fullName>SendSlaViolationEmailAlert</fullName>
+        <description>A sample email alert for SLA breaches and consequential escalation.</description>
+        <protected>false</protected>
+        <recipients>
+            <type>owner</type>
+        </recipients>
+        <senderType>CurrentUser</senderType>
+        <template>SlaEmailTemplateFolder/SlaEmailAlertActionEmailTemplate</template>
+    </alerts>
+    <fieldUpdates>
+        <fullName>ChangeStatusToEscalated</fullName>
+        <field>Status</field>
+        <literalValue>Escalated</literalValue>
+        <name>Changes the case status to escalated.</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Pending</fullName>
+        <field>DOA_Approval_Status__c</field>
+        <literalValue>Pending</literalValue>
+        <name>Pending</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>true</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Rejected</fullName>
+        <field>DOA_Approval_Status__c</field>
+        <literalValue>Rejected</literalValue>
+        <name>Rejected</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>true</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>SO_HOS_Approved</fullName>
+        <field>SalesOrderCancellation__c</field>
+        <literalValue>HOS Approved</literalValue>
+        <name>SO HOS Approved</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>true</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>SO_rejected</fullName>
+        <field>SalesOrderCancellation__c</field>
+        <literalValue>HOS Rejected</literalValue>
+        <name>SO rejected</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>approved</fullName>
+        <field>DOA_Approval_Status__c</field>
+        <literalValue>Approved</literalValue>
+        <name>approved</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>true</reevaluateOnChange>
+    </fieldUpdates>
+    <tasks>
+        <fullName>Offer_Letter_Cancellation_ticket_with_signed_Customer_Refund_Letter</fullName>
+        <assignedToType>owner</assignedToType>
+        <description>Sales Agent: Raise “Offer Letter Cancellation” ticket with signed Customer Refund Letter.</description>
+        <dueDateOffset>3</dueDateOffset>
+        <notifyAssignee>false</notifyAssignee>
+        <offsetFromField>Asset.CreatedDate</offsetFromField>
+        <priority>Normal</priority>
+        <protected>false</protected>
+        <status>In Progress</status>
+        <subject>Offer Letter Cancellation: ticket with signed Customer Refund Letter.</subject>
+    </tasks>
+    <tasks>
+        <fullName>Verify_beneficiary_obtain_required_approvals</fullName>
+        <assignedToType>owner</assignedToType>
+        <description>Verify beneficiary &amp; obtain required approvals; manually closed it</description>
+        <dueDateOffset>3</dueDateOffset>
+        <notifyAssignee>false</notifyAssignee>
+        <offsetFromField>Asset.CreatedDate</offsetFromField>
+        <priority>Normal</priority>
+        <protected>false</protected>
+        <status>In Progress</status>
+        <subject>Verify beneficiary &amp; obtain required approvals</subject>
+    </tasks>
+    <tasks>
+        <fullName>Verify_beneficiary_obtain_required_approvals_manually</fullName>
+        <assignedTo>nazirahmed.patel@utilitarianlabs.com</assignedTo>
+        <assignedToType>user</assignedToType>
+        <description>Auto create task once approved</description>
+        <dueDateOffset>3</dueDateOffset>
+        <notifyAssignee>false</notifyAssignee>
+        <offsetFromField>Asset.CreatedDate</offsetFromField>
+        <priority>Normal</priority>
+        <protected>false</protected>
+        <status>In Progress</status>
+        <subject>Verify beneficiary &amp; obtain required approvals; manually</subject>
+    </tasks>
+</Workflow>

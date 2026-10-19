@@ -1,0 +1,207 @@
+<template>
+    <div class="cp-page docs">
+
+        <template lwc:if={isLoading}>
+            <div class="cp-loading">
+                <lightning-spinner alternative-text={labels.loading} size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template lwc:if={hasError}>
+            <div class="docs-state" role="alert">
+                <lightning-icon icon-name="utility:error" size="medium" variant="error"></lightning-icon>
+                <p class="docs-state__text">{labels.loadError}</p>
+            </div>
+        </template>
+
+        <template lwc:if={showContent}>
+            <div class="cp-page-head docs-head">
+                <div class="cp-page-head__text">
+                    <h1 class="cp-page-title">{pageTitle}</h1>
+                    <p class="cp-page-intro">{pageDescription}</p>
+                </div>
+            </div>
+        </template>
+
+        <!-- ============ PROJECT LIST (Figma p49) ============ -->
+        <template lwc:if={showListView}>
+            <div class="docs-list">
+                <template lwc:if={hasProjects}>
+                    <div class="docs-grid">
+                        <template for:each={displayedProjects} for:item="project">
+                            <article key={project.id} class="cp-card cp-card_flat docs-card">
+                                <div class="docs-card__media">
+                                    <template lwc:if={project.activeImageUrl}>
+                                        <img src={project.activeImageUrl} alt={project.name} class="docs-card__img" loading="lazy" />
+                                    </template>
+
+                                    <template lwc:if={project.showArrows}>
+                                        <button
+                                            type="button"
+                                            class="cp-carousel-arrow cp-carousel-arrow_prev docs-arrow"
+                                            data-id={project.id}
+                                            title={labels.previousImage}
+                                            aria-label={labels.previousImage}
+                                            onclick={handleCardPrevImage}
+                                        >
+                                            <svg viewBox="0 0 6.4 10.8" aria-hidden="true"><path d={icons.chevronLeft}></path></svg>
+                                        </button>
+                                        <button
+                                            type="button"
+                                            class="cp-carousel-arrow cp-carousel-arrow_next docs-arrow"
+                                            data-id={project.id}
+                                            title={labels.nextImage}
+                                            aria-label={labels.nextImage}
+                                            onclick={handleCardNextImage}
+                                        >
+                                            <svg viewBox="0 0 6.4 10.8" aria-hidden="true"><path d={icons.chevronRight}></path></svg>
+                                        </button>
+                                    </template>
+
+                                    <template lwc:if={project.showDots}>
+                                        <div class="cp-dots cp-dots_on-image docs-dots" aria-hidden="true">
+                                            <template for:each={project.dots} for:item="dot">
+                                                <span key={dot.key} class={dot.dotClass}></span>
+                                            </template>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <div class="docs-card__body">
+                                    <h2 class="cp-card__title docs-card__title">{project.name}</h2>
+                                    <p class="cp-card__subtitle docs-card__subtitle" title={project.shortAddress}>{project.shortAddress}</p>
+                                    <button
+                                        type="button"
+                                        class="cp-btn cp-btn_block docs-card__btn"
+                                        data-id={project.id}
+                                        onclick={handleViewDetails}
+                                    >{labels.viewDetails}</button>
+                                </div>
+                            </article>
+                        </template>
+                    </div>
+                </template>
+                <template lwc:else>
+                    <div class="cp-empty">
+                        <img class="cp-empty__img" src={emptyImageUrl} alt="" />
+                        <p class="cp-empty__text">{labels.noProjects}</p>
+                    </div>
+                </template>
+            </div>
+        </template>
+
+        <!-- ============ DOCUMENTS OF ONE PROJECT (Figma p50-52) ============ -->
+        <template lwc:if={showDetailView}>
+            <div class="docs-detail">
+                <div class="docs-tabbar">
+                    <div class="cp-tabs docs-tabs" role="tablist" aria-label={labels.categories}>
+                        <template for:each={categoryTabs} for:item="tab">
+                            <button
+                                key={tab.key}
+                                type="button"
+                                role="tab"
+                                class={tab.tabClass}
+                                aria-selected={tab.ariaSelected}
+                                tabindex={tab.tabIndex}
+                                data-key={tab.key}
+                                onclick={handleTabClick}
+                                onkeydown={handleTabKeydown}
+                            >{tab.label}</button>
+                        </template>
+                    </div>
+                    <button type="button" class="docs-back" title={labels.backToList} aria-label={labels.backToList} onclick={handleBack}>
+                        <svg viewBox="0 0 23.9 18.6" aria-hidden="true"><path d={icons.back}></path></svg>
+                        <span>{labels.back}</span>
+                    </button>
+                </div>
+
+                <div class="docs-tabpanel" role="tabpanel">
+                    <template lwc:if={hasActiveDocuments}>
+                        <ul class="docs-panel">
+                            <template for:each={activeDocuments} for:item="doc">
+                                <li key={doc.id} class="docs-row">
+                                    <span class="docs-row__name">{doc.name}</span>
+                                    <span class="docs-row__actions">
+                                        <button
+                                            type="button"
+                                            class="docs-action"
+                                            title={labels.preview}
+                                            aria-label={labels.preview}
+                                            data-id={doc.id}
+                                            onclick={handlePreview}
+                                        >
+                                            <svg class="docs-action__eye" viewBox="0 0 21.4 14.4" aria-hidden="true"><path d={icons.eye}></path></svg>
+                                        </button>
+                                        <button
+                                            type="button"
+                                            class="docs-action"
+                                            title={labels.download}
+                                            aria-label={labels.download}
+                                            data-id={doc.id}
+                                            onclick={handleDownload}
+                                        >
+                                            <svg class="docs-action__download" viewBox="0 0 19.4 19.4" aria-hidden="true"><path d={icons.download}></path></svg>
+                                        </button>
+                                    </span>
+                                </li>
+                            </template>
+                        </ul>
+                    </template>
+                    <template lwc:else>
+                        <div class="cp-empty docs-empty">
+                            <img class="cp-empty__img" src={emptyImageUrl} alt="" />
+                            <p class="cp-empty__text">{labels.noDocuments}</p>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </template>
+
+        <!-- ============ VIEWER (Figma p65 look, image documents as p55) ============ -->
+        <template lwc:if={isPreviewOpen}>
+            <div class="docs-viewer" role="dialog" aria-modal="true" aria-label={previewDocName}>
+                <div class="docs-viewer__bar">
+                    <button type="button" class="docs-viewer__back" aria-label={labels.back} onclick={handleClosePreview}>
+                        <svg viewBox="0 0 23.9 18.6" aria-hidden="true"><path d={icons.back}></path></svg>
+                        <span>{labels.back}</span>
+                    </button>
+                    <p class="docs-viewer__name" title={previewDocName}>{previewDocName}</p>
+                    <div class="docs-viewer__tools">
+                        <button
+                            type="button"
+                            class="docs-viewer__tool"
+                            title={labels.zoomOut}
+                            aria-label={labels.zoomOut}
+                            disabled={isZoomOutDisabled}
+                            onclick={handleZoomOut}
+                        >
+                            <svg viewBox="0 0 26.5 26.5" aria-hidden="true"><path d={icons.zoomOut}></path></svg>
+                        </button>
+                        <button
+                            type="button"
+                            class="docs-viewer__tool"
+                            title={labels.zoomIn}
+                            aria-label={labels.zoomIn}
+                            disabled={isZoomInDisabled}
+                            onclick={handleZoomIn}
+                        >
+                            <svg viewBox="0 0 26.5 26.5" aria-hidden="true"><path d={icons.zoomIn}></path></svg>
+                        </button>
+                        <span class="docs-viewer__zoom" aria-live="polite">{zoomLabel}</span>
+                    </div>
+                </div>
+
+                <div class="docs-viewer__body" onclick={handleClosePreview}>
+                    <div class={viewerPageClass} style={viewerPageStyle} onclick={stopPropagation}>
+                        <template lwc:if={previewIsImage}>
+                            <img class="docs-viewer__image" src={previewDocUrl} alt={previewDocName} />
+                        </template>
+                        <template lwc:else>
+                            <iframe class="docs-viewer__frame" src={previewFrameUrl} title={labels.documentPreview}></iframe>
+                        </template>
+                    </div>
+                </div>
+            </div>
+        </template>
+    </div>
+</template>

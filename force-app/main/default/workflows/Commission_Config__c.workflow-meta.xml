@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<Workflow xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fieldUpdates>
+        <fullName>Commission_Config_Set_Approved</fullName>
+        <description>On approval: the configuration is approved.</description>
+        <field>Status__c</field>
+        <literalValue>Approved</literalValue>
+        <name>Commission Config Set Approved</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Commission_Config_Set_Pending</fullName>
+        <description>On submit: the configuration waits for approval.</description>
+        <field>Status__c</field>
+        <literalValue>Pending Approval</literalValue>
+        <name>Commission Config Set Pending</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Commission_Config_Set_Recalled</fullName>
+        <description>On withdrawal: the trigger records the decision and returns the configuration to Draft.</description>
+        <field>Status__c</field>
+        <literalValue>Recalled</literalValue>
+        <name>Commission Config Set Recalled</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+    <fieldUpdates>
+        <fullName>Commission_Config_Set_Rejected</fullName>
+        <description>On rejection: the trigger records the decision and returns the configuration to Draft.</description>
+        <field>Status__c</field>
+        <literalValue>Rejected</literalValue>
+        <name>Commission Config Set Rejected</name>
+        <notifyAssignee>false</notifyAssignee>
+        <operation>Literal</operation>
+        <protected>false</protected>
+        <reevaluateOnChange>false</reevaluateOnChange>
+    </fieldUpdates>
+</Workflow>

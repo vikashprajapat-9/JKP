@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ListView xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Costsheet23</fullName>
+    <columns>NAME</columns>
+    <filterScope>Everything</filterScope>
+    <filters>
+        <field>Project__c</field>
+        <operation>equals</operation>
+        <value>Cost Sheet Template - 23-12-2024</value>
+    </filters>
+    <label>Cost Sheet Template - 23-12-2024 DM</label>
+</ListView>

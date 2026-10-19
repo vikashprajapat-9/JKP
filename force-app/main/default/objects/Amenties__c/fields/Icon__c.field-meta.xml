@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Icon__c</fullName>
+    <description>Icon the partner portal shows for this amenity, picked from its Type. To change an icon, or give a new Type its own, edit this formula; unmapped Types show &quot;sparkles&quot;. Available icons: armchair, baby, bath, bike, briefcase, building-2, cctv, clapperboard, coffee, dog, droplets, dumbbell, fence, ferris-wheel, flame, flower-2, footprints, gamepad-2, heart-pulse, house, leaf, library, mic-vocal, mountain, music, party-popper, plug-zap, presentation, shield-check, sofa, sparkles, square-parking, store, sun, tent-tree, tent, toy-brick, tree-palm, trees, trophy, umbrella, utensils, volleyball, washing-machine, waves, wifi</description>
+    <externalId>false</externalId>
+    <formula>CASE(Type__c,
+&quot;Pavilions&quot;, &quot;tent&quot;,
+&quot;Garden Spaces&quot;, &quot;trees&quot;,
+&quot;Pebble Walk &amp; Jogging Tracks&quot;, &quot;footprints&quot;,
+&quot;Infinity Pool - Sky Pool &amp; Kids Pool&quot;, &quot;waves&quot;,
+&quot;Sky Gym&quot;, &quot;dumbbell&quot;,
+&quot;Karaoke Room Hangout Area &amp; Flexi Cinema&quot;, &quot;mic-vocal&quot;,
+&quot;BBQ Area&quot;, &quot;flame&quot;,
+&quot;Pickle Ball Court&quot;, &quot;volleyball&quot;,
+&quot;Kids Play Area&quot;, &quot;toy-brick&quot;,
+&quot;Games Room&quot;, &quot;gamepad-2&quot;,
+&quot;Gymnasium&quot;, &quot;dumbbell&quot;,
+&quot;Ambalama - Outdoor Spaces&quot;, &quot;tent-tree&quot;,
+&quot;Children&apos;s Play Area&quot;, &quot;toy-brick&quot;,
+&quot;Swimming Pool&quot;, &quot;waves&quot;,
+&quot;Walking Paths&quot;, &quot;footprints&quot;,
+&quot;EV Charging&quot;, &quot;plug-zap&quot;,
+&quot;Visitor Parking&quot;, &quot;square-parking&quot;,
+&quot;Lush Landscaped Area&quot;, &quot;leaf&quot;,
+&quot;Mini Cinema&quot;, &quot;clapperboard&quot;,
+&quot;Rooftop Badminton Court&quot;, &quot;trophy&quot;,
+&quot;Gymnasium &amp; Rooftop Gym&quot;, &quot;dumbbell&quot;,
+&quot;Jogging Track&quot;, &quot;footprints&quot;,
+&quot;Laundroplus (In-house laundry)&quot;, &quot;washing-machine&quot;,
+&quot;sparkles&quot;)</formula>
+    <formulaTreatBlanksAs>BlankAsZero</formulaTreatBlanksAs>
+    <inlineHelpText>Icon the partner portal shows for this amenity&apos;s Type.</inlineHelpText>
+    <label>Icon</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

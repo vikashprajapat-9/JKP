@@ -1,0 +1,23 @@
+<template>
+    <div class="cp-modal-overlay logout-overlay" role="presentation">
+        <section
+            class="cp-modal cp-modal_sm logout-modal"
+            role="dialog"
+            aria-modal="true"
+            aria-labelledby="logoutTitle"
+            aria-describedby="logoutMsg"
+        >
+            <img src={logoutImage} alt="" class="logout-icon" width="80" height="80" />
+            <h2 id="logoutTitle" class="logout-title">{labels.title}</h2>
+            <p id="logoutMsg" class="logout-text">{labels.message}</p>
+            <div class="logout-actions">
+                <button type="button" class="cp-btn cp-btn_lg cp-btn_secondary logout-btn logout-cancel" onclick={handleCancel}>
+                    {labels.cancel}
+                </button>
+                <button type="button" class="cp-btn cp-btn_lg logout-btn logout-confirm" onclick={handleLogout}>
+                    {labels.confirm}
+                </button>
+            </div>
+        </section>
+    </div>
+</template>

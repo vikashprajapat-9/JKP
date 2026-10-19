@@ -1,0 +1,222 @@
+<template>
+    <template lwc:if={selectedProject}>
+        <c-partner-web-portal-project-detail portal={portal} project={selectedProject} onback={handleBackToList}>
+        </c-partner-web-portal-project-detail>
+    </template>
+
+    <!-- ================= CUSTOMER PORTAL (portal="customer", Figma p16-p17) ================= -->
+    <div class="cpp-page" lwc:elseif={isCustomer}>
+        <div class="cpp-head">
+            <h1 class="cpp-title">{customerText.title}</h1>
+            <p class="cpp-intro" lwc:if={subtitle}>{subtitle}</p>
+        </div>
+
+        <template lwc:if={showTabs}>
+            <div class="cpp-tabs" role="tablist" aria-label={customerText.tabsLabel} onkeydown={handleTabKeyDown}>
+                <template for:each={tabs} for:item="tab">
+                    <button key={tab.value}
+                            class={tab.className}
+                            type="button"
+                            role="tab"
+                            aria-selected={tab.selected}
+                            tabindex={tab.tabIndex}
+                            data-value={tab.value}
+                            onclick={handleTabClick}>{tab.label}</button>
+                </template>
+            </div>
+        </template>
+
+        <div class="cpp-content" role={contentRole}>
+            <template lwc:if={error}>
+                <div class="cpp-alert" role="alert">{error}</div>
+            </template>
+
+            <template lwc:if={showCustomerLoading}>
+                <div class="cpp-loading">
+                    <lightning-spinner alternative-text={customerText.loading} size="medium"></lightning-spinner>
+                </div>
+            </template>
+
+            <template lwc:if={hasVisibleProjects}>
+                <div class="cpp-grid">
+                    <template for:each={visibleProjects} for:item="project">
+                        <article key={project.id}
+                                 class="cpp-card"
+                                 data-id={project.id}
+                                 onmouseenter={handleCardEnter}
+                                 onmouseleave={handleCardLeave}>
+
+                            <div class="cpp-media">
+                                <template lwc:if={project.hasImages}>
+                                    <template for:each={project.carouselImages} for:item="slide">
+                                        <div key={slide.key} class={slide.slideClass}>
+                                            <img src={slide.url} alt={project.name} class="cpp-photo" />
+                                        </div>
+                                    </template>
+                                </template>
+                                <template lwc:else>
+                                    <div class="cpp-placeholder" aria-hidden="true">
+                                        <span class="cpp-initial">{project.initial}</span>
+                                    </div>
+                                </template>
+
+                                <template lwc:if={project.hasMultipleImages}>
+                                    <button class="cpp-arrow cpp-arrow_prev"
+                                            data-id={project.id}
+                                            onclick={handlePrev}
+                                            type="button"
+                                            aria-label={customerText.previousPhoto}
+                                            title={customerText.previousPhoto}>
+                                        <svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true">
+                                            <path d="M11.38 5.62L7 10l4.38 4.38" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                        </svg>
+                                    </button>
+                                    <button class="cpp-arrow cpp-arrow_next"
+                                            data-id={project.id}
+                                            onclick={handleNext}
+                                            type="button"
+                                            aria-label={customerText.nextPhoto}
+                                            title={customerText.nextPhoto}>
+                                        <svg viewBox="0 0 20 20" width="20" height="20" aria-hidden="true">
+                                            <path d="M8.62 5.62L13 10l-4.38 4.38" fill="none" stroke="currentColor" stroke-width="1.5" stroke-linecap="round" stroke-linejoin="round"></path>
+                                        </svg>
+                                    </button>
+
+                                    <div class="cpp-dots">
+                                        <template for:each={project.dots} for:item="dot">
+                                            <button key={dot.key}
+                                                    class={dot.dotClass}
+                                                    data-id={project.id}
+                                                    data-index={dot.index}
+                                                    onclick={handleDotClick}
+                                                    aria-label={dot.label}
+                                                    type="button">
+                                            </button>
+                                        </template>
+                                    </div>
+                                </template>
+                            </div>
+
+                            <div class="cpp-body">
+                                <h2 class="cpp-name" title={project.name}>{project.name}</h2>
+                                <p class="cpp-address" title={project.location}>{project.location}</p>
+                                <template lwc:if={project.typeText}>
+                                    <p class="cpp-type">{project.typeText}</p>
+                                    <p class="cpp-type-label">{customerText.type}</p>
+                                </template>
+                                <button class="cpp-btn"
+                                        data-id={project.id}
+                                        onclick={handleViewDetails}
+                                        type="button">{customerText.viewDetails}</button>
+                            </div>
+                        </article>
+                    </template>
+                </div>
+            </template>
+
+            <template lwc:if={showCustomerEmpty}>
+                <div class="cpp-empty">
+                    <img lwc:if={emptyImage} class="cpp-empty-img" src={emptyImage} alt="" />
+                    <p class="cpp-empty-text">{customerEmptyText}</p>
+                </div>
+            </template>
+        </div>
+    </div>
+
+    <div class="page" lwc:else>
+
+        <!-- HEADER -->
+        <header class="page-header">
+            <h1 class="page-title">Projects</h1>
+            <p class="page-subtitle" lwc:if={subtitle}>{subtitle}</p>
+            <p class="page-subtitle" lwc:else>
+                Explore our exclusive project listings tailored for our channel partners.
+                You can access detailed information on each project. Stay informed and
+                provide your clients with the best options using the comprehensive
+                resources provided by John Keells Properties. Empower your business with
+                the latest updates and exclusive insights into our diverse range of
+                properties.
+            </p>
+        </header>
+
+        <!-- ERROR -->
+        <template lwc:if={error}>
+            <div class="error-msg">{error}</div>
+        </template>
+
+        <!-- GRID -->
+        <template lwc:if={hasProjects}>
+            <div class="card-grid">
+                <template for:each={projects} for:item="project">
+                    <article key={project.id}
+                             class="project-card"
+                             data-id={project.id}
+                             onmouseenter={handleCardEnter}
+                             onmouseleave={handleCardLeave}>
+
+                        <!-- MEDIA -->
+                        <div class="carousel">
+                            <template lwc:if={project.hasImages}>
+                                <template for:each={project.carouselImages} for:item="slide">
+                                    <div key={slide.key} class={slide.slideClass}>
+                                        <img src={slide.url} alt={project.name} class="carousel-img" />
+                                    </div>
+                                </template>
+                            </template>
+                            <template lwc:else>
+                                <div class="media-placeholder" aria-hidden="true">
+                                    <span class="media-initial">{project.initial}</span>
+                                </div>
+                            </template>
+
+                            <template lwc:if={project.hasMultipleImages}>
+                                <button class="carousel-nav prev"
+                                        data-id={project.id}
+                                        onclick={handlePrev}
+                                        type="button"
+                                        title="Previous">‹</button>
+
+                                <button class="carousel-nav next"
+                                        data-id={project.id}
+                                        onclick={handleNext}
+                                        type="button"
+                                        title="Next">›</button>
+
+                                <div class="carousel-dots">
+                                    <template for:each={project.dots} for:item="dot">
+                                        <button key={dot.key}
+                                                class={dot.dotClass}
+                                                data-id={project.id}
+                                                data-index={dot.index}
+                                                onclick={handleDotClick}
+                                                aria-label="Go to image"
+                                                type="button">
+                                        </button>
+                                    </template>
+                                </div>
+                            </template>
+                        </div>
+
+                        <!-- INFO -->
+                        <div class="project-info">
+                            <h2 class="project-name" title={project.name}>{project.name}</h2>
+                            <p class="project-location" title={project.location}>{project.location}</p>
+
+                            <button class="btn-primary"
+                                    data-id={project.id}
+                                    onclick={handleViewDetails}
+                                    type="button">
+                                View Details
+                            </button>
+                        </div>
+
+                    </article>
+                </template>
+            </div>
+        </template>
+        <template lwc:elseif={showEmpty}>
+            <div class="empty-state">No projects available right now.</div>
+        </template>
+
+    </div>
+</template>

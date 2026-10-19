@@ -1,0 +1,129 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Type__c</fullName>
+    <label>Type</label>
+    <required>false</required>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>Pavilions</fullName>
+                <default>false</default>
+                <label>Pavilions</label>
+            </value>
+            <value>
+                <fullName>Garden Spaces</fullName>
+                <default>false</default>
+                <label>Garden Spaces</label>
+            </value>
+            <value>
+                <fullName>Pebble Walk &amp; Jogging Tracks</fullName>
+                <default>false</default>
+                <label>Pebble Walk &amp; Jogging Tracks</label>
+            </value>
+            <value>
+                <fullName>Infinity Pool - Sky Pool &amp; Kids Pool</fullName>
+                <default>false</default>
+                <label>Infinity Pool - Sky Pool &amp; Kids Pool</label>
+            </value>
+            <value>
+                <fullName>Sky Gym</fullName>
+                <default>false</default>
+                <label>Sky Gym</label>
+            </value>
+            <value>
+                <fullName>Karaoke Room Hangout Area &amp; Flexi Cinema</fullName>
+                <default>false</default>
+                <label>Karaoke Room Hangout Area &amp; Flexi Cinema</label>
+            </value>
+            <value>
+                <fullName>BBQ Area</fullName>
+                <default>false</default>
+                <label>BBQ Area</label>
+            </value>
+            <value>
+                <fullName>Pickle Ball Court</fullName>
+                <default>false</default>
+                <label>Pickle Ball Court</label>
+            </value>
+            <value>
+                <fullName>Kids Play Area</fullName>
+                <default>false</default>
+                <label>Kids Play Area</label>
+            </value>
+            <value>
+                <fullName>Games Room</fullName>
+                <default>false</default>
+                <label>Games Room</label>
+            </value>
+            <value>
+                <fullName>Gymnasium</fullName>
+                <default>false</default>
+                <label>Gymnasium</label>
+            </value>
+            <value>
+                <fullName>Ambalama - Outdoor Spaces</fullName>
+                <default>false</default>
+                <label>Ambalama - Outdoor Spaces</label>
+            </value>
+            <value>
+                <fullName>Children&apos;s Play Area</fullName>
+                <default>false</default>
+                <label>Children&apos;s Play Area</label>
+            </value>
+            <value>
+                <fullName>Swimming Pool</fullName>
+                <default>false</default>
+                <label>Swimming Pool</label>
+            </value>
+            <value>
+                <fullName>Walking Paths</fullName>
+                <default>false</default>
+                <label>Walking Paths</label>
+            </value>
+            <value>
+                <fullName>EV Charging</fullName>
+                <default>false</default>
+                <label>EV Charging</label>
+            </value>
+            <value>
+                <fullName>Visitor Parking</fullName>
+                <default>false</default>
+                <label>Visitor Parking</label>
+            </value>
+            <value>
+                <fullName>Lush Landscaped Area</fullName>
+                <default>false</default>
+                <label>Lush Landscaped Area</label>
+            </value>
+            <value>
+                <fullName>Mini Cinema</fullName>
+                <default>false</default>
+                <label>Mini Cinema</label>
+            </value>
+            <value>
+                <fullName>Rooftop Badminton Court</fullName>
+                <default>false</default>
+                <label>Rooftop Badminton Court</label>
+            </value>
+            <value>
+                <fullName>Gymnasium &amp; Rooftop Gym</fullName>
+                <default>false</default>
+                <label>Gymnasium &amp; Rooftop Gym</label>
+            </value>
+            <value>
+                <fullName>Jogging Track</fullName>
+                <default>false</default>
+                <label>Jogging Track</label>
+            </value>
+            <value>
+                <fullName>Laundroplus (In-house laundry)</fullName>
+                <default>false</default>
+                <label>Laundroplus (In-house laundry)</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

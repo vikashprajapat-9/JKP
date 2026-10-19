@@ -1,0 +1,247 @@
+<template>
+    <lightning-card
+        title="Inventory Workbook Upload"
+        icon-name="standard:product">
+
+        <div class="upload-container">
+
+            <!-- Introduction -->
+            <div class="intro">
+                <h2>Inventory Data Management</h2>
+
+                <p>
+                    Upload your complete inventory workbook to manage
+                    Companies, Projects, Blocks, Floors, Units and Parking
+                    details in one place. Existing records will be updated,
+                    while new records will be created automatically.
+                </p>
+
+                <lightning-button
+                    label="Download Inventory Template"
+                    variant="brand"
+                    icon-name="utility:download"
+                    onclick={handleDownloadTemplate}
+                    disabled={isLoading}>
+                </lightning-button>
+            </div>
+
+            <!-- File Upload -->
+            <div class="file-section">
+                <lightning-input
+                    type="file"
+                    label="Select Excel workbook"
+                    accept=".xlsx,.xls"
+                    onchange={handleFileChange}
+                    disabled={isLoading}>
+                </lightning-input>
+
+                <template lwc:if={fileName}>
+                    <div class="file-info">
+                        <lightning-icon
+                            icon-name="doctype:excel"
+                            size="small">
+                        </lightning-icon>
+
+                        <span>{fileName}</span>
+                    </div>
+                </template>
+            </div>
+
+            <!-- General Error -->
+            <template lwc:if={errorMessage}>
+                <div class="error-message" role="alert">
+                    <lightning-icon
+                        icon-name="utility:error"
+                        size="small">
+                    </lightning-icon>
+
+                    <span>{errorMessage}</span>
+                </div>
+            </template>
+
+            <!-- Workbook Preview -->
+            <template lwc:if={hasWorkbook}>
+                <div class="preview-section">
+
+                    <div class="preview-heading">
+                        <h3>Excel Data Preview</h3>
+
+                        <p>
+                            Review each worksheet and its row-level errors
+                            before uploading the inventory to Salesforce.
+                        </p>
+                    </div>
+
+                    <!-- Summary -->
+                    <!-- <div class="sheet-summary">
+                        <template
+                            for:each={sheetSummaries}
+                            for:item="sheet">
+
+                            <div
+                                class="sheet-row"
+                                key={sheet.name}>
+
+                                <span>{sheet.name}</span>
+
+                                <div class="sheet-summary-counts">
+                                    <strong>
+                                        {sheet.count} rows
+                                    </strong>
+
+                                    <template lwc:if={sheet.hasErrors}>
+                                        <span class="error-count">
+                                            {sheet.errorCount} errors
+                                        </span>
+                                    </template>
+                                </div>
+                            </div>
+                        </template>
+                    </div> -->
+
+                    <!-- Six Worksheet Tabs -->
+                    <lightning-tabset
+                        active-tab-value={activeSheet}>
+
+                        <template
+                            for:each={sheetTabs}
+                            for:item="sheet">
+
+                            <lightning-tab
+                                key={sheet.name}
+                                label={sheet.label}
+                                value={sheet.name}
+                                onactive={handleTabActive}>
+
+                                <!-- Worksheet Error Banner -->
+                                <template lwc:if={sheet.hasErrors}>
+                                    <div
+                                        class="sheet-error-banner"
+                                        role="alert">
+
+                                        <lightning-icon
+                                            icon-name="utility:error"
+                                            size="small">
+                                        </lightning-icon>
+
+                                        <span>
+                                            {sheet.errorCount}
+                                            row(s) have errors in this
+                                            worksheet. Check the Error
+                                            column for details.
+                                        </span>
+                                    </div>
+                                </template>
+
+                                <div class="sheet-details">
+                                    <span>
+                                        <strong>{sheet.name}</strong>
+                                    </span>
+
+                                    <span>
+                                        {sheet.count} records
+                                    </span>
+                                </div>
+
+                                <!-- Active Worksheet Data -->
+                                <template lwc:if={sheet.isActive}>
+
+                                    <template lwc:if={hasActiveRows}>
+                                        <div class="table-container">
+                                            <lightning-datatable
+                                                key-field="_rowKey"
+                                                data={visibleRows}
+                                                columns={activeColumns}
+                                                hide-checkbox-column
+                                                show-row-number-column>
+                                            </lightning-datatable>
+                                        </div>
+                                    </template>
+
+                                    <template lwc:else>
+                                        <div class="empty-state">
+                                            <lightning-icon
+                                                icon-name="utility:info"
+                                                size="medium">
+                                            </lightning-icon>
+
+                                            <p>
+                                                No records found in this
+                                                worksheet.
+                                            </p>
+                                        </div>
+                                    </template>
+
+                                </template>
+                            </lightning-tab>
+                        </template>
+                    </lightning-tabset>
+
+                    <!-- Existing Custom Pagination Component -->
+                    <template lwc:if={hasActiveRows}>
+                        <c-custom-pagination-comp
+                            onpagechanged={handlePageChanged}>
+                        </c-custom-pagination-comp>
+                    </template>
+
+                    <!-- Upload Action -->
+                    <div class="actions">
+                        <lightning-button
+                            label="Upload Inventory"
+                            variant="brand"
+                            icon-name="utility:upload"
+                            onclick={handleUpload}
+                            disabled={isSubmitDisabled}>
+                        </lightning-button>
+                    </div>
+                </div>
+            </template>
+
+            <!-- Loading -->
+            <template lwc:if={isLoading}>
+                <div class="loading-area">
+                    <lightning-spinner
+                        alternative-text="Processing inventory"
+                        size="medium">
+                    </lightning-spinner>
+
+                    <p>Processing inventory records...</p>
+                </div>
+            </template>
+
+            <!-- Upload Result Summary -->
+            <!-- <template lwc:if={hasResults}>
+                <div class="results-section">
+                    <h3>Upload Results</h3>
+
+                    <div class="summary-grid">
+
+                        <div class="summary-card inserted">
+                            <span>Inserted</span>
+                            <strong>{inserted}</strong>
+                        </div>
+
+                        <div class="summary-card updated">
+                            <span>Updated</span>
+                            <strong>{updated}</strong>
+                        </div>
+
+                        <div class="summary-card failed">
+                            <span>Failed</span>
+                            <strong>{failed}</strong>
+                        </div>
+
+                    </div>
+
+                    <lightning-datatable
+                        key-field="key"
+                        data={results}
+                        columns={resultColumns}
+                        hide-checkbox-column>
+                    </lightning-datatable>
+                </div>
+            </template> -->
+
+        </div>
+    </lightning-card>
+</template>

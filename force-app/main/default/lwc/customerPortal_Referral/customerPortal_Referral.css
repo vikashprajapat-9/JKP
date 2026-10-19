@@ -1,0 +1,350 @@
+@import 'c/customerPortalStyles';
+
+/* Referrals (Figma p74 list, p75 / p76 invite friends, p77 referral sent).
+   The look comes from c/customerPortalStyles; this file only holds what was measured for this screen. */
+
+/* ---------- page head: title + Refer Now on one row, program text full width underneath (p74) ---------- */
+.ref-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+        'title actions'
+        'intro intro';
+    column-gap: 24px;
+    row-gap: 0;
+    align-items: start;
+    margin-bottom: 26px;
+}
+
+.ref-head__title {
+    grid-area: title;
+}
+
+.ref-head__actions {
+    grid-area: actions;
+}
+
+.ref-head__intro {
+    grid-area: intro;
+    min-width: 0;
+}
+
+.ref-intro {
+    max-width: none;
+}
+
+/* Figma p74: 120 x 40 */
+.ref-refer {
+    min-width: 120px;
+}
+
+.ref-read-more {
+    display: block;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: #217aff;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+}
+
+.ref-read-more:hover,
+.ref-read-more:focus-visible {
+    text-decoration: underline;
+}
+
+.ref-read-more:focus-visible {
+    outline: 2px solid var(--cp-navy);
+    outline-offset: 2px;
+}
+
+.ref-alert__text {
+    margin: 0;
+}
+
+/* ---------- referral cards (p74: two columns, 194px tall) ---------- */
+.ref-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.ref-card__top {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+}
+
+.ref-avatar {
+    display: flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: var(--cp-navy);
+    color: #ffffff;
+}
+
+.ref-avatar svg {
+    display: block;
+    fill: currentColor;
+}
+
+.ref-card__heading {
+    min-width: 0;
+}
+
+.ref-card__name {
+    margin: 0;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    color: var(--cp-ink);
+    overflow-wrap: anywhere;
+}
+
+.ref-card__property {
+    margin: 3px 0 0;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    color: var(--cp-muted);
+    overflow-wrap: anywhere;
+}
+
+.ref-card__details {
+    display: flex;
+    flex-direction: column;
+    gap: 6px;
+    margin: 21px 0 0;
+}
+
+.ref-card__row {
+    display: flex;
+    flex-wrap: wrap;
+    column-gap: 9px;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+}
+
+.ref-card__row dt,
+.ref-card__row dd {
+    margin: 0;
+}
+
+.ref-card__row dt {
+    color: var(--cp-ink);
+}
+
+.ref-card__row dd {
+    min-width: 0;
+    color: var(--cp-muted);
+    overflow-wrap: anywhere;
+}
+
+.ref-card__status {
+    display: flex;
+    margin-top: 23px;
+}
+
+/* Figma p74: 24px pill with 16px text (Booked #21b354, Not booked #ff9500) */
+.ref-badge {
+    min-width: 0;
+    font-size: 16px;
+    line-height: 24px;
+}
+
+/* ---------- invite friends (p75 / p76: 437 x 435, fields 388px) ---------- */
+.ref-invite {
+    width: 437px;
+    padding: 21px 24px 24px;
+}
+
+.ref-invite:focus,
+.ref-done:focus {
+    outline: none;
+}
+
+.ref-invite__title {
+    margin: 0;
+    font-size: 20px;
+    line-height: 28px;
+    font-weight: 500;
+    color: var(--cp-ink);
+}
+
+.ref-invite .ref-field {
+    margin-top: 17px;
+}
+
+.ref-invite .ref-invite__title + .ref-field {
+    margin-top: 19px;
+}
+
+.ref-label {
+    margin-bottom: 11px;
+}
+
+/* p75: a smaller chevron (11 x 6), centred on the field, 20px from its right edge */
+.ref-select-wrap::after {
+    right: 18px;
+    width: 8px;
+    height: 8px;
+    margin-top: -4px;
+}
+
+.ref-select_empty {
+    color: var(--cp-placeholder);
+}
+
+.ref-select_empty option {
+    color: var(--cp-ink);
+}
+
+/* flag + 94 + number in one 48px field (p75) */
+.ref-phone {
+    display: flex;
+    align-items: center;
+    height: 48px;
+    padding: 0 16px 0 12px;
+    border: 1px solid var(--cp-border);
+    border-radius: var(--cp-radius-sm);
+    background: var(--cp-surface);
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.ref-phone:focus-within {
+    border-color: var(--cp-navy);
+    box-shadow: var(--cp-focus);
+}
+
+.ref-phone__flag {
+    display: block;
+    flex: 0 0 auto;
+    width: 24px;
+    height: 18px;
+}
+
+.ref-phone__code {
+    flex: 0 0 auto;
+    margin-left: 8px;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    color: var(--cp-ink);
+}
+
+.ref-phone__input {
+    flex: 1 1 auto;
+    min-width: 0;
+    height: 46px;
+    margin: 0 0 0 17px;
+    padding: 0;
+    border: 0;
+    background: transparent;
+    color: var(--cp-ink);
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    outline: none;
+}
+
+.ref-phone__input::placeholder {
+    color: var(--cp-placeholder);
+    opacity: 1;
+}
+
+.ref-invite__actions {
+    --cp-btn-secondary-ink: #1f1e1e;
+    display: flex;
+    gap: 16px;
+    margin-top: 24px;
+}
+
+.ref-invite__actions > .cp-btn {
+    flex: 1 1 0;
+    min-width: 0;
+    padding: 0 12px;
+}
+
+/* ---------- referral sent (p77: 640 x 433, 80px picture, content centred) ---------- */
+.ref-done {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 433px;
+}
+
+.ref-done__body {
+    padding: 0;
+}
+
+.ref-done__icon {
+    width: 80px;
+    height: 80px;
+}
+
+.ref-done__title {
+    max-width: 300px;
+    margin-top: 19px;
+}
+
+.ref-done__text {
+    max-width: 556px;
+    margin-top: 4px;
+    color: var(--cp-ink);
+}
+
+/* ---------- phone width ---------- */
+@media (max-width: 768px) {
+    .ref-head {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+            'title'
+            'intro'
+            'actions';
+        margin-bottom: 20px;
+    }
+
+    .ref-head__actions {
+        margin-top: 16px;
+    }
+
+    .ref-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 16px;
+    }
+
+    .ref-invite {
+        width: 100%;
+        padding: 24px 16px;
+    }
+
+    .ref-done {
+        min-height: 0;
+        padding-top: 48px;
+        padding-bottom: 40px;
+    }
+}
+
+/* The opportunity a referral became */
+.ref-card__booking {
+    margin: 0;
+    font-weight: 600;
+    color: var(--cp-title);
+    overflow-wrap: anywhere;
+}
+
+.ref-card__row_booking {
+    margin-top: 4px;
+}

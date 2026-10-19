@@ -1,0 +1,20 @@
+.aab-modal-hint { font-size: 0.85rem; color: #7a869a; margin-bottom: 0.3rem; }
+.aab-process { font-size: 0.8rem; font-weight: 600; color: #2b3a5c; margin-bottom: 0.8rem; }
+
+.aab-choices { display: flex; gap: 0.6rem; }
+.aab-choice {
+    flex: 1 1 0;
+    display: inline-flex; align-items: center; justify-content: center; gap: 0.4rem;
+    height: 2.9rem; border-radius: 0.5rem; border: 2px solid #d7dceb; background: #fff;
+    font-size: 0.95rem; font-weight: 700; cursor: pointer; color: #55617a;
+}
+.aab-choice-approve:hover { border-color: #1b7a43; color: #1b7a43; }
+.aab-choice-reject:hover  { border-color: #b42318; color: #b42318; }
+.aab-choice-approve.aab-choice-on { border-color: #1b7a43; background: #e6f7ed; color: #1b7a43; }
+.aab-choice-reject.aab-choice-on  { border-color: #b42318; background: #fdecec; color: #b42318; }
+
+.aab-comment { margin-top: 0.9rem; }
+.aab-error {
+    display: flex; align-items: center; gap: 0.35rem;
+    margin-top: 0.6rem; font-size: 0.82rem; font-weight: 600; color: #b42318;
+}

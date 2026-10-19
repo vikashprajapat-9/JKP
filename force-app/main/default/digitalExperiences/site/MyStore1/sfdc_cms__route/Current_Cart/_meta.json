@@ -1,0 +1,6 @@
+{
+  "apiName" : "Current_Cart",
+  "type" : "sfdc_cms__route",
+  "path" : "routes",
+  "contentKey" : "MCUMCM3X7VIRD67BBHCSACUTQJDI"
+}

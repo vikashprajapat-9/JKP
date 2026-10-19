@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ValidationRule xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Available_Parking_must_not_exceed_Total</fullName>
+    <active>true</active>
+    <errorConditionFormula>Available_Parking__c &gt; Total_Parking__c</errorConditionFormula>
+    <errorMessage>Available Parking cannot exceed Total Parking.</errorMessage>
+</ValidationRule>

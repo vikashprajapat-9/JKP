@@ -1,0 +1,71 @@
+<template>
+    <!-- Figma p78-84: title + intro, category tabs, navy question bars; an open question shows its answer in a grey box -->
+    <div class="cp-page faq-page">
+        <template lwc:if={isLoading}>
+            <div class="cp-loading">
+                <lightning-spinner alternative-text={loadingText} size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template lwc:elseif={hasError}>
+            <div class="cp-alert cp-alert_error" role="alert">{errorText}</div>
+        </template>
+
+        <template lwc:elseif={showContent}>
+            <div class="cp-page-head faq-head">
+                <div class="cp-page-head__text">
+                    <h1 class="cp-page-title">{pageTitle}</h1>
+                    <p class="cp-page-intro">{pageDescription}</p>
+                </div>
+            </div>
+
+            <div class="cp-tabs" role="tablist" aria-label={tabsLabel}>
+                <template for:each={categories} for:item="cat">
+                    <button
+                        key={cat.key}
+                        type="button"
+                        class={cat.tabClass}
+                        role="tab"
+                        aria-selected={cat.ariaSelected}
+                        data-key={cat.key}
+                        onclick={handleTabClick}
+                    >{cat.label}</button>
+                </template>
+            </div>
+
+            <div class="faq-panel" role="tabpanel" aria-label={activeCategoryLabel}>
+                <template lwc:if={hasFaqs}>
+                    <ul class="faq-list">
+                        <template for:each={activeFaqs} for:item="faq">
+                            <li key={faq.id} class="faq-item">
+                                <button
+                                    type="button"
+                                    class="faq-question"
+                                    data-id={faq.id}
+                                    aria-expanded={faq.ariaExpanded}
+                                    onclick={handleFaqToggle}
+                                >
+                                    <span class="faq-question__text">{faq.question}</span>
+                                    <svg class={faq.chevronClass} viewBox="-0.4 -0.4 14 8.5" aria-hidden="true">
+                                        <path d="M12.4 0.8C12.7 0.9 12.7 1.3 12.4 1.4L7 6.9C6.8 7.2 6.4 7.2 6.2 6.9L0.8 1.4C0.6 1.3 0.6 0.9 0.8 0.8C0.9 0.6 1.3 0.6 1.4 0.8L6.6 5.9L11.8 0.8C11.9 0.6 12.3 0.6 12.4 0.8Z" stroke="currentColor" stroke-width="0.8" stroke-linejoin="round"></path>
+                                    </svg>
+                                </button>
+                                <template lwc:if={faq.isOpen}>
+                                    <div class="faq-answer">
+                                        <p class="faq-answer__text">{faq.answer}</p>
+                                    </div>
+                                </template>
+                            </li>
+                        </template>
+                    </ul>
+                </template>
+                <template lwc:else>
+                    <div class="cp-empty">
+                        <img class="cp-empty__img" src={emptyImg} alt="" />
+                        <p class="cp-empty__text">{emptyText}</p>
+                    </div>
+                </template>
+            </div>
+        </template>
+    </div>
+</template>

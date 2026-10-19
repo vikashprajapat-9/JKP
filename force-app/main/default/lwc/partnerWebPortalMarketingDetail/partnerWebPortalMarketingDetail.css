@@ -1,0 +1,262 @@
+:host {
+    display: block;
+    font-family: var(--jk-font);
+    color: var(--jk-text);
+}
+
+button {
+    font-family: var(--jk-font);
+}
+
+/* ---------- Header ---------- */
+.detail-header {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    margin-bottom: 40px;
+}
+
+.back-btn {
+    display: flex;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--jk-text);
+    cursor: pointer;
+}
+
+.detail-title {
+    margin: 0;
+    font-size: 28px;
+    font-weight: 600;
+    color: var(--jk-text);
+}
+
+/* ---------- Cards ---------- */
+.resource-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 32px;
+}
+
+.resource-card {
+    overflow: hidden;
+    border-radius: 16px;
+    background: #f2f2f2;
+}
+
+.thumb {
+    position: relative;
+    height: 186px;
+    display: flex;
+    align-items: flex-end;
+    justify-content: center;
+    overflow: hidden;
+}
+
+.thumb-blueprint {
+    background:
+        repeating-linear-gradient(0deg, rgb(255 255 255 / 18%) 0 1px, transparent 1px 22px),
+        repeating-linear-gradient(90deg, rgb(255 255 255 / 18%) 0 1px, transparent 1px 22px),
+        linear-gradient(135deg, #b9c3cf 0%, #8e9aa8 100%);
+}
+
+.thumb-green {
+    background: radial-gradient(circle at 30% 30%, #7fa35a 0%, #3f5f2c 55%, #253a1b 100%);
+}
+
+.thumb-house {
+    width: 72%;
+    height: 70%;
+}
+
+/* Neutral media-player style play button (round, blue gradient) */
+.play-badge {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 58px;
+    height: 58px;
+    border-radius: 50%;
+    background: linear-gradient(135deg, #3fa9ff 0%, #1b6fe0 55%, #0b45b0 100%);
+    box-shadow: 0 0 0 6px rgb(255 255 255 / 28%), 0 8px 20px rgb(0 0 0 / 35%);
+    transition: transform 0.2s ease, box-shadow 0.2s ease;
+}
+
+.play-icon {
+    margin-left: 3px;
+}
+
+.resource-card:hover .play-badge {
+    transform: translate(-50%, -50%) scale(1.08);
+    box-shadow: 0 0 0 8px rgb(255 255 255 / 36%), 0 10px 24px rgb(0 0 0 / 40%);
+}
+
+.video-chip {
+    position: absolute;
+    left: 10px;
+    bottom: 10px;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    gap: 4px;
+    padding: 3px 8px;
+    border-radius: 999px;
+    background: rgb(0 0 0 / 55%);
+    color: #ffffff;
+    font-size: 10px;
+    font-weight: 700;
+    letter-spacing: 0.06em;
+}
+
+.pdf-badge {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: 52px;
+    height: 66px;
+    border-radius: 4px 14px 4px 4px;
+    background: #ffffff;
+    box-shadow: 0 4px 12px rgb(0 0 0 / 25%);
+}
+
+.pdf-tag {
+    position: absolute;
+    top: 10px;
+    left: -8px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    background: #e53935;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+}
+
+.pdf-arrow {
+    position: absolute;
+    right: 6px;
+    bottom: 6px;
+}
+
+.card-body {
+    padding: 22px 12px 28px;
+}
+
+.card-title {
+    margin: 0 0 18px;
+    font-size: 17px;
+    font-weight: 600;
+    color: var(--jk-text);
+}
+
+.view-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 36px;
+    height: 36px;
+    border: 0;
+    border-radius: var(--jk-radius-sm);
+    background: var(--jk-navy);
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.view-btn:hover {
+    background: var(--jk-navy-soft);
+}
+
+.empty-state {
+    font-size: 15px;
+    color: var(--jk-text-muted);
+}
+
+/* The full-screen viewer is c-partner-web-portal-file-viewer, with its own styles */
+
+/* ---------- Real media ---------- */
+.thumb-media {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    background: #1f2937;
+}
+
+.play-badge,
+.pdf-badge {
+    z-index: 1;
+}
+
+.card-title {
+    overflow: hidden;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.skeleton-thumb,
+.skeleton-line {
+    background: linear-gradient(90deg, #e6e9ee 25%, #f4f6f9 50%, #e6e9ee 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.3s linear infinite;
+}
+
+.skeleton-thumb {
+    height: 186px;
+}
+
+.skeleton-line {
+    height: 14px;
+    width: 70%;
+    border-radius: 6px;
+}
+
+.error-state {
+    padding: 0.75rem 1rem;
+    border-left: 4px solid #ba0517;
+    border-radius: 8px;
+    background: #fdecec;
+    font-size: 14px;
+}
+
+/* ---------- Clickable cards ---------- */
+.resource-card {
+    cursor: pointer;
+    transition: transform 0.18s ease, box-shadow 0.18s ease;
+}
+
+.resource-card:hover {
+    transform: translateY(-3px);
+    box-shadow: 0 12px 26px rgb(17 33 73 / 16%);
+}
+
+.resource-card:focus-visible {
+    outline: none;
+    box-shadow: 0 0 0 3px rgb(63 162 255 / 55%);
+}
+
+.resource-card:hover .view-btn {
+    background: #1b5fd6;
+}
+
+@keyframes shimmer {
+    from { background-position: 200% 0; }
+    to { background-position: -200% 0; }
+}
+
+@media (max-width: 1024px) {
+    .resource-grid {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+    }
+}
+
+@media (max-width: 640px) {
+    .resource-grid {
+        grid-template-columns: 1fr;
+    }
+}

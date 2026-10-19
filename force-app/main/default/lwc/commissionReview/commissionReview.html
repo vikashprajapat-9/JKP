@@ -1,0 +1,240 @@
+<template>
+    <div class="screen">
+        <template lwc:if={showLoading}>
+            <div class="card state" aria-busy="true">
+                <lightning-spinner alternative-text={labels.loading} size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template lwc:elseif={showNoAccess}>
+            <div class="card">
+                <div class="note grey" data-id="noaccess"><span>{labels.noAccess}</span></div>
+                <template lwc:if={showBack}>
+                    <div class="stateaction">
+                        <button type="button" class="btn" data-id="back" onclick={handleBack}>{labels.back}</button>
+                    </div>
+                </template>
+            </div>
+        </template>
+
+        <template lwc:elseif={showLoadError}>
+            <div class="card">
+                <div class="note red" role="alert" data-id="loaderror"><span>{loadError}</span></div>
+                <div class="stateaction">
+                    <button type="button" class="btn" data-id="retry" onclick={handleRetry}>{labels.retry}</button>
+                    <template lwc:if={showBack}>
+                        <button type="button" class="btn" data-id="back" onclick={handleBack}>{labels.back}</button>
+                    </template>
+                </div>
+            </div>
+        </template>
+
+        <template lwc:elseif={isReady}>
+            <!-- Header: what this is, which configuration, where it stands -->
+            <div class="pagehead">
+                <div class="row">
+                    <div class="icon" aria-hidden="true">
+                        <svg viewBox="0 0 20 20" fill="none" stroke="#fff" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                            <circle cx="10" cy="10" r="7.5"></circle>
+                            <path d="M6.6 10.3l2.3 2.3 4.5-4.9"></path>
+                        </svg>
+                    </div>
+                    <div>
+                        <h1 data-id="title">{headTitle}</h1>
+                        <div class="sub" data-id="subline">{subline}</div>
+                    </div>
+                </div>
+                <div class="headstate">
+                    <span class={stateClass} data-id="state">{stateText}</span>
+                    <template lwc:if={hasStatusLine}>
+                        <span class="small muted" data-id="statusline">{statusLine}</span>
+                    </template>
+                </div>
+            </div>
+
+            <!-- What approving this version does, and why it was made -->
+            <div class="card">
+                <template lwc:if={showReturned}>
+                    <div class="note red returned" data-id="returned">
+                        <div><span class="strong">{returnedLead}</span><span class="gap">{config.decisionComments}</span></div>
+                    </div>
+                </template>
+                <div class="note" data-id="consequence">
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" aria-hidden="true">
+                        <circle cx="8" cy="8" r="6.5"></circle>
+                        <path d="M8 7.4v3.6M8 4.9v.2"></path>
+                    </svg>
+                    <div><span class="strong">{changeLead}</span><span class="gap">{consequence}</span></div>
+                </div>
+                <template lwc:if={hasReason}>
+                    <div class="reason" data-id="reason">
+                        <span class="label">{labels.reason}</span>
+                        <span class="reasontext">{config.changeReason}</span>
+                    </div>
+                </template>
+            </div>
+
+            <!-- The comparison with the earlier version -->
+            <div class="card">
+                <div class="sectitle switch">
+                    <h2 class="cardtitle">{labels.whatChanges}</h2>
+                    <span class="hint" data-id="hint" aria-live="polite">{changesHint}</span>
+                    <template lwc:if={hasBaseline}>
+                        <div class="tabs" role="group" aria-label={labels.viewLabel}>
+                            <template for:each={viewTabs} for:item="tab">
+                                <button
+                                    key={tab.key}
+                                    type="button"
+                                    class={tab.className}
+                                    data-view={tab.key}
+                                    aria-pressed={tab.pressed}
+                                    onclick={handleViewMode}
+                                >
+                                    {tab.label}
+                                </button>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+                <template lwc:if={hasVisibleRows}>
+                    <div class="tablewrap">
+                        <table class="grid changes">
+                            <caption class="assistive">
+                                {labels.tableCaption}
+                            </caption>
+                            <thead>
+                                <tr>
+                                    <th scope="col">{labels.colItem}</th>
+                                    <template lwc:if={hasBaseline}>
+                                        <th scope="col" data-id="baselinetitle">{baselineTitle}</th>
+                                    </template>
+                                    <th scope="col" data-id="versiontitle">{versionTitle}</th>
+                                    <template lwc:if={hasBaseline}>
+                                        <th scope="col"><span class="assistive">{labels.colChange}</span></th>
+                                    </template>
+                                </tr>
+                            </thead>
+                            <tbody>
+                                <template for:each={visibleRows} for:item="row">
+                                    <tr key={row.key} class={row.rowClass} data-key={row.key}>
+                                        <td class="item">{row.label}</td>
+                                        <template lwc:if={hasBaseline}>
+                                            <td class="v1 num before">
+                                                <template lwc:if={row.hasBefore}>
+                                                    <template for:each={row.before} for:item="part">
+                                                        <span key={part.key} class="part">{part.prefix}<span>{part.text}</span>{part.suffix}</span>
+                                                    </template>
+                                                </template>
+                                                <template lwc:else><span class="dash">{labels.none}</span></template>
+                                            </td>
+                                        </template>
+                                        <td class="num after">
+                                            <template lwc:if={row.hasAfter}>
+                                                <template for:each={row.after} for:item="part">
+                                                    <span key={part.key} class="part">{part.prefix}<span class={part.valueClass}>{part.text}</span>{part.suffix}</span>
+                                                </template>
+                                            </template>
+                                            <template lwc:else><span class="dash">{labels.none}</span></template>
+                                        </td>
+                                        <template lwc:if={hasBaseline}>
+                                            <td class="r">
+                                                <template lwc:if={row.hasTag}><span class={row.tagClass}>{row.tag}</span></template>
+                                            </td>
+                                        </template>
+                                    </tr>
+                                </template>
+                            </tbody>
+                        </table>
+                    </div>
+                </template>
+                <template lwc:else>
+                    <div class="empty" data-id="nochanges">
+                        <span class="muted">{labels.noChanges}</span>
+                        <button type="button" class="link" data-id="showfull" onclick={handleShowFull}>{labels.showFull}</button>
+                    </div>
+                </template>
+            </div>
+
+            <!-- The decision of the approver -->
+            <template lwc:if={showDecision}>
+                <div class="card" data-id="decision">
+                    <h2 class="sectitle">{labels.yourDecision}</h2>
+                    <template lwc:if={isBlocked}>
+                        <div class="note amber" data-id="blocked"><span>{config.decideBlockedReason}</span></div>
+                    </template>
+                    <template lwc:else>
+                        <div class="decide">
+                            <div class="field">
+                                <span class="label" aria-hidden="true">{labels.comment}</span>
+                                <lightning-textarea
+                                    data-id="comment"
+                                    label={labels.comment}
+                                    variant="label-hidden"
+                                    placeholder={labels.commentPlaceholder}
+                                    value={comments}
+                                    max-length="4000"
+                                    disabled={working}
+                                    onchange={handleComment}
+                                ></lightning-textarea>
+                                <template lwc:if={hasCommentError}>
+                                    <span class="error-text" role="alert" data-id="commenterror">{commentError}</span>
+                                </template>
+                            </div>
+                            <div class="actions">
+                                <button type="button" class="btn danger" data-id="reject" disabled={working} onclick={handleReject}>
+                                    {labels.reject}
+                                </button>
+                                <button type="button" class="btn success" data-id="approve" disabled={working} onclick={handleApprove}>
+                                    {labels.approve}
+                                </button>
+                            </div>
+                        </div>
+                        <div class="locknote">
+                            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                <rect x="3" y="7.2" width="10" height="7" rx="1.6"></rect>
+                                <path d="M5.4 7.2V5.1a2.6 2.6 0 0 1 5.2 0v2.1"></path>
+                            </svg>
+                            <span>{labels.lockNote}</span>
+                        </div>
+                    </template>
+                </div>
+            </template>
+
+            <!-- A failed approval, rejection or withdrawal -->
+            <template lwc:if={hasActionError}>
+                <div class="note red actionerror" role="alert" data-id="actionerror"><span>{actionError}</span></div>
+            </template>
+
+            <div class="footerbar">
+                <div class="actions">
+                    <template lwc:if={showBack}>
+                        <button type="button" class="btn" data-id="back" onclick={handleBack}>{labels.back}</button>
+                    </template>
+                </div>
+                <div class="actions">
+                    <template lwc:if={showOpenDraft}>
+                        <button type="button" class="btn" data-id="opendraft" onclick={handleOpenDraft}>{openDraftLabel}</button>
+                    </template>
+                    <template lwc:if={showWithdraw}>
+                        <button type="button" class="btn danger" data-id="withdraw" disabled={working} onclick={handleWithdraw}>
+                            {labels.withdraw}
+                        </button>
+                    </template>
+                    <template lwc:if={showEdit}>
+                        <button type="button" class="btn primary" data-id="edit" onclick={handleEdit}>{labels.editDraft}</button>
+                    </template>
+                    <template lwc:if={showNewDraft}>
+                        <button type="button" class="btn primary" data-id="newdraft" onclick={handleNewDraft}>{labels.newDraft}</button>
+                    </template>
+                    <template lwc:if={standalone}>
+                        <button type="button" class="btn" data-id="opensetup" onclick={handleOpenInSetup}>{labels.openInSetup}</button>
+                    </template>
+                </div>
+            </div>
+
+            <template lwc:if={working}>
+                <div class="busy"><lightning-spinner alternative-text={labels.loading} size="medium"></lightning-spinner></div>
+            </template>
+        </template>
+    </div>
+</template>

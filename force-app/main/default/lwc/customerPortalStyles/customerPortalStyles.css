@@ -1,0 +1,1665 @@
+/* Customer Portal (SFA site) shared look, measured from the Figma design "Customer Portal Figma.pdf" (desktop frame
+   1280 x 832, 1 Figma px = 1 CSS px). Every customerPortal* component imports it at the top of its own stylesheet:
+       @import 'c/customerPortalStyles';
+   It sets the tokens on :host (they also inherit into child components) and the cp- building blocks below.
+   Font: 'JKP DIN' (DINish, the DIN face of the Figma; static resource customerPortalFonts, SIL Open Font License); the
+   shell c/customerPortal and the login / forgot password pages load customerPortalFonts/fonts.css once. Use
+   font-family: var(--cp-font). The CSS weights are the Figma's: fonts.css maps each one to the DINish weight that is
+   as heavy as the Figma text, and :host adds 0.3px letter spacing, which gives the Figma word widths (both measured).
+
+   PAGE FRAME (the shell gives the padding; a screen's root element has no outer padding)
+     .cp-page               <div class="cp-page"> screen root </div>
+     .cp-page-head          <div class="cp-page-head"><div class="cp-page-head__text">title + intro</div><div class="cp-page-actions">buttons</div></div>
+     .cp-page-title         <h1 class="cp-page-title">My Documents</h1>          32/40, 600, #1f1e1e
+     .cp-page-title_brand   <h1 class="cp-page-title cp-page-title_brand">Profile</h1>   #284164 (Profile, About Us, Terms, Let's Talk)
+     .cp-page-back          <button class="cp-page-back"><svg>arrow</svg> Handover (Checklist ...)</button>   20px title with back arrow
+     .cp-page-intro         <p class="cp-page-intro">Manage your documents ...</p>   16/24 500, #232323, 6px under the title
+     .cp-page-actions       <div class="cp-page-actions"><button class="cp-btn">Schedule Visit</button></div>
+     .cp-page-body          <div class="cp-page-body"> blocks </div>   24px under the head, 24px between blocks
+     .cp-stack / .cp-row    vertical / horizontal flex with 24px / 12px gaps (.cp-stack_sm = 12px, .cp-row_wrap, .cp-row_between)
+     .cp-grid               <div class="cp-grid"> cards </div>   auto-fill columns, min 280px (= 3 x 295px in the frame), gap 24px
+   TEXT
+     .cp-section-title      <h2 class="cp-section-title">Uploaded Files</h2>     20/28, 600 (.cp-section-title_sm = 18/24)
+     .cp-text / .cp-text-sm <p class="cp-text">16/24</p>  <p class="cp-text-sm">14/20</p>
+     .cp-muted / .cp-strong <span class="cp-muted">Today, 10:00 AM</span>  grey #6d6e71 / weight 600
+     .cp-link               <a class="cp-link" href="...">Read more</a>   blue #2d6ecf, underline on hover
+     .cp-kv                 <dl class="cp-kv"><dt>Visit Date:</dt><dd>24/5/2023</dd></dl>   label/value lines (cards)
+     .cp-divider            <hr class="cp-divider">
+   CARDS
+     .cp-card               <div class="cp-card"> ... </div>   white, radius 16, soft two-layer shadow, padding 16px
+     .cp-card_flat          no shadow, 1px #ebeaea border (My Documents cards)
+     .cp-card_media         radius 8, no padding, image on top: <div class="cp-card cp-card_media"><div class="cp-card__media"><img></div><div class="cp-card__body">..</div></div>
+     .cp-card__title        16/24, 500, #1f1e1e     .cp-card__subtitle   12/16 address line     .cp-card__footer  buttons row
+   BUTTONS (navy #12214a; radius 8; 40px; 14px text)
+     .cp-btn                <button class="cp-btn">View Details</button>
+     .cp-btn_secondary      <button class="cp-btn cp-btn_secondary">Cancel Visit</button>   white, 1px navy border (override ink with --cp-btn-secondary-ink)
+     .cp-btn_light          <button class="cp-btn cp-btn_light">Select File</button>       white, #d5d3e0 border, radius 10, 36px
+     .cp-btn_link           <button class="cp-btn cp-btn_link">Change</button>             text only
+     .cp-btn_lg             48px, 16px text (modal and form submit buttons, e.g. width 320px)
+     .cp-btn_pill           32px pill, 12px text (dashboard "View", "Refer & Earn Now", event "Register Now")
+     .cp-btn_block          full width          .cp-btn_sm  32px, 12px text
+     [disabled]             grey #d8d8d8 with white text, as in Figma
+     .cp-icon-btn           <button class="cp-icon-btn" title="Delete"><svg>..</svg></button>  44px square, radius 10 (.cp-icon-btn_sm = 36px,
+                            .cp-icon-btn_dark = dark filled, e.g. the eye button of My Documents p47)
+     .cp-close              <button class="cp-close" title="Close"><svg>x</svg></button>   24px, #323232 X (14px icon)
+   FORMS
+     .cp-field              <div class="cp-field"><label class="cp-label">Select an issue</label><input class="cp-input"></div>   24px between fields
+     .cp-label              16/20, 500, 16px above the control (.cp-label_sm = 14px)    .cp-required  red *
+     .cp-input              48px, 1px #c7c4c4, radius 8, 16px text; [disabled]/[readonly] grey #ebeaea (Profile)
+     .cp-select-wrap        <div class="cp-select-wrap"><select class="cp-select">..</select></div>   adds the chevron
+     .cp-textarea           120px min height
+     .cp-input-group        <div class="cp-input-group"><input class="cp-input"><button class="cp-btn cp-btn_link">Change</button></div>
+                            (or <span class="cp-input-group__addon">..</span> on the right instead of the link button)
+     .cp-filter             <div class="cp-filter"><svg>funnel</svg><select class="cp-filter__select">..</select></div>  40px outlined filter
+     .cp-help / .cp-error   14/20 grey hint / red message under a control;  .cp-input_invalid  red border
+     .cp-form-grid          two columns of fields (one column on phones); .cp-form-grid__full spans both columns
+   TABLES
+     .cp-table-wrap         <div class="cp-table-wrap"><table class="cp-table">..</table></div>  scrolls sideways on phones
+     .cp-table              navy 36px header row (radius 8), 14/20 cells, 2px #ebeaea row lines
+                            <td class="cp-table__num">1</td> narrow Sr. column;  <td class="cp-table__actions"> right-aligned buttons
+   TABS AND CHIPS
+     .cp-tabs / .cp-tab     <div class="cp-tabs" role="tablist"><button class="cp-tab cp-tab_active" role="tab">Current Projects</button>..</div>
+                            52px, 16px text, 3px underline on the active tab (colour: --cp-tab-accent)
+     .cp-chips / .cp-chip   <div class="cp-chips"><button class="cp-chip cp-chip_active">All</button></div>   36px pills
+   STATUS BADGES (24px pills, white 12px text)
+     .cp-badge              <span class="cp-badge cp-badge_pending">Pending</span>
+                            .cp-badge_pending (red #d2222d)   .cp-badge_progress (amber #ffba09: In Progress)
+                            .cp-badge_completed (green #21b354)   .cp-badge_success (green #238823: Resolved, Approved, Booked)
+                            .cp-badge_cancelled / .cp-badge_overdue (amber #ffbf00)   .cp-badge_warning (orange #ff9500: Not booked)
+                            .cp-badge_info (blue #2d6ecf)   .cp-badge_neutral (grey)
+     .cp-chip-info          <span class="cp-chip-info">Defects Liability Period(DLP): ..</span>   36px indigo #2d3a8c info chip
+     .cp-progress           <div class="cp-progress"><div class="cp-progress__bar" style={barStyle}></div></div>   16px, green #65b130 on #e0e4e5
+                            (.cp-progress_thin = 4px, e.g. upload rows)
+   MODAL
+     .cp-modal-overlay      <div class="cp-modal-overlay" role="presentation"> .cp-modal </div>   fixed, 48% black
+     .cp-modal              <section class="cp-modal" role="dialog" aria-modal="true">..</section>   640px, radius 16, padding 23/41/25
+                            sizes: .cp-modal_sm (404px, logout) .cp-modal_md (528px, success) .cp-modal_lg (866px, upload)
+     .cp-modal__close       the close button (top right; use with .cp-close)
+     .cp-modal__title       24/32, 500, centred      .cp-modal__text  16/24 centred intro
+     .cp-modal__body        form area (left aligned)   .cp-modal__footer  centred buttons, 32px above, 16px gap
+   SUCCESS / EMPTY
+     .cp-success            <div class="cp-success"><img class="cp-success__icon" src={doneImg}><h2 class="cp-success__title">..</h2><p class="cp-success__text">..</p>
+                            <div class="cp-success__actions"><button class="cp-btn cp-btn_lg">Done</button></div></div>
+     .cp-empty              <div class="cp-empty"><img class="cp-empty__img" src={emptyImg}><p class="cp-empty__text">No Service Request Raised</p></div>
+     .cp-loading            <div class="cp-loading"><lightning-spinner size="medium"></lightning-spinner></div>
+     .cp-alert              <div class="cp-alert cp-alert_error">We couldn't load ..</div>   (.cp-alert_success = green)
+   UPLOAD
+     .cp-dropzone           <div class="cp-dropzone" ondragover ondrop><img class="cp-dropzone__icon"><p class="cp-dropzone__title">Drag and drop your files</p>
+                            <p class="cp-dropzone__hint">JPEG, PNG, PDF ..</p><button class="cp-btn cp-btn_light">Select File</button></div>
+                            .cp-dropzone_over while a file is dragged over it
+     .cp-file-list / .cp-file   <ul class="cp-file-list"><li class="cp-file"><img class="cp-file__icon"><div class="cp-file__main">
+                            <p class="cp-file__name">Report.pdf</p><p class="cp-file__meta"><span>23.5MB</span><span class="cp-file__sep"></span>
+                            <span>55%</span><span class="cp-file__dot"></span><span>Uploading</span></p></div><button class="cp-icon-btn">..</button></li></ul>
+     .cp-file__progress     add to a .cp-progress.cp-progress_thin bar under the meta line while a file uploads
+     .cp-spinner            <span class="cp-spinner"></span>   16px green spinner used in "Uploading"
+   CAROUSEL DOTS
+     .cp-dots / .cp-dot     <div class="cp-dots"><button class="cp-dot cp-dot_active"></button><button class="cp-dot"></button></div>
+                            under an image: amber 16x8 active pill, grey 8px dots
+     .cp-dots_on-image      on a photo: 6px white dots, active = 10px navy dot with white ring (absolute, bottom 8px)
+     .cp-carousel-arrow     20px round translucent arrow buttons on photos: .cp-carousel-arrow.cp-carousel-arrow_prev / .cp-carousel-arrow_next
+   UTILITIES
+     .cp-hide-mobile / .cp-show-mobile    .cp-visually-hidden    .cp-nowrap    .cp-center
+   BASE COMPONENTS: the :host block also sets styling hooks so lightning-input / combobox / button / icon follow the
+   design (radius 8, #c7c4c4 borders, navy brand buttons, JKP DIN). */
+
+:host {
+    /* font */
+    --jk-font: 'JKP DIN', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    --cp-font: var(--jk-font);
+
+    /* brand and text */
+    --cp-navy: #12214a;
+    --cp-navy-deep: #1a2149;
+    --cp-navy-hover: #0c1838;
+    --cp-navy-ink: #0b1e35;
+    --cp-title: #1f1e1e;
+    --cp-title-brand: #284164;
+    --cp-ink: #232323;
+    --cp-ink-soft: #282828;
+    --cp-ink-dark: #101111;
+    --cp-muted: #6d6e71;
+    --cp-muted-2: #585858;
+    --cp-hint: #7d7d7d;
+    --cp-empty-ink: #999999;
+    --cp-placeholder: #c7c4c4;
+    --cp-meta: #949fb1;
+    --cp-close-ink: #323232;
+    --cp-link: #2d6ecf;
+
+    /* surfaces and lines */
+    --cp-surface: #ffffff;
+    --cp-page-bg: #ffffff;
+    --cp-page-bg-tint: #fafafa;
+    --cp-tint: #f4f9fa;
+    --cp-border: #c7c4c4;
+    --cp-line: #ebeaea;
+    --cp-line-soft: #d5d3e0;
+    --cp-dash: #d8daeb;
+    --cp-filter-border: #d1d5db;
+    --cp-filter-ink: #4b5563;
+    --cp-disabled: #d8d8d8;
+    --cp-disabled-field: #ebeaea;
+
+    /* status */
+    --cp-green: #279c48;
+    --cp-green-badge: #238823;
+    --cp-green-bright: #21b354;
+    --cp-red: #d2222d;
+    --cp-orange: #ff7e1a;
+    --cp-orange-badge: #ff9500;
+    --cp-amber: #ffbf00;
+    --cp-amber-badge: #ffba09;
+    --cp-gold: #fac51e;
+    --cp-blue: #2d6ecf;
+    --cp-indigo: #2d3a8c;
+
+    /* shape, depth, spacing */
+    --cp-radius-sm: 8px;
+    --cp-radius-md: 12px;
+    --cp-radius: 16px;
+    --cp-radius-pill: 999px;
+    --cp-shadow: -2px -2px 8px rgba(0, 0, 0, 0.04), 2px 2px 8px rgba(0, 0, 0, 0.08);
+    --cp-shadow-header: 0 4px 4px #e7e7e7;
+    --cp-shadow-sidebar: 0 4px 4px rgba(189, 189, 189, 0.7);
+    --cp-shadow-modal: 0 8px 32px rgba(0, 0, 0, 0.16);
+    --cp-overlay: rgba(0, 0, 0, 0.48);
+    --cp-focus: 0 0 0 3px rgba(18, 33, 74, 0.18);
+    --cp-space-xs: 4px;
+    --cp-space-sm: 8px;
+    --cp-space-md: 12px;
+    --cp-space: 16px;
+    --cp-space-lg: 24px;
+    --cp-space-xl: 32px;
+    --cp-space-2xl: 48px;
+
+    /* styling hooks of base components */
+    --lwc-fontFamily: var(--cp-font);
+    --slds-c-input-radius-border: 8px;
+    --slds-c-input-color-border: var(--cp-border);
+    --slds-c-input-color-border-focus: var(--cp-navy);
+    --slds-c-input-shadow-focus: var(--cp-focus);
+    --slds-c-input-text-color: var(--cp-ink);
+    --slds-c-button-radius-border: 8px;
+    --slds-c-button-brand-color-background: var(--cp-navy);
+    --slds-c-button-brand-color-border: var(--cp-navy);
+    --slds-c-button-brand-color-background-hover: var(--cp-navy-hover);
+    --slds-c-button-brand-color-border-hover: var(--cp-navy-hover);
+    --slds-c-button-text-color: var(--cp-navy);
+    --slds-c-icon-color-foreground-default: var(--cp-navy);
+    --sds-c-icon-color-foreground-default: var(--cp-navy);
+    --slds-c-spinner-color-foreground: var(--cp-navy);
+
+    display: block;
+    font-family: var(--cp-font);
+    color: var(--cp-ink);
+    font-size: 14px;
+    line-height: 20px;
+    /* Figma body text (11-16px) is weight 500, 12px detail text 400, titles 600 (see customerPortalFonts/fonts.css) */
+    font-weight: 500;
+    /* DINish is slightly narrower than the Figma's DIN: 0.3px per letter gives the Figma word widths at 12-32px */
+    letter-spacing: 0.3px;
+    -webkit-font-smoothing: antialiased;
+    -moz-osx-font-smoothing: grayscale;
+}
+
+*,
+*::before,
+*::after {
+    box-sizing: border-box;
+}
+
+button,
+input,
+select,
+textarea {
+    font-family: inherit;
+}
+
+/* ============================== PAGE FRAME ============================== */
+.cp-page {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    color: var(--cp-ink);
+    font-family: var(--cp-font);
+}
+
+.cp-page-head {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    margin: 0 0 24px;
+}
+
+.cp-page-head__text {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.cp-page-title {
+    margin: 0;
+    font-size: 32px;
+    line-height: 40px;
+    font-weight: 600;
+    color: var(--cp-title);
+    overflow-wrap: anywhere;
+}
+
+.cp-page-title_brand {
+    color: var(--cp-title-brand);
+}
+
+/* As wide as the page, as in Figma */
+.cp-page-intro {
+    margin: 6px 0 0;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    color: var(--cp-ink);
+}
+
+.cp-page-actions {
+    display: flex;
+    flex: 0 0 auto;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 12px;
+}
+
+.cp-page-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    margin: 0 0 24px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--cp-title);
+    font-size: 20px;
+    line-height: 28px;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+}
+
+.cp-page-back svg {
+    width: 20px;
+    height: 20px;
+    flex: 0 0 auto;
+    fill: currentColor;
+}
+
+.cp-page-body {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    min-width: 0;
+}
+
+.cp-stack {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    min-width: 0;
+}
+
+.cp-stack_sm {
+    gap: 12px;
+}
+
+.cp-row {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 0;
+}
+
+.cp-row_wrap {
+    flex-wrap: wrap;
+}
+
+.cp-row_between {
+    justify-content: space-between;
+}
+
+.cp-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+}
+
+/* ================================= TEXT ================================= */
+.cp-section-title {
+    margin: 0;
+    font-size: 20px;
+    line-height: 28px;
+    font-weight: 600;
+    color: var(--cp-ink);
+}
+
+.cp-section-title_sm {
+    font-size: 18px;
+    line-height: 24px;
+    color: var(--cp-ink-dark);
+}
+
+.cp-text {
+    margin: 0;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    color: var(--cp-ink);
+}
+
+.cp-text-sm {
+    margin: 0;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    color: var(--cp-ink);
+}
+
+.cp-muted {
+    color: var(--cp-muted);
+}
+
+.cp-strong {
+    font-weight: 600;
+}
+
+.cp-link {
+    color: var(--cp-link);
+    font-weight: 500;
+    text-decoration: none;
+    cursor: pointer;
+}
+
+.cp-link:hover,
+.cp-link:focus-visible {
+    text-decoration: underline;
+}
+
+.cp-kv {
+    display: grid;
+    grid-template-columns: max-content 1fr;
+    column-gap: 10px;
+    row-gap: 8px;
+    margin: 0;
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--cp-ink);
+}
+
+.cp-kv dt,
+.cp-kv dd {
+    margin: 0;
+}
+
+.cp-kv dt {
+    font-weight: 400;
+}
+
+.cp-kv dd {
+    font-weight: 500;
+    overflow-wrap: anywhere;
+}
+
+.cp-divider {
+    height: 0;
+    margin: 0;
+    border: 0;
+    border-top: 1px solid var(--cp-line);
+}
+
+/* ================================= CARDS ================================ */
+.cp-card {
+    position: relative;
+    min-width: 0;
+    padding: 16px;
+    background: var(--cp-surface);
+    border-radius: var(--cp-radius);
+    box-shadow: var(--cp-shadow);
+}
+
+.cp-card_flat {
+    border: 1px solid var(--cp-line);
+    box-shadow: none;
+}
+
+.cp-card_media {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    border-radius: var(--cp-radius-sm);
+    overflow: hidden;
+}
+
+.cp-card__media {
+    position: relative;
+    height: 158px;
+    background: var(--cp-disabled);
+    overflow: hidden;
+}
+
+.cp-card__media img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.cp-card__body {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    gap: 4px;
+    padding: 12px 16px 16px;
+    min-width: 0;
+}
+
+.cp-card__title {
+    margin: 0;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    color: var(--cp-title);
+    overflow-wrap: anywhere;
+}
+
+.cp-card__subtitle {
+    margin: 0;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 400;
+    color: var(--cp-ink);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cp-card__footer {
+    display: flex;
+    gap: 8px;
+    margin-top: auto;
+    padding-top: 16px;
+}
+
+.cp-card__footer > * {
+    flex: 1 1 0;
+    min-width: 0;
+}
+
+/* Browsers do not pass letter spacing on to buttons and fields: they take the portal's 0.3px like other text */
+button,
+input,
+select,
+textarea {
+    letter-spacing: inherit;
+}
+
+/* ================================ BUTTONS =============================== */
+.cp-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    height: 40px;
+    min-width: 0;
+    padding: 0 20px;
+    border: 1px solid var(--cp-navy);
+    border-radius: var(--cp-radius-sm);
+    background: var(--cp-navy);
+    color: #ffffff;
+    font-size: 14px;
+    line-height: 1;
+    font-weight: 500;
+    letter-spacing: 0.3px;
+    text-decoration: none;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease, box-shadow 0.15s ease;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.cp-btn:hover {
+    background: var(--cp-navy-hover);
+    border-color: var(--cp-navy-hover);
+}
+
+.cp-btn:focus-visible,
+.cp-icon-btn:focus-visible,
+.cp-close:focus-visible,
+.cp-tab:focus-visible,
+.cp-chip:focus-visible,
+.cp-dot:focus-visible,
+.cp-page-back:focus-visible {
+    outline: 2px solid var(--cp-navy);
+    outline-offset: 2px;
+}
+
+.cp-btn svg {
+    width: 16px;
+    height: 16px;
+    flex: 0 0 auto;
+    fill: currentColor;
+}
+
+.cp-btn_secondary {
+    border-color: var(--cp-btn-secondary-ink, var(--cp-navy));
+    background: var(--cp-surface);
+    color: var(--cp-btn-secondary-ink, var(--cp-navy));
+}
+
+.cp-btn_secondary:hover {
+    border-color: var(--cp-btn-secondary-ink, var(--cp-navy));
+    background: var(--cp-tint);
+}
+
+.cp-btn_light {
+    height: 36px;
+    padding: 0 16px;
+    border-color: var(--cp-line-soft);
+    border-radius: 10px;
+    background: var(--cp-surface);
+    color: #2e3037;
+    box-shadow: 0 4px 10px rgba(46, 48, 55, 0.08);
+}
+
+.cp-btn_light:hover {
+    border-color: var(--cp-navy);
+    background: var(--cp-surface);
+}
+
+.cp-btn_link {
+    height: auto;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--cp-navy);
+    font-weight: 500;
+}
+
+.cp-btn_link:hover {
+    border: 0;
+    background: none;
+    text-decoration: underline;
+}
+
+.cp-btn_lg {
+    height: 48px;
+    padding: 0 32px;
+    font-size: 16px;
+}
+
+.cp-btn_sm {
+    height: 32px;
+    padding: 0 16px;
+    font-size: 12px;
+}
+
+.cp-btn_pill {
+    height: 32px;
+    padding: 0 24px;
+    border-radius: var(--cp-radius-pill);
+    font-size: 12px;
+}
+
+.cp-btn_block {
+    display: flex;
+    width: 100%;
+}
+
+.cp-btn[disabled],
+.cp-btn[disabled]:hover,
+.cp-btn[aria-disabled='true'] {
+    border-color: var(--cp-disabled);
+    background: var(--cp-disabled);
+    color: #ffffff;
+    box-shadow: none;
+    cursor: not-allowed;
+}
+
+.cp-btn_link[disabled],
+.cp-btn_link[disabled]:hover {
+    border: 0;
+    background: none;
+    color: var(--cp-placeholder);
+}
+
+.cp-icon-btn {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: 44px;
+    height: 44px;
+    padding: 0;
+    border: 1px solid var(--cp-line-soft);
+    border-radius: 10px;
+    background: var(--cp-surface);
+    color: #2e3037;
+    cursor: pointer;
+}
+
+.cp-icon-btn:hover {
+    border-color: var(--cp-navy);
+}
+
+.cp-icon-btn_sm {
+    width: 36px;
+    height: 36px;
+    border-radius: var(--cp-radius-sm);
+}
+
+.cp-icon-btn_dark {
+    border-color: var(--cp-title);
+    background: var(--cp-title);
+    color: #ffffff;
+}
+
+.cp-icon-btn svg {
+    width: 16px;
+    height: 16px;
+    fill: currentColor;
+}
+
+.cp-icon-btn[disabled] {
+    opacity: 0.5;
+    cursor: not-allowed;
+}
+
+.cp-close {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: 0;
+    border-radius: 4px;
+    background: none;
+    color: var(--cp-close-ink);
+    cursor: pointer;
+}
+
+.cp-close svg {
+    width: 14px;
+    height: 14px;
+    fill: currentColor;
+}
+
+.cp-close:hover {
+    background: var(--cp-tint);
+}
+
+/* ================================= FORMS ================================ */
+.cp-field {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+}
+
+.cp-field + .cp-field {
+    margin-top: 24px;
+}
+
+.cp-label {
+    display: block;
+    margin: 0 0 16px;
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 500;
+    color: var(--cp-ink);
+}
+
+.cp-label_sm {
+    margin-bottom: 14px;
+    font-size: 14px;
+}
+
+.cp-required {
+    margin-left: 2px;
+    color: var(--cp-red);
+}
+
+.cp-input,
+.cp-select,
+.cp-textarea {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    height: 48px;
+    margin: 0;
+    padding: 0 16px;
+    border: 1px solid var(--cp-border);
+    border-radius: var(--cp-radius-sm);
+    background: var(--cp-surface);
+    color: var(--cp-ink);
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    outline: none;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+.cp-input::placeholder,
+.cp-textarea::placeholder {
+    color: var(--cp-placeholder);
+    opacity: 1;
+}
+
+.cp-input:focus,
+.cp-select:focus,
+.cp-textarea:focus {
+    border-color: var(--cp-navy);
+    box-shadow: var(--cp-focus);
+}
+
+.cp-input[disabled],
+.cp-input[readonly],
+.cp-select[disabled],
+.cp-textarea[disabled],
+.cp-textarea[readonly] {
+    border-color: var(--cp-disabled-field);
+    background: var(--cp-disabled-field);
+    color: var(--cp-ink);
+    box-shadow: none;
+    cursor: default;
+}
+
+.cp-input[disabled]::placeholder,
+.cp-textarea[disabled]::placeholder {
+    color: var(--cp-placeholder);
+}
+
+.cp-textarea {
+    height: auto;
+    min-height: 120px;
+    padding: 14px 16px;
+    resize: vertical;
+}
+
+.cp-input_invalid,
+.cp-input_invalid:focus {
+    border-color: var(--cp-red);
+    box-shadow: none;
+}
+
+.cp-select-wrap {
+    position: relative;
+    display: block;
+    min-width: 0;
+}
+
+.cp-select {
+    padding-right: 48px;
+    text-overflow: ellipsis;
+    cursor: pointer;
+}
+
+.cp-select-wrap::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 20px;
+    width: 10px;
+    height: 10px;
+    margin-top: -8px;
+    border-right: 1.5px solid var(--cp-ink);
+    border-bottom: 1.5px solid var(--cp-ink);
+    transform: rotate(45deg);
+    pointer-events: none;
+}
+
+.cp-input-group {
+    position: relative;
+    display: flex;
+    align-items: center;
+    min-width: 0;
+}
+
+.cp-input-group > .cp-input {
+    padding-right: 88px;
+}
+
+.cp-input-group > .cp-btn_link,
+.cp-input-group > .cp-input-group__addon {
+    position: absolute;
+    right: 16px;
+}
+
+.cp-filter {
+    position: relative;
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    height: 40px;
+    min-width: 206px;
+    max-width: 100%;
+    padding: 0 12px 0 14px;
+    border: 1px solid var(--cp-filter-border);
+    border-radius: var(--cp-radius-sm);
+    background: var(--cp-surface);
+    color: var(--cp-filter-ink);
+}
+
+.cp-filter > svg {
+    width: 17px;
+    height: 17px;
+    flex: 0 0 auto;
+    fill: currentColor;
+}
+
+.cp-filter__select {
+    flex: 1 1 auto;
+    min-width: 0;
+    height: 38px;
+    padding: 0 24px 0 0;
+    border: 0;
+    background: transparent;
+    color: var(--cp-filter-ink);
+    font-size: 16px;
+    outline: none;
+    -webkit-appearance: none;
+    appearance: none;
+    cursor: pointer;
+}
+
+.cp-filter::after {
+    content: '';
+    position: absolute;
+    top: 50%;
+    right: 16px;
+    width: 8px;
+    height: 8px;
+    margin-top: -6px;
+    border-right: 1.5px solid var(--cp-filter-ink);
+    border-bottom: 1.5px solid var(--cp-filter-ink);
+    transform: rotate(45deg);
+    pointer-events: none;
+}
+
+.cp-filter:focus-within {
+    border-color: var(--cp-navy);
+    box-shadow: var(--cp-focus);
+}
+
+.cp-help,
+.cp-error {
+    margin: 8px 0 0;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.cp-help {
+    color: var(--cp-muted);
+}
+
+.cp-error {
+    color: var(--cp-red);
+}
+
+.cp-form-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+}
+
+.cp-form-grid > .cp-field + .cp-field {
+    margin-top: 0;
+}
+
+.cp-form-grid__full {
+    grid-column: 1 / -1;
+}
+
+/* ================================= TABLES =============================== */
+.cp-table-wrap {
+    width: 100%;
+    min-width: 0;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.cp-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--cp-ink);
+}
+
+.cp-table th {
+    height: 36px;
+    padding: 0 20px;
+    background: var(--cp-navy);
+    color: #ffffff;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    text-align: left;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+.cp-table th:first-child {
+    border-radius: 8px 0 0 8px;
+}
+
+.cp-table th:last-child {
+    border-radius: 0 8px 8px 0;
+}
+
+.cp-table th:only-child {
+    border-radius: 8px;
+}
+
+.cp-table td {
+    padding: 18px 20px;
+    border-bottom: 2px solid var(--cp-line);
+    font-weight: 500;
+    vertical-align: middle;
+    overflow-wrap: anywhere;
+}
+
+.cp-table tbody tr:first-child td {
+    padding-top: 22px;
+}
+
+.cp-table .cp-table__num {
+    width: 1%;
+    padding-right: 4px;
+    white-space: nowrap;
+}
+
+.cp-table .cp-table__actions {
+    text-align: right;
+    white-space: nowrap;
+}
+
+/* ============================== TABS / CHIPS ============================ */
+.cp-tabs {
+    display: flex;
+    align-items: stretch;
+    gap: 0;
+    min-width: 0;
+    border-bottom: 1px solid var(--cp-line);
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.cp-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.cp-tab {
+    position: relative;
+    flex: 0 0 auto;
+    height: 52px;
+    margin: 0 0 -1px;
+    padding: 0 16px;
+    border: 0;
+    border-bottom: 1px solid var(--cp-line);
+    background: none;
+    color: var(--cp-navy-ink);
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 500;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.cp-tab:hover {
+    color: var(--cp-navy);
+}
+
+.cp-tab_active,
+.cp-tab[aria-selected='true'] {
+    border-bottom-color: transparent;
+    box-shadow: inset 0 -3px 0 var(--cp-tab-accent, var(--cp-navy-deep));
+    color: var(--cp-ink);
+}
+
+.cp-chips {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 12px;
+}
+
+.cp-chip {
+    display: inline-flex;
+    align-items: center;
+    height: 36px;
+    padding: 0 16px;
+    border: 1px solid var(--cp-border);
+    border-radius: var(--cp-radius-pill);
+    background: var(--cp-surface);
+    color: var(--cp-ink);
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.cp-chip:hover {
+    border-color: var(--cp-navy);
+}
+
+.cp-chip_active,
+.cp-chip[aria-pressed='true'] {
+    border-color: var(--cp-navy);
+    background: var(--cp-navy);
+    color: #ffffff;
+}
+
+/* ================================ BADGES ================================ */
+.cp-badge {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    height: 24px;
+    min-width: 76px;
+    padding: 0 16px;
+    border-radius: 12px;
+    background: var(--cp-muted);
+    color: #ffffff;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.cp-badge_pending {
+    background: var(--cp-red);
+}
+
+.cp-badge_progress {
+    background: var(--cp-amber-badge);
+}
+
+.cp-badge_completed {
+    background: var(--cp-green-bright);
+}
+
+.cp-badge_success {
+    background: var(--cp-green-badge);
+}
+
+.cp-badge_cancelled,
+.cp-badge_overdue {
+    background: var(--cp-amber);
+}
+
+.cp-badge_warning {
+    background: var(--cp-orange-badge);
+}
+
+.cp-badge_info {
+    background: var(--cp-blue);
+}
+
+.cp-badge_neutral {
+    background: #8a8b8e;
+}
+
+.cp-chip-info {
+    display: inline-flex;
+    align-items: center;
+    min-height: 36px;
+    max-width: 100%;
+    padding: 6px 16px;
+    border-radius: 10px;
+    background: var(--cp-indigo);
+    color: #ffffff;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+}
+
+.cp-progress {
+    position: relative;
+    height: 16px;
+    border-radius: 8px;
+    background: #e0e4e5;
+    overflow: hidden;
+}
+
+.cp-progress__bar {
+    height: 100%;
+    border-radius: 8px 0 0 8px;
+    background: #65b130;
+    transition: width 0.3s ease;
+}
+
+.cp-progress_thin {
+    height: 4px;
+    border-radius: 2px;
+}
+
+/* ================================= MODAL ================================ */
+.cp-modal-overlay {
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    background: var(--cp-overlay);
+    overflow-y: auto;
+    overscroll-behavior: contain;
+}
+
+.cp-modal {
+    position: relative;
+    width: 640px;
+    max-width: 100%;
+    max-height: calc(100vh - 32px);
+    margin: auto;
+    padding: 23px 41px 25px; /* Figma p57: fields 558px wide in the 640px panel */
+    border-radius: var(--cp-radius);
+    background: var(--cp-surface);
+    box-shadow: var(--cp-shadow-modal);
+    color: var(--cp-ink);
+    overflow-y: auto;
+}
+
+@supports (max-height: 100dvh) {
+    .cp-modal {
+        max-height: calc(100dvh - 32px);
+    }
+}
+
+.cp-modal_sm {
+    width: 404px;
+    padding: 32px 20px;
+}
+
+.cp-modal_md {
+    width: 528px;
+}
+
+.cp-modal_lg {
+    width: 866px;
+    padding: 36px 58px 22px;
+}
+
+.cp-modal__close {
+    position: absolute;
+    top: 16px;
+    right: 16px;
+}
+
+.cp-modal__title {
+    margin: 0;
+    padding: 0 24px;
+    font-size: 24px;
+    line-height: 32px;
+    font-weight: 500;
+    text-align: center;
+    color: var(--cp-ink);
+}
+
+.cp-modal__text {
+    margin: 16px -12px 0; /* the intro runs 12px wider than the fields (29px from the panel edge) */
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+    color: var(--cp-ink);
+}
+
+.cp-modal__body {
+    margin-top: 27px;
+    text-align: left;
+}
+
+.cp-modal__footer {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 32px;
+}
+
+.cp-modal__footer > .cp-btn_lg {
+    min-width: 173px;
+}
+
+/* ============================ SUCCESS / EMPTY =========================== */
+.cp-success {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 48px 24px;
+    text-align: center;
+}
+
+.cp-success__icon {
+    display: block;
+    width: 110px;
+    height: 110px;
+    object-fit: contain;
+}
+
+.cp-success__title {
+    margin: 32px 0 0;
+    font-size: 20px;
+    line-height: 28px;
+    font-weight: 600;
+    color: var(--cp-ink);
+}
+
+.cp-success__text {
+    margin: 8px 0 0;
+    max-width: 400px;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--cp-muted-2);
+}
+
+.cp-success__actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 16px;
+    margin-top: 32px;
+}
+
+.cp-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 64px 16px;
+    text-align: center;
+}
+
+.cp-empty__img {
+    display: block;
+    width: 254px;
+    max-width: 100%;
+    height: auto;
+}
+
+.cp-empty__text {
+    margin: 24px 0 0;
+    font-size: 20px;
+    line-height: 28px;
+    font-weight: 500;
+    color: var(--cp-empty-ink);
+}
+
+.cp-loading {
+    position: relative;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 240px;
+}
+
+.cp-alert {
+    display: flex;
+    align-items: flex-start;
+    gap: 12px;
+    padding: 14px 16px;
+    border: 1px solid var(--cp-line);
+    border-radius: var(--cp-radius-sm);
+    background: var(--cp-tint);
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--cp-ink);
+}
+
+.cp-alert_error {
+    border-color: #f2b8b5;
+    background: #fdeceb;
+    color: #8e1018;
+}
+
+.cp-alert_success {
+    border-color: #9fd9b5;
+    background: #e7f6ee;
+    color: #1e6b3a;
+}
+
+/* ================================= UPLOAD =============================== */
+.cp-dropzone {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    min-height: 340px;
+    padding: 48px 24px;
+    border: 1.5px dashed var(--cp-dash);
+    border-radius: var(--cp-radius);
+    background: var(--cp-surface);
+    text-align: center;
+    transition: border-color 0.15s ease, background-color 0.15s ease;
+}
+
+.cp-dropzone_over {
+    border-color: var(--cp-navy);
+    background: var(--cp-tint);
+}
+
+.cp-dropzone__icon {
+    display: block;
+    width: 64px;
+    height: 64px;
+    object-fit: contain;
+}
+
+.cp-dropzone__title {
+    margin: 24px 0 0;
+    font-size: 18px;
+    line-height: 24px;
+    font-weight: 500;
+    color: var(--cp-ink-dark);
+}
+
+.cp-dropzone__hint {
+    margin: 8px 0 24px;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--cp-hint);
+}
+
+.cp-file-list {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+.cp-file {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-height: 69px;
+    padding: 11px 9px 11px 16px;
+    border: 1px solid var(--cp-dash);
+    border-radius: var(--cp-radius);
+    background: #fefefe;
+}
+
+.cp-file__icon {
+    display: block;
+    flex: 0 0 auto;
+    width: 32px;
+    height: 32px;
+    object-fit: contain;
+}
+
+.cp-file__main {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.cp-file__name {
+    margin: 0;
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 500;
+    color: var(--cp-ink-dark);
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.cp-file__meta {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 8px;
+    margin: 4px 0 0;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--cp-meta);
+}
+
+.cp-file__sep {
+    display: inline-block;
+    width: 1px;
+    height: 12px;
+    background: var(--cp-meta);
+    opacity: 0.6;
+}
+
+.cp-file__dot {
+    display: inline-block;
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: var(--cp-meta);
+    opacity: 0.5;
+}
+
+.cp-file__progress {
+    margin-top: 8px;
+    height: 4px;
+}
+
+.cp-spinner {
+    display: inline-block;
+    flex: 0 0 auto;
+    width: 16px;
+    height: 16px;
+    border: 2px dotted var(--cp-green-bright);
+    border-radius: 50%;
+    animation: cp-spin 1s linear infinite;
+}
+
+@keyframes cp-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+/* ============================= CAROUSEL DOTS ============================ */
+.cp-dots {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+}
+
+.cp-dot {
+    display: block;
+    flex: 0 0 auto;
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    border: 0;
+    border-radius: 4px;
+    background: var(--cp-disabled);
+    cursor: pointer;
+    transition: width 0.2s ease, background-color 0.2s ease;
+}
+
+.cp-dot_active {
+    width: 16px;
+    background: var(--cp-gold);
+}
+
+.cp-dots_on-image {
+    position: absolute;
+    right: 0;
+    bottom: 8px;
+    left: 0;
+    gap: 6px;
+    pointer-events: none;
+}
+
+.cp-dots_on-image .cp-dot {
+    width: 6px;
+    height: 6px;
+    border-radius: 50%;
+    background: #ffffff;
+    pointer-events: auto;
+}
+
+.cp-dots_on-image .cp-dot_active {
+    width: 12px;
+    height: 12px;
+    border: 1px solid #ffffff;
+    background: var(--cp-navy);
+}
+
+.cp-carousel-arrow {
+    position: absolute;
+    top: 50%;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    margin-top: -10px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.24);
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.cp-carousel-arrow svg {
+    width: 8px;
+    height: 10px;
+    fill: currentColor;
+}
+
+.cp-carousel-arrow_prev {
+    left: 3px;
+}
+
+.cp-carousel-arrow_next {
+    right: 3px;
+}
+
+/* =============================== UTILITIES ============================== */
+.cp-center {
+    text-align: center;
+}
+
+.cp-nowrap {
+    white-space: nowrap;
+}
+
+.cp-show-mobile {
+    display: none;
+}
+
+.cp-visually-hidden {
+    position: absolute;
+    width: 1px;
+    height: 1px;
+    margin: -1px;
+    padding: 0;
+    border: 0;
+    overflow: hidden;
+    clip: rect(0 0 0 0);
+    white-space: nowrap;
+}
+
+/* ============================== PHONE WIDTH ============================= */
+@media (max-width: 768px) {
+    .cp-page-head {
+        flex-direction: column;
+        gap: 16px;
+        margin-bottom: 20px;
+    }
+
+    .cp-page-title {
+        font-size: 24px;
+        line-height: 32px;
+    }
+
+    .cp-page-intro {
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .cp-page-actions {
+        width: 100%;
+    }
+
+    .cp-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 16px;
+    }
+
+    .cp-form-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .cp-modal-overlay {
+        align-items: flex-end;
+        padding: 12px;
+    }
+
+    .cp-modal,
+    .cp-modal_sm,
+    .cp-modal_md,
+    .cp-modal_lg {
+        width: 100%;
+        padding: 24px 16px;
+    }
+
+    .cp-modal__title {
+        font-size: 20px;
+        line-height: 28px;
+    }
+
+    .cp-modal__text {
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .cp-modal__footer > .cp-btn,
+    .cp-success__actions > .cp-btn {
+        flex: 1 1 140px;
+    }
+
+    .cp-dropzone {
+        min-height: 260px;
+        padding: 32px 16px;
+    }
+
+    .cp-table th,
+    .cp-table td {
+        padding-right: 14px;
+        padding-left: 14px;
+    }
+
+    .cp-filter {
+        width: 100%;
+    }
+
+    .cp-hide-mobile {
+        display: none;
+    }
+
+    .cp-show-mobile {
+        display: initial;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cp-spinner {
+        animation-duration: 3s;
+    }
+
+    .cp-btn,
+    .cp-dot,
+    .cp-progress__bar {
+        transition: none;
+    }
+}

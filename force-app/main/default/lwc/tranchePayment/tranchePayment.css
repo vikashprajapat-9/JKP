@@ -1,0 +1,35 @@
+.table-container {
+    overflow-x: auto;
+}
+.button-container {
+    display: flex;
+    justify-content: flex-end;
+    padding-right: 30px;
+    margin-bottom: 10px;
+}
+.payment-table {
+    width: 100%;
+    border-collapse: collapse;
+}
+
+.payment-table th {
+    background: #f3f3f3;
+    font-weight: 600;
+    text-align: left;
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.payment-table td {
+    padding: 10px;
+    border-bottom: 1px solid #ddd;
+}
+
+.payment-table tr:hover {
+    background: #fafafa;
+}
+
+.no-records {
+    padding: 20px;
+    text-align: center;
+}

@@ -1,0 +1,336 @@
+<template>
+    <lightning-card>
+        
+        
+        <div class="header-container slds-m-around_medium" style=" background-color:#252f4d;border-radius: 25px;">
+            <h1 class="header slds-p-around_left" style="color:white; background-color:#252f4d;">Schedule Scheme Cost Sheet Linking</h1>
+        </div>
+
+
+        <template if:true={errorMessage}>
+            <div class="slds-text-color_error" style="align-item:center;">{errorMessage}</div>
+        </template>
+        
+        
+<div class="slds-p-around_medium  slds-grid slds-wrap slds-gutters">
+            <div class="slds-col slds-size_1-of-2">
+            <lightning-combobox name="company" label="Company" value={companyValue}
+                                        placeholder="Select Company"
+                                        options={companyOptions}
+                                        onchange={handleChange} 
+                                        disabled={isComboboxDisabled}></lightning-combobox>
+            </div>
+            <div class="slds-col slds-size_1-of-2">
+            <lightning-combobox
+                                        name="costSheetTemplate"
+                                        label="Cost Sheet Template" 
+                                        value={costSheetTemplateValue}
+                                        placeholder="Select Cost Sheet Template"
+                                        options={costSheetTemplateoptions}
+                                        onchange={handleChange}
+                                        disabled={isComboboxDisabled} ></lightning-combobox>
+                                
+            </div>
+            <div class="slds-col slds-size_1-of-2">
+            <lightning-combobox
+                                        name="project"
+                                        label="Project" 
+                                        value={projectValue}
+                                        placeholder="Select Project"
+                                        options={projectOptions}
+                                        onchange={handleChange} 
+                                        disabled={isComboboxDisabled}></lightning-combobox>
+                                
+            </div>
+            <div class="slds-col slds-size_1-of-2">
+            <lightning-input
+                                        name="paymentSchemeFrom"
+                                        label="Payment Scheme From" 
+                                        type="date"
+                                        value={paymentFrom}
+                                        class="slds-m-bottom_small"
+                                        disabled
+                                    ></lightning-input>
+                                
+            </div>
+            <div class="slds-col slds-size_1-of-2">
+            <lightning-combobox
+                                        name="block"
+                                        label="Tower" 
+                                        value={blockValue}
+                                        placeholder="Select Tower"
+                                        options={blockOptions}
+                                        onchange={handleChange} 
+                                        disabled={isComboboxDisabled}></lightning-combobox>
+                                
+            </div>
+            <div class="slds-col slds-size_1-of-2">
+            <lightning-input
+                                        name="paymentSchemeTo"
+                                        label="Payment Scheme To" 
+                                        type="date"
+                                        value={paymentTo}
+                                        class="slds-m-bottom_small"
+                                        disabled
+                                    ></lightning-input>
+                                
+            </div>
+
+            <div class="slds-col slds-size_1-of-2">
+            <lightning-combobox
+                                        name="paymentScheme"
+                                        label="Payment Scheme" 
+                                        value={paymentSchemeValue}
+                                        placeholder="Select Payment Scheme"
+                                        options={paymentSchemeOptions}
+                                        onchange={handleChange} 
+                                        disabled={isComboboxDisabled}></lightning-combobox>
+                                
+            </div>
+
+            <div class="slds-col slds-size_1-of-2">
+            <lightning-input
+                                        name="diff"
+                                        label="Installment start date diff in days" 
+                                        type="number"
+                                        value={differDays}
+                                        class="slds-m-bottom_small"
+                                        disabled
+                                    ></lightning-input>
+</div>
+</div>
+
+        <!--div class="slds-p-around_medium" style="background-color:;">
+            <div class="slds-grid slds-gutters">
+                <div class="slds-col slds-size_1-of-2">
+                    <div class="slds-grid slds-gutters">
+                        <div class="slds-col slds-size_1-of-4">
+                            <div class="slds-grid slds-grid_vertical">
+                                <div class="slds-col slds-p-top_large slds-p-bottom_small">Company</div>
+                                <div class="slds-col slds-p-top_large slds-p-bottom_small">Project</div>
+                                <div class="slds-col slds-p-top_large slds-p-bottom_small">Block</div>
+                                <div class="slds-col slds-p-top_large slds-p-bottom_small">Payment Scheme</div>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size_3-of-4">
+                            <div class="slds-grid slds-grid_vertical">
+                                <div class="slds-col" style="margin-top:3%;">
+                                    <lightning-combobox
+                                        name="company"
+                                        value={companyValue}
+                                        placeholder="Select Company"
+                                        options={companyOptions}
+                                        onchange={handleChange} 
+                                        disabled={isComboboxDisabled}></lightning-combobox>
+                                </div>
+                                <div class="slds-col"  style="margin-top:3%;">
+                                    <lightning-combobox
+                                        name="project"
+                                        value={projectValue}
+                                        placeholder="Select Project"
+                                        options={projectOptions}
+                                        onchange={handleChange} 
+                                        disabled={isComboboxDisabled}></lightning-combobox>
+                                </div>
+                                <div class="slds-col" style="margin-top:3%;">
+                                    <lightning-combobox
+                                        name="block"
+                                        value={blockValue}
+                                        placeholder="Select Block"
+                                        options={blockOptions}
+                                        onchange={handleChange} 
+                                        disabled={isComboboxDisabled}></lightning-combobox>
+                                </div>
+                                <div class="slds-col" style="margin-top:3%;">
+                                    <lightning-combobox
+                                        name="paymentScheme"
+                                        value={paymentSchemeValue}
+                                        placeholder="Select Payment Scheme"
+                                        options={paymentSchemeOptions}
+                                        onchange={handleChange} 
+                                        disabled={isComboboxDisabled}></lightning-combobox>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+                <div class="slds-col slds-size_1-of-2">
+                    <div class="slds-grid slds-gutters">
+                        <div class="slds-col slds-size_2-of-4">
+                            <div class="slds-grid slds-grid_vertical">
+                                <div class="slds-col slds-p-top_large slds-p-bottom_small">Cost Sheet Template</div>
+                                <div class="slds-col slds-p-top_large slds-p-bottom_small">Payment Scheme From</div>
+                                <div class="slds-col slds-p-top_large slds-p-bottom_small">Payment Scheme To</div>
+                                <div class="slds-col slds-p-top_large slds-p-bottom_small">Installment start date diff in days</div>
+                            </div>
+                        </div>
+                        <div class="slds-col slds-size_2-of-4">
+                            <div class="slds-grid slds-grid_vertical">
+                                <div class="slds-col" style="margin-top:3%;">
+                                    <lightning-combobox
+                                        name="costSheetTemplate"
+                                        value={costSheetTemplateValue}
+                                        placeholder="Select Cost Sheet Template"
+                                        options={costSheetTemplateoptions}
+                                        onchange={handleChange}
+                                        disabled={isComboboxDisabled} ></lightning-combobox>
+                                </div>
+                                <div class="slds-col" style="margin-top:3%;">
+                                    <lightning-input
+                                        name="paymentSchemeFrom"
+                                        type="date"
+                                        value={paymentFrom}
+                                        class="slds-m-bottom_small"
+                                        disabled
+                                    ></lightning-input>
+                                </div>
+                                <div class="slds-col" style="margin-top:3%;">
+                                    <lightning-input
+                                        name="paymentSchemeTo"
+                                        type="date"
+                                        value={paymentTo}
+                                        class="slds-m-bottom_small"
+                                        disabled
+                                    ></lightning-input>
+                                </div>
+                                <div class="slds-col" style="margin-top:3%;">
+                                    <lightning-input
+                                        name="diff"
+                                        type="number"
+                                        value={differDays}
+                                        class="slds-m-bottom_small"
+                                        disabled
+                                    ></lightning-input>
+                                </div>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div -->
+        <template if:false ={editmode1}>
+        <div class="text-center mt-4 slds-m-around_medium" style=" display: flex; justify-content: center; margin-left:3%;margin-top:2%;">
+            <lightning-button
+                variant="brand"
+                label="Create"
+                title="Create"
+                onclick={handleSubmit}
+                  disabled ={isCreate}
+                  class="brand-color">
+            </lightning-button>
+        </div>
+    </template>
+
+        
+   <lightning-card style="margin-left: 20px;margin-right: 20px;" >
+    <div if:true={schemaArr1}>
+        <div class="scrollable-table slds-m-around_medium slds-scrollable_y">
+            <table class="slds-table slds-table_bordered slds-table_cell-buffer" style="" >
+                <thead  style =" border-radius:10px 0 0 10px;">  
+                    <tr >
+                        <th scope="col" style="background-color: #757575;color: #ffffff;" >Installments</th>
+                        <th scope="col" style="background-color: #757575;color: #ffffff;" >Installment %</th>
+                        <th scope="col" style="background-color: #757575;color: #ffffff;" >Z Code</th>
+                        <th scope="col" style="background-color: #757575;color: #ffffff;" >Agreement Value</th>
+                        <th scope="col" style="background-color: #757575;color: #ffffff;"  >Agreement Tax</th>
+                        <th scope="col" style="background-color: #757575;color: #ffffff;" >Non Agreement Value</th>
+                        <th scope="col" style="background-color: #757575;color: #ffffff;" >Non Agreement Tax</th>
+                        <th scope="col" style="background-color: #757575;color: #ffffff;" >Milestones</th>
+                        <th scope="col" style="background-color: #757575;color: #ffffff;" >Due Date</th>
+                        <th scope="col" style="background-color: #757575;color: #ffffff;" >Pay Date</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <template for:each={schemaArr} for:item="record"  >
+                        <tr key={record.Id}  >
+                            <td>{record.Payment_Schedule_Master__r.Name}</td>
+                            <td>{record.Installment__c}</td>
+                            <td><lightning-input
+                                value={record.Z_Code__c}
+                                disabled={isInstallmentDisable}
+                                onchange={handleZCodeChange}
+                            ></lightning-input></td>
+                            <td>{record.Agreement_Value__c}</td>
+                            <td>{record.Agreement_Tax__c}</td>
+                            <td>
+                                <lightning-input
+                                    
+                                    value="0"
+                                   disabled={isInstallmentDisable}
+                                ></lightning-input>
+                            </td>
+                            
+                            <td>
+                                <lightning-input
+                                    
+                                    value="0"
+                                     disabled={isInstallmentDisable}
+                                ></lightning-input>
+                            </td>
+                            
+                            <td>
+                                 <lightning-icon icon-name="action:priority" size="small" alternative-text="Edit Record" class="slds-m-right_small"></lightning-icon>
+                               
+                                
+                            </td>
+                            <td>
+                                <lightning-input
+                                    type="date"
+                                    value="2024-11-09"
+                                     disabled="true"
+                                ></lightning-input>
+                            </td>
+                            <td>
+                                <lightning-input
+                                    type="date"
+                                    value="2024-11-09"
+                                     disabled="true"
+                                ></lightning-input>
+                            </td>
+                        </tr>
+                    </template>
+                    <tr style="background-color: #e5e5e5;">
+                        <td><strong>TOTAL</strong></td>
+                        <td><strong>{totalInstallmentPercent}</strong></td>
+                        <td><strong></strong></td>
+                        <td><strong>{agrrementValue}</strong></td>
+                        <td><strong>{agreementTax}</strong></td>
+                        <td><strong>0</strong></td>
+                        <td><strong>0</strong></td>
+                        <td><strong>Tax</strong></td>
+                        <td><strong></strong></td>
+                        <td><strong></strong></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+        <div class="text-center mt-4" style="margin-left:80%;margin-top:2%;">
+            <lightning-button
+                variant="brand"
+                label="Save and Submit for Approval"
+                title="Create"
+                onclick={handleupdate}
+                disabled ={isApproval}
+                class="brand-color">
+            </lightning-button>
+        </div>
+    </div>
+    <div if:false={schemaArr}>
+        <p>No data available.</p>
+    </div>
+</lightning-card>
+
+<!-- <template if:true ={editmode}>
+    <div class="text-center mt-4" style="margin-left:90%;margin-top:2%;">
+        <lightning-button
+            variant="brand"
+            label="Update"
+            title="Create"
+            onclick={handleupdate}>
+        </lightning-button>
+    </div>
+</template> -->
+
+
+    </lightning-card>
+</template>

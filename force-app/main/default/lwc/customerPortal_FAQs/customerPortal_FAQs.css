@@ -1,0 +1,117 @@
+@import 'c/customerPortalStyles';
+
+/* Figma p78-84 (measured at 1280 x 832): tabs sit 5px under the intro, the first question bar 33px under the tabs,
+   bars 56px navy radius 8 with 24px between them; an open answer is a grey box 8px under its bar, 16px padding. */
+
+.faq-head {
+    margin-bottom: 5px;
+}
+
+.faq-list {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin: 33px 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.faq-item {
+    min-width: 0;
+}
+
+.faq-question {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    width: 100%;
+    min-height: 56px;
+    margin: 0;
+    padding: 16px 18px 16px 16px;
+    border: 0;
+    border-radius: var(--cp-radius-sm);
+    background: var(--cp-navy);
+    color: #ffffff;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.faq-question:hover {
+    background: var(--cp-navy-hover);
+}
+
+.faq-question:focus-visible {
+    outline: 2px solid var(--cp-navy);
+    outline-offset: 2px;
+}
+
+.faq-question__text {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.faq-chevron {
+    display: block;
+    flex: 0 0 auto;
+    width: 14px;
+    height: 8px;
+    fill: currentColor;
+    transition: transform 0.2s ease;
+}
+
+.faq-chevron_open {
+    transform: rotate(180deg);
+}
+
+.faq-answer {
+    margin-top: 8px;
+    padding: 16px;
+    border-radius: var(--cp-radius-sm);
+    background: var(--cp-line);
+}
+
+.faq-answer__text {
+    margin: 0;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    color: var(--cp-ink);
+    overflow-wrap: anywhere;
+    white-space: pre-line;
+}
+
+@media (max-width: 768px) {
+    .faq-list {
+        gap: 16px;
+        margin-top: 24px;
+    }
+
+    .faq-question {
+        min-height: 48px;
+        padding: 12px 16px;
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .faq-answer {
+        padding: 12px 16px;
+    }
+
+    .faq-answer__text {
+        font-size: 14px;
+        line-height: 20px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .faq-question,
+    .faq-chevron {
+        transition: none;
+    }
+}

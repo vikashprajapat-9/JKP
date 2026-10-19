@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>64.0</apiVersion>
+    <isExposed>false</isExposed>
+    <description>The editor of a commission configuration draft in Commission Setup: project and period, payout stages, rates and targets, own payouts, fixed fees and options, with a checklist of what is still missing. Saves the draft and submits it for approval.</description>
+</LightningComponentBundle>

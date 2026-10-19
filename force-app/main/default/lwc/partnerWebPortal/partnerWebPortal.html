@@ -1,0 +1,168 @@
+<template>
+    <!-- ================= ACCESS ENDED: all a partner sees whose access has ended or was terminated, however they logged
+         in, or whose session is over ================= -->
+    <template lwc:if={accessEnded}>
+        <div class="ended-page">
+            <main class="ended-card" aria-labelledby="ended-title" aria-describedby="ended-text">
+                <img src={logoUrl} alt="John Keells Properties" class="ended-logo" />
+                <template lwc:if={ended.pictureUrl}>
+                    <img src={ended.pictureUrl} alt="" class="ended-icon" />
+                </template>
+                <h1 id="ended-title" class="ended-title" tabindex="-1" aria-describedby="ended-text">{ended.title}</h1>
+                <p id="ended-text" class="ended-text">{ended.text}</p>
+                <button type="button" class="btn btn-primary ended-logout" onclick={leaveEnded}>
+                    <template lwc:if={ended.buttonIcon}>
+                        <lightning-icon icon-name={ended.buttonIcon} size="x-small" class="ended-logout-icon"></lightning-icon>
+                    </template>
+                    <span>{ended.button}</span>
+                </button>
+            </main>
+        </div>
+    </template>
+
+    <template lwc:else>
+        <div class="portal-layout">
+
+            <!-- ================= LEFT SIDEBAR ================= -->
+            <aside class="sidebar">
+                <div class="logo-area">
+                    <img src={logoUrl} alt="John Keells Properties" class="logo" />
+                </div>
+
+                <nav class="vertical" aria-label="Channel partner navigation">
+                    <template for:each={navItems} for:item="item">
+                        <button key={item.page} class={item.cssClass} data-page={item.page}
+                                onclick={handleNavigation} type="button">
+                            <lightning-icon icon-name={item.icon} size="x-small" class="nav-icon"></lightning-icon>
+                            <span>{item.label}</span>
+                        </button>
+                    </template>
+                </nav>
+            </aside>
+
+            <!-- ================= RIGHT-SIDE CONTENT ================= -->
+            <main class="main-content">
+
+                <!-- TOP HEADER -->
+                <header class="top-header">
+
+                    <div class="header-actions">
+                        <div class="bell-wrap">
+                            <button class="header-icon-button"
+                                    type="button"
+                                    onclick={handleNotifications}
+                                    aria-haspopup="dialog"
+                                    aria-expanded={bellExpanded}
+                                    aria-label={bellLabel}>
+                                <lightning-icon icon-name="utility:notification" size="small" class="bell-icon"
+                                                alternative-text="Notifications"></lightning-icon>
+                                <template lwc:if={hasReminders}>
+                                    <span class="bell-badge" aria-hidden="true">{reminderBadge}</span>
+                                </template>
+                            </button>
+                            <template lwc:if={showBell}>
+                                <div class="bell-backdrop" onclick={closeBell}></div>
+                                <div class="bell-popover" role="dialog" aria-label="Notifications">
+                                    <div class="bell-head">
+                                        <span class="bell-title">Notifications</span>
+                                        <button class="bell-close" type="button" aria-label="Close" onclick={closeBell}>✕</button>
+                                    </div>
+                                    <div class="bell-body">
+                                        <c-partner-web-portal-visit-reminders compact onreminderchange={handleReminderChange}></c-partner-web-portal-visit-reminders>
+                                    </div>
+                                </div>
+                            </template>
+                        </div>
+
+                        <button class="profile-button"
+                                type="button"
+                                onclick={handleProfile}
+                                title={userName}
+                                aria-label="Open profile">
+                            {userInitials}
+                        </button>
+                    </div>
+                </header>
+
+                <!-- ================= RENDER CHAIN ================= -->
+                <section class="page-body">
+                    <!-- The partner's access period (and extension request) above every page; shows nothing otherwise -->
+                    <c-partner-web-portal-access-banner></c-partner-web-portal-access-banner>
+
+                    <template lwc:if={isDashboard}>
+                        <c-partner-web-portal-dashboard></c-partner-web-portal-dashboard>
+                    </template>
+
+                    <template lwc:elseif={isLeads}>
+                        <c-partner-web-portal-lead></c-partner-web-portal-lead>
+                    </template>
+
+                    <template lwc:elseif={isSiteVisit}>
+                        <c-partner-web-portal-site-visit></c-partner-web-portal-site-visit>
+                    </template>
+
+                    <template lwc:elseif={isMyTeam}>
+                        <c-partner-web-portal-my-team></c-partner-web-portal-my-team>
+                    </template>
+
+                    <template lwc:elseif={isContract}>
+                        <c-partner-web-portal-contract></c-partner-web-portal-contract>
+                    </template>
+
+                    <template lwc:elseif={isProjects}>
+                        <c-partner-web-portal-project></c-partner-web-portal-project>
+                    </template>
+
+                    <template lwc:elseif={isCommission}>
+                        <c-partner-web-portal-commission></c-partner-web-portal-commission>
+                    </template>
+
+                    <template lwc:elseif={isMarketing}>
+                        <c-partner-web-portal-marketing></c-partner-web-portal-marketing>
+                    </template>
+
+                    <template lwc:elseif={isAboutUs}>
+                        <c-partner-web-portal-about-us></c-partner-web-portal-about-us>
+                    </template>
+
+                    <template lwc:elseif={isTerms}>
+                        <c-partner-web-portal-terms></c-partner-web-portal-terms>
+                    </template>
+
+                    <!-- PROFILE VIEW IN MAIN CONTENT -->
+                    <template lwc:elseif={isProfile}>
+                        <c-partner-user-profile onlogout={handleLogoutRequest}></c-partner-user-profile>
+                    </template>
+
+                    <template lwc:else>
+                        <h1 class="page-title">{selectedPageLabel}</h1>
+                    </template>
+                </section>
+            </main>
+        </div>
+
+        <!-- ================= SESSION CHECK: Salesforce refused a request and is asked whether the partner's session is over.
+             The portal, with whatever its pages say about their own refused requests, stays as it is underneath. ================= -->
+        <template lwc:if={checkingSession}>
+            <div class="session-check" role="status">
+                <lightning-spinner alternative-text={labels.checking} size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <!-- ================= LOGOUT CONFIRMATION ================= -->
+        <template lwc:if={showLogoutConfirm}>
+            <div class="modal-backdrop" onclick={closeLogout}></div>
+            <div class="logout-modal" role="dialog" aria-modal="true" aria-labelledby="logout-title">
+                <h2 id="logout-title" class="logout-title">Logout?</h2>
+                <p class="logout-text">
+                    You are about to log out of your John Keells Properties account. Thank you for using
+                    our portal, and we look forward to your return.
+                </p>
+                <div class="logout-actions">
+                    <button type="button" class="btn btn-outline" onclick={closeLogout}>Close</button>
+                    <button type="button" class="btn btn-primary" onclick={confirmLogout}>Log out</button>
+                </div>
+            </div>
+        </template>
+    </template>
+</template>

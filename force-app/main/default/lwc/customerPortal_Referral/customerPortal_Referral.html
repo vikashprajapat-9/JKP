@@ -1,0 +1,187 @@
+<template>
+    <div class="cp-page ref-page">
+        <template lwc:if={isLoading}>
+            <div class="cp-loading">
+                <lightning-spinner alternative-text={labels.loading} size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template lwc:if={hasError}>
+            <div class="cp-alert cp-alert_error" role="alert">
+                <p class="ref-alert__text">{labels.loadError}</p>
+            </div>
+        </template>
+
+        <template lwc:if={showContent}>
+            <!-- Figma p74: title + Refer Now on one line, the program text and "Read more" full width underneath -->
+            <div class="cp-page-head ref-head">
+                <h1 class="cp-page-title ref-head__title">{labels.title}</h1>
+                <div class="cp-page-actions ref-head__actions">
+                    <button type="button" class="cp-btn ref-refer" onclick={handleOpenInviteModal}>{labels.referNow}</button>
+                </div>
+                <div class="ref-head__intro">
+                    <p class="cp-page-intro ref-intro">{displayedDescription}</p>
+                    <template lwc:if={showReadMore}>
+                        <button type="button" class="ref-read-more" onclick={handleReadMore}>{labels.readMore}</button>
+                    </template>
+                </div>
+            </div>
+
+            <template lwc:if={hasNoReferrals}>
+                <div class="cp-empty ref-empty">
+                    <img class="cp-empty__img" src={emptyImageUrl} alt="" width="254" height="116" />
+                    <p class="cp-empty__text">{labels.empty}</p>
+                </div>
+            </template>
+            <template lwc:else>
+                <ul class="ref-grid">
+                    <template for:each={displayedReferrals} for:item="ref">
+                        <li key={ref.key} class="cp-card ref-card">
+                            <div class="ref-card__top">
+                                <span class="ref-avatar" aria-hidden="true">
+                                    <svg viewBox="0 0 17 21" width="17" height="21" focusable="false">
+                                        <path d={personPath}></path>
+                                    </svg>
+                                </span>
+                                <div class="ref-card__heading">
+                                    <p class="ref-card__name">{ref.friendName}</p>
+                                    <p class="ref-card__property">{ref.propertyLine}</p>
+                                </div>
+                            </div>
+                            <dl class="ref-card__details">
+                                <template lwc:if={ref.hasEmail}>
+                                    <div class="ref-card__row">
+                                        <dt>{labels.email}</dt>
+                                        <dd>{ref.emailId}</dd>
+                                    </div>
+                                </template>
+                                <div class="ref-card__row">
+                                    <dt>{labels.phone}</dt>
+                                    <dd>{ref.mobileNumber}</dd>
+                                </div>
+                                <template lwc:if={ref.converted}>
+                                    <div class="ref-card__row ref-card__row_booking">
+                                        <dd class="ref-card__booking">{ref.opportunityLine}</dd>
+                                    </div>
+                                    <template lwc:if={ref.amountLine}>
+                                        <div class="ref-card__row">
+                                            <dd class="ref-card__booking">{ref.amountLine}</dd>
+                                        </div>
+                                    </template>
+                                </template>
+                            </dl>
+                            <div class="ref-card__status">
+                                <span class={ref.statusPillClass}>{ref.status}</span>
+                            </div>
+                        </li>
+                    </template>
+                </ul>
+            </template>
+        </template>
+
+        <!-- Figma p75 (empty) / p76 (filled) -->
+        <template lwc:if={isInviteModalOpen}>
+            <div
+                class="cp-modal-overlay"
+                role="presentation"
+                onmousedown={handleOverlayMouseDown}
+                onclick={handleOverlayClick}
+                onkeydown={handleModalKeydown}
+            >
+                <section class="cp-modal ref-invite" role="dialog" aria-modal="true" aria-labelledby="ref-invite-title" tabindex="-1">
+                    <h2 id="ref-invite-title" class="ref-invite__title">{labels.inviteTitle}</h2>
+
+                    <div class="cp-field ref-field">
+                        <label class="cp-label ref-label" for="ref-property">{labels.property}</label>
+                        <div class="cp-select-wrap ref-select-wrap">
+                            <select id="ref-property" class={propertySelectClass} onchange={handlePropertyChange}>
+                                <option value="" selected={isPropertyEmpty}>{labels.propertyPlaceholder}</option>
+                                <template for:each={propertyOptionsView} for:item="opt">
+                                    <option key={opt.value} value={opt.value} selected={opt.selected}>{opt.label}</option>
+                                </template>
+                            </select>
+                        </div>
+                    </div>
+
+                    <template lwc:if={submitError}>
+                        <div class="cp-alert cp-alert_error ref-alert" role="alert">{submitError}</div>
+                    </template>
+
+                    <div class="cp-field ref-field">
+                        <label class="cp-label ref-label" for="ref-name">{labels.name}</label>
+                        <input
+                            type="text"
+                            id="ref-name"
+                            class="cp-input"
+                            placeholder={labels.namePlaceholder}
+                            value={friendName}
+                            autocomplete="off"
+                            oninput={handleNameChange}
+                        />
+                    </div>
+
+                    <div class="cp-field ref-field">
+                        <label class="cp-label ref-label" for="ref-mobile">{labels.mobile}</label>
+                        <div class="ref-phone">
+                            <svg class="ref-phone__flag" viewBox="0 0 24 18.2" width="24" height="18" aria-hidden="true" focusable="false">
+                                <template for:each={flagPaths} for:item="p">
+                                    <path key={p.key} d={p.d} fill={p.fill} fill-rule={p.rule}></path>
+                                </template>
+                            </svg>
+                            <span class="ref-phone__code">{labels.countryCode}</span>
+                            <input
+                                type="tel"
+                                id="ref-mobile"
+                                class="ref-phone__input"
+                                inputmode="numeric"
+                                placeholder={labels.mobilePlaceholder}
+                                value={mobileNumber}
+                                autocomplete="off"
+                                oninput={handleMobileChange}
+                            />
+                        </div>
+                    </div>
+
+                    <div class="ref-invite__actions">
+                        <button type="button" class="cp-btn cp-btn_secondary cp-btn_lg" onclick={handleCloseInviteModal}>
+                            {labels.cancel}
+                        </button>
+                        <button type="button" class="cp-btn cp-btn_lg" disabled={isSendDisabled} onclick={handleSendInvite}>
+                            {labels.submit}
+                        </button>
+                    </div>
+                </section>
+            </div>
+        </template>
+
+        <!-- Figma p77 -->
+        <template lwc:if={isSuccessModalOpen}>
+            <div
+                class="cp-modal-overlay"
+                role="presentation"
+                onmousedown={handleOverlayMouseDown}
+                onclick={handleOverlayClick}
+                onkeydown={handleModalKeydown}
+            >
+                <section class="cp-modal ref-done" role="dialog" aria-modal="true" aria-labelledby="ref-done-title" tabindex="-1">
+                    <button
+                        type="button"
+                        class="cp-close cp-modal__close"
+                        title={labels.close}
+                        aria-label={labels.close}
+                        onclick={handleCloseSuccessModal}
+                    >
+                        <svg viewBox="0 0 14 14" width="14" height="14" aria-hidden="true" focusable="false">
+                            <path d={closePath}></path>
+                        </svg>
+                    </button>
+                    <div class="cp-success ref-done__body">
+                        <img class="cp-success__icon ref-done__icon" src={successImageUrl} alt="" width="80" height="80" />
+                        <h2 id="ref-done-title" class="cp-success__title ref-done__title">{successTitle}</h2>
+                        <p class="cp-success__text ref-done__text">{successMessage}</p>
+                    </div>
+                </section>
+            </div>
+        </template>
+    </div>
+</template>

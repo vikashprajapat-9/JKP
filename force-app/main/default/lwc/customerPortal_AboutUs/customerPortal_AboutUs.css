@@ -1,0 +1,24 @@
+@import 'c/customerPortalStyles';
+
+/* Figma p91: the page is the brand title and the intro only (frame, title and intro come from c/customerPortalStyles) */
+
+/* keep line breaks the content may carry (several paragraphs in one description) */
+.info-page__text {
+    white-space: pre-line;
+    overflow-wrap: anywhere;
+}
+
+/* The Portal Info rich text under the intro, in the page's own type */
+.info-page__body {
+    display: block;
+    margin-top: 24px;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    color: var(--cp-ink);
+}
+
+/* No static intro on this page: the content starts right under the title, as on the partner portal */
+.info-page__body_first {
+    margin-top: 16px;
+}

@@ -1,0 +1,694 @@
+@import 'c/customerPortalStyles';
+
+/* Construction Status = Figma p26 (project cards), p27 (project updates), p28 (image viewer).
+   Shared look from c/customerPortalStyles (page head, flat card, button, progress bar, empty, loading, alert);
+   the rules below are the values measured on these pages. Content box = 936px wide at the 1280 frame. */
+
+/* ======================== PROJECT CARDS (p26) ======================== */
+.cs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, 310px);
+    gap: 24px 14px;
+}
+
+/* 310 x 311 card: 16px radius, 1px #ebeaea border (cp-card_flat), no shadow */
+.cs-card {
+    display: flex;
+    flex-direction: column;
+    padding: 0;
+    overflow: hidden;
+}
+
+.cs-card__media {
+    position: relative;
+    height: 120px;
+    background: #d9d9d9;
+    overflow: hidden;
+}
+
+.cs-card__img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* white chevrons on the photo, 3px under its middle */
+.cs-card__arrow {
+    position: absolute;
+    top: 50%;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    margin-top: -9px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    color: #ffffff;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.cs-card__arrow:hover {
+    background: rgba(0, 0, 0, 0.24);
+}
+
+.cs-card__arrow:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 0;
+}
+
+.cs-card__arrow svg {
+    width: 8px;
+    height: 12px;
+    fill: currentColor;
+}
+
+.cs-card__arrow_prev {
+    left: 5px;
+}
+
+.cs-card__arrow_next {
+    right: 5px;
+}
+
+/* dots: 4px white, current = 10px navy with a white ring, 9px above the photo's bottom */
+.cs-card__dots {
+    position: absolute;
+    right: 0;
+    bottom: 9px;
+    left: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 4px;
+    padding: 0 32px;
+    pointer-events: none;
+}
+
+.cs-card__dot {
+    flex: 0 0 auto;
+    width: 4px;
+    height: 4px;
+    border-radius: 50%;
+    background: #ffffff;
+}
+
+.cs-card__dot_active {
+    width: 10px;
+    height: 10px;
+    border: 1px solid #ffffff;
+    background: var(--cp-navy);
+}
+
+.cs-card__body {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-width: 0;
+    padding: 10px 16px 16px;
+}
+
+.cs-card__name {
+    margin: 0;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    color: var(--cp-title);
+    overflow-wrap: anywhere;
+}
+
+.cs-card__unit {
+    min-height: 16px;
+    margin: 0;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 500; /* p26: heavier than the 400 used for 12px text elsewhere (measured) */
+    color: var(--cp-ink);
+    overflow-wrap: anywhere;
+}
+
+.cs-progress-head {
+    display: flex;
+    align-items: baseline;
+    justify-content: space-between;
+    gap: 12px;
+    margin-top: 16px;
+    color: #1a1a1a;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+}
+
+.cs-progress-head__label {
+    min-width: 0;
+}
+
+.cs-progress-head__value {
+    flex: 0 0 auto;
+}
+
+.cs-card .cs-progress-head__value {
+    padding-right: 8px;
+}
+
+.cs-progress {
+    margin-top: 15px;
+}
+
+.cs-card__action {
+    margin-top: 16px;
+}
+
+/* ======================= PROJECT UPDATES (p27) ======================= */
+.cs-back {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    min-width: 0;
+    padding-top: 8px;
+}
+
+.cs-back__btn {
+    position: relative;
+    top: 3px;
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 0;
+    border-radius: 6px;
+    background: none;
+    color: #111827;
+    cursor: pointer;
+}
+
+.cs-back__btn:hover {
+    background: var(--cp-tint);
+}
+
+.cs-back__btn:focus-visible {
+    outline: 2px solid var(--cp-navy);
+    outline-offset: 2px;
+}
+
+.cs-back__btn svg {
+    width: 28px;
+    height: 22px;
+    fill: currentColor;
+}
+
+.cs-back__text {
+    min-width: 0;
+}
+
+.cs-back__title {
+    margin: 0;
+    font-size: 24px;
+    line-height: 32px;
+    font-weight: 600;
+    color: #000000;
+    overflow-wrap: anywhere;
+}
+
+.cs-back__unit {
+    margin: 6px 0 0;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    color: var(--cp-muted);
+}
+
+.cs-progress-head_detail {
+    margin-top: 23px;
+    font-size: 16px;
+    line-height: 24px;
+}
+
+.cs-progress-head_detail .cs-progress-head__value {
+    font-size: 18px;
+    line-height: 24px;
+    font-weight: 600;
+}
+
+.cs-progress_detail {
+    margin-top: 11px;
+}
+
+/* month accordion: 48px bars 16px apart, open = navy bar + separate #ebeaea panel 8px below */
+.cs-acc {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin-top: 28px;
+}
+
+.cs-acc__item {
+    min-width: 0;
+}
+
+.cs-acc__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    width: 100%;
+    min-height: 48px;
+    padding: 12px 44px 12px 40px;
+    border: 0;
+    border-radius: var(--cp-radius-sm);
+    background: var(--cp-line);
+    color: var(--cp-ink);
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.cs-acc__head:hover {
+    background: #e2e1e1;
+}
+
+.cs-acc__head:focus-visible {
+    outline: 2px solid var(--cp-navy);
+    outline-offset: 2px;
+}
+
+.cs-acc__head_open,
+.cs-acc__head_open:hover {
+    background: var(--cp-navy);
+    color: #ffffff;
+}
+
+.cs-acc__label {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.cs-acc__chevron {
+    flex: 0 0 auto;
+    width: 24px;
+    height: 14px;
+    fill: currentColor;
+}
+
+.cs-acc__panel {
+    margin-top: 8px;
+    padding: 22px 39px 24px;
+    border-radius: var(--cp-radius-sm);
+    background: var(--cp-line);
+}
+
+.cs-acc__heading {
+    margin: 0;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    color: #000000;
+}
+
+.cs-tiles + .cs-acc__heading {
+    margin-top: 30px;
+}
+
+.cs-acc__empty {
+    margin: 0;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--cp-muted);
+}
+
+/* 120px photo tiles, 4px radius, 24px apart; 6th tile = "N+" on 50% black; videos dimmed 40% + play icon */
+.cs-tiles {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 24px;
+    margin-top: 10px;
+}
+
+.cs-tile {
+    position: relative;
+    display: block;
+    flex: 0 0 auto;
+    width: 120px;
+    height: 120px;
+    padding: 0;
+    border: 0;
+    border-radius: 4px;
+    background: #d9d9d9;
+    overflow: hidden;
+    cursor: pointer;
+}
+
+.cs-tile:focus-visible {
+    outline: 2px solid var(--cp-navy);
+    outline-offset: 2px;
+}
+
+.cs-tile__img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    transition: transform 0.2s ease;
+}
+
+.cs-tile:hover .cs-tile__img {
+    transform: scale(1.04);
+}
+
+.cs-tile__more {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: rgba(0, 0, 0, 0.5);
+    color: #ffffff;
+    font-size: 28px;
+    line-height: 36px;
+    font-weight: 500;
+}
+
+.cs-tile_video::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+}
+
+.cs-tile__play {
+    position: absolute;
+    top: 50%;
+    left: 50%;
+    z-index: 1;
+    width: 24px;
+    height: 24px;
+    margin: -12px 0 0 -12px;
+    fill: #ffffff;
+}
+
+/* ======================== IMAGE VIEWER (p28) ======================== */
+/* 50% black over the whole page; photo up to 547px tall centred, round 48px arrows 56px from it,
+   white X outside its top-right corner, dots 24px under it (12px #9d6200 current, 8px #d9d9d9) */
+.cs-viewer {
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 16px;
+    background: rgba(0, 0, 0, 0.5);
+    overscroll-behavior: contain;
+}
+
+.cs-viewer__stage {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 56px;
+    max-width: 100%;
+    touch-action: pan-y;
+}
+
+.cs-viewer__nav {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.5);
+    color: #ffffff;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.cs-viewer__nav:hover {
+    background: rgba(0, 0, 0, 0.7);
+}
+
+.cs-viewer__nav:focus-visible,
+.cs-viewer__close:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+}
+
+.cs-viewer__nav svg {
+    width: 12px;
+    height: 20px;
+    fill: currentColor;
+}
+
+.cs-viewer__figure {
+    position: relative;
+    flex: 0 1 auto;
+    min-width: 0;
+}
+
+.cs-viewer__img {
+    display: block;
+    width: auto;
+    height: min(547px, calc(100vh - 285px));
+    max-width: min(1008px, calc(100vw - 272px));
+    border-radius: var(--cp-radius);
+    object-fit: contain;
+}
+
+.cs-viewer__img_missing {
+    width: 490px;
+    background: #d9d9d9;
+}
+
+/* not in Figma: the player uses the same frame, 866px wide (the large modal size), height from the video */
+.cs-viewer__video {
+    display: block;
+    width: min(866px, calc(100vw - 272px));
+    height: auto;
+    max-height: calc(100vh - 285px);
+    border-radius: var(--cp-radius);
+    background: #000000;
+}
+
+@supports (height: 100dvh) {
+    .cs-viewer__img {
+        height: min(547px, calc(100dvh - 285px));
+    }
+
+    .cs-viewer__video {
+        max-height: calc(100dvh - 285px);
+    }
+}
+
+.cs-viewer__close {
+    position: absolute;
+    top: -41px;
+    right: -49px;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.cs-viewer__close:hover {
+    background: rgba(255, 255, 255, 0.12);
+}
+
+.cs-viewer__close svg {
+    width: 20px;
+    height: 20px;
+    fill: currentColor;
+}
+
+.cs-viewer__dots {
+    position: absolute;
+    top: calc(100% + 24px);
+    right: 0;
+    left: 0;
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+}
+
+.cs-viewer__dot {
+    flex: 0 0 auto;
+    width: 8px;
+    height: 8px;
+    border-radius: 50%;
+    background: #d9d9d9;
+}
+
+.cs-viewer__dot_active {
+    width: 12px;
+    height: 12px;
+    background: #9d6200;
+}
+
+/* ============================= SMALLER SCREENS ============================= */
+@media (max-width: 768px) {
+    .cs-back {
+        gap: 12px;
+        padding-top: 0;
+    }
+
+    .cs-back__title {
+        font-size: 20px;
+        line-height: 28px;
+    }
+
+    .cs-progress-head_detail {
+        margin-top: 20px;
+    }
+
+    .cs-acc {
+        margin-top: 20px;
+        gap: 12px;
+    }
+
+    .cs-acc__head {
+        padding: 12px 16px;
+    }
+
+    .cs-acc__panel {
+        padding: 16px;
+    }
+
+    .cs-tiles {
+        display: grid;
+        grid-template-columns: repeat(auto-fill, minmax(88px, 1fr));
+        gap: 12px;
+    }
+
+    .cs-tile {
+        width: 100%;
+        height: auto;
+        aspect-ratio: 1 / 1;
+    }
+
+    .cs-tiles + .cs-acc__heading {
+        margin-top: 20px;
+    }
+}
+
+@media (max-width: 700px) {
+    .cs-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 16px;
+    }
+
+    .cs-card__media {
+        height: auto;
+        aspect-ratio: 77 / 30;
+    }
+}
+
+/* phones: the arrows sit on the photo, the X above it */
+@media (max-width: 640px) {
+    .cs-viewer {
+        padding: 64px 8px 48px;
+    }
+
+    .cs-viewer__stage {
+        position: relative;
+        gap: 0;
+        width: 100%;
+    }
+
+    .cs-viewer__figure {
+        width: 100%;
+    }
+
+    .cs-viewer__img {
+        width: 100%;
+        height: auto;
+        max-width: 100%;
+        max-height: calc(100vh - 160px);
+    }
+
+    .cs-viewer__img_missing {
+        height: 60vw;
+    }
+
+    .cs-viewer__video {
+        width: 100%;
+        max-width: 100%;
+        max-height: calc(100vh - 160px);
+    }
+
+    .cs-viewer__nav {
+        position: absolute;
+        top: 50%;
+        z-index: 1;
+        width: 40px;
+        height: 40px;
+        margin-top: -20px;
+    }
+
+    .cs-viewer__nav_prev {
+        left: 8px;
+    }
+
+    .cs-viewer__nav_next {
+        right: 8px;
+    }
+
+    .cs-viewer__close {
+        top: -48px;
+        right: 0;
+    }
+
+    .cs-viewer__dots {
+        top: calc(100% + 16px);
+    }
+}
+
+/* short landscape screens (phones rotated) */
+@media (max-height: 560px) {
+    .cs-viewer__img {
+        height: calc(100vh - 120px);
+    }
+
+    .cs-viewer__video {
+        max-height: calc(100vh - 120px);
+    }
+
+    .cs-viewer__dots {
+        top: calc(100% + 8px);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cs-card__arrow,
+    .cs-acc__head,
+    .cs-tile__img,
+    .cs-viewer__nav {
+        transition: none;
+    }
+
+    .cs-tile:hover .cs-tile__img {
+        transform: none;
+    }
+}

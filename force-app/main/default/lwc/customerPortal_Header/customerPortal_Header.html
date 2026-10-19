@@ -1,0 +1,103 @@
+<template>
+    <header class="portal-header">
+        <!-- Phones: opens the sidebar drawer -->
+        <button
+            type="button"
+            class="hamburger-btn"
+            title={labels.toggleMenu}
+            aria-label={labels.toggleMenu}
+            onclick={handleHamburgerClick}
+        >
+            <svg viewBox="0 0 24 24" width="24" height="24" aria-hidden="true" focusable="false">
+                <path d="M3 6h18v2H3zM3 11h18v2H3zM3 16h18v2H3z"></path>
+            </svg>
+        </button>
+
+        <div class="header-actions">
+            <button
+                type="button"
+                class="bell-btn"
+                title={labels.notifications}
+                aria-label={bellAriaLabel}
+                aria-haspopup="dialog"
+                aria-expanded={panelExpanded}
+                onclick={handleBellClick}
+            >
+                <svg class="bell-icon" viewBox="-0.5 -0.5 26.4 27" width="26" height="27" aria-hidden="true" focusable="false">
+                    <path d={bellPath}></path>
+                </svg>
+                <template lwc:if={hasNotifications}>
+                    <span class="notification-badge">{notificationCount}</span>
+                </template>
+            </button>
+
+            <button
+                type="button"
+                class="user-profile"
+                title={labels.viewProfile}
+                aria-label={labels.viewProfile}
+                onclick={handleProfileClick}
+            >
+                <img src={avatarSrc} alt={avatarAlt} class="avatar-image" onerror={handleAvatarError} />
+            </button>
+        </div>
+    </header>
+
+    <!-- Notifications panel (Figma p6): right-docked, 622px -->
+    <template lwc:if={isPanelOpen}>
+        <div class="np-overlay" onclick={closePanel}></div>
+        <section class="np-panel" role="dialog" aria-modal="true" aria-labelledby="npTitle">
+            <div class="np-head">
+                <h2 id="npTitle" class="np-title">{labels.notifications}</h2>
+                <button
+                    type="button"
+                    class="cp-close np-close"
+                    title={labels.close}
+                    aria-label={labels.closeNotifications}
+                    onclick={closePanel}
+                >
+                    <svg viewBox="0 0 14 14" width="14" height="14" aria-hidden="true" focusable="false">
+                        <path d={closePath}></path>
+                    </svg>
+                </button>
+            </div>
+
+            <div class="np-body">
+                <template lwc:if={hasNotificationItems}>
+                    <template for:each={notificationGroups} for:item="group">
+                        <section key={group.key} class="np-group">
+                            <h3 class="np-group-title">{group.label}</h3>
+                            <ul class="np-list">
+                                <template for:each={group.items} for:item="note">
+                                    <li key={note.key} class="np-card">
+                                        <span class="np-icon" aria-hidden="true">
+                                            <svg viewBox="0 0 32 32" width="32" height="32" focusable="false">
+                                                <circle cx="16" cy="16" r="16" class="np-icon-circle"></circle>
+                                                <path d={cardBellPath} class="np-icon-bell"></path>
+                                            </svg>
+                                        </span>
+                                        <div class="np-text">
+                                            <p class="np-card-title">{note.title}</p>
+                                            <template lwc:if={note.message}>
+                                                <p class="np-card-message">{note.message}</p>
+                                            </template>
+                                            <template lwc:if={note.time}>
+                                                <p class="np-card-time">{note.time}</p>
+                                            </template>
+                                        </div>
+                                    </li>
+                                </template>
+                            </ul>
+                        </section>
+                    </template>
+                </template>
+                <template lwc:else>
+                    <div class="np-empty">
+                        <img class="np-empty-icon" src={emptyIconUrl} alt="" />
+                        <p class="np-empty-text">{labels.noNotifications}</p>
+                    </div>
+                </template>
+            </div>
+        </section>
+    </template>
+</template>

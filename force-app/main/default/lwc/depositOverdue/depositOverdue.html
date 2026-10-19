@@ -1,0 +1,57 @@
+<template>
+    <template if:true={showDepositScreen}>
+        <div class="deposit-card">
+
+            <div class="deposit-header">
+                <div class="brand-section">
+                    <img src={logoUrl} alt="John Keells Properties"  class="company-logo"/>
+                    <div class="brand-text">
+                        <div class="company-name"> John Keells Properties </div>
+                        <div class="company-tagline"> Creating New Worlds</div>
+                    </div>
+                </div>
+            </div>
+            <div class="deposit-body">
+                <div class="info-icon">
+                    <span>i</span>
+                </div>
+                <h2 class="notification-title"> Deposit Overdue </h2>
+                <p class="notification-message"> The deposit for this opportunity is overdue. Please take necessary action.</p>
+            </div>
+            <div class="deposit-footer">
+                <lightning-button label="Revoke Offer Letter" variant="brand" onclick={handleBack}>
+                </lightning-button>
+                <lightning-button label="Request Time Extension" variant="brand" onclick={handleApproval}>
+                </lightning-button>
+                <lightning-button  label="Create Receipt" variant="brand" onclick={handleReceipt}>
+                </lightning-button>
+            </div>
+        </div>
+    </template>
+    <template if:true={showReceiptScreen}>
+        <div class="receipt-card">
+            <div class="receipt-header">
+                <div class="brand-section">
+                    <img src={logoUrl} alt="John Keells Properties" class="company-logo" />
+                    <div class="brand-text">
+                        <div class="company-name"> John Keells Properties </div>
+                        <div class="company-tagline"> Creating New Worlds </div>
+                    </div>
+                </div>
+            </div>
+            <div class="receipt-body">
+                <h2 class="receipt-title"> Create Receipt </h2>
+                <lightning-input class="receipt-field"  type="number"  label="Amount" value={receiptAmount}  onchange={handleAmountChange} required>  </lightning-input>
+                <lightning-combobox class="receipt-field" label="Type" value={receiptType} options={receiptTypeOptions}  onchange={handleTypeChange} required>  </lightning-combobox>
+            </div>
+            <div class="receipt-footer">
+                <lightning-button label="Back" onclick={handleReceiptBack}></lightning-button>
+                <lightning-button  label="Save"
+                    variant="brand"
+                    onclick={handleSaveReceipt}
+                    disabled={isSaving}>
+                </lightning-button>
+            </div>
+        </div>
+    </template>
+</template>

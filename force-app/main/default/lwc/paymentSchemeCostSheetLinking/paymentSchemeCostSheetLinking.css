@@ -1,0 +1,36 @@
+.header{
+	background-color: #E44B47;
+	font-size: 16px;
+	font-weight: 700;
+	padding: 12px;
+	text-align: center;
+    border-radius: 8px;
+	//border-top-left-radius: 5px;
+	//border-top-right-radius: 5px;
+}
+
+.brand-color{
+    --sds-c-button-brand-color-background:#4D4D4D !important;
+    --sds-c-button-brand-color-border: #4D4D4D !important;
+    --sds-c-button-brand-color-border-hover: #4D4D4D !important;
+}
+
+.scrollable-table {
+    overflow-x: auto; /* Enable horizontal scrolling */
+    display: block;   /* Make the container a block element */
+    max-width: 100%; /* Ensure it respects the parent container's width */
+    white-space: nowrap; /* Prevent content from wrapping */
+}
+
+.red-flag-icon {
+    color: red;
+    width: 20px; /* Adjust size if necessary */
+    height: 20px;
+}
+
+.center-align {
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    text-align: center;
+}

@@ -1,0 +1,9 @@
+@import 'c/commissionStyles';
+
+.hint { margin: 0 0 10px; }
+.lock { margin-top: 12px; }
+/* Room for the open list of the combobox inside the dialog */
+.field { min-height: 5rem; }
+.actions { display: flex; justify-content: flex-end; gap: 8px; }
+button { font-family: inherit; cursor: pointer; }
+button:focus-visible { outline: 2px solid var(--blue); outline-offset: 2px; }

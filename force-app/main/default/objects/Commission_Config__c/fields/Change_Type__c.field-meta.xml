@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Change_Type__c</fullName>
+    <description>How this version came about: a new configuration, a correction of the whole period, changed terms from a date, the next period, an early end, or a copy to another project.</description>
+    <inlineHelpText>New, Correction (replaces the whole period), Change From Date (new terms from a date), Next Period, End Early, or Copy (to another project).</inlineHelpText>
+    <label>Change Type</label>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>New</fullName>
+                <default>true</default>
+                <label>New</label>
+            </value>
+            <value>
+                <fullName>Correction</fullName>
+                <default>false</default>
+                <label>Correction</label>
+            </value>
+            <value>
+                <fullName>Change From Date</fullName>
+                <default>false</default>
+                <label>Change From Date</label>
+            </value>
+            <value>
+                <fullName>Next Period</fullName>
+                <default>false</default>
+                <label>Next Period</label>
+            </value>
+            <value>
+                <fullName>End Early</fullName>
+                <default>false</default>
+                <label>End Early</label>
+            </value>
+            <value>
+                <fullName>Copy</fullName>
+                <default>false</default>
+                <label>Copy</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

@@ -1,0 +1,72 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<ApprovalProcess xmlns="http://soap.sforce.com/2006/04/metadata">
+    <active>true</active>
+    <allowRecall>false</allowRecall>
+    <allowedSubmitters>
+        <type>allInternalUsers</type>
+    </allowedSubmitters>
+    <allowedSubmitters>
+        <type>creator</type>
+    </allowedSubmitters>
+    <allowedSubmitters>
+        <type>owner</type>
+    </allowedSubmitters>
+    <approvalPageFields>
+        <field>Name</field>
+        <field>Owner</field>
+        <field>Lead__c</field>
+        <field>Channel_Partner__c</field>
+        <field>Project__c</field>
+        <field>Requirement_Type__c</field>
+        <field>Visit_Date__c</field>
+        <field>Visit_Time__c</field>
+        <field>Visit_Description__c</field>
+        <field>Approval_Status__c</field>
+    </approvalPageFields>
+    <approvalStep>
+        <allowDelegate>false</allowDelegate>
+        <assignedApprover>
+            <approver>
+                <name>CP_Manager_Approver__c</name>
+                <type>relatedUserField</type>
+            </approver>
+            <whenMultipleApprovers>FirstResponse</whenMultipleApprovers>
+        </assignedApprover>
+        <label>CP Manager</label>
+        <name>CP_Manager</name>
+    </approvalStep>
+    <description>A site visit request the JKP CP Executive rejected; the CP Manager approves (the visit is confirmed) or rejects it (the partner is told).</description>
+    <emailTemplate>unfiled$public/CP_Site_Visit_Approval_Request</emailTemplate>
+    <enableMobileDeviceAccess>false</enableMobileDeviceAccess>
+    <entryCriteria>
+        <criteriaItems>
+            <field>Visit__c.Approval_Status__c</field>
+            <operation>equals</operation>
+            <value>Pending CP Manager</value>
+        </criteriaItems>
+    </entryCriteria>
+    <finalApprovalActions>
+        <action>
+            <name>CP_Visit_Approved</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalApprovalActions>
+    <finalApprovalRecordLock>false</finalApprovalRecordLock>
+    <finalRejectionActions>
+        <action>
+            <name>CP_Visit_Rejected</name>
+            <type>FieldUpdate</type>
+        </action>
+    </finalRejectionActions>
+    <finalRejectionRecordLock>false</finalRejectionRecordLock>
+    <label>CP Site Visit Manager Approval</label>
+    <processOrder>2</processOrder>
+    <recallActions>
+        <action>
+            <name>CP_Visit_Rejected</name>
+            <type>FieldUpdate</type>
+        </action>
+    </recallActions>
+    <recordEditability>AdminOnly</recordEditability>
+    <showApprovalHistory>true</showApprovalHistory>
+</ApprovalProcess>

@@ -1,0 +1,322 @@
+@import 'c/customerPortalStyles';
+
+/* Login page as in the Figma frames 1-5 (1278 x 832): the photo fills the left half, a 420px column sits in the
+   middle of the right half. Measured: logo 282 x 63; labels 16/20 black 500 (the design's DIN weight in JKP DIN);
+   fields 50px, radius 8, 12px under their label, 16px apart; "Forgot Password?" 14px grey 400; Login / Submit
+   48px, grey #6d6e71 until the fields are filled; links navy.
+   Photo, logo and success icon are background images, so no global img rule of the site can resize them. */
+
+.login {
+    /* Measured on Figma pages 1-4: labels are pure black, "Forgot Password?" a cool grey */
+    --login-label-ink: #000000;
+    --login-forgot-ink: #6b7280;
+    display: flex;
+    min-height: 100vh;
+    background: var(--cp-surface);
+    color: var(--cp-ink);
+    font-family: var(--cp-font);
+}
+
+/* ---------- Photo (left half) ---------- */
+.login__photo {
+    flex: 0 0 50%;
+    position: sticky;
+    top: 0;
+    align-self: flex-start;
+    height: 100vh;
+    /* #1f1e1e under the photo, as in the design */
+    background-color: var(--cp-title);
+    background-position: center;
+    background-size: cover;
+    background-repeat: no-repeat;
+}
+
+/* ---------- Form panel (right half) ---------- */
+.login__panel {
+    flex: 1 1 50%;
+    min-width: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding: 48px 24px;
+}
+
+.login__column {
+    width: 100%;
+    max-width: 420px;
+}
+
+.login__logo {
+    width: 282px;
+    height: 63px;
+    max-width: 100%;
+    margin: 0 auto 32px;
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.login__form {
+    margin: 0;
+}
+
+.login__field + .login__field {
+    margin-top: 16px;
+}
+
+.login__label {
+    margin-bottom: 12px;
+    font-weight: 500;
+    color: var(--login-label-ink);
+}
+
+.login__input {
+    height: 50px;
+}
+
+/* ---------- Password with the eye button ---------- */
+.login__password {
+    position: relative;
+}
+
+.login__input_password {
+    padding-right: 48px;
+}
+
+.login__eye {
+    position: absolute;
+    top: 50%;
+    right: 9px;
+    display: grid;
+    place-items: center;
+    width: 32px;
+    height: 32px;
+    margin-top: -16px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: none;
+    color: var(--cp-ink-dark);
+    cursor: pointer;
+    transition: background-color 0.15s ease, color 0.15s ease;
+}
+
+.login__eye svg {
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+}
+
+/* An empty field shows a light grey eye (Figma page 1) */
+.login__eye_empty {
+    color: var(--cp-placeholder);
+}
+
+.login__eye:hover {
+    background: var(--cp-tint);
+    color: var(--cp-navy);
+}
+
+.login__eye:focus-visible {
+    outline: 2px solid var(--cp-navy);
+    outline-offset: 0;
+}
+
+/* ---------- Messages ---------- */
+.login__error:empty {
+    display: none;
+}
+
+.login__error_form {
+    margin-top: 16px;
+    text-align: center;
+}
+
+/* ---------- Links and buttons ---------- */
+.login__forgot {
+    display: inline-block;
+    margin-top: 8px;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 400;
+    text-decoration: none;
+}
+
+/* Explicit link states: the site's own link colours must not apply */
+.login__form a.login__forgot,
+.login__form a.login__forgot:link,
+.login__form a.login__forgot:visited {
+    color: var(--login-forgot-ink);
+}
+
+.login__form a.login__forgot:hover {
+    color: var(--cp-navy);
+    text-decoration: underline;
+}
+
+.login__forgot:focus-visible {
+    outline: 2px solid var(--cp-navy);
+    outline-offset: 2px;
+    border-radius: 2px;
+}
+
+.login__submit {
+    margin-top: 33px;
+    font-weight: 600;
+}
+
+.login__submit_issue {
+    margin-top: 32px;
+}
+
+.login__error_form:not(:empty) + .login__submit {
+    margin-top: 16px;
+}
+
+/* Login and Submit are grey (#6d6e71) until their fields are filled, as in the design */
+.login__submit[disabled],
+.login__submit[disabled]:hover {
+    border-color: var(--cp-muted);
+    background: var(--cp-muted);
+}
+
+/* ... and stay navy while Salesforce answers */
+.login__submit_busy[disabled],
+.login__submit_busy[disabled]:hover {
+    border-color: var(--cp-navy);
+    background: var(--cp-navy);
+    cursor: progress;
+}
+
+.login__spinner {
+    width: 18px;
+    height: 18px;
+    border: 2px solid rgba(255, 255, 255, 0.4);
+    border-top-color: var(--cp-surface);
+    border-radius: 50%;
+    animation: cp-spin 0.8s linear infinite;
+}
+
+.login__link {
+    display: block;
+    width: fit-content;
+    margin: 8px auto 0;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    white-space: normal;
+    text-align: center;
+}
+
+.login__link_back {
+    margin-top: 12px;
+    font-size: 16px;
+}
+
+.login__link:focus-visible {
+    outline: 2px solid var(--cp-navy);
+    outline-offset: 2px;
+}
+
+/* ---------- Facing an issue ---------- */
+/* 112px like the design, without a resize grip (the text scrolls) */
+.login__textarea {
+    min-height: 112px;
+    height: 112px;
+    padding: 10px 16px;
+    resize: none;
+}
+
+/* ---------- Submitted popup (Figma page 5: 763 x 354, radius 16, X at 21px) ---------- */
+.login__modal {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 763px;
+    min-height: 354px;
+    padding: 70px 40px;
+}
+
+/* The X is drawn 14px wide in the design (21px from the top): the icon fills the 24px close button */
+.login__modal .cp-close svg {
+    width: 24px;
+    height: 24px;
+}
+
+.login__success {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    text-align: center;
+}
+
+.login__success-icon {
+    width: 120px;
+    height: 120px;
+    background-position: center;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.login__success-title {
+    margin-top: 21px;
+}
+
+.login__success-text {
+    margin-top: 4px;
+    max-width: none;
+    color: var(--cp-ink);
+    font-weight: 500;
+}
+
+.login__line {
+    display: block;
+}
+
+/* Mobile browsers: the visible height, without the address bar */
+@supports (height: 100dvh) {
+    .login {
+        min-height: 100dvh;
+    }
+
+    .login__photo {
+        height: 100dvh;
+    }
+}
+
+/* ---------- Phone width: the photo becomes a band above the form ---------- */
+@media (max-width: 768px) {
+    .login {
+        flex-direction: column;
+    }
+
+    .login__photo {
+        position: relative;
+        flex: 0 0 auto;
+        align-self: stretch;
+        height: 200px;
+    }
+
+    .login__panel {
+        flex: 1 0 auto;
+        align-items: flex-start;
+        padding: 32px 16px 40px;
+    }
+
+    .login__logo {
+        width: 240px;
+        height: 54px;
+        margin-bottom: 28px;
+    }
+
+    .login__modal {
+        min-height: 0;
+        padding: 56px 24px 48px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .login__spinner {
+        animation-duration: 2s;
+    }
+}

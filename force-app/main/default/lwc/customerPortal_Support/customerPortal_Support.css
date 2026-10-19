@@ -1,0 +1,270 @@
+@import 'c/customerPortalStyles';
+
+/* Support (Figma p56 empty list, p57 / p58 raise a request, p59 raised, p60 list).
+   The look comes from c/customerPortalStyles; this file only holds what was measured for this screen. */
+
+/* ---------- page head: title + button on one row, the intro runs the full width under both (p56, p60) ---------- */
+.sr-head {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) auto;
+    grid-template-areas:
+        'title actions'
+        'intro intro';
+    column-gap: 24px;
+    row-gap: 0;
+    align-items: start;
+    margin-bottom: 14px;
+}
+
+.sr-head__title {
+    grid-area: title;
+}
+
+.sr-head__actions {
+    grid-area: actions;
+}
+
+/* Figma p60: 183px wide */
+.sr-raise {
+    padding: 0 17px;
+}
+
+.sr-head__intro {
+    grid-area: intro;
+    max-width: none;
+}
+
+.sr-alert {
+    align-items: center;
+    justify-content: space-between;
+}
+
+.sr-alert__text {
+    margin: 0;
+}
+
+/* ---------- toolbar: DLP period left, project filter right (p60) ---------- */
+.sr-toolbar {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px 24px;
+    margin-bottom: 14px;
+}
+
+.sr-dlp {
+    max-width: 100%;
+}
+
+.sr-filter {
+    margin-left: auto;
+    cursor: pointer;
+}
+
+.sr-filter__label {
+    flex: 1 1 auto;
+    min-width: 0;
+    padding-right: 28px;
+    overflow: hidden;
+    font-size: 16px;
+    line-height: 24px;
+    color: var(--cp-filter-ink);
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+/* the real select lies over the whole filter (invisible): native list, keyboard and phone picker */
+.sr-filter__native {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    opacity: 0;
+    font-size: 16px;
+    cursor: pointer;
+    -webkit-appearance: none;
+    appearance: none;
+}
+
+/* ---------- table (p60: 936px, navy head; first row 87px, then 76px; text sits near the top of a row,
+   single-line values 2px under the first description line, badge 1px above it) ---------- */
+.sr-table {
+    table-layout: fixed;
+    min-width: 720px;
+}
+
+/* one line at the Figma width; a narrow window may wrap a heading instead of overlapping the next one */
+.sr-table th {
+    padding-top: 8px;
+    padding-bottom: 8px;
+    white-space: normal;
+}
+
+.sr-table td {
+    padding-top: 16px;
+    padding-bottom: 18px;
+    vertical-align: top;
+}
+
+.sr-table td.sr-col_desc {
+    padding-top: 14px;
+    padding-bottom: 20px;
+}
+
+.sr-table td.sr-col_status {
+    padding-top: 15px;
+}
+
+.sr-table tbody tr:first-child td {
+    padding-top: 26px;
+}
+
+.sr-table tbody tr:first-child td.sr-col_desc {
+    padding-top: 24px;
+    padding-bottom: 23px;
+}
+
+.sr-table tbody tr:first-child td.sr-col_status {
+    padding-top: 25px;
+}
+
+.sr-col_status .cp-badge {
+    vertical-align: top;
+}
+
+.sr-table .sr-col_num {
+    width: 3.85%;
+    padding-right: 0;
+}
+
+/* 176px of text: "Garbage Not Being Disposed" stays on one line as in Figma */
+.sr-table .sr-col_desc {
+    width: 21.8%;
+    padding-right: 8px;
+}
+
+.sr-table .sr-col_project {
+    width: 13.46%;
+    padding-right: 12px;
+}
+
+.sr-table .sr-col_id {
+    width: 14.96%;
+    padding-right: 12px;
+    padding-left: 12px;
+    text-align: center;
+}
+
+.sr-table .sr-col_date {
+    width: 14.1%;
+    padding-right: 12px;
+}
+
+.sr-table .sr-col_type {
+    width: 14.96%;
+    padding-right: 12px;
+}
+
+.sr-table .sr-col_status {
+    width: 16.87%;
+}
+
+/* ---------- empty list (p56: picture 254px wide about 146px under the intro, text 20px #999) ---------- */
+.sr-empty {
+    padding: 132px 16px 64px;
+}
+
+.sr-empty__text {
+    margin-top: 20px;
+}
+
+/* ---------- raise a request (p57 / p58) ---------- */
+.sr-modal:focus,
+.sr-done:focus {
+    outline: none;
+}
+
+/* an empty select shows its placeholder in the light grey of the other placeholders */
+.sr-select_empty {
+    color: var(--cp-placeholder);
+}
+
+.sr-select_empty option {
+    color: var(--cp-ink);
+}
+
+.sr-submit {
+    width: 320px;
+    max-width: 100%;
+}
+
+/* ---------- raised (p59: 640 x 433, 80px picture, content centred) ---------- */
+.sr-done {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    min-height: 433px;
+}
+
+.sr-done__body {
+    padding: 0;
+}
+
+.sr-done__icon {
+    width: 80px;
+    height: 80px;
+}
+
+.sr-done__title {
+    max-width: 300px;
+    margin-top: 19px;
+}
+
+.sr-done__text {
+    max-width: 556px;
+    margin-top: 4px;
+    color: var(--cp-ink);
+}
+
+/* ---------- phone width ---------- */
+@media (max-width: 768px) {
+    .sr-head {
+        grid-template-columns: minmax(0, 1fr);
+        grid-template-areas:
+            'title'
+            'intro'
+            'actions';
+        margin-bottom: 20px;
+    }
+
+    .sr-head__actions {
+        margin-top: 16px;
+    }
+
+    .sr-toolbar {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .sr-filter {
+        margin-left: 0;
+    }
+
+    .sr-empty {
+        padding-top: 48px;
+    }
+
+    .sr-done {
+        min-height: 0;
+        padding-top: 48px;
+        padding-bottom: 40px;
+    }
+
+    .sr-submit {
+        width: 100%;
+    }
+}

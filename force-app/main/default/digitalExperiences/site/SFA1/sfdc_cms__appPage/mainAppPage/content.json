@@ -1,0 +1,12 @@
+{
+  "type" : "sfdc_cms__appPage",
+  "title" : "main",
+  "contentBody" : {
+    "currentThemeId" : "Build_Your_Own_LWR",
+    "headMarkup" : "<title>Welcome to LWC Communities!</title>\n\n<!-- branding stylesheets -->\n\n<link rel=\"stylesheet\" href=\"{ basePath }/assets/styles/slds/salesforce-lightning-design-system-part1.css?{ versionKey }\"/>\n<link rel=\"stylesheet\" href=\"{ basePath }/assets/styles/slds/salesforce-lightning-design-system-part2.css?{ versionKey }\"/>\n<link rel=\"stylesheet\" href=\"{ basePath }/assets/styles/slds/salesforce-lightning-design-system-part3.css?{ versionKey }\"/>\n<link rel=\"stylesheet\" href=\"{ basePath }/assets/styles/slds/salesforce-lightning-design-system-part4.css?{ versionKey }\"/>\n<link rel=\"stylesheet\" href=\"{ basePath }/assets/styles/dxp-site-spacing-styling-hooks.min.css?{ versionKey }\" />\n<link rel=\"stylesheet\" href=\"{ basePath }/assets/styles/dxp-styling-hooks.min.css?{ versionKey }\" />\n<link rel=\"stylesheet\" href=\"{ basePath }/assets/styles/dxp-slds-extensions.min.css?{ versionKey }\" />\n\n<!-- branding stylesheets-->\n\n<link rel=\"stylesheet\" href=\"{ styles/styles.css }\" />\n<link rel=\"stylesheet\" href=\"{ styles/print.css }\" media=\"print\"/>\n\n<style>\n\n/* Hide Theme Header */\n.hide-login-header {\n    display: none !important;\n}\n\n/* Hide Theme Footer */\n.hide-login-footer {\n    display: none !important;\n}\n\n/* Main login section */\n.login-section {\n    min-height: 0 !important;\n    height: fit-content !important;\n    margin: 0 !important;\n    padding: 0 !important;\n}\n.login-section img {\n    width: 100% !important;\n    height: 100vh !important;\n    object-fit: cover !important;\n}\n/* Right-side logo - desktop */\n.login-logo img {\n    padding-top: 100px !important;\n    width: auto !important;\n    height: auto !important;\n    max-width: 100% !important;\n    object-fit: contain !important;\n}\n\n/* Mobile */\n@media only screen and (max-width: 768px) {\n\n    .login-section {\n        width: 100% !important;\n        min-height: 0 !important;\n        height: auto !important;\n    }\n\t.login-section img {\n        width: auto !important;\n        height: auto !important;\n    }\n    /* Remove logo top padding on mobile */\n    .login-logo img{\n        padding-top: 0 !important;\n    }\n}\n\n</style>",
+    "isLockerServiceEnabled" : true,
+    "isRelaxedCSPLevel" : false,
+    "templateName" : "talon-template-byo"
+  },
+  "urlName" : "main"
+}

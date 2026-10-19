@@ -1,0 +1,29 @@
+
+/* Header cell wrapper (the clickable area with label + sort) */
+.slds-th__action {
+    background-color: #1a237e !important;
+    color: #ffffff !important;
+}
+
+
+/* The <thead> */
+.slds-table thead th {
+    background-color: #1a237e !important;
+    color: #ffffff !important;
+}
+
+/* Sort icon in the header */
+.slds-th__action .slds-icon {
+    fill: #ffffff !important;
+}
+
+/* Optional: remove hover state that flashes a light color */
+.slds-th__action:hover,
+.slds-th__action:focus {
+    background-color: #0f1656 !important;
+}
+
+/* Optional: bottom border between rows stays subtle */
+.slds-table tbody tr td {
+    border-bottom: 1px solid #f0f0f0;
+}

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomObject xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>Who can be paid commission: one record per designation, with how it is paid (percentage or flat fee, shared or own payout stages), whether it needs a target, when its claim opens and which user roles hold it. Commission Setup builds its screens from these records.</description>
+    <label>Commission Designation</label>
+    <pluralLabel>Commission Designations</pluralLabel>
+    <visibility>Public</visibility>
+</CustomObject>

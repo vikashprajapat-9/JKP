@@ -1,0 +1,228 @@
+<template>
+	<div class="inv-shell">
+
+		<!-- Header -->
+		<div class="inv-header">
+			<div class="inv-header__title">
+				<span class="inv-header__icon">
+					<lightning-icon icon-name="standard:home" size="medium" alternative-text="Inventory"></lightning-icon>
+				</span>
+				<div>
+					<h1 class="inv-title">Unit Inventory</h1>
+					<p class="inv-subtitle">{headerSubtitle}</p>
+				</div>
+			</div>
+			<div class="inv-header__actions">
+				<lightning-button-icon icon-name="utility:refresh" alternative-text="Refresh" title="Refresh"
+					variant="border-filled" onclick={handleRefresh} disabled={isRefreshDisabled}></lightning-button-icon>
+				<lightning-button label="Reset" icon-name="utility:undo" onclick={ClearUnits} class="slds-m-left_x-small"></lightning-button>
+			</div>
+		</div>
+
+		<!-- Filters -->
+		<div class="inv-filters">
+			<div class="inv-filter">
+				<lightning-combobox name="projectName" label="Project" value={selectedProjectName}
+					placeholder="Select a project" options={optionsprojectName} onchange={ProjecthandleChange}>
+				</lightning-combobox>
+			</div>
+			<div class="inv-filter">
+				<lightning-combobox name="towerName" label="Tower" value={towerValue}
+					placeholder="All towers" options={towerOptionsWithAll} onchange={towerHandleChange}
+					disabled={isTowerDisabled}>
+				</lightning-combobox>
+			</div>
+			<div class="inv-filter">
+				<lightning-combobox name="unitType" label="Unit Type" value={unitTypeValue}
+					placeholder="All types" options={unitTypeOptionsWithAll} onchange={unitTypeHandleChange}
+					disabled={isTowerDisabled}>
+				</lightning-combobox>
+			</div>
+			<div class="inv-filter inv-filter_search">
+				<lightning-input type="search" label="Find unit" placeholder="Unit name, type, tower…"
+					value={searchKey} onchange={handleSearchKey} disabled={isToolbarDisabled}>
+				</lightning-input>
+			</div>
+		</div>
+
+		<!-- Status tiles (also act as filters) -->
+		<div class="inv-stats">
+			<template for:each={statusTiles} for:item="tile">
+				<button key={tile.key} class={tile.cssClass} data-key={tile.key} onclick={handleTileClick}
+					aria-pressed={tile.pressed} disabled={isToolbarDisabled}>
+					<span class="stat-tile__top">
+						<span class="stat-tile__dot"></span>
+						<span class="stat-tile__label">{tile.label}</span>
+					</span>
+					<span class="stat-tile__count">{tile.count}</span>
+					<span class="stat-tile__bar"><span class="stat-tile__fill" style={tile.barStyle}></span></span>
+					<span class="stat-tile__pct">{tile.pctLabel}</span>
+				</button>
+			</template>
+		</div>
+
+		<!-- Stacking plan -->
+		<div class="inv-plan">
+			<div class="inv-plan__toolbar">
+				<div class="inv-plan__heading">
+					<span class="inv-plan__title">Stacking plan</span>
+					<template lwc:if={hasSearched}>
+						<span class="inv-chip">{visibleUnitLabel}</span>
+						<template lwc:if={hasActiveFilter}>
+							<button class="inv-link" onclick={clearViewFilters}>Clear filters</button>
+						</template>
+					</template>
+				</div>
+				<div class="inv-plan__tools">
+					<template lwc:if={hasMultipleTowers}>
+						<button class="inv-link" onclick={toggleAllTowers}>{toggleAllLabel}</button>
+					</template>
+					<lightning-button-group>
+						<lightning-button-icon icon-name="utility:apps" alternative-text="Comfortable view" title="Comfortable view"
+							variant={comfortableVariant} data-density="comfortable" onclick={handleDensity}></lightning-button-icon>
+						<lightning-button-icon icon-name="utility:list" alternative-text="Compact view" title="Compact view"
+							variant={compactVariant} data-density="compact" onclick={handleDensity}></lightning-button-icon>
+					</lightning-button-group>
+				</div>
+			</div>
+
+			<div class="inv-plan__body">
+				<template lwc:if={isLoading}>
+					<lightning-spinner alternative-text="Loading units" size="medium"></lightning-spinner>
+				</template>
+
+				<template lwc:if={showStartState}>
+					<div class="inv-empty">
+						<span class="inv-empty__icon">
+							<lightning-icon icon-name="utility:company" size="large" alternative-text=""></lightning-icon>
+						</span>
+						<p class="inv-empty__title">Pick a project to get started</p>
+						<p class="inv-empty__text">All units in the project load straight away. Narrow them down by tower or unit type.</p>
+					</div>
+				</template>
+
+				<template lwc:if={showNoResults}>
+					<div class="inv-empty">
+						<span class="inv-empty__icon">
+							<lightning-icon icon-name="utility:filterList" size="large" alternative-text=""></lightning-icon>
+						</span>
+						<p class="inv-empty__title">No units match</p>
+						<p class="inv-empty__text">Try another tower, unit type or status.</p>
+						<template lwc:if={hasActiveFilter}>
+							<lightning-button label="Clear filters" onclick={clearViewFilters} class="slds-m-top_small"></lightning-button>
+						</template>
+					</div>
+				</template>
+
+				<template lwc:if={showPlan}>
+					<div class={planClass}>
+						<template for:each={visibleTowers} for:item="tower">
+							<section key={tower.key} class="tower">
+								<button class="tower__header" data-key={tower.key} onclick={toggleTower}
+									aria-expanded={tower.ariaExpanded} title={tower.toggleLabel}>
+									<lightning-icon icon-name={tower.chevron} size="x-small" class="tower__chevron"
+										alternative-text=""></lightning-icon>
+									<span class="tower__badge">
+										<lightning-icon icon-name="utility:company" size="x-small" alternative-text=""></lightning-icon>
+									</span>
+									<span class="tower__titles">
+										<span class="tower__name">
+											{tower.label}
+											<template lwc:if={tower.code}>
+												<span class="tower__code">{tower.code}</span>
+											</template>
+										</span>
+										<span class="tower__summary">{tower.summary}</span>
+									</span>
+									<span class="tower__stats">
+										<template for:each={tower.stats} for:item="st">
+											<span key={st.key} class={st.cssClass}>{st.text}</span>
+										</template>
+									</span>
+									<span class="tower__mix">
+										<template for:each={tower.segments} for:item="seg">
+											<span key={seg.key} class={seg.cssClass} style={seg.style}></span>
+										</template>
+									</span>
+								</button>
+
+								<template lwc:if={tower.isExpanded}>
+									<div class="tower__floors">
+										<template for:each={tower.floors} for:item="floor">
+											<div key={floor.key} class="floor-row">
+												<div class="floor-row__label">
+													<span class="floor-row__caption">Floor</span>
+													<span class="floor-row__number">{floor.label}</span>
+													<span class="floor-row__meta">{floor.availabilityLabel}</span>
+													<span class="floor-row__mix">
+														<template for:each={floor.segments} for:item="seg">
+															<span key={seg.key} class={seg.cssClass} style={seg.style}></span>
+														</template>
+													</span>
+												</div>
+												<div class="floor-row__units">
+													<template for:each={floor.units} for:item="unit">
+														<button key={unit.id} class={unit.cardClass} data-id={unit.id}
+															onclick={handleUnitClick} title={unit.tooltip}>
+															<span class="unit-card__name">{unit.name}</span>
+															<span class="unit-card__type">{unit.typeLabel}</span>
+														</button>
+													</template>
+													<template lwc:if={floor.isEmpty}>
+														<span class="floor-row__none">No units on this floor</span>
+													</template>
+												</div>
+											</div>
+										</template>
+									</div>
+								</template>
+							</section>
+						</template>
+					</div>
+				</template>
+			</div>
+		</div>
+
+		<!-- Unit detail drawer -->
+		<template lwc:if={selectedUnit}>
+			<div class="drawer-backdrop" onclick={closeDrawer}></div>
+			<section class="drawer" role="dialog" aria-modal="true" aria-label="Unit details" tabindex="-1"
+				onkeydown={handleDrawerKey}>
+				<header class="drawer__header">
+					<div>
+						<p class="drawer__eyebrow">{selectedUnit.recordName}</p>
+						<h2 class="drawer__title">{selectedUnit.name}</h2>
+						<span class={selectedUnit.pillClass}>{selectedUnit.statusLabel}</span>
+					</div>
+					<lightning-button-icon icon-name="utility:close" variant="bare" size="large"
+						alternative-text="Close" onclick={closeDrawer}></lightning-button-icon>
+				</header>
+				<div class="drawer__body">
+					<dl class="drawer__grid">
+						<template for:each={selectedUnitDetails} for:item="d">
+							<div key={d.label} class="drawer__item">
+								<dt>{d.label}</dt>
+								<dd>
+									<template lwc:if={d.isCurrency}>
+										<lightning-formatted-number value={d.value} format-style="currency"
+											maximum-fraction-digits="0"></lightning-formatted-number>
+									</template>
+									<template lwc:elseif={d.isArea}>
+										<lightning-formatted-number value={d.value}></lightning-formatted-number>
+										<span class="drawer__unit"> sq.ft</span>
+									</template>
+									<template lwc:else>{d.display}</template>
+								</dd>
+							</div>
+						</template>
+					</dl>
+				</div>
+				<footer class="drawer__footer">
+					<lightning-button label="Close" onclick={closeDrawer}></lightning-button>
+					<lightning-button variant="brand" label="Open record" icon-name="utility:new_window"
+						onclick={openSelectedRecord} class="slds-m-left_x-small"></lightning-button>
+				</footer>
+			</section>
+		</template>
+	</div>
+</template>

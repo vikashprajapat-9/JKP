@@ -1,0 +1,880 @@
+@import 'c/customerPortalStyles';
+
+/* Dashboard (Figma p7, carousel states p9 / p11) and Handover checklist (p8, p10, p12, p13).
+   Values are CSS px of the 1280-wide Figma frame (content x = 272..1208); the shell gives the page padding
+   and the #fafafa page tint. Shared pieces come from c/customerPortalStyles; dash- / ho- classes are local. */
+
+:host {
+    --dash-side-width: 265px;
+    --dash-caption-bg: rgba(113, 112, 112, 0.6);
+    --ho-ink: #19253d;          /* checklist table header and the open card's border (p12) */
+    --ho-blue: #0062cb;         /* selected property card (p10) */
+    --ho-arrow: #111827;
+    --ho-pill-green: #279c48;
+    --ho-pill-amber: #ffba09;
+    --ho-pill-red: #f30000;
+    --ho-remark-bg: #ebeaea;
+    --ho-remark-border: #bebebe;
+}
+
+/* switching dashboard <-> checklist scrolls the root into view; keep the shell's top padding (36 / 24 / 16 / 12px) */
+.dash-root {
+    scroll-margin-top: 36px;
+}
+
+@media (max-width: 1024px) {
+    .dash-root {
+        scroll-margin-top: 24px;
+    }
+}
+
+@media (max-width: 768px) {
+    .dash-root {
+        scroll-margin-top: 16px;
+    }
+}
+
+@media (max-width: 375px) {
+    .dash-root {
+        scroll-margin-top: 12px;
+    }
+}
+
+/* =============================== DASHBOARD ============================== */
+
+/* Customer ID 0001 | 03 Sep, 2025 : 1 x 13px grey bar between the two values */
+.dash-sep {
+    position: relative;
+    display: inline-block;
+    width: 1px;
+    height: 13px;
+    margin: 0 7.5px 0 9.5px;
+    background: var(--cp-muted);
+    vertical-align: -1px;
+}
+
+/* ---------- Hero carousel: 180px, radius 12, caption glass 16px in, 15px up ---------- */
+.dash-hero-block {
+    margin-top: 6px; /* hero top at y=219: 30px under the customer line */
+}
+
+.dash-hero {
+    position: relative;
+    height: 180px;
+    border-radius: 12px;
+    background: var(--cp-disabled);
+    box-shadow: var(--cp-shadow);
+    overflow: hidden;
+}
+
+.dash-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 1s ease-in-out;
+}
+
+.dash-slide_active {
+    opacity: 1;
+}
+
+.dash-hero__img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.dash-caption {
+    position: absolute;
+    right: 16px;
+    bottom: 15px;
+    left: 16px;
+    min-height: 59px;
+    padding: 11px 17px;
+    border-radius: 12px;
+    background: var(--dash-caption-bg);
+    -webkit-backdrop-filter: blur(10px);
+    backdrop-filter: blur(10px);
+    color: #ffffff;
+}
+
+.dash-caption__title {
+    margin: 0;
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 500;
+    letter-spacing: 2.25px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dash-caption__sub {
+    margin: 5px 0 0;
+    font-size: 10px;
+    line-height: 12px;
+    font-weight: 500;
+    letter-spacing: 0.5px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.dash-dots {
+    margin-top: 8px;
+}
+
+/* ---------- Cards: left column flexes, right column 265px, 32px apart ---------- */
+.dash-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1fr) var(--dash-side-width);
+    gap: 24px 32px;
+    align-items: start;
+}
+
+.dash-main,
+.dash-side {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    min-width: 0;
+}
+
+/* Quick links: 104px card, four equal columns, 1px #6d6e71 dividers 24px from top and bottom */
+.dash-quick {
+    display: grid;
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+    padding: 0 7px;
+}
+
+.dash-quick__item {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 9px;
+    min-width: 0;
+    padding: 28px 4px 23px;
+    border: 0;
+    border-radius: 8px;
+    background: none;
+    color: var(--cp-ink);
+    font: inherit;
+    text-align: center;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.dash-quick__item + .dash-quick__item::before {
+    content: '';
+    position: absolute;
+    top: 24px;
+    bottom: 24px;
+    left: 0;
+    width: 1px;
+    background: var(--cp-muted);
+}
+
+.dash-quick__item:focus-visible {
+    outline: 2px solid var(--cp-navy);
+    outline-offset: -4px;
+}
+
+.dash-quick__icon {
+    display: inline-flex;
+    width: 24px;
+    height: 24px;
+    color: #000000;
+}
+
+.dash-quick__icon_brand {
+    color: var(--cp-navy);
+}
+
+.dash-quick__icon svg {
+    display: block;
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+}
+
+.dash-quick__label {
+    max-width: 100%;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    color: var(--cp-ink);
+    overflow-wrap: anywhere;
+}
+
+.dash-quick__item:hover .dash-quick__label {
+    color: var(--cp-navy);
+}
+
+/* Support / Handover: 222px cards 16px apart; 110px ring, 13.5px stroke, #ebeaea track, flat ends */
+.dash-stats {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.dash-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 8px 16px 16px;
+}
+
+.dash-stat__title {
+    margin: 0;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    color: var(--cp-ink);
+    text-align: center;
+}
+
+/* Figma draws "Support" lighter than "Handover" */
+.dash-stat__title_light {
+    font-weight: 400;
+}
+
+.dash-ring {
+    position: relative;
+    flex: 0 0 auto;
+    width: 110px;
+    height: 110px;
+    margin-top: 16px;
+}
+
+.dash-ring__svg {
+    display: block;
+    width: 100%;
+    height: 100%;
+}
+
+.dash-ring__svg circle {
+    fill: none;
+    stroke-width: 13.5;
+}
+
+.dash-ring__track {
+    stroke: var(--cp-line);
+}
+
+.dash-ring__value {
+    stroke-linecap: butt;
+    transition: stroke-dasharray 0.8s ease;
+}
+
+.dash-ring__value_support {
+    stroke: var(--cp-orange);
+}
+
+.dash-ring__value_handover {
+    stroke: var(--cp-green);
+}
+
+/* "3" over "Pending": two 16px lines 13.5px apart, centred in the ring */
+.dash-ring__text {
+    position: absolute;
+    inset: -1px 0 1px;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    margin: 0;
+    font-size: 16px;
+    line-height: 13.5px;
+    font-weight: 500;
+    color: var(--cp-ink);
+    text-align: center;
+}
+
+.dash-ring__line {
+    display: block;
+    max-width: 82px;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    padding: 3px 0; /* the 16px glyphs overflow the 13.5px line; keep them inside the clip without moving the lines */
+    margin: -3px 0;
+}
+
+.dash-view {
+    width: 120px;
+    margin-top: 16px;
+}
+
+/* Refer & Earn: 159px card, text column 126px (wraps as in Figma), person 90 x 138 flush with the bottom */
+.dash-refer {
+    position: relative;
+    min-height: 159px;
+    padding: 15px 16px 16px;
+    overflow: hidden;
+}
+
+.dash-refer__text {
+    position: relative;
+    max-width: 126px;
+    margin: 0;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    color: var(--cp-ink);
+}
+
+.dash-refer__btn {
+    position: relative;
+    width: 120px;
+    margin-top: 16px;
+}
+
+.dash-refer__img {
+    position: absolute;
+    right: 15px;
+    bottom: 0;
+    width: 90px;
+    height: 138px;
+    object-fit: contain;
+    pointer-events: none;
+}
+
+/* FAQs: 88px card, badge 68.5 x 50 at the top right */
+.dash-faq {
+    display: block;
+    width: 100%;
+    min-height: 88px;
+    padding: 14px 100px 18px 16px;
+    border: 0;
+    color: var(--cp-ink);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.dash-faq:focus-visible {
+    outline: 2px solid var(--cp-navy);
+    outline-offset: 2px;
+}
+
+.dash-faq__title {
+    display: block;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+}
+
+.dash-faq__text {
+    display: block;
+    max-width: 140px;
+    margin-top: 4px;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 400;
+}
+
+.dash-faq__img {
+    position: absolute;
+    top: 18px;
+    right: 16.5px;
+    width: 68.5px;
+    height: 50px;
+    pointer-events: none;
+}
+
+.dash-error {
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.dash-error__text {
+    flex: 1 1 240px;
+}
+
+/* =========================== HANDOVER CHECKLIST ========================= */
+
+/* Back arrow 27 x 21.4 (#111827), title 24px; the form below starts 10px further right (x=282) */
+.ho-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 14px;
+}
+
+.ho-back {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: flex-start;
+    height: 34px;
+    margin-left: -0.5px;
+    padding: 9px 1px 0 0;
+    border: 0;
+    border-radius: 4px;
+    background: none;
+    color: var(--ho-arrow);
+    cursor: pointer;
+}
+
+.ho-back:focus-visible {
+    outline: 2px solid var(--cp-navy);
+    outline-offset: 2px;
+}
+
+.ho-back__icon {
+    display: block;
+    width: 27px;
+    height: 21.4px;
+}
+
+.ho-title {
+    margin: 0;
+    min-width: 0;
+    font-size: 24px;
+    line-height: 34px;
+    font-weight: 500;
+    color: var(--cp-ink);
+    overflow-wrap: anywhere;
+}
+
+.ho-body {
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    margin: 33px 0 0 10px;
+}
+
+.ho-alert {
+    margin-bottom: 24px;
+}
+
+.ho-label {
+    margin-bottom: 12px;
+    font-size: 20px;
+    line-height: 24px;
+}
+
+.ho-select-wrap {
+    position: relative;
+    min-width: 0;
+}
+
+.ho-select {
+    padding-right: 52px;
+    padding-bottom: 5px; /* Figma sets the value 2.5px above the box centre */
+    border-radius: 12px;
+    color: var(--cp-muted-2);
+}
+
+.ho-chevron {
+    display: block;
+    width: 16.1px;
+    height: 8.9px;
+    fill: currentColor;
+    color: var(--cp-ink);
+    pointer-events: none;
+}
+
+.ho-select-wrap__chevron {
+    position: absolute;
+    top: 20px;
+    right: 18px;
+}
+
+.ho-loading {
+    min-height: 200px;
+    margin-top: 24px;
+}
+
+/* Selected property: #0062cb card, radius 16, 88px photo, 20/20/16px lines */
+.ho-property {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-height: 125px;
+    margin-top: 48px;
+    padding: 18px 16px;
+    border-radius: 16px;
+    background: var(--ho-blue);
+    box-shadow: var(--cp-shadow);
+    color: #ffffff;
+}
+
+.ho-property__img {
+    display: block;
+    flex: 0 0 auto;
+    width: 88px;
+    height: 88px;
+    border-radius: 8px;
+    object-fit: cover;
+}
+
+.ho-property__text {
+    min-width: 0;
+}
+
+.ho-property__name,
+.ho-property__units {
+    margin: 0;
+    font-size: 20px;
+    line-height: 24px;
+    font-weight: 500;
+    color: #ffffff;
+    overflow-wrap: anywhere;
+}
+
+/* "2 | 3 | 4 RESIDENCES": the Figma has wider spaces here */
+.ho-property__units {
+    word-spacing: 2px;
+}
+
+.ho-property__project {
+    margin: 0;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    color: var(--cp-line);
+    overflow-wrap: anywhere;
+}
+
+.ho-empty {
+    padding: 48px 16px 24px;
+}
+
+/* Type cards: 104px, radius 16, 24px apart; open = 1px #19253d border and the chevron turns up */
+.ho-cards {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+    margin-top: 32px;
+}
+
+.ho-item {
+    min-width: 0;
+}
+
+.ho-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    width: 100%;
+    min-height: 104px;
+    padding: 7px 55px 11px 15px;
+    border: 1px solid transparent;
+    color: var(--cp-ink);
+    font: inherit;
+    text-align: left;
+    cursor: pointer;
+    -webkit-tap-highlight-color: transparent;
+}
+
+.ho-card:focus-visible {
+    outline: 2px solid var(--cp-navy);
+    outline-offset: 2px;
+}
+
+.ho-card_open {
+    border-color: var(--ho-ink);
+}
+
+.ho-card__title {
+    display: block;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    color: var(--cp-ink);
+}
+
+.ho-card__desc {
+    display: block;
+    margin-top: 1px;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    color: var(--cp-muted);
+}
+
+.ho-badge {
+    margin-top: 15px;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+.ho-card__chevron {
+    position: absolute;
+    top: 50%;
+    right: 19px;
+    margin-top: -4px;
+    transition: transform 0.2s ease;
+}
+
+.ho-card_open .ho-card__chevron {
+    transform: rotate(180deg);
+}
+
+/* Checklist table: 32px #19253d header (12px white), 14px rows, content 25px under the line above, 1px #ebeaea lines.
+   Rows are 67px (one text line) / 77px (two lines) apart as in Figma p12. Separate borders: WebKit drops collapsed ones. */
+.ho-table-wrap {
+    margin-top: 12px;
+}
+
+.ho-table {
+    width: 100%;
+    min-width: 760px;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+    color: #000000;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 400;
+}
+
+.ho-table th {
+    height: 32px;
+    padding: 0 8px 2px 0;
+    background: var(--ho-ink);
+    color: #ffffff;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 500;
+    text-align: left;
+    vertical-align: middle;
+    white-space: nowrap;
+}
+
+.ho-table td {
+    padding: 25px 8px 9px 0;
+    border-bottom: 1px solid var(--cp-line);
+    vertical-align: middle;
+    overflow-wrap: anywhere;
+}
+
+/* column starts as in Figma: Sr. 302, Activity 391, Description 574, Status 795, Remarks 958..1190 (of 282..1210) */
+.ho-table .ho-col_sr {
+    width: 11.75%;
+    padding-left: 20px;
+}
+
+.ho-table .ho-col_activity {
+    width: 19.72%;
+}
+
+.ho-table .ho-col_desc {
+    width: 23.81%;
+}
+
+.ho-table .ho-col_status {
+    width: 17.56%;
+}
+
+.ho-table .ho-col_remarks {
+    width: 27.16%;
+    padding-right: 20px;
+}
+
+.ho-cell {
+    display: block;
+    padding-bottom: 2px; /* two-line cells make the row 77px, as in Figma */
+}
+
+/* Figma text boxes: long activities / descriptions wrap onto two lines */
+.ho-cell_activity {
+    max-width: 110px;
+}
+
+.ho-cell_desc {
+    max-width: 150px;
+}
+
+.ho-pill {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    min-width: 94px; /* 92 x 24 fill + the 1px outline */
+    max-width: calc(100% + 1px);
+    height: 26px;
+    margin-left: -1px;
+    padding: 0 8px 2px;
+    border: 1px solid currentColor;
+    border-radius: 4px;
+    background: #ffffff;
+    font-size: 11px;
+    line-height: 14px;
+    font-weight: 500;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.ho-pill_completed {
+    color: var(--ho-pill-green);
+}
+
+.ho-pill_pending {
+    color: var(--ho-pill-amber);
+}
+
+.ho-pill_na {
+    color: var(--ho-pill-red);
+}
+
+/* read-only remarks box: 232 x 30 #ebeaea fill with a 1px #bebebe outline (234 x 32), text a little above centre */
+.ho-remark {
+    display: block;
+    width: calc(100% + 1px);
+    max-width: 234px;
+    min-height: 32px;
+    margin-left: -1px;
+    padding: 5px 8px 9px;
+    border: 1px solid var(--ho-remark-border);
+    border-radius: 4px;
+    background: var(--ho-remark-bg);
+    color: #000000;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 400;
+    overflow-wrap: anywhere;
+}
+
+.ho-table .ho-empty-row {
+    padding: 24px 20px;
+    color: var(--cp-muted);
+    text-align: center;
+}
+
+/* Figma p7 edges on desktop: the hero runs to x=1211 (3px past the content edge), the right column ends at 1205 */
+@media (min-width: 1181px) {
+    .dash-hero-block {
+        margin-right: -3px;
+    }
+
+    .dash-grid {
+        margin-right: 3px;
+    }
+
+    /* handover form and cards span x=282..1210 */
+    .ho-body {
+        margin-right: -2px;
+    }
+}
+
+/* ================================ SMALLER ================================ */
+/* below ~1180px the 265px side column leaves the quick links too narrow: one column, side cards in a row */
+@media (max-width: 1180px) {
+    .dash-grid {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .dash-side {
+        display: grid;
+        grid-template-columns: repeat(auto-fit, minmax(265px, 1fr));
+        align-items: start;
+    }
+}
+
+/* the carousel keeps its 180px height and caption at every width (Figma p11: 328px-wide card) */
+@media (max-width: 768px) {
+    .ho-head {
+        gap: 10px;
+    }
+
+    .ho-back {
+        height: 32px;
+        padding-top: 6px;
+    }
+
+    .ho-back__icon {
+        width: 22px;
+        height: 17.4px;
+    }
+
+    .ho-title {
+        font-size: 18px;
+        line-height: 28px;
+    }
+
+    .ho-body {
+        margin: 24px 0 0;
+    }
+
+    .ho-label {
+        font-size: 16px;
+        line-height: 20px;
+    }
+
+    .ho-property {
+        gap: 12px;
+        min-height: 0;
+        margin-top: 24px;
+        padding: 14px;
+    }
+
+    .ho-property__img {
+        width: 64px;
+        height: 64px;
+    }
+
+    .ho-property__name,
+    .ho-property__units {
+        font-size: 16px;
+        line-height: 22px;
+    }
+
+    .ho-property__project {
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .ho-cards {
+        gap: 16px;
+        margin-top: 24px;
+    }
+}
+
+@media (max-width: 640px) {
+    .dash-quick {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        padding: 0 4px;
+    }
+
+    .dash-quick__item {
+        padding: 20px 4px;
+    }
+
+    .dash-quick__item + .dash-quick__item::before {
+        top: 20px;
+        bottom: 20px;
+    }
+
+    /* 2 x 2: no divider left of the first item of the second row, a line above the second row */
+    .dash-quick__item:nth-child(3)::before {
+        display: none;
+    }
+
+    .dash-quick__item:nth-child(n + 3)::after {
+        content: '';
+        position: absolute;
+        top: 0;
+        right: 12px;
+        left: 12px;
+        height: 1px;
+        background: var(--cp-line);
+    }
+}
+
+@media (max-width: 420px) {
+    .dash-stats {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .dash-slide,
+    .dash-ring__value,
+    .ho-card__chevron {
+        transition: none;
+    }
+}

@@ -1,0 +1,6 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<LightningComponentBundle xmlns="http://soap.sforce.com/2006/04/metadata">
+    <apiVersion>64.0</apiVersion>
+    <isExposed>false</isExposed>
+    <description>Uploads a file into a Document folder in SharePoint and saves it as a Sub Document with a public link (same protocol as sharePointDocumentManager).</description>
+</LightningComponentBundle>

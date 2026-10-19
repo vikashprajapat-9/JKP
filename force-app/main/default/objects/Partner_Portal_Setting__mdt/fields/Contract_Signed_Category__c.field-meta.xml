@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Contract_Signed_Category__c</fullName>
+    <description>Document category (of the Contract Document Master) for the signed and scanned contract, for example Signed Document. A contract is Completed only with a file in it.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Document category (of the Contract Document Master) for the signed and scanned contract, for example Signed Document. A contract is Completed only with a file in it.</inlineHelpText>
+    <label>Contract Signed Category</label>
+    <length>80</length>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

@@ -1,0 +1,120 @@
+<template>
+    <div class="portal-container">
+
+        <template lwc:if={isLoading}>
+            <div class="portal-loading">
+                <lightning-spinner alternative-text={labels.loading} size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template lwc:if={hasError}>
+            <div class="portal-error" role="alert">
+                <lightning-icon icon-name="utility:error" size="medium" variant="error"></lightning-icon>
+                <p class="portal-error-text">{labels.loadError}</p>
+            </div>
+        </template>
+
+        <template lwc:if={notCustomer}>
+            <div class="portal-denied" role="alert">
+                <img class="portal-denied-logo" src={logoUrl} alt={labels.logoAlt} />
+                <p class="portal-denied-title">{labels.notCustomerTitle}</p>
+                <p class="portal-denied-text">{labels.notCustomerText}</p>
+                <button type="button" class="cp-btn portal-denied-button" onclick={handleNotCustomerLogout}>{labels.logOut}</button>
+            </div>
+        </template>
+
+        <template lwc:if={showPortal}>
+            <c-customer-portal_-sidebar
+                menu-items={portalData.menuItems}
+                active-page={activePage}
+                is-open={isMobileSidebarOpen}
+                onmenuselect={handleMenuSelect}
+                onclosemobilemenu={handleCloseMobileMenu}
+            ></c-customer-portal_-sidebar>
+
+            <!-- Mobile drawer backdrop (only displayed <=768px via CSS) -->
+            <template lwc:if={isMobileSidebarOpen}>
+                <div class="portal-backdrop" aria-hidden="true" onclick={handleCloseMobileMenu}></div>
+            </template>
+
+            <div class={mainClass}>
+
+                <c-customer-portal_-header
+                    header-data={portalData.headerData}
+                    ontogglesidebar={handleToggleSidebar}
+                    onprofileclick={handleProfileClick}
+                ></c-customer-portal_-header>
+
+                <main class="portal-content">
+                    <div class="portal-frame">
+                        <template lwc:if={isProfilePage}>
+                            <c-customer-portal_-profile onprofileupdated={handleProfileUpdated}></c-customer-portal_-profile>
+                        </template>
+
+                        <template lwc:if={isDashboardPage}>
+                            <c-customer-portal_-dashboard onnavigate={handleDashboardNavigation} onviewchange={handleDashboardViewChange}></c-customer-portal_-dashboard>
+                        </template>
+
+                        <template lwc:if={isReferralsPage}>
+                            <c-customer-portal_-referral></c-customer-portal_-referral>
+                        </template>
+
+                        <template lwc:if={isProjectsPage}>
+                            <c-customer-portal_-project></c-customer-portal_-project>
+                        </template>
+
+                        <template lwc:if={isMyPropertiesPage}>
+                            <c-customer-portal_-my-properties></c-customer-portal_-my-properties>
+                        </template>
+
+                        <template lwc:if={isConstructionStatusView}>
+                            <c-customer-portal_-construction-status></c-customer-portal_-construction-status>
+                        </template>
+
+                        <template lwc:if={isMyAccountsPage}>
+                            <c-customer-portal_-my-accounts></c-customer-portal_-my-accounts>
+                        </template>
+
+                        <template lwc:if={isMyVisitsPage}>
+                            <c-customer-portal_-my-visits></c-customer-portal_-my-visits>
+                        </template>
+
+                        <template lwc:if={isSupportPage}>
+                            <c-customer-portal_-support></c-customer-portal_-support>
+                        </template>
+
+                        <template lwc:if={isEventsPage}>
+                            <c-customer-portal_-events></c-customer-portal_-events>
+                        </template>
+
+                        <template lwc:if={isFaqsPage}>
+                            <c-customer-portal_-f-a-qs></c-customer-portal_-f-a-qs>
+                        </template>
+
+                        <template lwc:if={isMyDocumentsPage}>
+                            <c-customer-portal_-my-documents></c-customer-portal_-my-documents>
+                        </template>
+
+                        <template lwc:if={isAboutUsPage}>
+                            <c-customer-portal_-about-us></c-customer-portal_-about-us>
+                        </template>
+
+                        <template lwc:if={isTermsConditionsPage}>
+                            <c-customer-portal_-terms-conditions></c-customer-portal_-terms-conditions>
+                        </template>
+
+                        <template lwc:if={isLetsTalkPage}>
+                            <c-customer-portal_-lets-talk></c-customer-portal_-lets-talk>
+                        </template>
+                    </div>
+                </main>
+            </div>
+
+            <!-- Moved out of the scrolling <main> so the overlay is never clipped by it.
+                 Same component, same events. -->
+            <template lwc:if={isLogoutModalOpen}>
+                <c-customer-portal_-logout onclose={handleLogoutModalClose} onlogout={handleLogout}></c-customer-portal_-logout>
+            </template>
+        </template>
+    </div>
+</template>

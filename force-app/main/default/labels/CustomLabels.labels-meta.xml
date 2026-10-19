@@ -1,0 +1,24 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomLabels xmlns="http://soap.sforce.com/2006/04/metadata">
+    <labels>
+        <fullName>Integration_Log</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Integration Log</shortDescription>
+        <value>True</value>
+    </labels>
+    <labels>
+        <fullName>Re_Distribute_Lead</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Re-Distribution Lead</shortDescription>
+        <value>False</value>
+    </labels>
+    <labels>
+        <fullName>Refer_and_Earn_Filter_Options</fullName>
+        <language>en_US</language>
+        <protected>false</protected>
+        <shortDescription>Refer and Earn Filter Options</shortDescription>
+        <value>Week,Month,6Month,Custom</value>
+    </labels>
+</CustomLabels>

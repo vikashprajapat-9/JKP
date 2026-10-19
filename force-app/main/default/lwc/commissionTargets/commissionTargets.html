@@ -1,0 +1,244 @@
+<template>
+    <template lwc:if={showLoading}>
+        <div class="card state" aria-busy="true">
+            <lightning-spinner alternative-text={labels.loading} size="medium"></lightning-spinner>
+        </div>
+    </template>
+
+    <template lwc:elseif={noAccess}>
+        <div class="card">
+            <div class="note grey" data-id="noaccess"><span>{labels.noAccess}</span></div>
+        </div>
+    </template>
+
+    <template lwc:elseif={showLoadError}>
+        <div class="card">
+            <div class="note red" role="alert" data-id="loaderror"><span>{loadError}</span></div>
+            <div class="stateaction">
+                <button type="button" class="btn" data-id="retry" onclick={handleRetry}>{labels.retry}</button>
+            </div>
+        </div>
+    </template>
+
+    <template lwc:elseif={isReady}>
+        <!-- Which project and which configuration -->
+        <template lwc:if={showPickers}>
+            <div class="card">
+                <div class="pick">
+                    <div class="field f-project">
+                        <lightning-combobox
+                            data-id="project"
+                            label={labels.project}
+                            options={projectOptions}
+                            value={table.projectId}
+                            disabled={saving}
+                            onchange={handleProject}
+                        ></lightning-combobox>
+                    </div>
+                    <template lwc:if={hasConfigs}>
+                        <div class="field f-config">
+                            <lightning-combobox
+                                data-id="config"
+                                label={labels.configuration}
+                                options={configOptions}
+                                value={table.reference}
+                                disabled={saving}
+                                onchange={handleConfig}
+                            ></lightning-combobox>
+                        </div>
+                    </template>
+                    <div class="basis" data-id="basis">{basisText}</div>
+                </div>
+            </div>
+        </template>
+
+        <div class="card tcard">
+            <template lwc:if={reloading}>
+                <lightning-spinner alternative-text={labels.loading} size="small"></lightning-spinner>
+            </template>
+            <template lwc:if={hasRows}>
+                <div class="tablewrap">
+                    <table class="grid targets">
+                        <caption class="assistive">
+                            {labels.caption}
+                        </caption>
+                        <colgroup>
+                            <col />
+                            <col class="c-target" />
+                            <col class="c-actual" />
+                            <col class="c-result" />
+                            <col class="c-rate" />
+                            <col class="c-rate" />
+                            <col class="c-from" />
+                        </colgroup>
+                        <thead>
+                            <tr>
+                                <th scope="col">{labels.colPerson}</th>
+                                <th scope="col">{labels.colTarget}</th>
+                                <th scope="col" class="r">{labels.colActual}</th>
+                                <th scope="col">{labels.colResult}</th>
+                                <th scope="col" class="r">{labels.colCurrent}</th>
+                                <th scope="col" class="r">{labels.colExceed}</th>
+                                <th scope="col">{labels.colFrom}</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <template for:each={rows} for:item="row">
+                                <tr key={row.key} class={row.rowClass} data-key={row.editKey}>
+                                    <td class={row.whoClass}>
+                                        <template lwc:if={row.isManager}>
+                                            <div class="person">
+                                                <button
+                                                    type="button"
+                                                    class="fold"
+                                                    data-key={row.editKey}
+                                                    aria-expanded={row.expanded}
+                                                    title={row.toggleTitle}
+                                                    aria-label={row.toggleTitle}
+                                                    onclick={handleToggleTeam}
+                                                >
+                                                    <template lwc:if={row.isFolded}>
+                                                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                            <path d="M6 4l4 4-4 4"></path>
+                                                        </svg>
+                                                    </template>
+                                                    <template lwc:else>
+                                                        <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                            <path d="M4 6l4 4 4-4"></path>
+                                                        </svg>
+                                                    </template>
+                                                </button>
+                                                <div>
+                                                    <div class="name">{row.name}</div>
+                                                    <div class="team">{row.teamText}</div>
+                                                </div>
+                                            </div>
+                                        </template>
+                                        <template lwc:else>{row.name}</template>
+                                    </td>
+                                    <td>
+                                        <div class={row.targetClass}>
+                                            <template lwc:if={row.editable}>
+                                                <lightning-input
+                                                    type="number"
+                                                    variant="label-hidden"
+                                                    label={row.inputLabel}
+                                                    value={row.inputValue}
+                                                    step="any"
+                                                    data-key={row.editKey}
+                                                    disabled={saving}
+                                                    onchange={handleTarget}
+                                                ></lightning-input>
+                                            </template>
+                                            <template lwc:else><span class="num fixed">{row.targetText}</span></template>
+                                            <div class="side">
+                                                <template lwc:if={row.showWas}><span class="was">{row.wasText}</span></template>
+                                                <template lwc:if={row.hasHint}><span class="hint" title={row.hintTitle}>{row.hint}</span></template>
+                                                <template lwc:if={row.showUseDefault}>
+                                                    <button type="button" class="link" data-id="usedefault" data-key={row.editKey} disabled={saving} onclick={handleUseDefault}>
+                                                        {labels.useDefault}
+                                                    </button>
+                                                </template>
+                                            </div>
+                                        </div>
+                                        <template lwc:if={row.invalid}><div class="error-text cellerror">{row.invalidText}</div></template>
+                                    </td>
+                                    <td class="r num">{row.actualText}</td>
+                                    <td>
+                                        <template lwc:if={row.hasResult}><span class={row.resultClass}>{row.resultText}</span></template>
+                                        <template lwc:else><span class="dash">{row.resultText}</span></template>
+                                    </td>
+                                    <td class="r">
+                                        <span class="rate" title={labels.locked}>
+                                            {row.currentText}
+                                            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                <rect x="3" y="7" width="10" height="7" rx="1.5"></rect>
+                                                <path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"></path>
+                                            </svg>
+                                        </span>
+                                    </td>
+                                    <td class="r">
+                                        <span class="rate" title={labels.locked}>
+                                            {row.exceedText}
+                                            <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                                                <rect x="3" y="7" width="10" height="7" rx="1.5"></rect>
+                                                <path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"></path>
+                                            </svg>
+                                        </span>
+                                    </td>
+                                    <td class="num">{row.fromText}</td>
+                                </tr>
+                            </template>
+                        </tbody>
+                    </table>
+                </div>
+                <div class="note grey">
+                    <svg viewBox="0 0 16 16" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round" aria-hidden="true">
+                        <rect x="3" y="7" width="10" height="7" rx="1.5"></rect>
+                        <path d="M5.5 7V5a2.5 2.5 0 0 1 5 0v2"></path>
+                    </svg>
+                    <div>
+                        <div>{labels.noteRates}</div>
+                        <div>{labels.noteActuals}</div>
+                    </div>
+                </div>
+            </template>
+            <template lwc:else>
+                <div class="empty muted" data-id="empty">{emptyText}</div>
+            </template>
+        </div>
+
+        <!-- A failed load of another configuration, or a failed save -->
+        <template lwc:if={hasActionError}>
+            <div class="note red actionerror" role="alert" data-id="actionerror"><span>{actionError}</span></div>
+        </template>
+
+        <!-- What is about to change: from when, and why -->
+        <template lwc:if={hasEdits}>
+            <div class="footerbar" data-id="footer">
+                <div class="change" aria-live="polite">
+                    <span class="strong" data-id="changecount">{changeCountText}</span>
+                    <span class="muted small" data-id="changedetail">{changeDetailText}</span>
+                </div>
+                <div class="inline">
+                    <span class="label" aria-hidden="true">{labels.from}</span>
+                    <lightning-input
+                        type="date"
+                        variant="label-hidden"
+                        label={labels.from}
+                        class="f-from"
+                        data-id="from"
+                        value={effectiveFrom}
+                        date-style="medium"
+                        required
+                        disabled={saving}
+                        onchange={handleFrom}
+                    ></lightning-input>
+                </div>
+                <div class="inline wide">
+                    <span class="label" aria-hidden="true">{labels.reason}</span>
+                    <lightning-input
+                        type="text"
+                        variant="label-hidden"
+                        label={labels.reason}
+                        class="f-reason"
+                        data-id="reason"
+                        value={reason}
+                        placeholder={labels.reasonPlaceholder}
+                        max-length="255"
+                        required
+                        disabled={saving}
+                        onchange={handleReason}
+                    ></lightning-input>
+                </div>
+                <div class="actions">
+                    <button type="button" class="btn" data-id="cancel" disabled={saving} onclick={handleCancel}>{labels.cancel}</button>
+                    <button type="button" class="btn primary" data-id="save" disabled={saveDisabled} onclick={handleSave}>{labels.save}</button>
+                </div>
+            </div>
+            <template lwc:if={hasFormError}>
+                <div class="error-text formerror" role="alert" data-id="formerror">{formError}</div>
+            </template>
+        </template>
+    </template>
+</template>

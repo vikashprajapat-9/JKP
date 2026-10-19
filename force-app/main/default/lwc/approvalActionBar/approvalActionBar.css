@@ -1,0 +1,178 @@
+:host {
+    display: block;
+    font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+}
+
+.aab-wrap {
+    background: #ffffff;
+    border: 1px solid #e5e9f2;
+    border-left: 4px solid #1b96ff;
+    border-radius: 6px;
+    padding: 12px 14px;
+    box-shadow: 0 1px 3px rgba(16, 24, 40, 0.08);
+}
+
+/* ---- header row: everything inline, so no dead space on wide screens ---- */
+.aab-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 12px;
+    flex-wrap: wrap;
+}
+.aab-head-left {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    flex-wrap: wrap;
+    min-width: 0;
+}
+.aab-pill {
+    display: inline-flex;
+    align-items: center;
+    padding: 3px 11px;
+    border-radius: 999px;
+    font-size: 11.5px;
+    font-weight: 700;
+    letter-spacing: 0.02em;
+    text-transform: uppercase;
+    white-space: nowrap;
+}
+.aab-pill-pending  { background: #fff4e5; color: #a25b00; border: 1px solid #fbd6a4; }
+.aab-pill-approved { background: #e6f7ed; color: #1b7a43; border: 1px solid #a9e0bf; }
+.aab-pill-rejected { background: #fdecec; color: #b42318; border: 1px solid #f4b5ad; }
+.aab-pill-removed  { background: #f2f4f7; color: #55617a; border: 1px solid #dde1e9; }
+
+.aab-summary { font-size: 15px; font-weight: 700; color: #1b2a4a; }
+.aab-sub { font-size: 13px; color: #667085; }
+.aab-sub-dim { color: #98a2b3; }
+
+/* ---- action button ---- */
+.aab-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    height: 36px;
+    padding: 0 16px;
+    border-radius: 5px;
+    border: 1px solid transparent;
+    font-size: 14px;
+    font-weight: 600;
+    cursor: pointer;
+    white-space: nowrap;
+    flex: 0 0 auto;
+}
+.aab-btn-ic { margin-top: -1px; }
+.aab-btn-main { background: #1b96ff; color: #fff; }
+.aab-btn-main:hover { background: #0d7fdb; }
+
+/* ---- trail: chips wrap across the full width instead of stacking ---- */
+.aab-trail {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    gap: 7px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #eef1f6;
+}
+.aab-chip {
+    display: flex;
+    flex-direction: column;
+    gap: 2px;
+    flex: 0 1 auto;
+    min-width: 170px;
+    max-width: 320px;
+    padding: 6px 11px;
+    border-radius: 8px;
+    border: 1px solid #e4e7ec;
+    background: #f9fafb;
+    font-size: 13px;
+    line-height: 1.4;
+}
+.aab-chip-top { display: flex; align-items: center; gap: 5px; min-width: 0; }
+.aab-chip-ic { flex: 0 0 auto; }
+.aab-chip-name {
+    font-weight: 600; color: #1d2939;
+    overflow: hidden; text-overflow: ellipsis; white-space: nowrap;
+}
+.aab-chip-date { color: #667085; font-size: 12px; white-space: nowrap; flex: 0 0 auto; }
+
+/* the approver's comment, right under their name */
+.aab-chip-comment {
+    font-size: 12.5px;
+    line-height: 1.4;
+    color: #475467;
+    padding-left: 17px;          /* aligns under the name, past the icon */
+    display: -webkit-box;
+    -webkit-line-clamp: 2;       /* keep long comments from growing the bar */
+    -webkit-box-orient: vertical;
+    overflow: hidden;
+    word-break: break-word;
+}
+
+.aab-chip-approved { background: #f0fdf4; border-color: #bbf7d0; }
+.aab-chip-rejected { background: #fef2f2; border-color: #fecaca; }
+.aab-chip-pending  { background: #fffbeb; border-color: #fde68a; }
+.aab-chip-pending .aab-chip-name { color: #a25b00; }
+
+.aab-more {
+    border: none;
+    background: transparent;
+    color: #1b96ff;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+    padding: 3px 6px;
+}
+.aab-more:hover { text-decoration: underline; }
+
+/* ---- phone: stack, full-width button, chips still wrap ---- */
+@media (max-width: 600px) {
+    .aab-wrap { padding: 9px 10px; }
+    .aab-head { align-items: stretch; gap: 8px; }
+    .aab-head-left { gap: 7px; }
+    .aab-summary { font-size: 13.5px; }
+    .aab-sub { font-size: 12px; }
+    .aab-btn-main { width: 100%; height: 36px; font-size: 14px; }
+    .aab-chip { font-size: 12px; padding: 5px 9px; min-width: 100%; max-width: 100%; }
+    .aab-chip-comment { font-size: 12px; padding-left: 16px; }
+    .aab-chip-date { font-size: 11px; }
+    .aab-trail { gap: 6px; margin-top: 8px; padding-top: 8px; }
+}
+
+/* ---- expanded detail: every step with its comment ---- */
+.aab-detail {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin-top: 10px;
+    padding-top: 10px;
+    border-top: 1px solid #eef1f6;
+}
+.aab-row { display: flex; align-items: flex-start; gap: 8px; }
+.aab-row-ic { margin-top: 3px; flex: 0 0 auto; }
+.aab-row-body { min-width: 0; flex: 1 1 auto; }
+.aab-row-top { display: flex; align-items: baseline; gap: 8px; flex-wrap: wrap; }
+.aab-row-name { font-size: 13.5px; font-weight: 600; color: #1d2939; }
+.aab-row-date { font-size: 12px; color: #667085; }
+.aab-row-comment {
+    margin-top: 2px;
+    font-size: 13px;
+    line-height: 1.45;
+    color: #475467;
+    background: #f9fafb;
+    border-left: 2px solid #d0d5dd;
+    border-radius: 0 4px 4px 0;
+    padding: 5px 9px;
+    white-space: pre-wrap;
+    word-break: break-word;
+}
+.aab-detail .aab-more { align-self: flex-start; margin-top: 2px; }
+
+@media (max-width: 600px) {
+    .aab-row-name { font-size: 13px; }
+    .aab-row-comment { font-size: 12.5px; padding: 5px 8px; }
+    .aab-detail { gap: 7px; }
+}

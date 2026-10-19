@@ -1,0 +1,625 @@
+/* ================= HOST ================= */
+:host {
+    display: block;
+    width: 100%;
+    font-family: var(--jk-font);
+    color: var(--jk-text);
+}
+
+button {
+    font-family: var(--jk-font);
+}
+
+.page {
+    width: 100%;
+    box-sizing: border-box;
+}
+
+/* ================= HEADER ================= */
+.page-header {
+    margin-bottom: 32px;
+}
+.page-title {
+    font-size: 28px;
+    font-weight: 600;
+    line-height: 1.2;
+    color: var(--jk-text);
+    margin: 0 0 12px;
+}
+.page-subtitle {
+    font-size: 15px;
+    font-weight: 400;
+    line-height: 24px;
+    color: var(--jk-text);
+    margin: 0;
+}
+
+/* ================= GRID ================= */
+.card-grid {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 24px 17px;
+    width: 100%;
+}
+
+/* ================= CARD ================= */
+.project-card {
+    background: var(--jk-surface, #fff);
+    border: 1px solid var(--jk-divider);
+    border-radius: var(--jk-radius-lg);
+    overflow: hidden;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    transition: box-shadow 0.2s ease;
+}
+.project-card:hover {
+    box-shadow: var(--jk-shadow);
+}
+
+/* ================= MEDIA / CAROUSEL ================= */
+.carousel {
+    position: relative;
+    width: 100%;
+    aspect-ratio: 306 / 119;
+    min-height: 119px;
+    background: var(--jk-tint);
+    overflow: hidden;
+}
+.carousel-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    pointer-events: none;
+}
+.carousel-slide.active {
+    opacity: 1;
+    pointer-events: auto;
+}
+.carousel-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Neutral placeholder when no real project image exists */
+.media-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background:
+        radial-gradient(circle at 85% 20%, rgb(255 255 255 / 14%) 0, transparent 45%),
+        linear-gradient(135deg, var(--jk-navy) 0%, var(--jk-navy-muted) 60%, #8fa3c8 100%);
+}
+.media-initial {
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 16%);
+    border: 1px solid rgb(255 255 255 / 35%);
+    color: #fff;
+    font-size: 22px;
+    font-weight: 600;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    letter-spacing: 0.5px;
+}
+
+.carousel-nav {
+    position: absolute;
+    top: 50%;
+    transform: translateY(-50%);
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: rgb(0 0 0 / 28%);
+    color: #fff;
+    font-size: 14px;
+    line-height: 1;
+    cursor: pointer;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 2;
+}
+.carousel-nav.prev { left: 8px; }
+.carousel-nav.next { right: 8px; }
+.carousel-nav:hover { background: rgb(0 0 0 / 45%); }
+
+.carousel-dots {
+    position: absolute;
+    bottom: 10px;
+    left: 50%;
+    transform: translateX(-50%);
+    display: flex;
+    align-items: center;
+    gap: 3px;
+    z-index: 2;
+}
+.dot {
+    width: 4px;
+    height: 4px;
+    padding: 0;
+    border: none;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 85%);
+    cursor: pointer;
+}
+.dot.active {
+    width: 7px;
+    height: 7px;
+    background: transparent;
+    border: 1.5px solid var(--jk-navy);
+    box-sizing: border-box;
+}
+
+/* ================= INFO ================= */
+.project-info {
+    padding: 14px 15px 15px;
+    display: flex;
+    flex-direction: column;
+    flex: 1;
+    min-width: 0;
+}
+.project-name {
+    font-size: 15px;
+    font-weight: 600;
+    line-height: 20px;
+    color: var(--jk-text);
+    margin: 0 0 2px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+.project-location {
+    font-size: 11px;
+    line-height: 16px;
+    color: var(--jk-text);
+    margin: 0 0 16px;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    min-height: 16px;
+}
+
+.btn-primary {
+    width: 100%;
+    height: 40px;
+    margin-top: auto;
+    padding: 0 16px;
+    border: none;
+    border-radius: var(--jk-radius-sm);
+    background: var(--jk-navy);
+    color: #fff;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+.btn-primary:hover { background: var(--jk-navy-soft); }
+
+/* ================= STATES ================= */
+.error-msg {
+    padding: 12px 16px;
+    margin-bottom: 20px;
+    border-radius: var(--jk-radius);
+    border: 1px solid #f5c6cb;
+    background: #fdecea;
+    color: var(--jk-badge-cancelled);
+    font-size: 14px;
+}
+.empty-state {
+    padding: 48px 16px;
+    text-align: center;
+    border: 1px dashed var(--jk-border);
+    border-radius: var(--jk-radius-lg);
+    color: var(--jk-text-muted);
+    font-size: 14px;
+}
+
+/* ================= RESPONSIVE ================= */
+@media (max-width: 1024px) {
+    .card-grid { grid-template-columns: repeat(2, minmax(0, 1fr)); }
+}
+@media (max-width: 640px) {
+    .page-title { font-size: 24px; }
+    .page-subtitle { font-size: 14px; line-height: 22px; }
+    .card-grid { grid-template-columns: 1fr; gap: 16px; }
+}
+/* =====================================================================================================================
+   CUSTOMER PORTAL (portal="customer"): Figma p16-p17, measured in the 1280 frame. Only the cpp- classes below; the
+   partner rules above are untouched. The cp- tokens (colours, font, radius, shadow) come from c/customerPortalStyles
+   through the c-customer-portal_-project host (custom properties inherit into this shadow tree).
+   ===================================================================================================================== */
+.cpp-page {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    font-family: var(--cp-font);
+    color: var(--cp-ink);
+}
+
+.cpp-page *,
+.cpp-page *::before,
+.cpp-page *::after {
+    box-sizing: border-box;
+}
+
+/* ---------- Title, intro (as .cp-page-title / .cp-page-intro) ---------- */
+.cpp-title {
+    margin: 0;
+    font-size: 32px;
+    line-height: 40px;
+    font-weight: 600;
+    color: var(--cp-title);
+    overflow-wrap: anywhere;
+}
+
+/* As wide as the page, as in Figma */
+.cpp-intro {
+    margin: 6px 0 0;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    color: var(--cp-ink);
+}
+
+/* ---------- Tabs (as .cp-tabs / .cp-tab): 52px, 6px under the intro, 3px navy line on the active tab ---------- */
+.cpp-tabs {
+    display: flex;
+    align-items: stretch;
+    min-width: 0;
+    margin: 6px 0 0;
+    border-bottom: 1px solid var(--cp-line);
+    overflow-x: auto;
+    scrollbar-width: none;
+}
+
+.cpp-tabs::-webkit-scrollbar {
+    display: none;
+}
+
+.cpp-tab {
+    flex: 0 0 auto;
+    height: 52px;
+    margin: 0 0 -1px;
+    padding: 0 16px;
+    border: 0;
+    border-bottom: 1px solid var(--cp-line);
+    background: none;
+    color: var(--cp-navy-ink);
+    font-family: inherit;
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 500;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.cpp-tab:hover {
+    color: var(--cp-navy);
+}
+
+.cpp-tab_active {
+    border-bottom-color: transparent;
+    box-shadow: inset 0 -3px 0 var(--cp-navy);
+    color: var(--cp-ink);
+}
+
+/* ---------- Content: 24px under the intro, 32px under the tabs ---------- */
+.cpp-content {
+    margin-top: 24px;
+}
+
+.cpp-tabs + .cpp-content {
+    margin-top: 32px;
+}
+
+.cpp-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 1fr));
+    gap: 24px;
+}
+
+/* ---------- Card: 295 x 328 in the frame, radius 8, photo 158px ---------- */
+.cpp-card {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    min-width: 0;
+    border-radius: var(--cp-radius-sm);
+    background: var(--cp-surface);
+    box-shadow: var(--cp-shadow);
+    overflow: hidden;
+}
+
+.cpp-media {
+    position: relative;
+    flex: 0 0 auto;
+    height: 158px;
+    background: #d9d9d9;
+    overflow: hidden;
+}
+
+.cpp-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    pointer-events: none;
+}
+
+.cpp-slide_active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.cpp-photo {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.cpp-placeholder {
+    position: absolute;
+    inset: 0;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+.cpp-initial {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    border-radius: 50%;
+    background: rgba(255, 255, 255, 0.7);
+    color: var(--cp-navy);
+    font-size: 22px;
+    font-weight: 600;
+}
+
+/* Arrows: 20px circles, black 24%, 3px from the sides, 73px from the top of the photo */
+.cpp-arrow {
+    position: absolute;
+    top: 73px;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 20px;
+    height: 20px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.24);
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.cpp-arrow:hover {
+    background: rgba(0, 0, 0, 0.42);
+}
+
+.cpp-arrow svg {
+    display: block;
+    width: 20px;
+    height: 20px;
+}
+
+.cpp-arrow_prev {
+    left: 3px;
+}
+
+.cpp-arrow_next {
+    right: 3px;
+}
+
+/* Dots on the photo: 6px white, the current one 12px navy with a white ring, 5px from the bottom */
+.cpp-dots {
+    position: absolute;
+    right: 0;
+    bottom: 5px;
+    left: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 6px;
+    pointer-events: none;
+}
+
+.cpp-dot {
+    display: block;
+    flex: 0 0 auto;
+    width: 6px;
+    height: 6px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: #ffffff;
+    cursor: pointer;
+    pointer-events: auto;
+}
+
+.cpp-dot_active {
+    width: 12px;
+    height: 12px;
+    border: 1px solid #ffffff;
+    background: var(--cp-navy);
+}
+
+.cpp-arrow:focus-visible,
+.cpp-dot:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 1px;
+}
+
+/* Text: name 16/24, address 12/16, unit types 12/16 with the "Type" label; button 40px at the bottom */
+.cpp-body {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-width: 0;
+    padding: 6px 16px 18px;
+}
+
+.cpp-name {
+    margin: 0;
+    overflow: hidden;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    color: var(--cp-title);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.cpp-address {
+    min-height: 16px;
+    margin: 0 0 17px;
+    overflow: hidden;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 400;
+    color: var(--cp-ink);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.cpp-type {
+    margin: 0;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 500;
+    color: #000000;
+    overflow-wrap: anywhere;
+}
+
+.cpp-type-label {
+    margin: 0 0 18px;
+    font-size: 12px;
+    line-height: 16px;
+    font-weight: 400;
+    color: var(--cp-navy-ink);
+}
+
+.cpp-btn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 40px;
+    margin-top: auto;
+    padding: 0 16px;
+    border: 0;
+    border-radius: var(--cp-radius-sm);
+    background: var(--cp-navy);
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 14px;
+    line-height: 1;
+    font-weight: 500;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.cpp-btn:hover {
+    background: var(--cp-navy-hover);
+}
+
+.cpp-tab:focus-visible,
+.cpp-btn:focus-visible {
+    outline: 2px solid var(--cp-navy);
+    outline-offset: 2px;
+}
+
+/* ---------- States ---------- */
+.cpp-loading {
+    position: relative;
+    min-height: 240px;
+}
+
+.cpp-alert {
+    margin: 0 0 24px;
+    padding: 14px 16px;
+    border: 1px solid #f2b8b5;
+    border-radius: var(--cp-radius-sm);
+    background: #fdeceb;
+    color: #8e1018;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+/* As .cp-empty (Figma p56) */
+.cpp-empty {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 64px 16px;
+    text-align: center;
+}
+
+.cpp-empty-img {
+    display: block;
+    width: 254px;
+    max-width: 100%;
+    height: auto;
+}
+
+.cpp-empty-text {
+    margin: 24px 0 0;
+    font-size: 20px;
+    line-height: 28px;
+    font-weight: 500;
+    color: var(--cp-empty-ink);
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cpp-slide,
+    .cpp-btn {
+        transition: none;
+    }
+}
+
+/* ---------- Phone width (the shell's own breakpoint) ---------- */
+@media (max-width: 768px) {
+    .cpp-title {
+        font-size: 24px;
+        line-height: 32px;
+    }
+
+    .cpp-intro {
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .cpp-content,
+    .cpp-tabs + .cpp-content {
+        margin-top: 20px;
+    }
+
+    .cpp-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 16px;
+    }
+
+    .cpp-media {
+        height: 180px;
+    }
+
+    .cpp-arrow {
+        top: 50%;
+        margin-top: -10px;
+    }
+}

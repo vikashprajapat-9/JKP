@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Contract_Document_Master__c</fullName>
+    <description>Name of the Document Master whose categories every new contract gets as Documents (SharePoint folders inside the account folder), for example Contract. Blank: contracts get no Documents.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Name of the Document Master whose categories every new contract gets as Documents (SharePoint folders inside the account folder), for example Contract. Blank: contracts get no Documents.</inlineHelpText>
+    <label>Contract Document Master</label>
+    <length>80</length>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

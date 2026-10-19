@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomMetadata xmlns="http://soap.sforce.com/2006/04/metadata" xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance" xmlns:xsd="http://www.w3.org/2001/XMLSchema">
+    <label>Kitchen_Joinery &amp; Carpentry</label>
+    <protected>false</protected>
+    <values>
+        <field>Location_Category_Combination__c</field>
+        <value xsi:type="xsd:string">Kitchen-Joinery &amp; Carpentry</value>
+    </values>
+    <values>
+        <field>Sub_category__c</field>
+        <value xsi:type="xsd:string">Pantry Cabinet TOP,Pantry Cabinet BOTTOM,Shelving,Drawer Mechanism,Hinges   &amp; Accessories</value>
+    </values>
+</CustomMetadata>

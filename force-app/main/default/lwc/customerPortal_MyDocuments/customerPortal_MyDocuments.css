@@ -1,0 +1,478 @@
+@import 'c/customerPortalStyles';
+
+/* My Documents, measured from the Figma: p49 (project cards), p50-52 (category tabs + document rows),
+   p65 (viewer bar and page) and p55 (an image document on its page). 1 Figma px = 1 CSS px. */
+
+/* The head sits flush; each view sets its own distance to the intro as in Figma */
+.docs-head.cp-page-head {
+    margin-bottom: 0;
+}
+
+/* ============================ PROJECT CARDS (p49) ============================ */
+.docs-list {
+    margin-top: 34px;
+}
+
+/* 308 x 253 cards (1px #ebeaea ring on the edge), 16px apart: two per row in the 936px frame as in Figma */
+.docs-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 308px));
+    gap: 24px 16px;
+}
+
+.docs-card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 0;
+    overflow: hidden;
+}
+
+.docs-card__media {
+    position: relative;
+    height: 119px;
+    background: #d9d9d9;
+    overflow: hidden;
+}
+
+.docs-card__img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.docs-arrow {
+    top: calc(50% + 3px);
+}
+
+.docs-arrow.cp-carousel-arrow_prev {
+    left: 8px;
+}
+
+.docs-arrow.cp-carousel-arrow_next {
+    right: 8px;
+}
+
+.docs-arrow svg {
+    width: 6.4px;
+    height: 10.8px;
+}
+
+/* p49 dots: 4px white, the current one 8px navy in a 1px white ring */
+.docs-dots {
+    bottom: 9px;
+    gap: 4px;
+}
+
+.docs-dots .cp-dot {
+    width: 4px;
+    height: 4px;
+}
+
+.docs-dots .cp-dot_active {
+    width: 10px;
+    height: 10px;
+    border: 1px solid #ffffff;
+    background: var(--cp-navy);
+}
+
+.docs-card__body {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-width: 0;
+    padding: 10px 15px 23px;
+}
+
+/* p49 draws the address line heavier than the shared 12px detail text */
+.docs-card__subtitle {
+    margin-top: 1px;
+    font-weight: 500;
+}
+
+.docs-card__btn {
+    margin-top: 18px;
+}
+
+/* ======================== CATEGORY TABS + ROWS (p50-52) ======================== */
+.docs-detail {
+    margin-top: 6px;
+}
+
+/* 52px tabs on a 2px #ebeaea line; the active tab has the 3px navy bar */
+.docs-tabbar {
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: 16px;
+    min-width: 0;
+    padding-bottom: 1px;
+    box-shadow: inset 0 -2px 0 var(--cp-line);
+}
+
+.docs-tabs.cp-tabs {
+    --cp-tab-accent: #0e1344;
+    flex: 1 1 auto;
+    border-bottom: 0;
+}
+
+.docs-tabs .cp-tab {
+    margin: 0;
+    border-bottom: 0;
+}
+
+.docs-back {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 8px;
+    padding: 0 4px;
+    border: 0;
+    background: none;
+    color: var(--cp-navy-ink);
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 500;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.docs-back svg {
+    width: 18px;
+    height: 14px;
+    fill: currentColor;
+}
+
+.docs-back:hover span {
+    text-decoration: underline;
+}
+
+.docs-back:focus-visible {
+    outline: 2px solid var(--cp-navy);
+    outline-offset: -2px;
+}
+
+.docs-tabpanel {
+    margin-top: 31px;
+}
+
+/* One grey panel per category: 48px rows, names 40px in, buttons 28px from the right */
+.docs-panel {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    margin: 0;
+    padding: 16px 28px 16px 40px;
+    border-radius: var(--cp-radius-sm);
+    background: #f4f4f4;
+    list-style: none;
+}
+
+.docs-row {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    min-height: 32px;
+}
+
+/* Figma sets the names 2px above the buttons' centre */
+.docs-row__name {
+    position: relative;
+    top: -2px;
+    min-width: 0;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    color: var(--cp-ink);
+    overflow-wrap: anywhere;
+}
+
+.docs-row__actions {
+    display: flex;
+    flex: 0 0 auto;
+    gap: 16px;
+}
+
+.docs-action {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 0;
+    border-radius: 4px;
+    background: var(--cp-navy);
+    color: #ffffff;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.docs-action:hover {
+    background: var(--cp-navy-hover);
+}
+
+.docs-action:focus-visible {
+    outline: 2px solid var(--cp-navy);
+    outline-offset: 2px;
+}
+
+.docs-action svg {
+    fill: currentColor;
+}
+
+.docs-action__eye {
+    width: 21.4px;
+    height: 14.4px;
+}
+
+.docs-action__download {
+    width: 19.4px;
+    height: 19.4px;
+}
+
+.docs-empty {
+    padding: 48px 16px;
+}
+
+/* ================================ ERROR STATE ================================ */
+.docs-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 12px;
+    min-height: 200px;
+    padding: 60px 24px;
+    text-align: center;
+}
+
+.docs-state__text {
+    max-width: 420px;
+    margin: 0;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--cp-muted);
+}
+
+/* ============================ VIEWER (p65 / p55) ============================ */
+.docs-viewer {
+    position: fixed;
+    inset: 0;
+    z-index: 9000;
+    display: flex;
+    flex-direction: column;
+    background: #212121;
+    color: #ffffff;
+}
+
+.docs-viewer__bar {
+    display: grid;
+    flex: 0 0 auto;
+    grid-template-columns: minmax(0, 1fr) minmax(0, auto) minmax(0, 1fr);
+    align-items: center;
+    gap: 24px;
+    height: 80px;
+    padding: 0 53px 0 60px;
+    background: #3e3e3c;
+}
+
+.docs-viewer__back {
+    display: inline-flex;
+    justify-self: start;
+    align-items: center;
+    gap: 20px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: #ffffff;
+    font-size: 20px;
+    line-height: 28px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.docs-viewer__back svg {
+    flex: 0 0 auto;
+    width: 23.9px;
+    height: 18.6px;
+    fill: currentColor;
+}
+
+.docs-viewer__name {
+    min-width: 0;
+    margin: 0;
+    font-size: 20px;
+    line-height: 28px;
+    font-weight: 500;
+    text-align: center;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+}
+
+.docs-viewer__tools {
+    display: flex;
+    justify-self: end;
+    align-items: center;
+    gap: 22px;
+}
+
+.docs-viewer__tool {
+    display: inline-flex;
+    flex: 0 0 auto;
+    width: 26.5px;
+    height: 26.5px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: #e7e7e7;
+    cursor: pointer;
+}
+
+.docs-viewer__tool svg {
+    width: 100%;
+    height: 100%;
+    fill: currentColor;
+}
+
+.docs-viewer__tool[disabled] {
+    opacity: 0.4;
+    cursor: default;
+}
+
+.docs-viewer__back:focus-visible,
+.docs-viewer__tool:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 4px;
+}
+
+/* sits where Figma shows the page count: a fixed 42px box (wider text spills to the left) keeps the
+   zoom icons at the Figma positions */
+.docs-viewer__zoom {
+    display: inline-flex;
+    flex: 0 0 42px;
+    justify-content: flex-end;
+    width: 42px;
+    white-space: nowrap;
+    font-size: 20px;
+    line-height: 28px;
+    font-weight: 500;
+    text-align: right;
+}
+
+/* The page: 418px wide at 100% (zoom steps its width), full height under the bar */
+.docs-viewer__body {
+    flex: 1 1 auto;
+    min-height: 0;
+    overflow: auto;
+    overscroll-behavior: contain;
+}
+
+.docs-viewer__page {
+    width: var(--docs-page-width, 418px);
+    height: 100%;
+    margin: 0 auto;
+    background: #ffffff;
+}
+
+.docs-viewer__page_image {
+    height: auto;
+}
+
+.docs-viewer__frame {
+    display: block;
+    width: 100%;
+    height: 100%;
+    border: 0;
+    background: #ffffff;
+}
+
+.docs-viewer__image {
+    display: block;
+    width: 100%;
+    height: auto;
+}
+
+/* ================================ SMALLER SCREENS ================================ */
+@media (max-width: 768px) {
+    .docs-list {
+        margin-top: 20px;
+    }
+
+    .docs-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 16px;
+    }
+
+    .docs-card__media {
+        height: auto;
+        aspect-ratio: 308 / 120;
+    }
+
+    .docs-detail {
+        margin-top: 12px;
+    }
+
+    .docs-tabpanel {
+        margin-top: 20px;
+    }
+
+    .docs-panel {
+        gap: 12px;
+        padding: 12px 12px 12px 16px;
+    }
+
+    .docs-row__actions {
+        gap: 12px;
+    }
+
+    .docs-viewer__bar {
+        gap: 12px;
+        height: 56px;
+        padding: 0 12px;
+    }
+
+    .docs-viewer__back,
+    .docs-viewer__name,
+    .docs-viewer__zoom {
+        font-size: 16px;
+        line-height: 24px;
+    }
+
+    .docs-viewer__back {
+        gap: 10px;
+    }
+
+    .docs-viewer__back svg {
+        width: 20px;
+        height: 16px;
+    }
+
+    .docs-viewer__tools {
+        gap: 14px;
+    }
+
+    .docs-viewer__tool {
+        width: 24px;
+        height: 24px;
+    }
+
+    .docs-viewer__zoom {
+        flex-basis: 40px;
+        width: 40px;
+    }
+}
+
+@media (max-width: 480px) {
+    .docs-back span,
+    .docs-viewer__back span {
+        display: none;
+    }
+
+    .docs-back {
+        padding: 0 8px;
+    }
+}

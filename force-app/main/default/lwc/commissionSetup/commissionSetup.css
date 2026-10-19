@@ -1,0 +1,44 @@
+@import 'c/commissionStyles';
+
+.shell { position: relative; }
+
+/* Header: the title block, the view switch and the button share one line and wrap on a narrow page */
+.pagehead { flex-wrap: wrap; }
+.headside { flex: none; min-width: 165px; display: flex; justify-content: flex-end; }
+
+/* The view switch and the buttons are real buttons */
+button { font-family: inherit; cursor: pointer; }
+button:focus-visible { outline: 2px solid var(--sky); outline-offset: 2px; }
+button.tab { border: 0; background: transparent; line-height: 1.4; }
+button.tab:not(.active):hover { color: var(--navy); background: var(--row-alt); }
+button.link { border: 0; background: transparent; padding: 0; }
+button.link:hover { text-decoration: underline; }
+.btn.primary:hover { filter: brightness(1.08); }
+.btn:not(.primary):hover { background: var(--row-alt); }
+
+/* Loading, error and no-access states */
+.state { position: relative; min-height: 10rem; }
+.stateaction { margin-top: 10px; }
+.note.red { background: var(--red-bg); border-color: var(--red-line); color: var(--red); }
+.actionerror { align-items: center; margin-bottom: 12px; }
+/* Around the review there is no panel of ours: keep the message in line with the review's own panel */
+.shell:not(.screen) .actionerror { margin: 0 1rem 12px; }
+/* The spinner covers the page while the server prepares a draft */
+.busy { position: fixed; top: 0; right: 0; bottom: 0; left: 0; z-index: 100; }
+
+/* Approvals list */
+.approvals { padding: 13px 12px; }
+.approvals .sectitle { padding-left: 2px; }
+.tablewrap { overflow-x: auto; }
+table.grid { min-width: 820px; font-size: 13px; }
+table.grid th, table.grid td { padding-left: 6px; padding-right: 6px; }
+table.grid td { height: 55px; line-height: 1.35; }
+table.grid th:first-child, table.grid td:first-child { padding-left: 2px; }
+table.grid th:last-child, table.grid td:last-child { padding-right: 0; }
+table.grid td.project { font-size: 13.5px; font-weight: 700; color: var(--navy); }
+table.grid .action { width: 96px; }
+table.grid .btn { display: flex; width: 100%; padding: 0 4px; }
+.empty { display: flex; align-items: center; justify-content: center; gap: 10px; min-height: 96px; padding: 12px; text-align: center; }
+
+/* Text for screen readers only */
+.assistive { position: absolute; width: 1px; height: 1px; margin: -1px; padding: 0; border: 0; overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap; }

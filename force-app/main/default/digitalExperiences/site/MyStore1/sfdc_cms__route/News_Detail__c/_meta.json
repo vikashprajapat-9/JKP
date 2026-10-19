@@ -1,0 +1,6 @@
+{
+  "apiName" : "News_Detail__c",
+  "type" : "sfdc_cms__route",
+  "path" : "routes",
+  "contentKey" : "MCG3AM6TMRWJGANM7FBORMKN3X3A"
+}

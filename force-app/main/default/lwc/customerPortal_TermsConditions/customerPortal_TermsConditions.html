@@ -1,0 +1,30 @@
+<template>
+    <!-- Figma p92 "Terms & Conditions": brand title + intro text from getTermsConditionsData -->
+    <div class="cp-page info-page">
+        <template lwc:if={isLoading}>
+            <div class="cp-loading">
+                <lightning-spinner alternative-text={loadingText} size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template lwc:elseif={hasError}>
+            <div class="cp-alert cp-alert_error" role="alert">{errorText}</div>
+        </template>
+
+        <template lwc:elseif={showContent}>
+            <div class="cp-page-head">
+                <div class="cp-page-head__text">
+                    <h1 class="cp-page-title cp-page-title_brand">{pageTitle}</h1>
+                </div>
+            </div>
+
+            <!-- The content itself, kept on the Portal Info record of Type "Customer" -->
+            <template lwc:if={hasBody}>
+                <c-portal-rich-text class="info-page__body info-page__body_first" value={pageBody}></c-portal-rich-text>
+            </template>
+            <template lwc:else>
+                <p class="cp-page-intro info-page__text">{emptyText}</p>
+            </template>
+        </template>
+    </div>
+</template>

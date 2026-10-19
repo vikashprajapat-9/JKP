@@ -1,0 +1,285 @@
+<template>
+    <div class="form-wrapper">
+
+        <!-- =================== SUCCESS / REVIEW VIEW =================== -->
+        <template lwc:if={isSubmitted}>
+            <div class="success-card">
+                <div class="success-icon-wrap">
+                    <lightning-icon icon-name="action:approval" size="medium" alternative-text="Success"></lightning-icon>
+                </div>
+                <h2 class="success-title">Thank you for registering!</h2>
+                <p class="success-message">
+                    Your application has been received and is currently under review. Our team will verify your details and get in touch with you shortly.
+                </p>
+                <template lwc:if={submittedAccountId}>
+                    <div class="ref-badge">
+                        <span>Application Reference ID: <strong>{submittedAccountId}</strong></span>
+                    </div>
+                </template>
+                <button class="secondary-btn" type="button" onclick={handleRegisterAnother}>
+                    Submit Another Application
+                </button>
+            </div>
+        </template>
+
+        <!-- =================== REGISTRATION FORM =================== -->
+        <template lwc:else>
+
+            <!-- VISIBLE ERROR BANNER (Works on Experience Cloud / Portals) -->
+            <template lwc:if={hasErrorMessage}>
+                <div class="alert-banner">
+                    <lightning-icon icon-name="utility:error" size="x-small" variant="inverse" class="alert-icon"></lightning-icon>
+                    <span class="alert-text">{errorMessage}</span>
+                    <button type="button" class="alert-close" onclick={handleDismissError}>&times;</button>
+                </div>
+            </template>
+
+            <!-- REGISTRATION TYPE SELECTION -->
+            <div class="field">
+                <label class="field-title">Channel Partner Registration Type</label>
+                <div class="type-toggle-group">
+                    <button type="button"
+                            class={companyTabClass}
+                            data-type="Company"
+                            onclick={handleTypeSelect}>
+                        Company
+                    </button>
+                    <button type="button"
+                            class={individualTabClass}
+                            data-type="Individual"
+                            onclick={handleTypeSelect}>
+                        Individual
+                    </button>
+                </div>
+            </div>
+
+            <!-- ================= COMPANY FIELDS ================= -->
+            <template lwc:if={isCompany}>
+                <!-- BUSINESS NAME -->
+                <div class="field">
+                    <label for="businessName">Business Name <span class="required">*</span></label>
+                    <input id="businessName"
+                           type="text"
+                           placeholder="Enter Business Name"
+                           data-field="businessName"
+                           value={form.businessName}
+                           oninput={handleChange}
+                           onchange={handleChange} />
+                    <template lwc:if={errors.businessName}>
+                        <span class="error-msg-text">{errors.businessName}</span>
+                    </template>
+                </div>
+
+                <!-- TIN -->
+                <div class="field">
+                    <label for="tinCompany">TIN (Tax Identification Number)</label>
+                    <input id="tinCompany"
+                           type="text"
+                           placeholder="Enter TIN"
+                           data-field="tin"
+                           value={form.tin}
+                           oninput={handleChange}
+                           onchange={handleChange} />
+                </div>
+
+                <!-- VAT NUMBER -->
+                <div class="field">
+                    <label for="vat">VAT Number</label>
+                    <input id="vat"
+                           type="text"
+                           placeholder="Enter VAT Number"
+                           data-field="vatNumber"
+                           value={form.vatNumber}
+                           oninput={handleChange}
+                           onchange={handleChange} />
+                </div>
+            </template>
+
+            <!-- ================= INDIVIDUAL FIELDS ================= -->
+            <template lwc:if={isIndividual}>
+                <!-- NAME AS PER NIC -->
+                <div class="field">
+                    <label for="nameAsPerNic">Name as per NIC <span class="required">*</span></label>
+                    <input id="nameAsPerNic"
+                           type="text"
+                           placeholder="Enter Name"
+                           data-field="nameAsPerNic"
+                           value={form.nameAsPerNic}
+                           oninput={handleChange}
+                           onchange={handleChange} />
+                    <template lwc:if={errors.nameAsPerNic}>
+                        <span class="error-msg-text">{errors.nameAsPerNic}</span>
+                    </template>
+                </div>
+
+                <!-- EMAIL (Individual) -->
+                <div class="field">
+                    <label for="emailInd">Email address <span class="required">*</span></label>
+                    <input id="emailInd"
+                           type="email"
+                           placeholder="Enter Email ID"
+                           data-field="email"
+                           value={form.email}
+                           oninput={handleChange}
+                           onchange={handleChange} />
+                    <template lwc:if={errors.email}>
+                        <span class="error-msg-text">{errors.email}</span>
+                    </template>
+                </div>
+
+                <!-- PHONE NUMBER (Individual) -->
+                <div class="field">
+                    <label for="phoneInd">Phone Number <span class="required">*</span></label>
+                    <input id="phoneInd"
+                           type="tel"
+                           placeholder="Enter Phone Number"
+                           data-field="phone"
+                           value={form.phone}
+                           oninput={handleChange}
+                           onchange={handleChange} />
+                    <template lwc:if={errors.phone}>
+                        <span class="error-msg-text">{errors.phone}</span>
+                    </template>
+                </div>
+
+                <!-- HOME ADDRESS -->
+                <div class="field">
+                    <label for="homeAddress">Home Address</label>
+                    <input id="homeAddress"
+                           type="text"
+                           placeholder="Enter Address"
+                           data-field="homeAddress"
+                           value={form.homeAddress}
+                           oninput={handleChange}
+                           onchange={handleChange} />
+                </div>
+
+                <!-- NIC NUMBER -->
+                <div class="field">
+                    <label for="nicNumber">National Identity Card (NIC) number</label>
+                    <input id="nicNumber"
+                           type="text"
+                           placeholder="Enter National Identity Card (NIC)"
+                           data-field="nicNumber"
+                           value={form.nicNumber}
+                           oninput={handleChange}
+                           onchange={handleChange} />
+                </div>
+
+                <!-- TIN (Tax Identification Number) -->
+                <div class="field">
+                    <label for="tinInd">TIN (Tax Identification Number)</label>
+                    <input id="tinInd"
+                           type="text"
+                           placeholder="Enter TIN (Tax Identification Number)"
+                           data-field="tin"
+                           value={form.tin}
+                           oninput={handleChange}
+                           onchange={handleChange} />
+                </div>
+
+                <!-- PASSPORT -->
+                <div class="field">
+                    <label for="passport">Passport</label>
+                    <input id="passport"
+                           type="text"
+                           placeholder="Enter Passport"
+                           data-field="passport"
+                           value={form.passport}
+                           oninput={handleChange}
+                           onchange={handleChange} />
+                </div>
+            </template>
+
+            <!-- ================= COMMON FIELDS FOR COMPANY ================= -->
+            <template lwc:if={isCompany}>
+                <!-- EMAIL -->
+                <div class="field">
+                    <label for="emailCompany">Email <span class="required">*</span></label>
+                    <input id="emailCompany"
+                           type="email"
+                           placeholder="Enter Email"
+                           data-field="email"
+                           value={form.email}
+                           oninput={handleChange}
+                           onchange={handleChange} />
+                    <template lwc:if={errors.email}>
+                        <span class="error-msg-text">{errors.email}</span>
+                    </template>
+                </div>
+
+                <!-- PHONE -->
+                <div class="field">
+                    <label for="phoneCompany">Phone Number <span class="required">*</span></label>
+                    <input id="phoneCompany"
+                           type="tel"
+                           placeholder="Enter Phone Number"
+                           data-field="phone"
+                           value={form.phone}
+                           oninput={handleChange}
+                           onchange={handleChange} />
+                    <template lwc:if={errors.phone}>
+                        <span class="error-msg-text">{errors.phone}</span>
+                    </template>
+                </div>
+            </template>
+
+            <!-- PROJECT (COMMON) -->
+            <div class="field">
+                <label for="project">Interested Project</label>
+                <select id="project"
+                        data-field="projectId"
+                        value={form.projectId}
+                        onchange={handleChange}>
+                    <option value="">Select Project</option>
+                    <template for:each={projectOptions} for:item="opt">
+                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                    </template>
+                </select>
+            </div>
+
+            <!-- FILE UPLOAD -->
+            <div class="field">
+                <label>Upload Document</label>
+                <p class="hint">{uploadHintText}</p>
+
+                <template lwc:if={showFileChip}>
+                    <div class="file-chip">
+                        <lightning-icon icon-name="doctype:pdf" size="small"></lightning-icon>
+                        <span class="file-name">{fileName}</span>
+                        <button class="chip-action" type="button" onclick={handleRemoveFile}>
+                            <lightning-icon icon-name="utility:delete" size="xx-small"></lightning-icon>
+                        </button>
+                    </div>
+                </template>
+                <template lwc:else>
+                    <label class="dropzone">
+                        <input type="file" accept="application/pdf" onchange={handleFileChange} hidden />
+                        <lightning-icon icon-name="utility:upload" size="medium"></lightning-icon>
+                        <span class="dropzone-title">Upload a file or drag and drop</span>
+                        <span class="dropzone-hint">{uploadDropzoneSubtext}</span>
+                    </label>
+                </template>
+            </div>
+
+            <!-- TERMS -->
+            <label class="agree-row">
+                <input type="checkbox" checked={agreedToTerms} onchange={handleTermsChange} />
+                <span>
+                    By registering, I agree to
+                    <a href="javascript:void(0);">Terms of Service</a> &amp;
+                    <a href="javascript:void(0);">Privacy Policy</a>
+                </span>
+            </label>
+
+            <!-- SUBMIT BUTTON -->
+            <button class="primary-btn"
+                    type="button"
+                    onclick={handleSubmit}
+                    disabled={isSubmitDisabled}>
+                {submitLabel}
+            </button>
+
+        </template>
+    </div>
+</template>

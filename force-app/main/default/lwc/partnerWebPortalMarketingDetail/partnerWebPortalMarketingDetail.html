@@ -1,0 +1,100 @@
+<template>
+    <!-- ================= HEADER ================= -->
+    <div class="detail-header">
+        <button class="back-btn" type="button" onclick={handleBack} aria-label="Back to marketing">
+            <svg viewBox="0 0 24 24" width="30" height="30" aria-hidden="true">
+                <path d="M20 12H4M10 6l-6 6 6 6" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"></path>
+            </svg>
+        </button>
+        <h1 class="detail-title">{project.name}</h1>
+    </div>
+
+    <!-- ================= STATES ================= -->
+    <template lwc:if={isLoading}>
+        <div class="resource-grid">
+            <div class="resource-card skeleton-card"><div class="skeleton-thumb"></div><div class="card-body"><div class="skeleton-line"></div></div></div>
+            <div class="resource-card skeleton-card"><div class="skeleton-thumb"></div><div class="card-body"><div class="skeleton-line"></div></div></div>
+            <div class="resource-card skeleton-card"><div class="skeleton-thumb"></div><div class="card-body"><div class="skeleton-line"></div></div></div>
+        </div>
+    </template>
+
+    <template lwc:if={error}>
+        <p class="error-state">{error}</p>
+    </template>
+
+    <template lwc:if={showEmpty}>
+        <p class="empty-state">No marketing material has been uploaded to this project's Marketing folder yet.</p>
+    </template>
+
+    <!-- ================= RESOURCE CARDS ================= -->
+    <template lwc:if={hasResources}>
+        <div class="resource-grid">
+            <template for:each={resources} for:item="res">
+                <article key={res.id}
+                         class="resource-card"
+                         data-id={res.id}
+                         role="button"
+                         tabindex="0"
+                         aria-label={res.viewLabel}
+                         onclick={handleView}
+                         onkeydown={handleCardKey}>
+                    <div class={res.theme}>
+                        <template lwc:if={res.showImageThumb}>
+                            <img class="thumb-media" src={res.mediaUrl} alt={res.title} loading="lazy" />
+                        </template>
+                        <template lwc:if={res.showVideoThumb}>
+                            <video class="thumb-media" src={res.mediaUrl} preload="metadata" muted playsinline></video>
+                        </template>
+                        <template lwc:if={res.showArtwork}>
+                            <svg class="thumb-house" viewBox="0 0 200 120" aria-hidden="true">
+                                <path d="M40 110V62l40-30 40 30v48z" fill="#8b2f2f"></path>
+                                <path d="M30 66l50-38 50 38" fill="none" stroke="#35506f" stroke-width="10" stroke-linejoin="round"></path>
+                                <rect x="58" y="74" width="16" height="16" fill="#e9edf3"></rect>
+                                <rect x="86" y="74" width="16" height="16" fill="#e9edf3"></rect>
+                                <rect x="72" y="92" width="16" height="18" fill="#e9edf3"></rect>
+                                <path d="M130 110V80l30-20 30 20v30z" fill="#b6c2d1" opacity="0.7"></path>
+                            </svg>
+                        </template>
+
+                        <template lwc:if={res.isVideo}>
+                            <span class="play-badge" aria-hidden="true">
+                                <svg class="play-icon" viewBox="0 0 24 24" width="26" height="26">
+                                    <path d="M9 6.5v11a1 1 0 0 0 1.5.86l9-5.5a1 1 0 0 0 0-1.72l-9-5.5A1 1 0 0 0 9 6.5z" fill="#ffffff"></path>
+                                </svg>
+                            </span>
+                            <span class="video-chip" aria-hidden="true">
+                                <svg viewBox="0 0 24 24" width="12" height="12">
+                                    <path d="M4 6h11a1 1 0 0 1 1 1v10a1 1 0 0 1-1 1H4a1 1 0 0 1-1-1V7a1 1 0 0 1 1-1zm13 4.5 4-2.5v8l-4-2.5z" fill="currentColor"></path>
+                                </svg>
+                                VIDEO
+                            </span>
+                        </template>
+                        <template lwc:if={res.showFileBadge}>
+                            <span class="pdf-badge" aria-hidden="true">
+                                <span class="pdf-tag">{res.badgeLabel}</span>
+                                <svg class="pdf-arrow" viewBox="0 0 24 24" width="22" height="22">
+                                    <path d="M12 5v11M7 11l5 5 5-5" fill="none" stroke="#6aa12a" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                                </svg>
+                            </span>
+                        </template>
+                    </div>
+
+                    <div class="card-body">
+                        <h2 class="card-title" title={res.title}>{res.title}</h2>
+                        <span class="view-btn" aria-hidden="true" title="View">
+                            <svg viewBox="0 0 24 24" width="22" height="22">
+                                <path d="M2 12s3.6-7 10-7 10 7 10 7-3.6 7-10 7S2 12 2 12z" fill="none" stroke="currentColor" stroke-width="1.8" stroke-linejoin="round"></path>
+                                <circle cx="12" cy="12" r="3" fill="none" stroke="currentColor" stroke-width="1.8"></circle>
+                            </svg>
+                        </span>
+                    </div>
+                </article>
+            </template>
+        </div>
+    </template>
+
+    <!-- ================= VIEWER ================= -->
+    <template lwc:if={isViewerOpen}>
+        <c-partner-web-portal-file-viewer file={openResource} onclose={handleCloseViewer}></c-partner-web-portal-file-viewer>
+    </template>
+</template>

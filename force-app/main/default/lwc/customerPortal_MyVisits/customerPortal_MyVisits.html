@@ -1,0 +1,510 @@
+<template>
+    <div class="cp-page visits">
+
+        <template lwc:if={isLoading}>
+            <div class="cp-loading visit-loading" role="status">
+                <span class="visit-spinner" aria-hidden="true"></span>
+                <p class="cp-text-sm cp-muted">{labels.loading}</p>
+            </div>
+        </template>
+
+        <template lwc:if={hasError}>
+            <div class="cp-alert cp-alert_error visit-error" role="alert">
+                <p class="visit-error__text">{labels.loadError}</p>
+                <button type="button" class="cp-btn cp-btn_sm" onclick={handleRetry}>{labels.retry}</button>
+            </div>
+        </template>
+
+        <template lwc:if={showContent}>
+            <!-- Figma p29-31: title + Schedule Visit on one row, intro full width under it -->
+            <div class="cp-page-head visit-head">
+                <div class="cp-page-head__text">
+                    <div class="visit-head__top">
+                        <h1 class="cp-page-title">{pageTitle}</h1>
+                        <template lwc:if={showScheduleButton}>
+                            <div class="cp-page-actions visit-head__actions">
+                                <button type="button" class="cp-btn" onclick={handleOpenScheduleModal}>{labels.scheduleVisit}</button>
+                            </div>
+                        </template>
+                    </div>
+                    <p class="cp-page-intro visit-head__intro">{pageDescription}</p>
+                </div>
+            </div>
+
+            <div class="cp-page-body">
+                <div class="cp-tabs visit-tabs" role="tablist" aria-label={labels.tabsLabel}>
+                    <template for:each={tabs} for:item="tab">
+                        <button
+                            key={tab.value}
+                            type="button"
+                            role="tab"
+                            class={tab.className}
+                            aria-selected={tab.ariaSelected}
+                            tabindex={tab.tabIndex}
+                            data-tab={tab.value}
+                            onclick={handleTabClick}
+                            onkeydown={handleTabKeydown}
+                        >{tab.label}</button>
+                    </template>
+                </div>
+
+                <div class="visit-panel" role="tabpanel">
+                    <template lwc:if={hasVisibleVisits}>
+                        <div class="cp-grid visit-grid">
+                            <template for:each={visibleVisits} for:item="visit">
+                                <article class="cp-card cp-card_media visit-card" key={visit.id}>
+                                    <div class="cp-card__media visit-card__media">
+                                        <template lwc:if={visit.hasPhoto}>
+                                            <img
+                                                class="visit-card__photo"
+                                                src={visit.activeImageUrl}
+                                                alt={visit.projectName}
+                                                data-url={visit.activeImageUrl}
+                                                onerror={handleImageError}
+                                            />
+                                        </template>
+                                        <template lwc:if={visit.showArrows}>
+                                            <button
+                                                type="button"
+                                                class="visit-card__arrow visit-card__arrow_prev"
+                                                data-visit-id={visit.id}
+                                                data-list={visit.list}
+                                                onclick={handlePrevImage}
+                                                aria-label={labels.previousImage}
+                                                title={labels.previousImage}
+                                            >
+                                                <svg viewBox="0 0 6 10.4" aria-hidden="true"><path d="M5.2 0.83L0.83 5.2L5.2 9.57"></path></svg>
+                                            </button>
+                                            <button
+                                                type="button"
+                                                class="visit-card__arrow visit-card__arrow_next"
+                                                data-visit-id={visit.id}
+                                                data-list={visit.list}
+                                                onclick={handleNextImage}
+                                                aria-label={labels.nextImage}
+                                                title={labels.nextImage}
+                                            >
+                                                <svg viewBox="0 0 6 10.4" aria-hidden="true"><path d="M0.83 0.83L5.2 5.2L0.83 9.57"></path></svg>
+                                            </button>
+                                        </template>
+                                        <template lwc:if={visit.showDots}>
+                                            <div class="cp-dots cp-dots_on-image visit-card__dots">
+                                                <template for:each={visit.images} for:item="image">
+                                                    <button
+                                                        key={image.key}
+                                                        type="button"
+                                                        class={image.dotClass}
+                                                        data-visit-id={visit.id}
+                                                        data-list={visit.list}
+                                                        data-index={image.index}
+                                                        aria-label={image.ariaLabel}
+                                                        aria-current={image.ariaCurrent}
+                                                        onclick={handleDotClick}
+                                                    ></button>
+                                                </template>
+                                            </div>
+                                        </template>
+                                    </div>
+
+                                    <div class="cp-card__body visit-card__body">
+                                        <h2 class="cp-card__title visit-card__title">{visit.projectName}</h2>
+                                        <p class="cp-card__subtitle visit-card__address" title={visit.address}>{visit.address}</p>
+
+                                        <dl class="visit-facts">
+                                            <template for:each={visit.facts} for:item="fact">
+                                                <div class="visit-fact" key={fact.key}>
+                                                    <dt class="visit-fact__label">{fact.label}</dt>
+                                                    <dd class="visit-fact__value">{fact.value}</dd>
+                                                </div>
+                                            </template>
+                                        </dl>
+
+                                        <template lwc:if={isUpcomingTab}>
+                                            <div class="cp-card__footer visit-card__actions">
+                                                <button type="button" class="cp-btn cp-btn_secondary" data-visit-id={visit.id} onclick={handleOpenCancelModal}>{labels.cancelVisit}</button>
+                                                <button type="button" class="cp-btn" data-visit-id={visit.id} onclick={handleOpenRescheduleModal}>{labels.reschedule}</button>
+                                            </div>
+                                        </template>
+                                        <template lwc:if={isCompletedTab}>
+                                            <div class="cp-card__footer visit-card__actions">
+                                                <button type="button" class="cp-btn cp-btn_secondary" data-visit-id={visit.id} onclick={handleOpenFeedbackModal}>{labels.giveFeedback}</button>
+                                                <button type="button" class="cp-btn" data-visit-id={visit.id} onclick={handleOpenFollowUpModal}>{labels.followUpVisit}</button>
+                                            </div>
+                                        </template>
+                                    </div>
+                                </article>
+                            </template>
+                        </div>
+                    </template>
+                    <template lwc:else>
+                        <div class="cp-empty">
+                            <img class="cp-empty__img" src={emptyImageUrl} alt="" />
+                            <p class="cp-empty__text">{emptyText}</p>
+                        </div>
+                    </template>
+                </div>
+            </div>
+        </template>
+
+        <!-- ===================== Schedule a Visit (Figma p35, p36) ===================== -->
+        <template lwc:if={isScheduleModalOpen}>
+            <div class="cp-modal-overlay" role="presentation" onclick={handleOverlayClick} onkeydown={handleModalKeydown}>
+                <section class="cp-modal cp-modal_lg visit-modal" role="dialog" aria-modal="true" aria-labelledby="schedule-title" tabindex="-1" onclick={stopPropagation}>
+                    <button type="button" class="cp-close cp-modal__close" onclick={handleCloseModals} aria-label={labels.close} title={labels.close}>
+                        <svg viewBox="0 0 14 14" aria-hidden="true"><path d={icons.close}></path></svg>
+                    </button>
+                    <h2 class="cp-modal__title visit-modal__title" id="schedule-title">{labels.scheduleTitle}</h2>
+                    <p class="cp-modal__text visit-modal__text">{labels.scheduleText}</p>
+
+                    <div class="cp-modal__body visit-modal__body visit-form">
+                        <div class="cp-field">
+                            <label class="cp-label visit-label" for="schedule-project">{labels.selectProperty}</label>
+                            <div class="cp-select-wrap">
+                                <select id="schedule-project" class={selectClasses.scheduleProject} onchange={handleScheduleFieldChange} data-field="project">
+                                    <option value="">{labels.selectProperty}</option>
+                                    <template for:each={scheduleProjectOptions} for:item="opt">
+                                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                    </template>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="cp-field">
+                            <label class="cp-label visit-label" for="schedule-unit">{labels.selectUnit}</label>
+                            <div class="cp-select-wrap">
+                                <select id="schedule-unit" class={selectClasses.scheduleUnit} onchange={handleScheduleFieldChange} data-field="unit">
+                                    <option value="">{labels.selectUnit}</option>
+                                    <template for:each={scheduleUnitOptions} for:item="opt">
+                                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                    </template>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="cp-field">
+                            <label class="cp-label visit-label" for="schedule-date">{labels.dateOfVisit}</label>
+                            <div class={pickers.scheduleDate.className}>
+                                <input type="date" id="schedule-date" class="cp-input visit-picker__input" value={scheduleForm.visitDate} onchange={handleScheduleFieldChange} onclick={handleOpenPicker} data-field="visitDate" />
+                                <span class="visit-picker__text" aria-hidden="true">{pickers.scheduleDate.text}</span>
+                                <svg class="visit-picker__icon visit-picker__icon_date" viewBox="0 0 18 18" aria-hidden="true"><path d={icons.calendar}></path></svg>
+                            </div>
+                        </div>
+
+                        <div class="cp-field">
+                            <label class="cp-label visit-label" for="schedule-time">{labels.timeOfVisit}</label>
+                            <div class={pickers.scheduleTime.className}>
+                                <input type="time" id="schedule-time" class="cp-input visit-picker__input" value={scheduleForm.visitTime} onchange={handleScheduleFieldChange} onclick={handleOpenPicker} data-field="visitTime" />
+                                <span class="visit-picker__text" aria-hidden="true">{pickers.scheduleTime.text}</span>
+                                <svg class="visit-picker__icon visit-picker__icon_time" viewBox="0 0 20 20" aria-hidden="true"><path d={icons.clock}></path></svg>
+                            </div>
+                        </div>
+
+                        <div class="cp-field">
+                            <label class="cp-label visit-label" for="schedule-type">{labels.visitType}</label>
+                            <div class="cp-select-wrap">
+                                <select id="schedule-type" class={selectClasses.scheduleType} onchange={handleScheduleFieldChange} data-field="visitType">
+                                    <option value="">{labels.selectVisitType}</option>
+                                    <template for:each={visitTypeOptions} for:item="opt">
+                                        <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                    </template>
+                                </select>
+                            </div>
+                        </div>
+
+                        <div class="cp-field">
+                            <label class="cp-label visit-label" for="schedule-details">{labels.visitDetails}</label>
+                            <input type="text" id="schedule-details" class="cp-input" placeholder={labels.visitDetailsPlaceholder} value={scheduleForm.visitDetails} onchange={handleScheduleFieldChange} data-field="visitDetails" />
+                        </div>
+                    </div>
+
+                    <div class="cp-modal__footer visit-modal__footer">
+                        <button type="button" class="cp-btn cp-btn_lg visit-submit" disabled={isScheduleDisabled} onclick={handleSubmitSchedule}>{labels.scheduleNow}</button>
+                    </div>
+                </section>
+            </div>
+        </template>
+
+        <!-- ===================== Reschedule Visit (Figma p32, p33) ===================== -->
+        <template lwc:if={isRescheduleModalOpen}>
+            <div class="cp-modal-overlay" role="presentation" onclick={handleOverlayClick} onkeydown={handleModalKeydown}>
+                <section class="cp-modal cp-modal_lg visit-modal" role="dialog" aria-modal="true" aria-labelledby="reschedule-title" tabindex="-1" onclick={stopPropagation}>
+                    <button type="button" class="cp-close cp-modal__close" onclick={handleCloseModals} aria-label={labels.close} title={labels.close}>
+                        <svg viewBox="0 0 14 14" aria-hidden="true"><path d={icons.close}></path></svg>
+                    </button>
+                    <h2 class="cp-modal__title visit-modal__title" id="reschedule-title">{labels.rescheduleTitle}</h2>
+                    <p class="cp-modal__text visit-modal__text">{labels.rescheduleText}</p>
+
+                    <div class="cp-modal__body visit-modal__body">
+                        <p class="visit-modal__section">{labels.propertyDetails}</p>
+                        <div class="cp-card visit-prop">
+                            <div class="visit-prop__thumb">
+                                <template lwc:if={selectedVisitHasPhoto}>
+                                    <img src={selectedVisitImageUrl} alt={selectedVisit.projectName} data-url={selectedVisitImageUrl} onerror={handleImageError} />
+                                </template>
+                            </div>
+                            <div class="visit-prop__info">
+                                <p class="visit-prop__name">{selectedVisit.projectName}</p>
+                                <p class="visit-prop__line">
+                                    <svg class="visit-prop__icon" viewBox="0 0 12 14" aria-hidden="true">
+                                        <path class="visit-prop__stroke" d="M6 0.65C3.1 0.65 0.75 2.98 0.75 5.86C0.75 9.36 4.83 12.69 5.6 13.29C5.84 13.47 6.16 13.47 6.4 13.29C7.17 12.69 11.25 9.36 11.25 5.86C11.25 2.98 8.9 0.65 6 0.65Z"></path>
+                                        <circle cx="6" cy="5.9" r="1.65"></circle>
+                                    </svg>
+                                    <span class="visit-prop__text">{selectedVisit.address}</span>
+                                </p>
+                                <p class="visit-prop__line">
+                                    <svg class="visit-prop__icon" viewBox="0 0 14 14" aria-hidden="true">
+                                        <path class="visit-prop__stroke" d="M0.9 12.9V5.45L6.55 0.9L11.85 5.15V6.6"></path>
+                                        <path class="visit-prop__stroke" d="M0.9 12.9H4.55V8.45H7.25V9.8"></path>
+                                        <circle cx="10.75" cy="8.85" r="1.55"></circle>
+                                        <path d="M8.05 13.65C8.05 12.15 9.25 11 10.75 11C12.25 11 13.45 12.15 13.45 13.65Z"></path>
+                                    </svg>
+                                    <span class="visit-prop__text">{selectedVisit.propertyType}</span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="visit-form visit-form_after-card">
+                            <div class="cp-field">
+                                <label class="cp-label visit-label" for="reschedule-date">{labels.dateOfVisit}</label>
+                                <div class={pickers.rescheduleDate.className}>
+                                    <input type="date" id="reschedule-date" class="cp-input visit-picker__input" value={rescheduleForm.visitDate} onchange={handleRescheduleFieldChange} onclick={handleOpenPicker} data-field="visitDate" />
+                                    <span class="visit-picker__text" aria-hidden="true">{pickers.rescheduleDate.text}</span>
+                                    <svg class="visit-picker__icon visit-picker__icon_date" viewBox="0 0 18 18" aria-hidden="true"><path d={icons.calendar}></path></svg>
+                                </div>
+                            </div>
+
+                            <div class="cp-field">
+                                <label class="cp-label visit-label" for="reschedule-time">{labels.timeOfVisit}</label>
+                                <div class={pickers.rescheduleTime.className}>
+                                    <input type="time" id="reschedule-time" class="cp-input visit-picker__input" value={rescheduleForm.visitTime} onchange={handleRescheduleFieldChange} onclick={handleOpenPicker} data-field="visitTime" />
+                                    <span class="visit-picker__text" aria-hidden="true">{pickers.rescheduleTime.text}</span>
+                                    <svg class="visit-picker__icon visit-picker__icon_time" viewBox="0 0 20 20" aria-hidden="true"><path d={icons.clock}></path></svg>
+                                </div>
+                            </div>
+
+                            <div class="cp-field">
+                                <label class="cp-label visit-label" for="reschedule-reason">{labels.rescheduleReason}</label>
+                                <div class="cp-select-wrap">
+                                    <select id="reschedule-reason" class={selectClasses.rescheduleReason} onchange={handleRescheduleFieldChange} data-field="reason">
+                                        <option value="">{labels.selectRescheduleReason}</option>
+                                        <template for:each={rescheduleReasonOptions} for:item="opt">
+                                            <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                        </template>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="cp-field">
+                                <label class="cp-label visit-label" for="reschedule-details">{labels.visitDetails}</label>
+                                <input type="text" id="reschedule-details" class="cp-input" placeholder={labels.visitDetailsPlaceholder} value={rescheduleForm.visitDetails} onchange={handleRescheduleFieldChange} data-field="visitDetails" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cp-modal__footer visit-modal__footer">
+                        <button type="button" class="cp-btn cp-btn_lg visit-submit" disabled={isRescheduleDisabled} onclick={handleSubmitReschedule}>{labels.confirmReschedule}</button>
+                    </div>
+                </section>
+            </div>
+        </template>
+
+        <!-- ===================== Cancel Visit (Figma p38, p39) ===================== -->
+        <template lwc:if={isCancelModalOpen}>
+            <div class="cp-modal-overlay" role="presentation" onclick={handleOverlayClick} onkeydown={handleModalKeydown}>
+                <section class="cp-modal cp-modal_lg visit-modal" role="dialog" aria-modal="true" aria-labelledby="cancel-title" tabindex="-1" onclick={stopPropagation}>
+                    <button type="button" class="cp-close cp-modal__close" onclick={handleCloseModals} aria-label={labels.close} title={labels.close}>
+                        <svg viewBox="0 0 14 14" aria-hidden="true"><path d={icons.close}></path></svg>
+                    </button>
+                    <h2 class="cp-modal__title visit-modal__title" id="cancel-title">{labels.cancelTitle}</h2>
+                    <p class="cp-modal__text visit-modal__text">{labels.cancelText}</p>
+
+                    <div class="cp-modal__body visit-modal__body">
+                        <p class="visit-modal__section">{labels.propertyDetails}</p>
+                        <div class="cp-card visit-prop">
+                            <div class="visit-prop__thumb">
+                                <template lwc:if={selectedVisitHasPhoto}>
+                                    <img src={selectedVisitImageUrl} alt={selectedVisit.projectName} data-url={selectedVisitImageUrl} onerror={handleImageError} />
+                                </template>
+                            </div>
+                            <div class="visit-prop__info">
+                                <p class="visit-prop__name">{selectedVisit.projectName}</p>
+                                <p class="visit-prop__line">
+                                    <svg class="visit-prop__icon" viewBox="0 0 12 14" aria-hidden="true">
+                                        <path class="visit-prop__stroke" d="M6 0.65C3.1 0.65 0.75 2.98 0.75 5.86C0.75 9.36 4.83 12.69 5.6 13.29C5.84 13.47 6.16 13.47 6.4 13.29C7.17 12.69 11.25 9.36 11.25 5.86C11.25 2.98 8.9 0.65 6 0.65Z"></path>
+                                        <circle cx="6" cy="5.9" r="1.65"></circle>
+                                    </svg>
+                                    <span class="visit-prop__text">{selectedVisit.address}</span>
+                                </p>
+                                <p class="visit-prop__line">
+                                    <svg class="visit-prop__icon" viewBox="0 0 14 14" aria-hidden="true">
+                                        <path class="visit-prop__stroke" d="M0.9 12.9V5.45L6.55 0.9L11.85 5.15V6.6"></path>
+                                        <path class="visit-prop__stroke" d="M0.9 12.9H4.55V8.45H7.25V9.8"></path>
+                                        <circle cx="10.75" cy="8.85" r="1.55"></circle>
+                                        <path d="M8.05 13.65C8.05 12.15 9.25 11 10.75 11C12.25 11 13.45 12.15 13.45 13.65Z"></path>
+                                    </svg>
+                                    <span class="visit-prop__text">{selectedVisit.propertyType}</span>
+                                </p>
+                            </div>
+                        </div>
+
+                        <div class="cp-field visit-field_after-card">
+                            <label class="cp-label visit-label visit-label_textarea" for="cancel-reason">{labels.cancelReason}</label>
+                            <textarea id="cancel-reason" class="cp-textarea visit-textarea" placeholder={labels.cancelReasonPlaceholder} oninput={handleCancelFieldChange} data-field="reason"></textarea>
+                        </div>
+                    </div>
+
+                    <div class="cp-modal__footer visit-modal__footer">
+                        <button type="button" class="cp-btn cp-btn_lg visit-submit" disabled={isCancelDisabled} onclick={handleSubmitCancel}>{labels.cancelVisit}</button>
+                    </div>
+                </section>
+            </div>
+        </template>
+
+        <!-- ===================== Feedback Form (Figma p41, p42) ===================== -->
+        <template lwc:if={isFeedbackModalOpen}>
+            <div class="cp-modal-overlay" role="presentation" onclick={handleOverlayClick} onkeydown={handleModalKeydown}>
+                <section class="cp-modal cp-modal_lg visit-modal visit-modal_feedback" role="dialog" aria-modal="true" aria-labelledby="feedback-title" tabindex="-1" onclick={stopPropagation}>
+                    <button type="button" class="cp-close cp-modal__close" onclick={handleCloseModals} aria-label={labels.close} title={labels.close}>
+                        <svg viewBox="0 0 14 14" aria-hidden="true"><path d={icons.close}></path></svg>
+                    </button>
+                    <h2 class="cp-modal__title visit-modal__title" id="feedback-title">{labels.feedbackTitle}</h2>
+                    <p class="cp-modal__text visit-modal__text visit-modal__text_feedback">{labels.feedbackText}</p>
+
+                    <ol class="cp-modal__body visit-questions">
+                        <template for:each={feedbackQuestions} for:item="question">
+                            <li class="visit-question" key={question.id}>
+                                <p class="visit-question__text">{question.prompt}</p>
+                                <div class="visit-stars" role="group" aria-label={question.prompt}>
+                                    <template for:each={question.stars} for:item="star">
+                                        <button
+                                            key={star.key}
+                                            type="button"
+                                            class={star.starClass}
+                                            data-question-id={question.id}
+                                            data-value={star.value}
+                                            aria-label={star.ariaLabel}
+                                            aria-pressed={star.ariaPressed}
+                                            onclick={handleStarClick}
+                                        >
+                                            <template lwc:if={star.filled}>
+                                                <svg viewBox="0 0 26.68 25.37" aria-hidden="true"><path d={icons.starFilled}></path></svg>
+                                            </template>
+                                            <template lwc:else>
+                                                <svg viewBox="0 0 26.68 25.37" aria-hidden="true"><path d={icons.starOutline}></path></svg>
+                                            </template>
+                                        </button>
+                                    </template>
+                                </div>
+                            </li>
+                        </template>
+                    </ol>
+
+                    <div class="cp-modal__footer visit-modal__footer_feedback">
+                        <button type="button" class="cp-btn cp-btn_lg cp-btn_secondary visit-feedback-btn" onclick={handleCloseModals}>{labels.feedbackCancel}</button>
+                        <button type="button" class="cp-btn cp-btn_lg visit-feedback-btn" disabled={isFeedbackDisabled} onclick={handleSubmitFeedback}>{labels.feedbackSubmit}</button>
+                    </div>
+                </section>
+            </div>
+        </template>
+
+        <!-- ===================== Follow Up Visit (Figma p44, p45) ===================== -->
+        <template lwc:if={isFollowUpModalOpen}>
+            <div class="cp-modal-overlay" role="presentation" onclick={handleOverlayClick} onkeydown={handleModalKeydown}>
+                <section class="cp-modal cp-modal_lg visit-modal" role="dialog" aria-modal="true" aria-labelledby="followup-title" tabindex="-1" onclick={stopPropagation}>
+                    <button type="button" class="cp-close cp-modal__close" onclick={handleCloseModals} aria-label={labels.close} title={labels.close}>
+                        <svg viewBox="0 0 14 14" aria-hidden="true"><path d={icons.close}></path></svg>
+                    </button>
+                    <h2 class="cp-modal__title visit-modal__title" id="followup-title">{labels.followUpTitle}</h2>
+                    <p class="cp-modal__text visit-modal__text">{labels.followUpText}</p>
+
+                    <div class="cp-modal__body visit-modal__body">
+                        <dl class="visit-info">
+                            <div class="visit-info__item">
+                                <dt>{labels.infoProperty}</dt>
+                                <dd>{selectedVisit.projectName}</dd>
+                            </div>
+                            <div class="visit-info__item">
+                                <dt>{labels.infoType}</dt>
+                                <dd>{selectedVisit.propertyType}</dd>
+                            </div>
+                            <div class="visit-info__item">
+                                <dt>{labels.infoAddress}</dt>
+                                <dd>{selectedVisitAddress}</dd>
+                            </div>
+                            <div class="visit-info__item">
+                                <dt>{labels.infoLocation}</dt>
+                                <dd>{selectedVisit.location}</dd>
+                            </div>
+                        </dl>
+
+                        <div class="visit-form visit-form_after-info">
+                            <div class="cp-field">
+                                <label class="cp-label visit-label" for="followup-date">{labels.dateOfVisit}</label>
+                                <div class={pickers.followUpDate.className}>
+                                    <input type="date" id="followup-date" class="cp-input visit-picker__input" value={followUpForm.visitDate} onchange={handleFollowUpFieldChange} onclick={handleOpenPicker} data-field="visitDate" />
+                                    <span class="visit-picker__text" aria-hidden="true">{pickers.followUpDate.text}</span>
+                                    <svg class="visit-picker__icon visit-picker__icon_date" viewBox="0 0 18 18" aria-hidden="true"><path d={icons.calendar}></path></svg>
+                                </div>
+                            </div>
+
+                            <div class="cp-field">
+                                <label class="cp-label visit-label" for="followup-time">{labels.timeOfVisit}</label>
+                                <div class={pickers.followUpTime.className}>
+                                    <input type="time" id="followup-time" class="cp-input visit-picker__input" value={followUpForm.visitTime} onchange={handleFollowUpFieldChange} onclick={handleOpenPicker} data-field="visitTime" />
+                                    <span class="visit-picker__text" aria-hidden="true">{pickers.followUpTime.text}</span>
+                                    <svg class="visit-picker__icon visit-picker__icon_time" viewBox="0 0 20 20" aria-hidden="true"><path d={icons.clock}></path></svg>
+                                </div>
+                            </div>
+
+                            <div class="cp-field">
+                                <label class="cp-label visit-label" for="followup-purpose">{labels.purposeOfVisit}</label>
+                                <div class="cp-select-wrap">
+                                    <select id="followup-purpose" class={selectClasses.followUpPurpose} onchange={handleFollowUpFieldChange} data-field="purpose">
+                                        <option value="">{labels.selectPurpose}</option>
+                                        <template for:each={visitTypeOptions} for:item="opt">
+                                            <option key={opt.value} value={opt.value}>{opt.label}</option>
+                                        </template>
+                                    </select>
+                                </div>
+                            </div>
+
+                            <div class="cp-field">
+                                <label class="cp-label visit-label" for="followup-details">{labels.visitDetails}</label>
+                                <input type="text" id="followup-details" class="cp-input" placeholder={labels.purposePlaceholder} value={followUpForm.visitDetails} onchange={handleFollowUpFieldChange} data-field="visitDetails" />
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="cp-modal__footer visit-modal__footer">
+                        <button type="button" class="cp-btn cp-btn_lg visit-submit" disabled={isFollowUpDisabled} onclick={handleSubmitFollowUp}>{labels.followUpVisit}</button>
+                    </div>
+                </section>
+            </div>
+        </template>
+
+        <!-- ===================== Confirmations (Figma p34, p37, p40, p43, p46) ===================== -->
+        <template lwc:if={isSuccessModalOpen}>
+            <div class="cp-modal-overlay" role="presentation" onclick={handleOverlayClick} onkeydown={handleModalKeydown}>
+                <section class={successModalClass} role="dialog" aria-modal="true" aria-labelledby="success-title" tabindex="-1" onclick={stopPropagation}>
+                    <button type="button" class="cp-close cp-modal__close" onclick={handleCloseSuccessModal} aria-label={labels.close} title={labels.close}>
+                        <svg viewBox="0 0 14 14" aria-hidden="true"><path d={icons.close}></path></svg>
+                    </button>
+                    <div class="cp-success visit-success">
+                        <template lwc:if={isFollowUpSuccess}>
+                            <svg class="visit-success__art" viewBox={followUpArtViewBox} aria-hidden="true">
+                                <template for:each={followUpArt} for:item="shape">
+                                    <path key={shape.key} d={shape.d} fill={shape.fill} fill-opacity={shape.opacity}></path>
+                                </template>
+                            </svg>
+                        </template>
+                        <template lwc:else>
+                            <img class="cp-success__icon visit-success__icon" src={successImageUrl} alt="" />
+                        </template>
+                        <h2 class="cp-success__title visit-success__title" id="success-title">{successTitle}</h2>
+                        <p class="cp-success__text visit-success__text">{successMessage}</p>
+                    </div>
+                </section>
+            </div>
+        </template>
+    </div>
+</template>

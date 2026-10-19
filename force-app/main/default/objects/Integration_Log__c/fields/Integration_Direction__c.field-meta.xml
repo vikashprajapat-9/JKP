@@ -1,0 +1,45 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Integration_Direction__c</fullName>
+    <label>Integration Direction</label>
+    <required>false</required>
+    <trackHistory>false</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Picklist</type>
+    <valueSet>
+        <restricted>true</restricted>
+        <valueSetDefinition>
+            <sorted>false</sorted>
+            <value>
+                <fullName>SFDC - SAP</fullName>
+                <default>false</default>
+                <label>SFDC - SAP</label>
+            </value>
+            <value>
+                <fullName>SAP - SFDC</fullName>
+                <default>false</default>
+                <label>SAP - SFDC</label>
+            </value>
+            <value>
+                <fullName>SFA - SFDC</fullName>
+                <default>false</default>
+                <label>SFA - SFDC</label>
+            </value>
+            <value>
+                <fullName>WEB - SFDC</fullName>
+                <default>false</default>
+                <label>WEB - SFDC</label>
+            </value>
+            <value>
+                <fullName>AML - SFDC</fullName>
+                <default>false</default>
+                <label>AML - SFDC</label>
+            </value>
+            <value>
+                <fullName>SFDC - AML</fullName>
+                <default>false</default>
+                <label>SFDC - AML</label>
+            </value>
+        </valueSetDefinition>
+    </valueSet>
+</CustomField>

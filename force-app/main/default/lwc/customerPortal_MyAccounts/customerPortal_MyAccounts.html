@@ -1,0 +1,260 @@
+<template>
+    <div class="cp-page acc">
+
+        <template lwc:if={isLoading}>
+            <div class="cp-loading acc-loading">
+                <lightning-spinner alternative-text={labels.loadingAccounts} size="medium"></lightning-spinner>
+                <p class="acc-loading__text">{labels.loadingAccounts}</p>
+            </div>
+        </template>
+
+        <template lwc:if={hasError}>
+            <div class="acc-state" role="alert">
+                <p class="acc-state__text">{labels.loadError}</p>
+                <button type="button" class="cp-btn acc-retry" onclick={handleRetry}>{labels.retry}</button>
+            </div>
+        </template>
+
+        <template lwc:if={showHead}>
+            <div class="cp-page-head acc-head">
+                <div class="cp-page-head__text">
+                    <h1 class="cp-page-title">{labels.title}</h1>
+                    <p class="cp-page-intro">{pageDescription}</p>
+                </div>
+            </div>
+        </template>
+
+        <!-- ============ ACCOUNT CARDS (Figma p61) ============ -->
+        <template lwc:if={showListView}>
+            <div class="acc-list">
+                <div class="acc-toolbar">
+                    <div class="acc-filter">
+                        <button
+                            type="button"
+                            class="cp-filter acc-filter__btn"
+                            aria-haspopup="true"
+                            aria-expanded={filterExpanded}
+                            onclick={toggleFilterMenu}
+                        >
+                            <svg class="acc-filter__icon" viewBox="0 0 16.8 16.6" aria-hidden="true"><path d={icons.funnel}></path></svg>
+                            <span class="acc-filter__label">{selectedFilterLabel}</span>
+                        </button>
+                        <template lwc:if={isFilterMenuOpen}>
+                            <ul class="acc-filter__menu" role="menu">
+                                <template for:each={filterOptions} for:item="option">
+                                    <li
+                                        key={option.value}
+                                        class={option.itemClass}
+                                        role="menuitem"
+                                        tabindex="0"
+                                        data-value={option.value}
+                                        onclick={handleFilterSelect}
+                                        onkeydown={handleFilterKeydown}
+                                    >{option.label}</li>
+                                </template>
+                            </ul>
+                        </template>
+                    </div>
+                </div>
+
+                <template lwc:if={hasNoAccounts}>
+                    <div class="cp-empty acc-empty">
+                        <img class="cp-empty__img" src={emptyImageUrl} alt="" />
+                        <p class="cp-empty__text">{labels.noAccounts}</p>
+                    </div>
+                </template>
+                <template lwc:else>
+                    <div class="acc-grid">
+                        <template for:each={displayedAccounts} for:item="account">
+                            <article key={account.id} class="cp-card cp-card_flat acc-card">
+                                <div
+                                    class="acc-card__media"
+                                    data-account-id={account.id}
+                                    ontouchstart={handleCardTouchStart}
+                                    ontouchend={handleCardTouchEnd}
+                                >
+                                    <template lwc:if={account.activeImageUrl}>
+                                        <img src={account.activeImageUrl} alt={account.projectName} class="acc-card__img" loading="lazy" />
+                                    </template>
+
+                                    <template lwc:if={account.showArrows}>
+                                        <button
+                                            type="button"
+                                            class="cp-carousel-arrow cp-carousel-arrow_prev acc-arrow"
+                                            data-account-id={account.id}
+                                            title={labels.previousImage}
+                                            aria-label={labels.previousImage}
+                                            onclick={handlePrevImage}
+                                        >
+                                            <svg viewBox="0 0 6.4 10.8" aria-hidden="true"><path d={icons.chevronLeft}></path></svg>
+                                        </button>
+                                        <button
+                                            type="button"
+                                            class="cp-carousel-arrow cp-carousel-arrow_next acc-arrow"
+                                            data-account-id={account.id}
+                                            title={labels.nextImage}
+                                            aria-label={labels.nextImage}
+                                            onclick={handleNextImage}
+                                        >
+                                            <svg viewBox="0 0 6.4 10.8" aria-hidden="true"><path d={icons.chevronRight}></path></svg>
+                                        </button>
+                                    </template>
+
+                                    <template lwc:if={account.showDots}>
+                                        <div class="cp-dots cp-dots_on-image acc-dots">
+                                            <template for:each={account.images} for:item="image">
+                                                <button
+                                                    key={image.key}
+                                                    type="button"
+                                                    class={image.dotClass}
+                                                    aria-label={image.label}
+                                                    aria-current={image.isCurrent}
+                                                    data-account-id={account.id}
+                                                    data-index={image.index}
+                                                    onclick={handleDotClick}
+                                                ></button>
+                                            </template>
+                                        </div>
+                                    </template>
+                                </div>
+
+                                <div class="acc-card__body">
+                                    <h2 class="cp-card__title">{account.projectName}</h2>
+                                    <p class="cp-card__subtitle acc-card__subtitle">{account.unitNumber}</p>
+                                    <button
+                                        type="button"
+                                        class="cp-btn cp-btn_block acc-card__btn"
+                                        data-account-id={account.id}
+                                        onclick={handleViewDetails}
+                                    >{labels.viewDetails}</button>
+                                </div>
+                            </article>
+                        </template>
+                    </div>
+                </template>
+            </div>
+        </template>
+
+        <!-- ============ ONE ACCOUNT (Figma p62 My Account, p63-64 My Payables) ============ -->
+        <template lwc:if={showDetailView}>
+            <div class="acc-detail">
+                <div class="acc-tabbar">
+                    <div class="cp-tabs acc-tabs" role="tablist" aria-label={labels.tabsLabel}>
+                        <button
+                            type="button"
+                            role="tab"
+                            class={myAccountTabClass}
+                            data-tab="myAccount"
+                            aria-selected={myAccountSelected}
+                            tabindex={myAccountTabIndex}
+                            onclick={handleShowMyAccount}
+                            onkeydown={handleTabKeydown}
+                        >{labels.myAccount}</button>
+                        <button
+                            type="button"
+                            role="tab"
+                            class={myPayablesTabClass}
+                            data-tab="myPayables"
+                            aria-selected={myPayablesSelected}
+                            tabindex={myPayablesTabIndex}
+                            onclick={handleShowMyPayables}
+                            onkeydown={handleTabKeydown}
+                        >{labels.myPayables}</button>
+                    </div>
+                    <button type="button" class="acc-back" title={labels.backToAccounts} aria-label={labels.backToAccounts} onclick={handleBack}>
+                        <svg viewBox="0 0 23.9 18.6" aria-hidden="true"><path d={icons.back}></path></svg>
+                        <span>{labels.back}</span>
+                    </button>
+                </div>
+
+                <div class="acc-tabpanel" role="tabpanel">
+                    <template lwc:if={isDetailLoading}>
+                        <div class="cp-loading acc-loading">
+                            <lightning-spinner alternative-text={labels.loadingDetails} size="medium"></lightning-spinner>
+                            <p class="acc-loading__text">{labels.loadingDetails}</p>
+                        </div>
+                    </template>
+                    <template lwc:else>
+                        <template lwc:if={isMyAccountTab}>
+                            <section class="cp-card acc-summary">
+                                <h2 class="acc-summary__title">{summaryTitle}</h2>
+                                <div class="acc-summary__body">
+                                    <div class="acc-summary__figures">
+                                        <template for:each={summaryColumns} for:item="column">
+                                            <dl key={column.key} class="acc-summary__col">
+                                                <template for:each={column.items} for:item="item">
+                                                    <div key={item.key} class="acc-stat">
+                                                        <dt class="acc-stat__label">{item.label}</dt>
+                                                        <dd class="acc-stat__value">{item.value}</dd>
+                                                    </div>
+                                                </template>
+                                            </dl>
+                                        </template>
+                                    </div>
+
+                                    <span class="acc-summary__divider" aria-hidden="true"></span>
+
+                                    <div class="acc-summary__side">
+                                        <dl class="acc-stat acc-stat_side">
+                                            <dt class="acc-stat__label">{labels.purchasedPrice}</dt>
+                                            <dd class="acc-stat__value">{summary.purchasedPrice}</dd>
+                                        </dl>
+                                        <div class="acc-total">
+                                            <p class="acc-total__label">{labels.totalPayable}</p>
+                                            <p class="acc-total__value">{summary.totalPayable}</p>
+                                            <p class="acc-total__note">{labels.totalPayableNote}</p>
+                                        </div>
+                                        <button type="button" class="cp-btn cp-btn_lg acc-download" onclick={handleDownloadSummary}>{labels.downloadSummary}</button>
+                                    </div>
+                                </div>
+                            </section>
+                        </template>
+
+                        <template lwc:if={isMyPayablesTab}>
+                            <template lwc:if={hasPayables}>
+                                <ul class="acc-payables">
+                                    <template for:each={payableRows} for:item="payable">
+                                        <li key={payable.id} class="acc-payable">
+                                            <button
+                                                type="button"
+                                                class="acc-payable__head"
+                                                data-payable-id={payable.id}
+                                                aria-expanded={payable.ariaExpanded}
+                                                onclick={handlePayableToggle}
+                                            >
+                                                <span class="acc-payable__title">{payable.type} : {payable.amount}</span>
+                                                <svg class={payable.chevronClass} viewBox="0 0 11.7 6.5" aria-hidden="true"><path d={icons.chevronDown}></path></svg>
+                                            </button>
+                                            <template lwc:if={payable.isExpanded}>
+                                                <dl class="acc-payable__body">
+                                                    <div class="acc-payable__item">
+                                                        <dt>{labels.payableStatus}</dt>
+                                                        <dd>{payable.status}</dd>
+                                                    </div>
+                                                    <div class="acc-payable__item">
+                                                        <dt>{labels.payableDueDate}</dt>
+                                                        <dd>{payable.dueDate}</dd>
+                                                    </div>
+                                                    <div class="acc-payable__item">
+                                                        <dt>{labels.payableDetails}</dt>
+                                                        <dd>{payable.detailText}</dd>
+                                                    </div>
+                                                </dl>
+                                            </template>
+                                        </li>
+                                    </template>
+                                </ul>
+                            </template>
+                            <template lwc:else>
+                                <div class="cp-empty acc-empty">
+                                    <img class="cp-empty__img" src={emptyImageUrl} alt="" />
+                                    <p class="cp-empty__text">{labels.noPayables}</p>
+                                </div>
+                            </template>
+                        </template>
+                    </template>
+                </div>
+            </div>
+        </template>
+    </div>
+</template>

@@ -1,0 +1,771 @@
+@import 'c/customerPortalStyles';
+
+/* My Properties = Figma p21 (list), p22 (details, Booking Details), p23 (booking row opened), p24 (Payment Plan).
+   Shared look from c/customerPortalStyles (page head, cards, buttons, table, tabs, empty, loading, alert);
+   the rules below are the values measured on these pages. Content box = 936px wide at the 1280 frame. */
+
+/* ============================ LIST (p21) ============================ */
+.mp-head {
+    margin-bottom: 14px; /* filter box 250..292 under the three-line intro */
+}
+
+.mp-toolbar {
+    display: flex;
+    justify-content: flex-end;
+    margin-bottom: 7px; /* table head starts 7px under the filter */
+}
+
+/* "Filter By Projects": 208 x 42 outlined box, funnel + text + chevron, #4b5563 */
+.mp-filter {
+    position: relative;
+    flex: 0 0 auto;
+    max-width: 100%;
+}
+
+.mp-filter__button {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    min-width: 208px;
+    max-width: min(320px, 100%);
+    height: 42px;
+    padding: 0 18px 0 14px;
+    border: 1px solid var(--cp-filter-border);
+    border-radius: 9px;
+    background: var(--cp-surface);
+    color: var(--cp-filter-ink);
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+    transition: border-color 0.15s ease, box-shadow 0.15s ease;
+}
+
+.mp-filter__button:hover {
+    border-color: var(--cp-navy);
+}
+
+.mp-filter__button:focus-visible {
+    border-color: var(--cp-navy);
+    box-shadow: var(--cp-focus);
+    outline: none;
+}
+
+.mp-filter__icon {
+    flex: 0 0 auto;
+    width: 17px;
+    height: 17px;
+    fill: currentColor;
+}
+
+.mp-filter__label {
+    flex: 1 1 auto;
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.mp-filter__caret {
+    flex: 0 0 auto;
+    width: 12px;
+    height: 7px;
+    fill: currentColor;
+    transition: transform 0.15s ease;
+}
+
+.mp-filter__caret_open {
+    transform: rotate(180deg);
+}
+
+.mp-filter__backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 20;
+}
+
+.mp-filter__menu {
+    position: absolute;
+    top: calc(100% + 4px);
+    right: 0;
+    z-index: 21;
+    display: flex;
+    flex-direction: column;
+    min-width: 100%;
+    max-width: min(360px, calc(100vw - 32px));
+    max-height: 320px;
+    padding: 6px 0;
+    border: 1px solid var(--cp-filter-border);
+    border-radius: var(--cp-radius-sm);
+    background: var(--cp-surface);
+    box-shadow: var(--cp-shadow);
+    overflow-y: auto;
+}
+
+.mp-filter__option {
+    display: block;
+    width: 100%;
+    padding: 10px 16px;
+    border: 0;
+    background: none;
+    color: var(--cp-filter-ink);
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    text-align: left;
+    white-space: nowrap;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    cursor: pointer;
+}
+
+.mp-filter__option:hover,
+.mp-filter__option:focus-visible {
+    background: var(--cp-tint);
+    outline: none;
+}
+
+.mp-filter__option_active {
+    color: var(--cp-navy);
+    font-weight: 600;
+}
+
+/* ========================= TABLES (p21 / p22) ========================= */
+/* Columns measured from the 936px table: Sr. 40 | Description 222 | Unit Number 218 | car parks 203 | Type 128 | Action 125
+   (automatic layout: the Figma widths at 1280, and the Action column never gets narrower than its button) */
+.mp-table {
+    min-width: 720px;
+    table-layout: auto;
+}
+
+.mp-table th,
+.mp-table td {
+    padding-right: 16px;
+    padding-left: 0;
+}
+
+.mp-table .mp-col-sr {
+    width: 4.27%;
+    padding-right: 0;
+    padding-left: 12px;
+    white-space: nowrap;
+}
+
+.mp-table .mp-col-description {
+    width: 23.72%;
+}
+
+.mp-table .mp-col-unit {
+    width: 23.29%;
+}
+
+.mp-table .mp-col-parks {
+    width: 21.69%;
+}
+
+.mp-table .mp-col-type {
+    width: 13.68%;
+}
+
+.mp-table .mp-col-action {
+    width: 13.35%;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.mp-table th.mp-col-action {
+    padding-right: 56px; /* "Action" ends over the middle of the button */
+}
+
+.mp-table td.mp-col-action {
+    padding-right: 13px;
+}
+
+/* p21 / p22: Sr., unit, car parks and type values are drawn heavier than the description (measured) */
+.mp-table td.mp-col-sr,
+.mp-table td.mp-col-unit,
+.mp-table td.mp-col-parks,
+.mp-table td.mp-col-type {
+    font-weight: 600;
+}
+
+.mp-view-btn {
+    width: 112px;
+    padding: 0;
+}
+
+/* p21: rows separated by 2px #ebeaea lines, content sits low in each row */
+.mp-table_list td {
+    padding-top: 37px;
+    padding-bottom: 15px;
+}
+
+.mp-table_list tbody tr:first-child td {
+    padding-top: 30px;
+}
+
+/* p22: 68px rows without lines between them, one line under the table */
+.mp-table_booking td {
+    padding-top: 14px;
+    padding-bottom: 14px;
+    border-bottom: 0;
+}
+
+.mp-table_booking tbody tr:first-child td {
+    padding-top: 30px;
+}
+
+.mp-table_booking tbody tr:last-child td {
+    border-bottom: 2px solid var(--cp-line);
+}
+
+/* ====================== DETAILS: back header (p22) ====================== */
+.mp-back {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+    min-width: 0;
+    margin: 0 0 36px;
+    padding-top: 8px;
+}
+
+.mp-back__btn {
+    position: relative;
+    top: 4px;
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: 32px;
+    height: 32px;
+    padding: 0;
+    border: 0;
+    border-radius: 6px;
+    background: none;
+    color: #111827;
+    cursor: pointer;
+}
+
+.mp-back__btn:hover {
+    background: var(--cp-tint);
+}
+
+.mp-back__btn:focus-visible {
+    outline: 2px solid var(--cp-navy);
+    outline-offset: 2px;
+}
+
+.mp-back__btn svg {
+    width: 28px;
+    height: 22px;
+    fill: currentColor;
+}
+
+.mp-back__title {
+    min-width: 0;
+    margin: 0;
+    font-size: 24px;
+    line-height: 32px;
+    font-weight: 600;
+    color: #000000;
+    overflow-wrap: anywhere;
+}
+
+/* ====================== DETAILS: applicants (p22 / p23) ====================== */
+.mp-applicants {
+    display: flex;
+    flex-direction: column;
+    gap: 24px;
+}
+
+.ap-card {
+    padding: 16px 16px 19px;
+}
+
+.ap-head {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    min-width: 0;
+}
+
+.ap-avatar {
+    display: inline-flex;
+    flex: 0 0 auto;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    color: #ffffff;
+}
+
+.ap-avatar svg {
+    width: 56px;
+    height: 56px;
+    fill: currentColor;
+}
+
+.ap-avatar_blue {
+    background: #3fabe2;
+}
+
+.ap-avatar_amber {
+    background: var(--cp-amber-badge);
+}
+
+.ap-heading {
+    min-width: 0;
+    margin-top: -3px;
+}
+
+.ap-name {
+    margin: 0;
+    font-size: 20px;
+    line-height: 28px;
+    font-weight: 500;
+    color: var(--cp-ink);
+    overflow-wrap: anywhere;
+}
+
+.ap-type {
+    margin: 9px 0 0;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    color: var(--cp-muted);
+}
+
+/* Field rows: Figma places the columns by content, so each row count has its own column widths (900px card body) */
+.ap-fields {
+    display: grid;
+    row-gap: 15px;
+    margin: 0;
+}
+
+.ap-head + .ap-fields {
+    margin-top: 14px;
+}
+
+.ap-fields + .ap-fields {
+    margin-top: 15px;
+}
+
+.ap-fields_n1 {
+    grid-template-columns: minmax(0, 1fr);
+}
+
+.ap-fields_n2 {
+    grid-template-columns: minmax(0, 274fr) minmax(0, 626fr);
+}
+
+.ap-fields_n3 {
+    grid-template-columns: minmax(0, 334.5fr) minmax(0, 310.5fr) minmax(0, 255fr);
+}
+
+.ap-fields_n4 {
+    grid-template-columns: minmax(0, 201fr) minmax(0, 201fr) minmax(0, 215fr) minmax(0, 283fr);
+}
+
+.ap-fields_n5 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+/* label / value pair (cards and the booking panel): 14/20, label #232323, value #6d6e71, 4px apart */
+.mp-field {
+    min-width: 0;
+    padding-right: 16px;
+}
+
+.mp-field__label {
+    margin: 0;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    color: var(--cp-ink);
+}
+
+.mp-field__value {
+    margin: 4px 0 0;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    color: var(--cp-muted);
+    overflow-wrap: anywhere;
+}
+
+/* ====================== DETAILS: tabs (p22 / p24) ====================== */
+.mp-tabs {
+    --cp-tab-accent: var(--cp-blue); /* p24: 3px #2d6ecf under the selected tab */
+    margin-top: 16px;
+}
+
+.mp-tab-panel {
+    margin-top: 16px;
+}
+
+/* ================= DETAILS: opened booking row (p23) ================= */
+.mp-table td.bk-detail-cell {
+    padding: 5px 0 40px;
+    border-bottom: 0;
+}
+
+.mp-table_booking tbody tr.bk-detail-row:last-child td {
+    padding-bottom: 0;
+    border-bottom: 0;
+}
+
+.bk-panel {
+    padding: 38px 39px 36px;
+    border-radius: var(--cp-radius-sm);
+    background: #f4f4f4;
+    text-align: left;
+    white-space: normal;
+}
+
+.bk-fields {
+    display: grid;
+    row-gap: 20px;
+    margin: 0;
+}
+
+.bk-fields + .bk-fields {
+    margin-top: 36px;
+}
+
+.bk-fields_4 {
+    grid-template-columns: repeat(4, minmax(0, 1fr));
+}
+
+/* three-field rows sit at columns 1, 2.5 and 4 of the four-column rows */
+.bk-fields_3 {
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    column-gap: 12.5%;
+}
+
+.bk-divider {
+    height: 0;
+    margin: 37px 0 0;
+    border: 0;
+    border-top: 1px solid var(--cp-border);
+}
+
+.bk-heading {
+    margin: 18px 0 0;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    color: var(--cp-ink);
+}
+
+.bk-heading + .bk-fields {
+    margin-top: 8px;
+}
+
+/* ===================== DETAILS: Payment Plan (p24) ===================== */
+.mp-tab-panel .pp-table {
+    margin-top: 5px; /* table starts 21px under the tabs */
+}
+
+/* the sideways-scrolling wrapper clips a sub-pixel row at 1.5x, which drops the table's bottom line */
+.mp-tab-panel_plan {
+    padding-bottom: 1px;
+}
+
+.pp-table {
+    width: 100%;
+    min-width: 600px;
+    border-collapse: separate;
+    border-spacing: 0;
+    table-layout: fixed;
+    color: #1a1a1a;
+}
+
+.pp-table th,
+.pp-table td {
+    padding: 8px 16px;
+    border: 1px solid #cecece;
+    text-align: center;
+    vertical-align: middle;
+    overflow-wrap: anywhere;
+}
+
+.pp-table th {
+    height: 61px;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+}
+
+.pp-table td {
+    height: 76px;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 400; /* p24 rows are lighter than the 500 used elsewhere (measured) */
+}
+
+.pp-table .pp-total td {
+    height: 37px;
+    padding-top: 0;
+    padding-bottom: 0;
+}
+
+.pp-table .pp-col-description {
+    width: 40.72%;
+}
+
+.pp-table .pp-col-percentage,
+.pp-table .pp-col-date {
+    width: 16.52%;
+}
+
+.pp-table .pp-col-amount {
+    width: 26.24%;
+}
+
+/* ============================= SMALLER SCREENS ============================= */
+@media (max-width: 1024px) {
+    .ap-fields_n2,
+    .ap-fields_n3,
+    .ap-fields_n4,
+    .ap-fields_n5,
+    .bk-fields_4,
+    .bk-fields_3 {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        column-gap: 0;
+    }
+}
+
+/* Not in Figma (desktop only): below 1000px the 720px tables no longer fit the content box, so every property /
+   booking row becomes a stacked block (Sr. + description, label / value lines, full-width View Details) instead of
+   scrolling sideways; an opened booking then shows its whole panel under the row. */
+@media (max-width: 999px) {
+    .mp .mp-table.cp-table {
+        display: block;
+        min-width: 0;
+    }
+
+    .mp .mp-table.cp-table thead {
+        display: none;
+    }
+
+    .mp .mp-table.cp-table tbody {
+        display: block;
+    }
+
+    .mp .mp-table.cp-table tbody tr {
+        display: grid;
+        grid-template-columns: auto minmax(0, 1fr);
+        column-gap: 8px;
+        padding: 12px 0 16px;
+        border-bottom: 2px solid var(--cp-line);
+    }
+
+    .mp .mp-table.cp-table tbody tr.bk-row_open {
+        padding-bottom: 12px;
+        border-bottom: 0;
+    }
+
+    .mp .mp-table.cp-table tbody td {
+        display: flex;
+        grid-column: 1 / -1;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 16px;
+        width: auto;
+        padding: 4px 0;
+        border-bottom: 0;
+        text-align: right;
+        white-space: normal;
+    }
+
+    .mp .mp-table.cp-table tbody td::before {
+        content: attr(data-label);
+        flex: 0 1 auto;
+        min-width: 0;
+        color: var(--cp-muted);
+        font-weight: 500;
+        text-align: left;
+    }
+
+    .mp .mp-table.cp-table tbody td.mp-col-sr,
+    .mp .mp-table.cp-table tbody td.mp-col-description {
+        display: block;
+        grid-column: auto;
+        padding: 0 0 4px;
+        font-size: 16px;
+        line-height: 24px;
+        text-align: left;
+    }
+
+    .mp .mp-table.cp-table tbody td.mp-col-sr::before,
+    .mp .mp-table.cp-table tbody td.mp-col-description::before,
+    .mp .mp-table.cp-table tbody td.mp-col-action::before,
+    .mp .mp-table.cp-table tbody td.bk-detail-cell::before {
+        content: none;
+    }
+
+    .mp .mp-table.cp-table tbody td.mp-col-action {
+        display: block;
+        padding: 12px 0 0;
+    }
+
+    .mp .mp-table.cp-table .mp-view-btn {
+        width: 100%;
+    }
+
+    .mp .mp-table.cp-table tbody tr.bk-detail-row {
+        display: block;
+        padding: 0 0 16px;
+    }
+
+    .mp .mp-table.cp-table tbody td.bk-detail-cell {
+        display: block;
+        padding: 0;
+    }
+}
+
+@media (max-width: 768px) {
+    .mp-head {
+        margin-bottom: 16px;
+    }
+
+    .mp-toolbar {
+        justify-content: stretch;
+        margin-bottom: 12px;
+    }
+
+    .mp-filter,
+    .mp-filter__button {
+        width: 100%;
+        max-width: none;
+    }
+
+    .mp-filter__menu {
+        left: 0;
+        max-width: none;
+    }
+
+    .mp-back {
+        gap: 12px;
+        margin-bottom: 24px;
+        padding-top: 0;
+    }
+
+    .mp-back__title {
+        font-size: 20px;
+        line-height: 28px;
+    }
+
+    .ap-card {
+        padding: 16px;
+    }
+
+    .bk-panel {
+        padding: 24px 20px;
+    }
+
+    .bk-fields + .bk-fields {
+        margin-top: 24px;
+    }
+
+    .bk-divider {
+        margin-top: 24px;
+    }
+}
+
+@media (max-width: 560px) {
+    .ap-head {
+        gap: 12px;
+    }
+
+    .ap-avatar,
+    .ap-avatar svg {
+        width: 48px;
+        height: 48px;
+    }
+
+    .ap-name {
+        font-size: 18px;
+        line-height: 24px;
+    }
+
+    .ap-type {
+        margin-top: 4px;
+    }
+
+    .ap-fields_n2,
+    .ap-fields_n3,
+    .ap-fields_n4,
+    .ap-fields_n5,
+    .bk-fields_4,
+    .bk-fields_3 {
+        grid-template-columns: minmax(0, 1fr);
+    }
+}
+
+/* Not in Figma: on phones the Payment Plan rows stack (description, then % / Tranche Date / Amount lines) inside the
+   same 1px grey frame, so the amount is not off to the side */
+@media (max-width: 640px) {
+    .mp .pp-table {
+        display: block;
+        min-width: 0;
+    }
+
+    .mp .pp-table thead {
+        display: none;
+    }
+
+    .mp .pp-table tbody {
+        display: block;
+    }
+
+    .mp .pp-table tr {
+        display: block;
+        padding: 10px 16px;
+        border: 1px solid #cecece;
+    }
+
+    .mp .pp-table tr + tr {
+        margin-top: -1px;
+    }
+
+    .mp .pp-table td,
+    .mp .pp-table .pp-total td {
+        display: flex;
+        align-items: baseline;
+        justify-content: space-between;
+        gap: 16px;
+        width: auto;
+        height: auto;
+        padding: 3px 0;
+        border: 0;
+        text-align: right;
+    }
+
+    .mp .pp-table td::before {
+        content: attr(data-label);
+        flex: 0 1 auto;
+        min-width: 0;
+        color: var(--cp-muted);
+        font-weight: 500;
+        text-align: left;
+    }
+
+    .mp .pp-table td.pp-col-description {
+        display: block;
+        padding-bottom: 6px;
+        font-weight: 500;
+        text-align: left;
+    }
+
+    .mp .pp-table td.pp-col-description::before {
+        content: none;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .mp-filter__button,
+    .mp-filter__caret {
+        transition: none;
+    }
+}

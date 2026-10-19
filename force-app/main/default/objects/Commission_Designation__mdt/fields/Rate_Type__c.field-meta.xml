@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Rate_Type__c</fullName>
+    <description>Percent: a percentage of the sale. Flat: a fixed amount per sale.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Percent: a percentage of the sale. Flat: a fixed amount per sale.</inlineHelpText>
+    <label>Rate Type</label>
+    <length>20</length>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

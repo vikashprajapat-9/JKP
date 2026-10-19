@@ -1,0 +1,8 @@
+/* Customer Portal font 'JKP DIN': DINish 4.007 (https://github.com/playbeing/dinish, Copyright 2021 The DINish Project
+   Authors, SIL Open Font License 1.1, see OFL.txt), a DIN 1451 face like the one in the Customer Portal Figma.
+   Each CSS weight uses the DINish weight that is as heavy as the Figma text (measured on the Figma frames):
+   400 (12px details) = DINish Medium, 500 (body text, sidebar, buttons) = DINish SemiBold, 600 (titles) = DINish Bold. */
+@font-face { font-family: 'JKP DIN'; font-weight: 400; font-style: normal; font-display: swap; src: url('DINish-Medium.woff2') format('woff2'); }
+@font-face { font-family: 'JKP DIN'; font-weight: 500; font-style: normal; font-display: swap; src: url('DINish-SemiBold.woff2') format('woff2'); }
+@font-face { font-family: 'JKP DIN'; font-weight: 600; font-style: normal; font-display: swap; src: url('DINish-Bold.woff2') format('woff2'); }
+@font-face { font-family: 'JKP DIN'; font-weight: 700; font-style: normal; font-display: swap; src: url('DINish-Heavy.woff2') format('woff2'); }

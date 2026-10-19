@@ -1,0 +1,10 @@
+<template>
+    <div class="pagination-container">
+        <lightning-button label="&#9664;&#9664;" class="pagination-btn first-btn"  disabled={disablePrev} onclick={handleFirst} title="First page" alternative-text="First page">  </lightning-button>
+        <lightning-button label="&#9664;"  class="pagination-btn" disabled={disablePrev} onclick={handlePrev}  title="Previous page" alternative-text="Previous page">  </lightning-button>
+        <p class="showText"> Showing {pageParam} of {totalRecords} rows </p>
+        <lightning-button label="&#9654;" class="pagination-btn" disabled={disableNext} onclick={handleNext} title="Next page" alternative-text="Next page"> </lightning-button>
+        <lightning-button label="&#9654;&#9654;" class="pagination-btn last-btn" disabled={disableNext} onclick={handleLast}  title="Last page" alternative-text="Last page">  </lightning-button>
+
+    </div>
+</template>

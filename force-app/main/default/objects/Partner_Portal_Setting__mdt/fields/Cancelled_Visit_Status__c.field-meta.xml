@@ -1,0 +1,13 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Cancelled_Visit_Status__c</fullName>
+    <description>Site visit Status given to the open visits of a lead that went to another channel partner. Blank: those visits are left as they are.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Site visit Status given to the open visits of a lead that went to another channel partner. Blank: those visits are left as they are.</inlineHelpText>
+    <label>Cancelled Visit Status</label>
+    <length>80</length>
+    <required>false</required>
+    <type>Text</type>
+    <unique>false</unique>
+</CustomField>

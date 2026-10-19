@@ -1,0 +1,258 @@
+<template>
+    <div class="cp-page dash-root">
+
+        <template lwc:if={isLoading}>
+            <div class="cp-loading" role="status">
+                <lightning-spinner alternative-text={labels.loading} size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <!-- ===================== Handover checklist: Figma p8, p10, p12, p13 ===================== -->
+        <template lwc:elseif={isHandoverView}>
+            <section class="ho">
+                <div class="ho-head">
+                    <button type="button" class="ho-back" title={labels.back} aria-label={labels.back} onclick={handleBack}>
+                        <svg class="ho-back__icon" viewBox="0 0 27 21.4" aria-hidden="true">
+                            <path d="M25.5 10.7H1.5M10.83 1.63L1.5 10.7l9.33 9.07" fill="none" stroke="currentColor" stroke-width="3" stroke-linecap="round" stroke-linejoin="round"></path>
+                        </svg>
+                    </button>
+                    <h1 class="ho-title">{handoverHeading}</h1>
+                </div>
+
+                <div class="ho-body">
+                    <template lwc:if={handoverErrorMessage}>
+                        <div class="cp-alert cp-alert_error dash-error ho-alert" role="alert">
+                            <span class="dash-error__text">{handoverErrorMessage}</span>
+                            <button type="button" class="cp-btn cp-btn_sm cp-btn_secondary" onclick={handleHandoverRetry}>{labels.retry}</button>
+                        </div>
+                    </template>
+
+                    <template lwc:if={showPropertySelect}>
+                        <div class="cp-field">
+                            <label class="cp-label ho-label" for="propertySelect">{labels.selectProperty}</label>
+                            <div class="ho-select-wrap">
+                                <select id="propertySelect" class="cp-select ho-select" onchange={handlePropertyChange}>
+                                    <template lwc:if={hasNoSelection}>
+                                        <option value="" selected disabled>{labels.selectPlaceholder}</option>
+                                    </template>
+                                    <template for:each={propertyOptions} for:item="opt">
+                                        <option key={opt.id} value={opt.id} selected={opt.selected}>{opt.name}</option>
+                                    </template>
+                                </select>
+                                <svg class="ho-chevron ho-select-wrap__chevron" viewBox="0 0 16.1 8.9" aria-hidden="true">
+                                    <path d="M0.32 0.27C0.61 -0.02 1.09 -0.02 1.38 0.27L8.1 6.99L14.82 0.27C15.11 -0.02 15.59 -0.02 15.88 0.27C16.17 0.56 16.17 1.04 15.88 1.33L8.63 8.58C8.34 8.87 7.86 8.87 7.57 8.58L0.32 1.33C0.03 1.04 0.03 0.56 0.32 0.27Z"></path>
+                                </svg>
+                            </div>
+                        </div>
+                    </template>
+
+                    <template lwc:if={showHandoverSpinner}>
+                        <div class="cp-loading ho-loading" role="status">
+                            <lightning-spinner alternative-text={labels.loading} size="medium"></lightning-spinner>
+                        </div>
+                    </template>
+
+                    <template lwc:if={showNoProperties}>
+                        <div class="cp-empty ho-empty">
+                            <img class="cp-empty__img" src={emptyImage} alt="" />
+                            <p class="cp-empty__text">{labels.noProperties}</p>
+                        </div>
+                    </template>
+
+                    <template lwc:if={showChecklist}>
+                        <div class="ho-property">
+                            <template lwc:if={selectedProperty.imageUrl}>
+                                <img class="ho-property__img" src={selectedProperty.imageUrl} alt={selectedProperty.name} />
+                            </template>
+                            <div class="ho-property__text">
+                                <p class="ho-property__name">{selectedProperty.name}</p>
+                                <p class="ho-property__units">{selectedProperty.unitTypes}</p>
+                                <p class="ho-property__project">{projectNameText}</p>
+                            </div>
+                        </div>
+
+                        <template lwc:if={showNoCards}>
+                            <div class="cp-empty ho-empty">
+                                <img class="cp-empty__img" src={emptyImage} alt="" />
+                                <p class="cp-empty__text">{labels.noCards}</p>
+                            </div>
+                        </template>
+
+                        <div class="ho-cards">
+                            <template for:each={decoratedCards} for:item="card">
+                                <div key={card.id} class="ho-item">
+                                    <button type="button" class={card.cardClass} data-id={card.id} aria-expanded={card.ariaExpanded}
+                                            aria-label={card.ariaLabel} onclick={handleCardClick}>
+                                        <span class="ho-card__title">{card.title}</span>
+                                        <span class="ho-card__desc">{card.description}</span>
+                                        <span class={card.badgeClass}>{card.status}</span>
+                                        <svg class="ho-chevron ho-card__chevron" viewBox="0 0 16.1 8.9" aria-hidden="true">
+                                            <path d="M0.32 0.27C0.61 -0.02 1.09 -0.02 1.38 0.27L8.1 6.99L14.82 0.27C15.11 -0.02 15.59 -0.02 15.88 0.27C16.17 0.56 16.17 1.04 15.88 1.33L8.63 8.58C8.34 8.87 7.86 8.87 7.57 8.58L0.32 1.33C0.03 1.04 0.03 0.56 0.32 0.27Z"></path>
+                                        </svg>
+                                    </button>
+
+                                    <template lwc:if={card.isOpen}>
+                                        <div class="cp-table-wrap ho-table-wrap">
+                                            <table class="ho-table">
+                                                <thead>
+                                                    <tr>
+                                                        <th scope="col" class="ho-col ho-col_sr">{labels.colSr}</th>
+                                                        <th scope="col" class="ho-col ho-col_activity">{labels.colActivity}</th>
+                                                        <th scope="col" class="ho-col ho-col_desc">{labels.colDescription}</th>
+                                                        <th scope="col" class="ho-col ho-col_status">{labels.colStatus}</th>
+                                                        <th scope="col" class="ho-col ho-col_remarks">{labels.colRemarks}</th>
+                                                    </tr>
+                                                </thead>
+                                                <tbody>
+                                                    <template for:each={card.items} for:item="item">
+                                                        <tr key={item.id}>
+                                                            <td class="ho-col_sr">{item.srNo}</td>
+                                                            <td><span class="ho-cell ho-cell_activity">{item.activity}</span></td>
+                                                            <td><span class="ho-cell ho-cell_desc">{item.description}</span></td>
+                                                            <td><span class={item.pillClass}>{item.status}</span></td>
+                                                            <td class="ho-col_remarks"><span class="ho-remark">{item.remarks}</span></td>
+                                                        </tr>
+                                                    </template>
+                                                    <template lwc:if={card.hasNoItems}>
+                                                        <tr>
+                                                            <td class="ho-empty-row" colspan="5">{labels.noItems}</td>
+                                                        </tr>
+                                                    </template>
+                                                </tbody>
+                                            </table>
+                                        </div>
+                                    </template>
+                                </div>
+                            </template>
+                        </div>
+                    </template>
+                </div>
+            </section>
+        </template>
+
+        <!-- ===================== Dashboard: Figma p7 (carousel states p9, p11) ===================== -->
+        <template lwc:elseif={dashboard}>
+            <div class="cp-page-head">
+                <div class="cp-page-head__text">
+                    <h1 class="cp-page-title">{welcomeText}</h1>
+                    <p class="cp-page-intro">
+                        <span>{customerIdText}</span><template lwc:if={showDateSeparator}><span class="dash-sep"><span class="cp-visually-hidden">{labels.listSeparator}</span></span></template><span>{dashboardDate}</span>
+                    </p>
+                </div>
+            </div>
+
+            <div class="cp-page-body">
+                <template lwc:if={hasSlides}>
+                    <section class="dash-hero-block" aria-roledescription="carousel" aria-label={labels.heroLabel}>
+                        <div class="dash-hero" onmouseenter={pauseAutoplay} onmouseleave={startAutoplay}>
+                            <template for:each={heroSlides} for:item="slide">
+                                <div key={slide.id} class={slide.slideClass} aria-hidden={slide.ariaHidden}>
+                                    <img class="dash-hero__img" src={slide.imageUrl} alt={slide.title} />
+                                </div>
+                            </template>
+                            <template lwc:if={activeSlide}>
+                                <div class="dash-caption">
+                                    <p class="dash-caption__title">{activeSlide.title}</p>
+                                    <p class="dash-caption__sub">{activeSlide.subtitle}</p>
+                                </div>
+                            </template>
+                        </div>
+                        <div class="cp-dots dash-dots">
+                            <template for:each={heroSlides} for:item="slide">
+                                <button key={slide.id} type="button" class={slide.dotClass} data-index={slide.index}
+                                        aria-label={slide.dotLabel} aria-current={slide.ariaCurrent} onclick={handleDotClick}></button>
+                            </template>
+                        </div>
+                    </section>
+                </template>
+
+                <div class="dash-grid">
+                    <div class="dash-main">
+                        <nav class="cp-card dash-quick" aria-label={labels.quickLinks}>
+                            <template for:each={quickLinks} for:item="link">
+                                <button key={link.page} type="button" class="dash-quick__item" data-page={link.page} onclick={handleNavigate}>
+                                    <span class={link.iconClass}>
+                                        <template lwc:if={link.isProperties}>
+                                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M13.48 2.53C12.64 1.83 11.41 1.83 10.57 2.53L3.82 8.22C3.32 8.65 3.02 9.28 3.02 9.94L3.02 19.25C3.02 20.22 3.81 21 4.77 21L19.27 21C20.24 21 21.02 20.22 21.02 19.25L21.02 9.94C21.02 9.28 20.73 8.65 20.23 8.22L13.48 2.53ZM11.54 3.68C11.82 3.44 12.23 3.44 12.51 3.68L19.26 9.37C19.43 9.51 19.52 9.72 19.52 9.94L19.52 19.25C19.52 19.39 19.41 19.5 19.27 19.5L4.77 19.5C4.64 19.5 4.52 19.39 4.52 19.25L4.52 9.94C4.52 9.72 4.62 9.51 4.79 9.37L11.54 3.68ZM15.81 11.28C16.1 10.99 16.1 10.51 15.81 10.22C15.52 9.93 15.04 9.93 14.75 10.22L10.77 14.19L9.31 12.72C9.01 12.43 8.54 12.43 8.24 12.72C7.95 13.02 7.95 13.49 8.24 13.78L10.24 15.78C10.39 15.92 10.58 16 10.77 16C10.97 16 11.16 15.92 11.31 15.78L15.81 11.28Z"></path></svg>
+                                        </template>
+                                        <template lwc:elseif={link.isConstruction}>
+                                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.01 3C3.01 2.8 3.09 2.61 3.23 2.47C3.37 2.33 3.56 2.25 3.76 2.25L20.26 2.25C20.46 2.25 20.65 2.33 20.79 2.47C20.93 2.61 21.01 2.8 21.01 3C21.01 3.2 20.93 3.39 20.79 3.53C20.65 3.67 20.46 3.75 20.26 3.75L18.01 3.75C18.01 4.17 17.7 4.5 17.32 4.5L16.88 4.5L16.88 6.82C17.52 6.99 17.99 7.58 17.99 8.27C17.99 8.79 17.72 9.26 17.31 9.52L18 10.5L21.37 10.5C21.47 10.5 21.57 10.54 21.64 10.61C21.71 10.68 21.76 10.77 21.76 10.88C21.76 10.92 21.75 10.97 21.73 11.02C21.71 11.06 21.68 11.11 21.65 11.14C21.61 11.18 21.57 11.2 21.52 11.22C21.48 11.24 21.43 11.25 21.38 11.25L21.01 11.25L21.01 13.5L21.37 13.5C21.47 13.5 21.57 13.54 21.64 13.61C21.71 13.68 21.76 13.77 21.76 13.88C21.76 13.98 21.71 14.07 21.64 14.14C21.57 14.21 21.47 14.25 21.37 14.25L20.61 14.25C20.62 14.32 20.61 14.39 20.58 14.45C20.55 14.52 20.51 14.57 20.45 14.61C20.38 14.65 20.31 14.68 20.23 14.68C20.11 14.68 20 14.62 19.93 14.52L19.74 14.25L13.25 14.25L13.06 14.52C12.98 14.62 12.87 14.68 12.75 14.68C12.67 14.68 12.6 14.65 12.53 14.61C12.47 14.57 12.43 14.52 12.4 14.45C12.37 14.39 12.37 14.32 12.38 14.25L11.64 14.25C11.54 14.25 11.44 14.21 11.37 14.14C11.3 14.07 11.26 13.98 11.26 13.88C11.26 13.67 11.43 13.5 11.64 13.5L12.01 13.5L12.01 11.25L11.64 11.25C11.54 11.25 11.44 11.21 11.37 11.14C11.3 11.07 11.26 10.98 11.26 10.88C11.26 10.67 11.43 10.5 11.64 10.5L14.98 10.5L15.67 9.52C15.46 9.39 15.29 9.2 15.17 8.98C15.05 8.77 14.99 8.52 14.99 8.27C14.99 8.06 15.16 7.9 15.37 7.9C15.58 7.9 15.74 8.06 15.74 8.27C15.74 8.54 15.89 8.78 16.1 8.91L16.17 8.82C16.18 8.8 16.2 8.77 16.23 8.75C16.26 8.71 16.3 8.69 16.35 8.67C16.39 8.65 16.44 8.64 16.49 8.64C16.59 8.64 16.69 8.68 16.76 8.75C16.78 8.77 16.8 8.8 16.82 8.82L16.88 8.91C17.1 8.78 17.24 8.54 17.24 8.27C17.24 7.86 16.92 7.53 16.51 7.52C16.38 7.52 16.26 7.45 16.19 7.35C16.15 7.29 16.12 7.22 16.12 7.15C16.12 7.12 16.12 7.1 16.13 7.07L16.13 4.5L15.69 4.5C15.31 4.5 15.01 4.17 15.01 3.75L10.51 3.75L10.51 19.5L11.07 19.5C11.59 19.5 12.01 19.92 12.01 20.44L12.01 21L21.01 21C21.84 21 22.51 21.67 22.51 22.5L1.51 22.5C1.51 21.67 2.17 21 3 21L3.76 21L3.76 20.44C3.76 19.92 4.18 19.5 4.69 19.5L5.26 19.5L5.26 3.75L3.76 3.75C3.56 3.75 3.37 3.67 3.23 3.53C3.09 3.39 3.01 3.2 3.01 3ZM6.01 5.25L6.01 6.89L9.29 5.25L6.01 5.25ZM6.47 19.5L9.76 19.5L9.76 17.86L6.47 19.5ZM9.29 17.25L6.01 17.25L6.01 18.89L9.29 17.25ZM6.47 7.5L9.76 7.5L9.76 5.86L6.47 7.5ZM9.29 8.25L6.01 8.25L6.01 9.89L9.29 8.25ZM6.47 10.5L9.76 10.5L9.76 8.86L6.47 10.5ZM9.29 11.25L6.01 11.25L6.01 12.89L9.29 11.25ZM6.47 13.5L9.76 13.5L9.76 11.86L6.47 13.5ZM9.29 14.25L6.01 14.25L6.01 15.89L9.29 14.25ZM6.47 16.5L9.76 16.5L9.76 14.86L6.47 16.5ZM16.42 9.77L15.9 10.5L17.08 10.5L16.57 9.77C16.52 9.77 16.47 9.77 16.42 9.77ZM14.45 11.25L12.76 11.25L12.76 13.5L12.86 13.5L14.45 11.25ZM13.78 13.5L19.2 13.5L17.61 11.25L15.37 11.25L13.78 13.5ZM18.54 11.25L20.13 13.5L20.26 13.5L20.26 11.25L18.54 11.25Z"></path></svg>
+                                        </template>
+                                        <template lwc:elseif={link.isDocuments}>
+                                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M3.99 4C3.99 3.47 4.2 2.96 4.58 2.59C4.95 2.21 5.46 2 5.99 2L13.99 2C14.26 2 14.51 2.11 14.7 2.29L19.7 7.29C19.89 7.48 19.99 7.73 19.99 8L19.99 20C19.99 20.53 19.78 21.04 19.41 21.41C19.03 21.79 18.52 22 17.99 22L5.99 22C5.46 22 4.95 21.79 4.58 21.41C4.2 21.04 3.99 20.53 3.99 20L3.99 4ZM17.58 8L13.99 4.41L13.99 8L17.58 8ZM11.99 4L5.99 4L5.99 20L17.99 20L17.99 10L12.99 10C12.73 10 12.47 9.89 12.29 9.71C12.1 9.52 11.99 9.27 11.99 9L11.99 4ZM7.99 13C7.99 12.73 8.1 12.48 8.29 12.29C8.47 12.11 8.73 12 8.99 12L14.99 12C15.26 12 15.51 12.11 15.7 12.29C15.89 12.48 15.99 12.73 15.99 13C15.99 13.27 15.89 13.52 15.7 13.71C15.51 13.89 15.26 14 14.99 14L8.99 14C8.73 14 8.47 13.89 8.29 13.71C8.1 13.52 7.99 13.27 7.99 13ZM7.99 17C7.99 16.73 8.1 16.48 8.29 16.29C8.47 16.11 8.73 16 8.99 16L14.99 16C15.26 16 15.51 16.11 15.7 16.29C15.89 16.48 15.99 16.73 15.99 17C15.99 17.27 15.89 17.52 15.7 17.71C15.51 17.89 15.26 18 14.99 18L8.99 18C8.73 18 8.47 17.89 8.29 17.71C8.1 17.52 7.99 17.27 7.99 17Z"></path></svg>
+                                        </template>
+                                        <template lwc:else>
+                                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d="M11.98 4C13.04 4 14.05 4.42 14.8 5.17C15.55 5.92 15.98 6.94 15.98 8C15.98 9.06 15.55 10.08 14.8 10.83C14.05 11.58 13.04 12 11.98 12C10.91 12 9.9 11.58 9.15 10.83C8.4 10.08 7.98 9.06 7.98 8C7.98 6.94 8.4 5.92 9.15 5.17C9.9 4.42 10.91 4 11.98 4ZM11.98 6C11.44 6 10.94 6.21 10.56 6.59C10.19 6.96 9.98 7.47 9.98 8C9.98 8.53 10.19 9.04 10.56 9.41C10.94 9.79 11.44 10 11.98 10C12.51 10 13.01 9.79 13.39 9.41C13.76 9.04 13.98 8.53 13.98 8C13.98 7.47 13.76 6.96 13.39 6.59C13.01 6.21 12.51 6 11.98 6ZM11.98 13C14.64 13 19.98 14.33 19.98 17L19.98 20L3.98 20L3.98 17C3.98 14.33 9.31 13 11.98 13ZM11.98 14.9C9.01 14.9 5.88 16.36 5.88 17L5.88 18.1L18.07 18.1L18.07 17C18.07 16.36 14.94 14.9 11.98 14.9Z"></path></svg>
+                                        </template>
+                                    </span>
+                                    <span class="dash-quick__label">{link.label}</span>
+                                </button>
+                            </template>
+                        </nav>
+
+                        <div class="dash-stats">
+                            <div class="cp-card dash-stat">
+                                <h2 class="dash-stat__title dash-stat__title_light">{labels.supportTitle}</h2>
+                                <div class="dash-ring">
+                                    <svg class="dash-ring__svg" viewBox="0 0 110 110" aria-hidden="true">
+                                        <circle class="dash-ring__track" cx="55" cy="55" r="48.25"></circle>
+                                        <circle class="dash-ring__value dash-ring__value_support" cx="55" cy="55" r="48.25"
+                                                transform="rotate(-90 55 55)" stroke-dasharray={supportDash}></circle>
+                                    </svg>
+                                    <p class="dash-ring__text">
+                                        <span class="dash-ring__line" aria-hidden="true">{supportCount}</span>
+                                        <span class="dash-ring__line" aria-hidden="true">{supportStatus}</span>
+                                        <span class="cp-visually-hidden">{supportRingText}</span>
+                                    </p>
+                                </div>
+                                <button type="button" class="cp-btn cp-btn_pill dash-view" data-page="support"
+                                        aria-label={labels.viewSupport} onclick={handleNavigate}>{labels.view}</button>
+                            </div>
+
+                            <div class="cp-card dash-stat">
+                                <h2 class="dash-stat__title">{labels.handoverTitle}</h2>
+                                <div class="dash-ring">
+                                    <svg class="dash-ring__svg" viewBox="0 0 110 110" aria-hidden="true">
+                                        <circle class="dash-ring__track" cx="55" cy="55" r="48.25"></circle>
+                                        <circle class="dash-ring__value dash-ring__value_handover" cx="55" cy="55" r="48.25"
+                                                transform="rotate(-90 55 55)" stroke-dasharray={handoverDash}></circle>
+                                    </svg>
+                                    <p class="dash-ring__text">
+                                        <span class="dash-ring__line" aria-hidden="true">{handoverPercentText}</span>
+                                        <span class="dash-ring__line" aria-hidden="true">{handoverStatus}</span>
+                                        <span class="cp-visually-hidden">{handoverRingText}</span>
+                                    </p>
+                                </div>
+                                <button type="button" class="cp-btn cp-btn_pill dash-view"
+                                        aria-label={labels.viewHandover} onclick={handleOpenHandover}>{labels.view}</button>
+                            </div>
+                        </div>
+                    </div>
+
+                    <div class="dash-side">
+                        <div class="cp-card dash-refer">
+                            <p class="dash-refer__text">{labels.referText}</p>
+                            <button type="button" class="cp-btn cp-btn_pill dash-refer__btn" data-page="referrals"
+                                    onclick={handleNavigate}>{labels.referButton}</button>
+                            <img class="dash-refer__img" src={referEarnImage} alt="" />
+                        </div>
+
+                        <button type="button" class="cp-card dash-faq" data-page="faqs" onclick={handleNavigate}>
+                            <span class="dash-faq__title">{labels.faqTitle}</span>
+                            <span class="cp-visually-hidden">{labels.listSeparator}</span>
+                            <span class="dash-faq__text">{labels.faqText}</span>
+                            <img class="dash-faq__img" src={faqBadgeImage} alt="" />
+                        </button>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <template lwc:elseif={dashboardErrorMessage}>
+            <div class="cp-alert cp-alert_error dash-error" role="alert">
+                <span class="dash-error__text">{dashboardErrorMessage}</span>
+                <button type="button" class="cp-btn cp-btn_sm cp-btn_secondary" onclick={handleRetry}>{labels.retry}</button>
+            </div>
+        </template>
+    </div>
+</template>

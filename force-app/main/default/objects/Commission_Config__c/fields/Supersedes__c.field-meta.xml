@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Supersedes__c</fullName>
+    <deleteConstraint>SetNull</deleteConstraint>
+    <description>The approved version this one will replace or shorten when it is approved.</description>
+    <inlineHelpText>The approved version this one replaces or shortens once it is approved.</inlineHelpText>
+    <label>Supersedes</label>
+    <referenceTo>Commission_Config__c</referenceTo>
+    <relationshipLabel>Next Versions</relationshipLabel>
+    <relationshipName>Next_Versions</relationshipName>
+    <required>false</required>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Lookup</type>
+</CustomField>

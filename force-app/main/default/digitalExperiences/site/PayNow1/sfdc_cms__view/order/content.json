@@ -1,0 +1,69 @@
+{
+  "type" : "sfdc_cms__view",
+  "title" : "Order",
+  "contentBody" : {
+    "component" : {
+      "children" : [ {
+        "children" : [ {
+          "attributes" : {
+            "backgroundImageConfig" : "",
+            "backgroundImageOverlay" : "rgba(0,0,0,0)",
+            "componentSpacerSize" : "",
+            "layoutDirectionDesktop" : "row",
+            "layoutDirectionMobile" : "column",
+            "layoutDirectionTablet" : "column",
+            "maxContentWidth" : "",
+            "sectionColumnGutterWidth" : "",
+            "sectionConfig" : "{\"UUID\":\"074e2c1d-88a1-4454-9547-89b0b26ec950\",\"columns\":[{\"UUID\":\"700c64d0-389f-467c-8458-02a74408366a\",\"columnName\":\"Column 1\",\"columnKey\":\"col1\",\"columnWidth\":\"12\",\"seedComponents\":null}]}",
+            "sectionMinHeight" : "",
+            "sectionVerticalAlign" : "flex-start"
+          },
+          "children" : [ {
+            "children" : [ {
+              "attributes" : {
+                "bodyText" : "We will send an email with your confirmation number and receipt shortly.",
+                "buttonText" : "Continue Shopping",
+                "confirmationNumberText" : "Confirmation Number",
+                "headerText" : "Thank you for your order!"
+              },
+              "definition" : "commerce_unified_checkout:orderConfirmation",
+              "id" : "9f57eb07-a22f-4ffe-aa20-710f2a1a6a82",
+              "type" : "component"
+            } ],
+            "id" : "700c64d0-389f-467c-8458-02a74408366a",
+            "name" : "col1",
+            "title" : "Column 1",
+            "type" : "region"
+          } ],
+          "definition" : "community_layout:section",
+          "id" : "074e2c1d-88a1-4454-9547-89b0b26ec950",
+          "type" : "component"
+        } ],
+        "id" : "62ba9860-3dcb-4941-a24c-b10451eb3066",
+        "name" : "content",
+        "title" : "Content",
+        "type" : "region"
+      }, {
+        "children" : [ {
+          "attributes" : {
+            "recordId" : "{!recordId}"
+          },
+          "definition" : "community_builder:seoAssistant",
+          "id" : "481f5a46-e311-40df-8ad8-575c9b141fa9",
+          "type" : "component"
+        } ],
+        "id" : "f9ac251b-6db0-47c2-b013-b13d8f328c73",
+        "name" : "sfdcHiddenRegion",
+        "title" : "sfdcHiddenRegion",
+        "type" : "region"
+      } ],
+      "definition" : "community_layout:sldsFlexibleLayout",
+      "id" : "c48f706e-d509-4dc8-8874-5669f9cee239",
+      "type" : "component"
+    },
+    "dataProviders" : [ ],
+    "themeLayoutType" : "Inner",
+    "viewType" : "order"
+  },
+  "urlName" : "order"
+}

@@ -1,0 +1,27 @@
+<template>
+    <lightning-modal-header label={labels.title}></lightning-modal-header>
+    <lightning-modal-body>
+        <p class="hint">{labels.chooseHint}</p>
+        <div class="field">
+            <lightning-combobox
+                data-id="approver"
+                label={labels.approver}
+                placeholder={labels.chooseApprover}
+                options={approvers}
+                value={approverId}
+                required
+                onchange={handleApprover}
+            ></lightning-combobox>
+            <template lwc:if={error}>
+                <span class="error-text" role="alert" data-id="error">{error}</span>
+            </template>
+        </div>
+        <div class="note grey lock"><span>{labels.lockNote}</span></div>
+    </lightning-modal-body>
+    <lightning-modal-footer>
+        <div class="actions">
+            <button type="button" class="btn" data-id="cancel" onclick={handleCancel}>{labels.cancel}</button>
+            <button type="button" class="btn primary" data-id="submit" onclick={handleSubmit}>{labels.send}</button>
+        </div>
+    </lightning-modal-footer>
+</template>

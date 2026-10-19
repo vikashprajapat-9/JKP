@@ -1,0 +1,124 @@
+.visit-modal {
+    width: 100%;
+    background: #ffffff;
+    border-radius: 6px;
+    overflow: hidden;
+    box-shadow: 0 4px 18px rgba(0, 0, 0, 0.20);
+}
+
+/* ================= HEADER ================= */
+.modal-header {
+    height: 96px;
+    background: #1f315f;
+    display: flex;
+    align-items: center;
+    padding: 0 20px;
+    border-bottom: 3px solid #d7a928;
+}
+
+.logo-container {
+    width: 174px;
+    height: 62px;
+    background: #1a274d;
+    border: 1px solid rgba(255, 255, 255, 0.25);
+    border-radius: 5px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-right: 20px;
+}
+
+.logo {
+    max-width: 155px;
+    max-height: 50px;
+    object-fit: contain;
+}
+
+.header-title {
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 700;
+    line-height: 1;
+}
+
+/* ================= BODY ================= */
+.modal-body {
+    background: #ffffff;
+    padding: 18px 20px;
+    min-height: 300px;
+    max-height: 60vh;
+    overflow-y: auto;
+}
+
+.section-title {
+    margin: 10px 0 14px 0;
+    font-size: 15px;
+    font-weight: 700;
+    color: #1f315f;
+    border-bottom: 1px solid #e5e5e5;
+    padding-bottom: 4px;
+}
+
+.form-container {
+    padding: 4px 10px 10px 10px;
+}
+
+/* ================= FOOTER ================= */
+.modal-footer {
+    min-height: 68px;
+    background: #f3f3f3;
+    border-top: 1px solid #d8dde6;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 20px;
+}
+
+.footer-copyright {
+    color: #1b5297;
+    font-size: 12px;
+    font-weight: 500;
+    white-space: nowrap;
+}
+
+.footer-actions {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+}
+
+.footer-btn {
+    min-width: 82px;
+    height: 36px;
+    padding: 0 18px;
+    border-radius: 4px;
+    font-size: 13px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.cancel-btn {
+    background: #ffffff;
+    color: #181818;
+    border: 1px solid #c9c9c9;
+}
+
+.cancel-btn:hover {
+    background: #eaeaea;
+}
+
+.primary-btn {
+    background: #2f4f7f;
+    color: #ffffff;
+    border: 1px solid #2f4f7f;
+}
+
+.primary-btn:hover {
+    background: #243e65;
+}
+
+.primary-btn:disabled {
+    background: #c9c9c9;
+    border-color: #c9c9c9;
+    cursor: not-allowed;
+}

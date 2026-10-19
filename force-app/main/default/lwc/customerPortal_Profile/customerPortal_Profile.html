@@ -1,0 +1,486 @@
+<template>
+    <!-- Figma p88 view (grey read-only fields, Edit Profile), p89 edit (white fields, + on the photo, Save Profile),
+         p90 view with a photo. Data: CustomerPortalProfileController (getProfile / updateProfile /
+         uploadProfilePicture / changePassword). -->
+    <div class="cp-page profile-page">
+        <template lwc:if={isLoading}>
+            <div class="cp-loading">
+                <lightning-spinner alternative-text={text.loading} size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template lwc:elseif={loadError}>
+            <div class="cp-alert cp-alert_error profile-load-error" role="alert" data-id="load-error">
+                <span>{loadError}</span>
+                <button type="button" class="cp-btn cp-btn_link profile-retry" data-id="retry" onclick={handleRetry}>{text.retry}</button>
+            </div>
+        </template>
+
+        <template lwc:elseif={showProfile}>
+            <div class="cp-page-head">
+                <div class="cp-page-head__text">
+                    <h1 class="cp-page-title cp-page-title_brand">{text.title}</h1>
+                    <p class="cp-page-intro">{text.intro}</p>
+                </div>
+            </div>
+
+            <template lwc:if={formError}>
+                <div class="cp-alert cp-alert_error profile-message" role="alert" data-id="form-error">{formError}</div>
+            </template>
+            <template lwc:if={successMessage}>
+                <div class="cp-alert cp-alert_success profile-message" role="status" data-id="success">{successMessage}</div>
+            </template>
+
+            <div class="profile-layout">
+                <div class="profile-side">
+                    <div class="profile-photo">
+                        <img class="profile-photo__img" src={avatarSrc} alt={text.photoAlt} data-id="avatar" onerror={handleAvatarError} />
+                        <template lwc:if={isPreparingPhoto}>
+                            <span class="profile-photo__busy" role="status">
+                                <span class="profile-spinner profile-spinner_dark" aria-hidden="true"></span>
+                                <span class="cp-visually-hidden">{text.preparingPhoto}</span>
+                            </span>
+                        </template>
+                        <template lwc:if={isEditing}>
+                            <button
+                                type="button"
+                                class="profile-photo__add"
+                                title={text.addPhoto}
+                                aria-label={text.addPhoto}
+                                data-id="add-photo"
+                                disabled={isSaving}
+                                onclick={handleAddPhotoClick}
+                            >
+                                <svg viewBox="0 0 16 16" aria-hidden="true">
+                                    <rect x="6.9" y="0.5" width="2.2" height="15" rx="1.1"></rect>
+                                    <rect x="0.5" y="6.9" width="15" height="2.2" rx="1.1"></rect>
+                                </svg>
+                            </button>
+                            <input
+                                type="file"
+                                accept="image/jpeg,image/png"
+                                class="profile-photo__input"
+                                tabindex="-1"
+                                aria-hidden="true"
+                                data-id="photo-input"
+                                onchange={handlePhotoSelected}
+                            />
+                        </template>
+                    </div>
+
+                    <p class="profile-name" data-id="full-name">{profile.fullName}</p>
+
+                    <template lwc:if={isEditing}>
+                        <button
+                            type="button"
+                            class={saveButtonClass}
+                            data-id="save"
+                            disabled={isBusy}
+                            aria-busy={savingState}
+                            onclick={handleSaveProfile}
+                        >
+                            <template lwc:if={isSaving}>
+                                <span class="profile-spinner" aria-hidden="true"></span>
+                            </template>
+                            <span>{text.save}</span>
+                        </button>
+                        <button
+                            type="button"
+                            class="cp-btn cp-btn_link profile-cancel"
+                            data-id="cancel"
+                            disabled={isSaving}
+                            onclick={handleCancelEdit}
+                        >{text.cancel}</button>
+                    </template>
+                    <template lwc:else>
+                        <button type="button" class="cp-btn profile-action" data-id="edit" onclick={handleEditProfile}>{text.edit}</button>
+                    </template>
+                    <span class="cp-visually-hidden" role="status">{savingStatus}</span>
+
+                    <template lwc:if={photoError}>
+                        <p class="cp-error profile-photo-note" role="alert" data-id="photo-error">{photoError}</p>
+                    </template>
+                    <template lwc:elseif={photoHint}>
+                        <p class="cp-help profile-photo-note" data-id="photo-hint">{photoHint}</p>
+                    </template>
+                </div>
+
+                <div class="profile-details">
+                    <h2 class="cp-section-title profile-section">{text.personal}</h2>
+                    <div class="cp-form-grid">
+                        <div class="cp-field">
+                            <label class="cp-label" for="firstName">{text.firstName}</label>
+                            <input
+                                id="firstName"
+                                type="text"
+                                class={ui.firstNameClass}
+                                value={form.firstName}
+                                readonly={isViewing}
+                                maxlength="40"
+                                autocomplete="given-name"
+                                aria-invalid={ui.firstNameInvalid}
+                                aria-describedby="firstName-error"
+                                data-id="first-name"
+                                data-field="firstName"
+                                oninput={handleFieldInput}
+                            />
+                            <template lwc:if={fieldErrors.firstName}>
+                                <p id="firstName-error" class="cp-error" data-id="first-name-error">{fieldErrors.firstName}</p>
+                            </template>
+                        </div>
+                        <div class="cp-field">
+                            <label class="cp-label" for="lastName">{text.lastName}</label>
+                            <input
+                                id="lastName"
+                                type="text"
+                                class={ui.lastNameClass}
+                                value={form.lastName}
+                                readonly={isViewing}
+                                maxlength="80"
+                                autocomplete="family-name"
+                                aria-invalid={ui.lastNameInvalid}
+                                aria-describedby="lastName-error"
+                                data-id="last-name"
+                                data-field="lastName"
+                                oninput={handleFieldInput}
+                            />
+                            <template lwc:if={fieldErrors.lastName}>
+                                <p id="lastName-error" class="cp-error" data-id="last-name-error">{fieldErrors.lastName}</p>
+                            </template>
+                        </div>
+                        <div class="cp-field">
+                            <label class="cp-label" for="email">{text.email}</label>
+                            <input
+                                id="email"
+                                type="email"
+                                class={ui.emailClass}
+                                value={form.email}
+                                readonly={isViewing}
+                                maxlength="80"
+                                autocomplete="email"
+                                spellcheck="false"
+                                aria-invalid={ui.emailInvalid}
+                                aria-describedby="email-error email-note"
+                                data-id="email"
+                                data-field="email"
+                                oninput={handleFieldInput}
+                            />
+                            <template lwc:if={fieldErrors.email}>
+                                <p id="email-error" class="cp-error" data-id="email-error">{fieldErrors.email}</p>
+                            </template>
+                            <template lwc:if={showEmailNote}>
+                                <p id="email-note" class="cp-help" data-id="email-note">{text.emailPendingNote}</p>
+                            </template>
+                        </div>
+                        <div class="cp-field">
+                            <label class="cp-label" for="phoneNumber">{text.phone}</label>
+                            <div class={phoneBoxClass} data-id="phone-box">
+                                <span class={phoneCountryClass}>
+                                    <template lwc:if={isFlagLK}>
+                                        <svg class="profile-phone__flag" viewBox="0 0 23 17.2" aria-hidden="true" data-id="flag-lk">
+                                            <path d="M0 0L23 0L23 17.2L0 17.2L0 0Z" fill="#feca00"></path>
+                                            <path d="M1.4 1.4L5.8 1.4L5.8 15.8L1.4 15.8L1.4 1.4Z" fill="#1f8a6e"></path>
+                                            <path d="M5.8 1.4L10.1 1.4L10.1 15.8L5.8 15.8L5.8 1.4Z" fill="#f56800"></path>
+                                            <path d="M10.1 1.4L21.6 1.4L21.6 15.8L10.1 15.8L10.1 1.4Z" fill="#b01d00"></path>
+                                            <path d="M12.2 4.3C12.2 4.3 12.1 4.7 12 5.2C11.9 5.8 11.9 8.2 11.9 8.3C11.9 8.3 12.3 8.4 12.3 8.6C12.3 8.8 12.1 9 12.1 9L12.8 9.7C12.8 9.7 12.6 9.6 12.9 8.8C13.1 8 13.7 8.1 14 7.8C14.2 7.6 13.8 7.9 13.6 7.9C13.4 7.9 13.6 7.8 13.5 7.7C13.3 7.6 13.6 7.6 13.3 7.7C13 7.8 13.2 7.6 13.2 7.5C13.1 7.4 13 7.6 12.8 7.7C12.5 7.8 12.8 7.6 12.9 7.5C12.9 7.4 12.8 7.5 12.6 7.5C12.4 7.5 12.6 7.1 12.6 6.9C12.7 6.7 12.6 6.8 12.6 6.5C12.6 6.2 13 6.5 12.9 6.5C12.7 6.4 12.6 5.9 12.6 5.8C12.6 5.6 12.7 5.5 12.9 5.5C13 5.5 13.2 5.7 13.2 5.7C13.2 5.7 13.4 5.7 13.7 5.6C14 5.6 14 5.5 14 5.2C14 5 14.1 5.2 14.4 5.2C14.6 5.2 14.8 5.3 14.8 5.3C14.8 5.3 14.8 5.1 15 5.1C15.2 5.1 15.3 5.3 15.3 5.3L15.6 5.1C15.6 5.1 16 5.3 16.2 5.3C16.3 5.3 16.5 5.1 16.5 5.1L16.5 5.5C16.5 5.4 16.9 5 17.8 4.9C18.8 4.8 19.8 5.9 20.1 6C20.4 6.1 20.2 6 20.2 6C20.2 6 20.1 5.8 20.3 5.8C20.6 5.8 20.7 6 20.7 6C20.7 6 20.7 6.4 20.2 6.5C19.8 6.5 19.3 5.9 19.3 5.9C19.3 5.9 19.5 6.3 19.3 6.1C19.1 6 18.9 6 18.9 6C18.9 6 18.9 5.6 18.8 5.9C18.7 6.2 18.3 6.3 18.3 6.3C18.3 6.3 18.4 6 18.5 5.8C18.6 5.7 18.4 5.6 18.3 5.6C18.3 5.5 18.2 5.4 18.1 5.5C18.1 5.5 18.2 5.5 18.3 5.6C18.3 5.7 18.3 5.8 18.3 5.9C18.2 6.2 17.8 6.1 17.8 6.1C17.8 6.1 17.7 6 17.9 5.8C18.1 5.5 17.5 5.3 17.5 5.3C17.5 5.3 17.5 5.5 17.5 5.6C17.4 5.8 17.2 5.7 17.2 5.7C17.2 5.7 17 5.5 16.8 5.7C16.7 5.8 16.9 6.1 16.9 6.1C16.9 6.1 17 6 17.2 5.9C17.4 5.8 17.6 6 17.6 6C17.6 6 17.5 6.1 17.4 6.3C17.2 6.5 17.4 6.5 17.4 6.5C17.4 6.5 17.7 6.2 17.7 6.4C17.7 6.6 17.8 6.5 18.2 6.7C18.6 6.8 19.5 6.5 19.5 6.5C19.5 6.5 20.4 6.6 20.4 7.2C20.4 7.8 20 8 20 8.1C20 8.1 20.3 8.6 20.3 9.2C20.3 9.7 20.1 10 20 10.7C19.9 11.3 20.2 11.3 20.3 11.4C20.5 11.6 20.2 11.8 20 12C19.9 12.2 20 12.2 20.1 12.4C20.2 12.6 20.2 12.8 20.1 12.8C20 12.8 19.8 12.7 19.8 12.7C19.8 12.7 19.7 12.8 19.5 12.8C19.4 12.8 19.3 12.7 19.3 12.7C19.3 12.7 19.3 12.8 19.1 12.8C18.9 12.8 18.9 12.7 18.9 12.7C18.9 12.7 18.6 12.8 18.4 12.8C18.3 12.8 18.2 12.7 18.2 12.7C18.2 12.7 18.2 12.8 18 12.8C17.9 12.8 17.8 12.7 17.8 12.7C17.8 12.7 17.7 12.8 17.6 12.8C17.4 12.8 17.4 12.7 17.4 12.7C17.4 12.7 17.4 12.8 17.2 12.8C17.1 12.8 17.1 12.7 17.1 12.5C17.1 12.3 17.8 12.2 17.8 12.2C17.8 12.2 18.1 11.6 17.7 11.3C17.4 11 17.3 10.3 17.2 10.3C17.1 10.3 16.6 10.4 16.3 10.5C16 10.6 15.3 10.9 15.3 10.9C15.3 10.9 15.1 11.1 15 11.4C15 11.7 15.4 11.7 15.4 11.7C15.3 12.1 14.9 12.2 14.8 12.2C15 12.3 14.8 12.8 14.7 12.8C14.5 12.9 14.4 12.7 14.4 12.7C14.4 12.7 14.2 12.8 14.1 12.8C14 12.8 13.8 12.7 13.8 12.7C13.8 12.7 13.8 12.8 13.6 12.8C13.5 12.8 13.5 12.7 13.5 12.7C13.5 12.7 13.4 12.8 13.2 12.8C13 12.9 13.2 12.6 13.2 12.4C13.2 12.3 13.6 12.2 13.8 12.2C14 12.3 14.2 12.1 14.2 11.8C14.3 11.5 14 11 14 11L13.5 10.8C13.5 10.8 13.2 11.1 13 11.1C12.8 11.1 12.3 10.7 12.3 10.7C12.3 10.7 12.2 10.8 12.1 10.8C12.1 10.8 11.9 10.7 12 10.4C12 10.2 12 10.1 11.9 10C11.9 9.9 11.9 10.2 11.8 10.3C11.7 10.3 11.7 10.4 11.7 10.5C11.6 10.6 11.8 10.9 11.8 10.9C11.8 10.9 12.1 10.9 12.1 11.1C12.1 11.2 11.9 11.2 11.9 11.3C11.8 11.3 11.8 11.4 11.9 11.4C11.9 11.4 12.1 11.6 12.1 11.6L11.7 11.6L11.5 12L11.2 11.6L10.8 11.6C10.8 11.6 10.8 11.5 11 11.4C11.2 11.4 11.1 11.3 11.1 11.3C11.1 11.3 10.9 11.3 10.9 11.1C10.9 10.9 11.1 10.9 11.1 10.9C11.1 10.9 11.2 10.8 11.2 10.5C11.2 10.2 11.2 10.3 11.1 10.3C10.9 10.3 11.1 9.9 11.2 9.9C11.4 9.9 11.2 9.2 11.1 9.2C10.9 9.2 10.8 8.9 10.8 8.6C10.8 8.4 11.2 8.3 11.2 8.3L11.2 5.9C11.2 4.3 12.2 4.3 12.2 4.3ZM18.7 11C18.7 11 18.4 11.3 18.6 11.4C18.8 11.4 19.1 11.4 19 11.6C18.8 11.7 18.7 12 18.7 12.2C18.7 12.4 18.7 12.5 18.7 12.4C18.8 12.4 19.1 12.3 19.3 12.2C19.5 12.1 19.4 11.9 19.4 11.7C19.4 11.4 18.8 11 18.7 11ZM16.4 6.3C16.4 6.3 16.4 7 16.4 7C16.3 7.1 16.2 7.2 16.3 7.2C16.4 7.3 16.4 7.5 16.3 7.5C16.2 7.5 16.1 7.6 16.2 7.7C16.3 7.9 16.3 8 16.5 8C16.7 8 17.7 8 18 7.9C18.3 7.8 18.6 7.9 19.1 7.8C19.5 7.8 20.1 7.5 20 7.2C19.9 7 19.8 6.7 19.1 6.9C18.3 7.1 18 7.2 17.7 7.1C17.4 6.9 17.1 6.8 17 6.8C17 6.8 17 7.2 16.8 7.1C16.7 7 16.5 6.9 16.6 6.8C16.6 6.6 16.7 6.6 16.7 6.5C16.7 6.3 16.4 6.3 16.4 6.3Z" fill="#feca00"></path>
+                                            <path d="M8.6 1.4L10.1 1.4L10.1 15.8L8.6 15.8L8.6 1.4Z" fill="#e8aa00"></path>
+                                            <path fill-rule="evenodd" d="M11.1 14.5C11.2 14.3 11.1 14.8 11.1 15.1C11.1 15.4 10.8 15.9 10.6 15.7C10.4 15.6 10.2 15.7 10.2 15.7C10.2 15.7 10.2 15.6 10.2 15.5C10.2 15.3 9.9 15 10.3 14.9C10.7 14.8 11 14.7 11.1 14.5ZM20.5 14.5C20.6 14.7 20.9 14.8 21.3 14.9C21.7 15 21.4 15.3 21.4 15.5L21.4 15.7C21.4 15.7 21.2 15.6 21 15.7C20.8 15.9 20.5 15.4 20.5 15.1C20.5 14.8 20.4 14.3 20.5 14.5ZM10.6 1.5C10.8 1.4 11.1 1.9 11.1 2.1C11.1 2.4 11.2 2.9 11.1 2.8C11 2.6 10.7 2.4 10.3 2.3C9.9 2.2 10.2 1.9 10.2 1.8L10.2 1.5C10.2 1.5 10.4 1.7 10.6 1.5ZM20.5 2.1C20.5 1.9 20.8 1.4 21 1.5C21.2 1.7 21.4 1.5 21.4 1.5L21.4 1.8C21.4 1.9 21.7 2.2 21.3 2.3C20.9 2.4 20.6 2.6 20.5 2.8C20.4 2.9 20.5 2.4 20.5 2.1Z" fill="#feca00"></path>
+                                        </svg>
+                                    </template>
+                                    <template lwc:elseif={isFlagIN}>
+                                        <svg class="profile-phone__flag" viewBox="0 0 22 16" aria-hidden="true" data-id="flag-in">
+                                            <rect width="22" height="16" fill="#ffffff"></rect>
+                                            <rect width="22" height="5.33" fill="#ff9933"></rect>
+                                            <rect y="10.67" width="22" height="5.33" fill="#138808"></rect>
+                                            <circle cx="11" cy="8" r="2.1" fill="none" stroke="#000080" stroke-width="0.6"></circle>
+                                            <circle cx="11" cy="8" r="0.55" fill="#000080"></circle>
+                                            <rect x="0.25" y="0.25" width="21.5" height="15.5" fill="none" stroke="#000000" stroke-opacity="0.12" stroke-width="0.5"></rect>
+                                        </svg>
+                                    </template>
+                                    <template lwc:elseif={isFlagUS}>
+                                        <svg class="profile-phone__flag" viewBox="0 0 22 16" aria-hidden="true" data-id="flag-us">
+                                            <rect width="22" height="16" fill="#ffffff"></rect>
+                                            <path d="M0 0h22v1.23H0zM0 2.46h22v1.23H0zM0 4.92h22v1.23H0zM0 7.38h22v1.23H0zM0 9.85h22v1.23H0zM0 12.31h22v1.23H0zM0 14.77h22v1.23H0z" fill="#b22234"></path>
+                                            <rect width="8.8" height="8.62" fill="#3c3b6e"></rect>
+                                            <path d="M1.5 1.6h.8v.8h-.8zM4 1.6h.8v.8H4zM6.5 1.6h.8v.8h-.8zM2.75 3.6h.8v.8h-.8zM5.25 3.6h.8v.8h-.8zM1.5 5.6h.8v.8h-.8zM4 5.6h.8v.8H4zM6.5 5.6h.8v.8h-.8z" fill="#ffffff"></path>
+                                        </svg>
+                                    </template>
+                                    <span id="phone-code" class="profile-phone__code" data-id="phone-code">{phoneCode}</span>
+                                    <template lwc:if={isEditing}>
+                                        <span class="profile-phone__chevron" aria-hidden="true"></span>
+                                        <select
+                                            class="profile-phone__select"
+                                            aria-label={text.countryCode}
+                                            data-id="phone-country"
+                                            onchange={handleCountryChange}
+                                        >
+                                            <template for:each={countryOptions} for:item="country">
+                                                <option key={country.code} value={country.code} selected={country.selected}>{country.label}</option>
+                                            </template>
+                                        </select>
+                                    </template>
+                                </span>
+                                <input
+                                    id="phoneNumber"
+                                    type="tel"
+                                    inputmode="tel"
+                                    class="profile-phone__input"
+                                    value={form.phoneNumber}
+                                    readonly={isViewing}
+                                    maxlength="20"
+                                    autocomplete="tel-national"
+                                    aria-invalid={ui.phoneInvalid}
+                                    aria-describedby="phone-code phone-error"
+                                    data-id="phone-number"
+                                    data-field="phoneNumber"
+                                    oninput={handleFieldInput}
+                                />
+                            </div>
+                            <template lwc:if={fieldErrors.phone}>
+                                <p id="phone-error" class="cp-error" data-id="phone-error">{fieldErrors.phone}</p>
+                            </template>
+                        </div>
+                        <div class="cp-field">
+                            <label class="cp-label" for="department">{text.department}</label>
+                            <input
+                                id="department"
+                                type="text"
+                                class={ui.departmentClass}
+                                value={form.department}
+                                readonly={isViewing}
+                                maxlength="80"
+                                aria-invalid={ui.departmentInvalid}
+                                aria-describedby="department-error"
+                                data-id="department"
+                                data-field="department"
+                                oninput={handleFieldInput}
+                            />
+                            <template lwc:if={fieldErrors.department}>
+                                <p id="department-error" class="cp-error" data-id="department-error">{fieldErrors.department}</p>
+                            </template>
+                        </div>
+                    </div>
+
+                    <h2 class="cp-section-title profile-section profile-section_next">{text.account}</h2>
+                    <div class="cp-form-grid">
+                        <div class="cp-field">
+                            <label class="cp-label" for="username">{text.username}</label>
+                            <input id="username" type="text" class="cp-input" value={profile.username} readonly data-id="username" />
+                        </div>
+                        <div class="cp-field">
+                            <label class="cp-label" for="password">{text.password}</label>
+                            <div class="cp-input-group">
+                                <input id="password" type="text" class="cp-input profile-password" value={text.passwordMask} readonly data-id="password" />
+                                <button
+                                    type="button"
+                                    class="cp-btn cp-btn_link profile-change"
+                                    aria-label={text.changePassword}
+                                    aria-haspopup="dialog"
+                                    data-id="change-password"
+                                    onclick={handleOpenPassword}
+                                >{text.change}</button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </template>
+
+        <!-- Change password popup (portal modal style) -->
+        <template lwc:if={isPasswordOpen}>
+            <div class="cp-modal-overlay" role="presentation" onkeydown={handlePasswordKeydown}>
+                <section
+                    class="cp-modal cp-modal_md profile-pw"
+                    role="dialog"
+                    aria-modal="true"
+                    aria-labelledby="pw-title"
+                    data-id="password-modal"
+                >
+                    <button
+                        type="button"
+                        class="cp-close cp-modal__close"
+                        title={text.close}
+                        aria-label={text.close}
+                        disabled={isChangingPassword}
+                        data-id="pw-close"
+                        data-pw-focus
+                        onclick={handleClosePassword}
+                    >
+                        <svg viewBox="0 0 14 14" width="14" height="14" aria-hidden="true"><path d={closePath}></path></svg>
+                    </button>
+
+                    <template lwc:if={passwordChanged}>
+                        <svg class="profile-pw__check" viewBox="0 0 72 72" aria-hidden="true">
+                            <circle cx="36" cy="36" r="36"></circle>
+                            <path d="M22 37l9 9 19-19"></path>
+                        </svg>
+                    </template>
+                    <h2 id="pw-title" class="cp-modal__title">{passwordTitle}</h2>
+
+                    <template lwc:if={passwordChanged}>
+                        <p class="cp-modal__text" role="status" data-id="pw-success">{text.pwDoneText}</p>
+                        <div class="cp-modal__footer">
+                            <button type="button" class="cp-btn cp-btn_lg" data-id="pw-done" data-pw-focus onclick={handleClosePassword}>{text.pwDone}</button>
+                        </div>
+                    </template>
+                    <template lwc:else>
+                        <p class="cp-modal__text">{text.pwText}</p>
+                        <form class="cp-modal__body profile-pw__form" novalidate aria-busy={pwBusyState} onsubmit={handleSubmitPassword}>
+                            <template lwc:if={passwordError}>
+                                <div class="cp-alert cp-alert_error profile-pw__error" role="alert" data-id="pw-error">{passwordError}</div>
+                            </template>
+
+                            <div class="cp-field">
+                                <label class="cp-label" for="pwCurrent">{text.pwCurrent}</label>
+                                <div class="profile-pw__control">
+                                    <input
+                                        id="pwCurrent"
+                                        type={pw.currentType}
+                                        class={pw.currentClass}
+                                        value={passwords.current}
+                                        autocomplete="current-password"
+                                        aria-invalid={pw.currentInvalid}
+                                        aria-describedby="pwCurrent-error"
+                                        data-id="pw-current"
+                                        data-field="current"
+                                        data-pw-focus
+                                        oninput={handlePasswordInput}
+                                    />
+                                    <button
+                                        type="button"
+                                        class={pw.currentEyeClass}
+                                        aria-label={text.pwShowCurrent}
+                                        aria-pressed={pw.currentShown}
+                                        aria-controls="pwCurrent"
+                                        data-id="pw-eye-current"
+                                        data-field="current"
+                                        data-pw-focus
+                                        onclick={handleTogglePasswordShown}
+                                    >
+                                        <template lwc:if={pw.currentEyeOff}>
+                                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d={eyeOffPath}></path></svg>
+                                        </template>
+                                        <template lwc:else>
+                                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d={eyePath}></path></svg>
+                                        </template>
+                                    </button>
+                                </div>
+                                <template lwc:if={passwordErrors.current}>
+                                    <p id="pwCurrent-error" class="cp-error" data-id="pw-current-error">{passwordErrors.current}</p>
+                                </template>
+                            </div>
+
+                            <div class="cp-field">
+                                <label class="cp-label" for="pwNew">{text.pwNew}</label>
+                                <div class="profile-pw__control">
+                                    <input
+                                        id="pwNew"
+                                        type={pw.nextType}
+                                        class={pw.nextClass}
+                                        value={passwords.next}
+                                        autocomplete="new-password"
+                                        aria-invalid={pw.nextInvalid}
+                                        aria-describedby="pwNew-rules pwNew-error"
+                                        data-id="pw-next"
+                                        data-field="next"
+                                        data-pw-focus
+                                        oninput={handlePasswordInput}
+                                    />
+                                    <button
+                                        type="button"
+                                        class={pw.nextEyeClass}
+                                        aria-label={text.pwShowNew}
+                                        aria-pressed={pw.nextShown}
+                                        aria-controls="pwNew"
+                                        data-id="pw-eye-next"
+                                        data-field="next"
+                                        data-pw-focus
+                                        onclick={handleTogglePasswordShown}
+                                    >
+                                        <template lwc:if={pw.nextEyeOff}>
+                                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d={eyeOffPath}></path></svg>
+                                        </template>
+                                        <template lwc:else>
+                                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d={eyePath}></path></svg>
+                                        </template>
+                                    </button>
+                                </div>
+                                <template lwc:if={passwordErrors.next}>
+                                    <p id="pwNew-error" class="cp-error" data-id="pw-next-error">{passwordErrors.next}</p>
+                                </template>
+                                <template lwc:else>
+                                    <p id="pwNew-rules" class="cp-help profile-pw__rules" data-id="pw-rules">{text.pwRules}</p>
+                                </template>
+                            </div>
+
+                            <div class="cp-field">
+                                <label class="cp-label" for="pwConfirm">{text.pwConfirm}</label>
+                                <div class="profile-pw__control">
+                                    <input
+                                        id="pwConfirm"
+                                        type={pw.confirmType}
+                                        class={pw.confirmClass}
+                                        value={passwords.confirm}
+                                        autocomplete="new-password"
+                                        aria-invalid={pw.confirmInvalid}
+                                        aria-describedby="pwConfirm-error"
+                                        data-id="pw-confirm"
+                                        data-field="confirm"
+                                        data-pw-focus
+                                        oninput={handlePasswordInput}
+                                    />
+                                    <button
+                                        type="button"
+                                        class={pw.confirmEyeClass}
+                                        aria-label={text.pwShowConfirm}
+                                        aria-pressed={pw.confirmShown}
+                                        aria-controls="pwConfirm"
+                                        data-id="pw-eye-confirm"
+                                        data-field="confirm"
+                                        data-pw-focus
+                                        onclick={handleTogglePasswordShown}
+                                    >
+                                        <template lwc:if={pw.confirmEyeOff}>
+                                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d={eyeOffPath}></path></svg>
+                                        </template>
+                                        <template lwc:else>
+                                            <svg viewBox="0 0 24 24" aria-hidden="true"><path d={eyePath}></path></svg>
+                                        </template>
+                                    </button>
+                                </div>
+                                <template lwc:if={passwordErrors.confirm}>
+                                    <p id="pwConfirm-error" class="cp-error" data-id="pw-confirm-error">{passwordErrors.confirm}</p>
+                                </template>
+                            </div>
+
+                            <div class="cp-modal__footer">
+                                <button
+                                    type="button"
+                                    class="cp-btn cp-btn_lg cp-btn_secondary"
+                                    disabled={isChangingPassword}
+                                    data-id="pw-cancel"
+                                    data-pw-focus
+                                    onclick={handleClosePassword}
+                                >{text.cancel}</button>
+                                <button
+                                    type="submit"
+                                    class={pwSubmitClass}
+                                    disabled={isChangingPassword}
+                                    aria-busy={pwBusyState}
+                                    data-id="pw-submit"
+                                    data-pw-focus
+                                >
+                                    <template lwc:if={isChangingPassword}>
+                                        <span class="profile-spinner" aria-hidden="true"></span>
+                                    </template>
+                                    <span>{text.pwSubmit}</span>
+                                </button>
+                            </div>
+                            <span class="cp-visually-hidden" role="status">{pwStatus}</span>
+                        </form>
+                    </template>
+                </section>
+            </div>
+        </template>
+    </div>
+</template>

@@ -1,0 +1,104 @@
+<template>
+    <div class="cp-page ev-page">
+        <!-- Figma p85 starts straight with the cards; the heading is for screen readers -->
+        <h1 class="cp-visually-hidden">{labels.title}</h1>
+
+        <template lwc:if={isLoading}>
+            <div class="cp-loading">
+                <lightning-spinner alternative-text={labels.loading} size="medium"></lightning-spinner>
+            </div>
+        </template>
+
+        <template lwc:if={hasError}>
+            <div class="cp-alert cp-alert_error ev-alert" role="alert">
+                <p class="ev-alert__text">{labels.loadError}</p>
+                <button type="button" class="cp-btn cp-btn_sm" onclick={handleRetry}>{labels.retry}</button>
+            </div>
+        </template>
+
+        <template lwc:if={showContent}>
+            <template lwc:if={hasNoEvents}>
+                <div class="cp-empty">
+                    <img class="cp-empty__img" src={emptyImageUrl} alt="" width="254" height="116" />
+                    <p class="cp-empty__text">{labels.empty}</p>
+                </div>
+            </template>
+            <template lwc:else>
+                <ul class="ev-grid">
+                    <template for:each={eventCards} for:item="event">
+                        <li key={event.id} class="cp-card ev-card">
+                            <div class="ev-card__top">
+                                <div class="ev-card__text">
+                                    <h2 class="ev-card__title" title={event.title}>{event.title}</h2>
+                                    <p class="ev-card__desc">{event.description}</p>
+                                </div>
+                            </div>
+
+                            <ul class="ev-card__meta">
+                                <li class="ev-meta">
+                                    <span class="ev-meta__icon" aria-hidden="true">
+                                        <svg viewBox="0 0 15 15" width="15" height="15" focusable="false">
+                                            <path d={icons.calendar}></path>
+                                        </svg>
+                                    </span>
+                                    <span class="ev-meta__text">
+                                        <span>{event.eventDate}</span>
+                                        <span class="ev-meta__time">{event.timeRange}</span>
+                                    </span>
+                                </li>
+                                <li class="ev-meta">
+                                    <span class="ev-meta__icon" aria-hidden="true">
+                                        <svg viewBox="0 0 16.4 17.9" width="16" height="17" focusable="false">
+                                            <path d={icons.pin}></path>
+                                        </svg>
+                                    </span>
+                                    <span class="ev-meta__text">{event.location}</span>
+                                </li>
+                            </ul>
+
+                            <button
+                                type="button"
+                                class={event.buttonClass}
+                                data-event-id={event.id}
+                                disabled={event.isDisabled}
+                                onclick={handleRegister}
+                            >
+                                {event.buttonLabel}
+                            </button>
+                        </li>
+                    </template>
+                </ul>
+            </template>
+        </template>
+
+        <!-- Figma p86 -->
+        <template lwc:if={isSuccessModalOpen}>
+            <div
+                class="cp-modal-overlay"
+                role="presentation"
+                onmousedown={handleOverlayMouseDown}
+                onclick={handleOverlayClick}
+                onkeydown={handleModalKeydown}
+            >
+                <section class="cp-modal ev-done" role="dialog" aria-modal="true" aria-labelledby="ev-done-title" tabindex="-1">
+                    <button
+                        type="button"
+                        class="cp-close cp-modal__close"
+                        title={labels.close}
+                        aria-label={labels.close}
+                        onclick={handleCloseSuccessModal}
+                    >
+                        <svg viewBox="0 0 14 14" width="14" height="14" aria-hidden="true" focusable="false">
+                            <path d={icons.close}></path>
+                        </svg>
+                    </button>
+                    <div class="cp-success ev-done__body">
+                        <img class="cp-success__icon ev-done__icon" src={successImageUrl} alt="" width="150" height="150" />
+                        <h2 id="ev-done-title" class="cp-success__title ev-done__title">{successTitle}</h2>
+                        <p class="cp-success__text ev-done__text">{successMessage}</p>
+                    </div>
+                </section>
+            </div>
+        </template>
+    </div>
+</template>

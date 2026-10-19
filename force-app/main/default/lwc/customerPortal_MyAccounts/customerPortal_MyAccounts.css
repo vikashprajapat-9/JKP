@@ -1,0 +1,650 @@
+@import 'c/customerPortalStyles';
+
+/* My Accounts, measured from the Figma: p61 (filter + account cards), p62 (My Account summary),
+   p63-64 (My Payables, closed and open). 1 Figma px = 1 CSS px. */
+
+.acc-head.cp-page-head {
+    margin-bottom: 0;
+}
+
+/* ============================== LOADING / ERROR ============================== */
+.acc-loading {
+    flex-direction: column;
+}
+
+.acc-loading__text {
+    margin: 88px 0 0;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--cp-muted);
+}
+
+.acc-state {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    gap: 16px;
+    min-height: 200px;
+    padding: 64px 16px;
+    text-align: center;
+}
+
+.acc-state__text {
+    max-width: 420px;
+    margin: 0;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--cp-muted);
+    overflow-wrap: anywhere;
+}
+
+/* =========================== FILTER + CARDS (p61) =========================== */
+.acc-toolbar {
+    display: flex;
+    justify-content: flex-end;
+    margin-top: 10px;
+}
+
+.acc-filter {
+    position: relative;
+    max-width: 100%;
+}
+
+/* the shared 206 x 40 filter as a button: icon 14px from the border, label 14px after the icon (p61) */
+.acc-filter__btn.cp-filter {
+    gap: 14px;
+    padding-right: 40px;
+    padding-left: 13px;
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+}
+
+.acc-filter__btn.cp-filter::after {
+    right: 19px;
+}
+
+.acc-filter__btn:focus-visible {
+    border-color: var(--cp-navy);
+    box-shadow: var(--cp-focus);
+    outline: none;
+}
+
+.acc-filter__btn.cp-filter > svg.acc-filter__icon {
+    width: 16.8px;
+    height: 16.6px;
+}
+
+.acc-filter__label {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.acc-filter__menu {
+    position: absolute;
+    top: calc(100% + 6px);
+    right: 0;
+    z-index: 5;
+    min-width: 100%;
+    max-width: calc(100vw - 32px);
+    max-height: 60vh;
+    margin: 0;
+    padding: 6px;
+    border: 1px solid var(--cp-filter-border);
+    border-radius: var(--cp-radius-sm);
+    background: var(--cp-surface);
+    box-shadow: var(--cp-shadow-modal);
+    list-style: none;
+    overflow-y: auto;
+}
+
+.acc-filter__item {
+    padding: 10px 12px;
+    border-radius: 6px;
+    color: var(--cp-filter-ink);
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 500;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.acc-filter__item:hover {
+    background: var(--cp-tint);
+}
+
+.acc-filter__item:focus-visible {
+    outline: 2px solid var(--cp-navy);
+    outline-offset: -2px;
+}
+
+.acc-filter__item_active,
+.acc-filter__item_active:hover {
+    background: var(--cp-navy);
+    color: #ffffff;
+}
+
+.acc-empty {
+    padding: 48px 16px;
+}
+
+/* 308 x 253 cards, 16px apart, as on p61 */
+.acc-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(280px, 308px));
+    gap: 24px 16px;
+    margin-top: 8px;
+}
+
+.acc-card {
+    display: flex;
+    flex-direction: column;
+    width: 100%;
+    padding: 0;
+    overflow: hidden;
+}
+
+.acc-card__media {
+    position: relative;
+    height: 119px;
+    background: #d9d9d9;
+    overflow: hidden;
+    touch-action: pan-y;
+}
+
+.acc-card__img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.acc-arrow {
+    top: calc(50% + 3px);
+}
+
+.acc-arrow.cp-carousel-arrow_prev {
+    left: 8px;
+}
+
+.acc-arrow.cp-carousel-arrow_next {
+    right: 8px;
+}
+
+.acc-arrow svg {
+    width: 6.4px;
+    height: 10.8px;
+}
+
+/* p61 dots: 4px white, the current one 8px navy in a 1px white ring; each has a larger tap area */
+.acc-dots {
+    bottom: 9px;
+    gap: 4px;
+}
+
+.acc-dots .acc-dot {
+    position: relative;
+    width: 4px;
+    height: 4px;
+}
+
+.acc-dots .acc-dot::before {
+    content: '';
+    position: absolute;
+    inset: -6px -2px;
+}
+
+.acc-dots .cp-dot_active {
+    width: 10px;
+    height: 10px;
+    border: 1px solid #ffffff;
+    background: var(--cp-navy);
+}
+
+.acc-card__body {
+    display: flex;
+    flex: 1 1 auto;
+    flex-direction: column;
+    min-width: 0;
+    padding: 10px 15px 23px;
+}
+
+.acc-card__subtitle {
+    margin-top: 1px;
+    font-weight: 500;
+}
+
+.acc-card__btn {
+    margin-top: 18px;
+}
+
+/* ============================ TABS (p62-64) ============================ */
+.acc-detail {
+    margin-top: 6px;
+}
+
+.acc-tabbar {
+    display: flex;
+    align-items: stretch;
+    justify-content: space-between;
+    gap: 16px;
+    min-width: 0;
+    padding-bottom: 1px;
+    box-shadow: inset 0 -2px 0 var(--cp-line);
+}
+
+.acc-tabs.cp-tabs {
+    --cp-tab-accent: #0e1344;
+    flex: 1 1 auto;
+    border-bottom: 0;
+}
+
+.acc-tabs .cp-tab {
+    margin: 0;
+    border-bottom: 0;
+}
+
+.acc-back {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    gap: 8px;
+    padding: 0 4px;
+    border: 0;
+    background: none;
+    color: var(--cp-navy-ink);
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 500;
+    white-space: nowrap;
+    cursor: pointer;
+}
+
+.acc-back svg {
+    width: 18px;
+    height: 14px;
+    fill: currentColor;
+}
+
+.acc-back:hover span {
+    text-decoration: underline;
+}
+
+.acc-back:focus-visible {
+    outline: 2px solid var(--cp-navy);
+    outline-offset: -2px;
+}
+
+.acc-tabpanel {
+    margin-top: 31px;
+}
+
+/* ========================= MY ACCOUNT SUMMARY (p62) ========================= */
+.acc-summary.cp-card {
+    --acc-pad-l: 36px;
+    --acc-pad-r: 58px;
+    padding: 21px var(--acc-pad-r) 24px var(--acc-pad-l);
+}
+
+/* centred on the whole card, not on the (asymmetric) content box */
+.acc-summary__title {
+    margin: 0 calc(-1 * var(--acc-pad-r)) 0 calc(-1 * var(--acc-pad-l));
+    padding: 0 16px;
+    font-size: 24px;
+    line-height: 32px;
+    font-weight: 500;
+    text-align: center;
+    color: var(--cp-ink);
+    overflow-wrap: anywhere;
+}
+
+.acc-summary__body {
+    display: flex;
+    align-items: center;
+    margin-top: 11px;
+}
+
+/* two columns as wide as their longest label, pushed to both edges (Figma: 36px from the card edge
+   and 41px before the divider), each item centred in its column */
+.acc-summary__figures {
+    display: grid;
+    flex: 1 1 auto;
+    grid-template-columns: auto auto;
+    justify-content: space-between;
+    column-gap: 24px;
+    min-width: 0;
+}
+
+.acc-summary__col {
+    display: flex;
+    flex-direction: column;
+    gap: 17px;
+    min-width: 0;
+    margin: 0;
+}
+
+.acc-stat {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin: 0;
+    text-align: center;
+}
+
+.acc-stat__label {
+    margin: 0;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    color: var(--cp-muted);
+}
+
+.acc-stat__value {
+    margin: 7px 0 0;
+    font-size: 20px;
+    line-height: 28px;
+    font-weight: 500;
+    color: var(--cp-ink);
+    overflow-wrap: anywhere;
+}
+
+.acc-summary__divider {
+    flex: 0 0 1px;
+    align-self: center;
+    height: 261px;
+    margin: 0 46px 0 41px;
+    background: var(--cp-border);
+}
+
+.acc-summary__side {
+    display: flex;
+    flex: 0 0 305px;
+    flex-direction: column;
+    align-items: center;
+    min-width: 0;
+}
+
+/* Total Payable: 233 x 154, 2px #fac51e, radius 13 */
+.acc-total {
+    width: 233px;
+    max-width: 100%;
+    margin-top: 26px;
+    padding: 15px 4px 18px;
+    border: 2px solid var(--cp-gold);
+    border-radius: 13px;
+    text-align: center;
+}
+
+.acc-total__label {
+    margin: 0;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    color: var(--cp-muted);
+}
+
+.acc-total__value {
+    margin: 8px 0 0;
+    font-size: 20px;
+    line-height: 28px;
+    font-weight: 500;
+    color: var(--cp-ink);
+    overflow-wrap: anywhere;
+}
+
+.acc-total__note {
+    margin: 9px 0 0;
+    font-size: 12px;
+    line-height: 24px;
+    font-weight: 400;
+    color: var(--cp-muted);
+    white-space: pre-line;
+}
+
+.acc-stat_side .acc-stat__value {
+    margin-top: 8px;
+}
+
+.acc-download {
+    width: 100%;
+    margin-top: 23px;
+}
+
+/* ========================= MY PAYABLES (p63-64) ========================= */
+.acc-payables {
+    display: flex;
+    flex-direction: column;
+    gap: 32px;
+    margin: 0;
+    padding: 0;
+    list-style: none;
+}
+
+/* 48px row with a 1px #c7c4c4 border, radius 8 */
+.acc-payable__head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    width: 100%;
+    min-height: 48px;
+    padding: 0 20px 0 16px;
+    border: 1px solid var(--cp-border);
+    border-radius: var(--cp-radius-sm);
+    background: var(--cp-surface);
+    color: var(--cp-ink);
+    text-align: left;
+    cursor: pointer;
+}
+
+.acc-payable__head:hover {
+    border-color: var(--cp-navy);
+}
+
+.acc-payable__head:focus-visible {
+    outline: 2px solid var(--cp-navy);
+    outline-offset: 2px;
+}
+
+/* Figma: semibold, 2px above the row centre */
+.acc-payable__title {
+    position: relative;
+    top: -2px;
+    min-width: 0;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.acc-payable__chevron {
+    flex: 0 0 auto;
+    width: 11.7px;
+    height: 6.5px;
+    fill: var(--cp-ink);
+    transition: transform 0.2s ease;
+}
+
+.acc-payable__chevron_open {
+    transform: rotate(180deg);
+}
+
+/* open state: square #f4f4f4 panel 12px under the row, three columns */
+.acc-payable__body {
+    display: grid;
+    grid-template-columns: repeat(3, minmax(0, 1fr));
+    gap: 16px;
+    margin: 12px 0 0;
+    padding: 15px 16px 17px;
+    background: #f4f4f4;
+}
+
+.acc-payable__item {
+    min-width: 0;
+}
+
+.acc-payable__item dt,
+.acc-payable__item dd {
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+}
+
+.acc-payable__item dt {
+    margin: 0;
+    font-weight: 600;
+    color: var(--cp-ink);
+}
+
+.acc-payable__item dd {
+    margin: 4px 0 0;
+    color: var(--cp-muted-2);
+    overflow-wrap: anywhere;
+}
+
+/* ================================ SMALLER SCREENS ================================ */
+/* The three-part summary needs about 860px; below that the right block moves under the figures */
+@media (max-width: 1199px) {
+    .acc-summary.cp-card {
+        --acc-pad-l: 32px;
+        --acc-pad-r: 32px;
+    }
+
+    .acc-summary__body {
+        flex-direction: column;
+        align-items: stretch;
+        gap: 24px;
+        margin-top: 24px;
+    }
+
+    .acc-summary__figures {
+        grid-template-columns: repeat(2, minmax(0, 1fr));
+        justify-content: stretch;
+        column-gap: 32px;
+    }
+
+    .acc-summary__divider {
+        flex: 0 0 auto;
+        align-self: stretch;
+        width: auto;
+        height: 1px;
+        margin: 0;
+    }
+
+    .acc-summary__side {
+        flex: 0 0 auto;
+        align-self: center;
+        width: 305px;
+        max-width: 100%;
+    }
+}
+
+@media (pointer: coarse) {
+    .acc-arrow.cp-carousel-arrow {
+        width: 28px;
+        height: 28px;
+        margin-top: -14px;
+    }
+}
+
+@media (max-width: 768px) {
+    .acc-toolbar {
+        margin-top: 16px;
+    }
+
+    .acc-filter {
+        width: 100%;
+    }
+
+    .acc-filter__btn.cp-filter {
+        width: 100%;
+        min-height: 44px;
+    }
+
+    .acc-filter__menu {
+        left: 0;
+        min-width: 0;
+        max-width: none;
+    }
+
+    .acc-filter__item {
+        padding: 12px;
+        white-space: normal;
+    }
+
+    .acc-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 16px;
+        margin-top: 16px;
+    }
+
+    .acc-card__media {
+        height: auto;
+        aspect-ratio: 308 / 120;
+    }
+
+    .acc-detail {
+        margin-top: 12px;
+    }
+
+    .acc-tabpanel {
+        margin-top: 20px;
+    }
+
+    .acc-summary.cp-card {
+        --acc-pad-l: 16px;
+        --acc-pad-r: 16px;
+        padding-top: 20px;
+    }
+
+    .acc-summary__title {
+        font-size: 20px;
+        line-height: 28px;
+    }
+
+    .acc-stat__label {
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .acc-stat__value,
+    .acc-total__value {
+        font-size: 18px;
+        line-height: 24px;
+    }
+
+    .acc-payables {
+        gap: 16px;
+    }
+
+    .acc-payable__head {
+        min-height: 48px;
+        padding: 12px 16px;
+    }
+
+    .acc-payable__body {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 12px;
+        margin-top: 8px;
+    }
+}
+
+@media (max-width: 480px) {
+    .acc-summary__figures {
+        grid-template-columns: minmax(0, 1fr);
+        row-gap: 16px;
+    }
+
+    .acc-back span {
+        display: none;
+    }
+
+    .acc-back {
+        padding: 0 8px;
+    }
+}

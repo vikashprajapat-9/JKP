@@ -1,0 +1,26 @@
+<template>
+    <section class="about-wrapper" aria-labelledby="about-title" aria-busy={busy}>
+
+        <h1 id="about-title" class="about-title">About Us</h1>
+
+        <template lwc:if={isLoading}>
+            <div class="skeleton" aria-hidden="true">
+                <span class="skeleton-line"></span>
+                <span class="skeleton-line"></span>
+                <span class="skeleton-line skeleton-line_short"></span>
+                <span class="skeleton-line"></span>
+                <span class="skeleton-line skeleton-line_short"></span>
+            </div>
+        </template>
+        <template lwc:elseif={hasContent}>
+            <c-portal-rich-text class="page-content" value={content}></c-portal-rich-text>
+        </template>
+        <template lwc:elseif={loadError}>
+            <p class="page-note page-note_error" role="alert">{loadError}</p>
+        </template>
+        <template lwc:else>
+            <p class="page-note">About Us will be available here soon.</p>
+        </template>
+
+    </section>
+</template>

@@ -1,0 +1,7 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<RemoteSiteSetting xmlns="http://soap.sforce.com/2006/04/metadata">
+    <description>JKP SharePoint (JKPConnectDataHub): upload sessions and file downloads of the Salesforce documents</description>
+    <disableProtocolSecurity>false</disableProtocolSecurity>
+    <isActive>true</isActive>
+    <url>https://keells.sharepoint.com</url>
+</RemoteSiteSetting>

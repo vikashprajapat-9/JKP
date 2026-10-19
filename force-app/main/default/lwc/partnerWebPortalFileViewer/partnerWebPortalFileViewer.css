@@ -1,0 +1,319 @@
+:host {
+    display: block;
+    font-family: var(--jk-font);
+}
+
+button {
+    font-family: var(--jk-font);
+}
+
+.viewer {
+    position: fixed;
+    inset: 0;
+    /* A portal whose own header or menu sits higher sets --jk-viewer-z (the Customer Portal does) */
+    z-index: var(--jk-viewer-z, 300);
+    display: flex;
+    flex-direction: column;
+    background: #212121;
+    animation: fadeIn 0.2s ease backwards;
+}
+
+.viewer-bar {
+    flex-shrink: 0;
+    display: grid;
+    grid-template-columns: 1fr auto 1fr;
+    align-items: center;
+    gap: 16px;
+    height: 80px;
+    padding: 0 48px;
+    background: #3d3d3d;
+    color: #ffffff;
+}
+
+.viewer-back {
+    display: inline-flex;
+    align-items: center;
+    gap: 16px;
+    justify-self: start;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: #ffffff;
+    font-size: 18px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.viewer-name {
+    max-width: 50vw;
+    overflow: hidden;
+    font-size: 17px;
+    font-weight: 600;
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.viewer-tools {
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 20px;
+}
+
+.tool-btn {
+    display: flex;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.tool-btn:disabled {
+    opacity: 0.4;
+    cursor: default;
+}
+
+.viewer-back:focus-visible,
+.tool-btn:focus-visible,
+.doc-open-btn:focus-visible,
+.doc-download-btn:focus-visible {
+    outline: 2px solid #8ab4ff;
+    outline-offset: 3px;
+}
+
+.zoom-label {
+    min-width: 40px;
+    font-size: 17px;
+    font-weight: 600;
+    text-align: right;
+}
+
+.viewer-body {
+    flex: 1;
+    overflow: auto;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    padding: 0 16px 24px;
+}
+
+.viewer-image {
+    display: block;
+    max-width: none;
+    margin: 24px auto 0;
+    border-radius: 6px;
+    box-shadow: 0 12px 32px rgb(0 0 0 / 45%);
+    transition: width 0.2s ease;
+}
+
+.viewer-video {
+    display: block;
+    width: min(1100px, 100%);
+    max-height: calc(100vh - 140px);
+    margin: 24px auto 0;
+    border-radius: 8px;
+    background: #000;
+}
+
+/* ---------- Document card (PDFs and other files: open in a new tab or download) ---------- */
+.doc-card {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 8px;
+    width: min(440px, 100%);
+    /* Centred in the free space below the bar */
+    margin: auto 0;
+    padding: 36px 28px 30px;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 12px 32px rgb(0 0 0 / 45%);
+    color: #3e4a5e;
+    text-align: center;
+}
+
+.doc-icon {
+    position: relative;
+    display: flex;
+    margin-bottom: 10px;
+    color: var(--jk-navy, #112149);
+}
+
+/* The extension, like the PDF tag on the marketing cards */
+.doc-tag {
+    position: absolute;
+    bottom: 12px;
+    left: -6px;
+    padding: 2px 6px;
+    border-radius: 3px;
+    background: #e53935;
+    color: #ffffff;
+    font-size: 11px;
+    font-weight: 700;
+    letter-spacing: 0.04em;
+}
+
+.doc-name {
+    max-width: 100%;
+    margin: 0;
+    color: var(--jk-text-strong, #17274d);
+    font-size: 18px;
+    font-weight: 600;
+    overflow-wrap: anywhere;
+}
+
+.doc-note {
+    margin: 0;
+    color: var(--jk-text-muted, #6b6b73);
+    font-size: 14px;
+}
+
+.doc-actions {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 12px;
+    margin-top: 18px;
+}
+
+.doc-open-btn,
+.doc-download-btn {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    gap: 8px;
+    min-width: 136px;
+    height: 44px;
+    padding: 0 20px;
+    border: 1px solid var(--jk-navy, #112149);
+    border-radius: 8px;
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.doc-open-btn {
+    background: var(--jk-navy, #112149);
+    color: #ffffff;
+}
+
+.doc-download-btn {
+    background: #ffffff;
+    color: var(--jk-navy, #112149);
+}
+
+.doc-download-btn:hover:not(:disabled) {
+    background: var(--jk-tint, #f3f8f9);
+}
+
+.doc-open-btn:disabled,
+.doc-download-btn:disabled {
+    opacity: 0.45;
+    cursor: default;
+}
+
+@keyframes fadeIn {
+    from { opacity: 0; }
+    to { opacity: 1; }
+}
+
+@media (max-width: 640px) {
+    .viewer-bar {
+        padding: 0 16px;
+    }
+
+    .viewer-tools {
+        gap: 12px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .viewer {
+        animation: none;
+    }
+}
+/* ---------- Customer Portal (portal="customer"): Figma p19 sizes. Only under .viewer_customer; the partner look
+   above is unchanged. Arrow 24px wide at x = 60, "Back" and the file name 20px, tools 21px apart, 52px right gutter. */
+.viewer_customer .viewer-bar {
+    padding: 0 52px 0 57px;
+    background: #3d3d3b;
+}
+
+.viewer_customer .viewer-back {
+    gap: 17px;
+    font-size: 20px;
+    line-height: 24px;
+    font-weight: 500;
+}
+
+.viewer_customer .viewer-back svg {
+    width: 30px;
+    height: 30px;
+}
+
+/* Figma sets the texts 2.5px above the middle of the bar */
+.viewer_customer .viewer-back span,
+.viewer_customer .viewer-name {
+    position: relative;
+    top: -2.5px;
+}
+
+.viewer_customer .viewer-name {
+    font-size: 20px;
+    line-height: 24px;
+    font-weight: 500;
+}
+
+.viewer_customer .viewer-tools {
+    gap: 21px;
+}
+
+.viewer_customer .zoom-label {
+    font-size: 20px;
+    font-weight: 500;
+}
+
+/* A photo sits in Figma p20's frame: 10px white border, rounded corners, soft shadow */
+.viewer_customer .viewer-image {
+    box-sizing: border-box;
+    border: 10px solid #ffffff;
+    border-radius: 12px;
+    background: #ffffff;
+    box-shadow: 0 2px 4px rgb(0 0 0 / 12%), 0 12px 32px rgb(0 0 0 / 35%);
+}
+
+.viewer_customer .doc-name {
+    font-weight: 500;
+}
+
+.viewer_customer .doc-open-btn,
+.viewer_customer .doc-download-btn {
+    font-weight: 500;
+}
+
+@media (max-width: 640px) {
+    .viewer_customer .viewer-bar {
+        padding: 0 16px;
+    }
+
+    .viewer_customer .viewer-back,
+    .viewer_customer .viewer-name,
+    .viewer_customer .zoom-label {
+        font-size: 16px;
+    }
+
+    .viewer_customer .viewer-back svg {
+        width: 26px;
+        height: 26px;
+    }
+
+    .viewer_customer .viewer-tools {
+        gap: 12px;
+    }
+
+    .viewer_customer .viewer-image {
+        border-width: 6px;
+        border-radius: 10px;
+    }
+}

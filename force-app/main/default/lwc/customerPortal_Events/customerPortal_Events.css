@@ -1,0 +1,179 @@
+@import 'c/customerPortalStyles';
+
+/* Events (Figma p85 card, p86 registration complete, p87 registered).
+   The look comes from c/customerPortalStyles; this file only holds what was measured for this screen. */
+
+.ev-alert {
+    align-items: center;
+    justify-content: space-between;
+}
+
+.ev-alert__text {
+    margin: 0;
+}
+
+/* ---------- cards (p85: 328 x 256, radius 16, soft shadow; the first row starts 4px under the frame top) ---------- */
+.ev-grid {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(296px, 328px));
+    gap: 24px;
+    margin: 4px 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.ev-card {
+    display: flex;
+    flex-direction: column;
+    height: 100%;
+    padding: 15px 16px 24px;
+}
+
+/* Title and description keep the room of a 2 line description, so the date, the venue and the button start at the
+   same height on every card, with or without a description (Figma p85) */
+.ev-card__top {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    min-height: 71px;
+}
+
+.ev-card__text {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+/* Figma: 20px blue title on one line ("Real Estate Summit 20..."); weights matched to the Figma ink */
+.ev-card__title {
+    margin: 0;
+    overflow: hidden;
+    font-size: 20px;
+    line-height: 24px;
+    font-weight: 600;
+    color: #1238cc;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.ev-card__desc {
+    margin: 7px 0 0;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    color: var(--cp-muted);
+    overflow-wrap: anywhere;
+}
+
+.ev-card__meta {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 24px 0 26px;
+    padding: 0;
+    list-style: none;
+}
+
+.ev-meta {
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    color: #000000;
+}
+
+.ev-meta__icon {
+    display: flex;
+    flex: 0 0 20px;
+    justify-content: center;
+    color: #242424;
+}
+
+.ev-meta__icon svg {
+    position: relative;
+    top: 1px;
+    display: block;
+    fill: currentColor;
+}
+
+.ev-meta__text {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.ev-meta__time {
+    margin-left: 10px;
+}
+
+/* 296 x 40 pill; Registered = grey #6d6e71 (p87) */
+.ev-register {
+    margin-top: auto;
+    border-radius: 20px;
+}
+
+.ev-register[disabled],
+.ev-register[disabled]:hover {
+    border-color: var(--cp-navy);
+    background: var(--cp-navy);
+    cursor: progress;
+}
+
+.ev-register_done[disabled],
+.ev-register_done[disabled]:hover {
+    border-color: var(--cp-muted);
+    background: var(--cp-muted);
+    cursor: default;
+}
+
+/* ---------- registration complete (p86: 866 x 436, 150px picture, content centred) ---------- */
+.ev-done {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 866px;
+    min-height: 436px;
+}
+
+.ev-done:focus {
+    outline: none;
+}
+
+.ev-done__body {
+    padding: 0;
+}
+
+.ev-done__icon {
+    width: 150px;
+    height: 150px;
+}
+
+.ev-done__title {
+    margin-top: 19px;
+}
+
+.ev-done__text {
+    max-width: 480px;
+    margin-top: 4px;
+    color: var(--cp-ink);
+}
+
+/* ---------- phone width ---------- */
+@media (max-width: 768px) {
+    .ev-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 16px;
+    }
+
+    .ev-done {
+        width: 100%;
+        min-height: 0;
+        padding-top: 48px;
+        padding-bottom: 40px;
+    }
+
+    .ev-done__icon {
+        width: 120px;
+        height: 120px;
+    }
+}

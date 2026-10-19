@@ -1,0 +1,1342 @@
+:host {
+    display: block;
+    font-family: var(--jk-font);
+    color: var(--jk-text);
+}
+
+button {
+    font-family: var(--jk-font);
+}
+
+p,
+h1,
+h2 {
+    margin: 0;
+}
+
+/* ---------- Back controls ---------- */
+.back-icon,
+.back-link {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--jk-text);
+    cursor: pointer;
+}
+
+.back-icon {
+    margin-bottom: 40px;
+}
+
+.back-link {
+    margin-bottom: 28px;
+    font-size: 26px;
+    font-weight: 600;
+}
+
+/* ---------- Layout ---------- */
+.detail-grid {
+    display: grid;
+    grid-template-columns: minmax(0, 1.42fr) minmax(0, 1fr);
+    gap: 24px;
+    align-items: start;
+}
+
+.col-left,
+.col-right {
+    display: flex;
+    flex-direction: column;
+    gap: 16px;
+    min-width: 0;
+}
+
+/* ---------- Hero ---------- */
+.hero {
+    position: relative;
+    height: 306px;
+    overflow: hidden;
+    border-radius: 14px;
+    background: var(--jk-navy);
+}
+
+.hero-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    display: block;
+}
+
+/* Photos from the Project Images folder cross-fade like the project cards */
+.hero-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+}
+
+.hero-slide_active {
+    opacity: 1;
+}
+
+.hero-nav {
+    position: absolute;
+    top: 50%;
+    z-index: 2;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 34px;
+    height: 34px;
+    margin-top: -17px;
+    padding: 0 0 3px;
+    border: 0;
+    border-radius: 50%;
+    background: rgb(0 0 0 / 38%);
+    color: #ffffff;
+    font-size: 24px;
+    line-height: 1;
+    cursor: pointer;
+    transition: background 0.2s ease;
+}
+
+.hero-nav:hover {
+    background: rgb(0 0 0 / 60%);
+}
+
+.hero-nav_prev {
+    left: 12px;
+}
+
+.hero-nav_next {
+    right: 12px;
+}
+
+.hero-dots {
+    position: absolute;
+    top: 18px;
+    right: 16px;
+    z-index: 2;
+    display: flex;
+    gap: 6px;
+}
+
+.hero-dot {
+    width: 8px;
+    height: 8px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: rgb(255 255 255 / 55%);
+    cursor: pointer;
+}
+
+.hero-dot_active {
+    background: #ffffff;
+}
+
+.hero-nav:focus-visible,
+.hero-dot:focus-visible,
+.doc-row-view:focus-visible,
+.doc-row-download:focus-visible,
+.doc-view:focus-visible,
+.doc-download:focus-visible {
+    outline: 2px solid var(--jk-navy);
+    outline-offset: 2px;
+}
+
+.hero-placeholder {
+    width: 100%;
+    height: 100%;
+    display: flex;
+    align-items: flex-end;
+    justify-content: flex-end;
+    background: linear-gradient(135deg, #1d2d5c 0%, #3a4f82 55%, #8fa6cc 100%);
+    color: #ffffff;
+}
+
+.hero-building {
+    width: 62%;
+    height: 90%;
+    margin-right: 4%;
+}
+
+.hero::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    background: linear-gradient(180deg, rgb(0 0 0 / 0%) 45%, rgb(0 0 0 / 55%) 100%);
+    pointer-events: none;
+}
+
+.phase-badge {
+    position: absolute;
+    top: 14px;
+    left: 16px;
+    z-index: 1;
+    padding: 8px 12px;
+    border-radius: 8px;
+    background: var(--jk-navy);
+    color: #ffffff;
+    font-size: 13px;
+    font-weight: 500;
+}
+
+.hero-overlay {
+    position: absolute;
+    left: 24px;
+    right: 24px;
+    bottom: 22px;
+    z-index: 1;
+    color: #ffffff;
+}
+
+.hero-name {
+    font-size: 26px;
+    font-weight: 600;
+    line-height: 32px;
+}
+
+.hero-location {
+    display: flex;
+    align-items: center;
+    gap: 6px;
+    margin-top: 8px;
+    font-size: 15px;
+}
+
+/* ---------- Buttons ---------- */
+.btn-outline {
+    width: 100%;
+    height: 52px;
+    border: 2px solid var(--jk-navy);
+    border-radius: var(--jk-radius);
+    background: var(--jk-surface);
+    color: var(--jk-navy);
+    font-size: 17px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.btn-outline:hover {
+    background: var(--jk-tint);
+}
+
+.btn-outline.small {
+    width: auto;
+    height: 40px;
+    padding: 0 20px;
+    border-width: 1px;
+    font-size: 14px;
+}
+
+/* ---------- Facts ---------- */
+.fact-row {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 16px;
+}
+
+.fact-card,
+.panel,
+.config-card {
+    border: 1px solid var(--jk-divider);
+    border-radius: 12px;
+    background: var(--jk-surface);
+    box-shadow: 0 2px 8px rgb(17 33 73 / 6%);
+}
+
+.fact-card {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    padding: 34px 24px;
+}
+
+.fact-label {
+    font-size: 12px;
+    font-weight: 500;
+    letter-spacing: 0.8px;
+    color: var(--jk-text-muted);
+}
+
+.fact-value {
+    font-size: 20px;
+    font-weight: 600;
+    color: var(--jk-text);
+}
+
+/* ---------- Amenities ---------- */
+.panel {
+    padding: 28px 24px;
+}
+
+.panel-title,
+.section-title {
+    font-size: 18px;
+    font-weight: 600;
+    color: var(--jk-text-strong);
+}
+
+.panel-title {
+    margin-bottom: 28px;
+}
+
+.amenity-row {
+    display: grid;
+    grid-template-columns: repeat(6, minmax(0, 1fr));
+    gap: 12px;
+}
+
+.amenity {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 10px;
+    text-align: center;
+}
+
+.amenity-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 56px;
+    height: 56px;
+    border-radius: 50%;
+    background: var(--jk-tint);
+    color: var(--jk-text);
+}
+
+.amenity-label {
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--jk-text-muted);
+}
+
+/* ---------- Configurations ---------- */
+.section-title {
+    margin-top: 4px;
+}
+
+.docs-title {
+    margin-top: 16px;
+}
+
+.config-card {
+    padding: 22px 20px 8px;
+}
+
+.config-top {
+    display: flex;
+    justify-content: space-between;
+    gap: 12px;
+    padding-bottom: 18px;
+    border-bottom: 1px solid var(--jk-divider);
+}
+
+.config-type {
+    font-size: 19px;
+    font-weight: 600;
+    color: var(--jk-text-strong);
+}
+
+.config-area {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+    margin-top: 10px;
+    font-size: 14px;
+    color: var(--jk-text-muted);
+}
+
+.config-price {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-end;
+    gap: 6px;
+    text-align: right;
+}
+
+.price-label {
+    font-size: 11px;
+    font-weight: 500;
+    letter-spacing: 0.8px;
+    color: var(--jk-text);
+}
+
+.price-value {
+    font-size: 19px;
+    font-weight: 700;
+    color: var(--jk-text-strong);
+    white-space: nowrap;
+}
+
+.doc-row {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 6px 0;
+}
+
+.doc-row-view,
+.doc-row-download {
+    display: inline-flex;
+    align-items: center;
+    gap: 10px;
+    padding: 8px 0;
+    border: 0;
+    background: none;
+    color: var(--jk-text);
+    font-size: 14px;
+    font-weight: 500;
+    cursor: pointer;
+}
+
+.doc-row-view:hover {
+    color: var(--jk-navy);
+    text-decoration: underline;
+}
+
+.doc-row-download:hover {
+    color: var(--jk-navy);
+}
+
+.doc-row-empty {
+    padding: 14px 0;
+    color: var(--jk-text-muted);
+    font-size: 13px;
+}
+
+/* ---------- Documents ---------- */
+.doc-card {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    padding: 16px;
+    border-radius: 12px;
+    background: #f5f6f8;
+}
+
+.doc-icon {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    border-radius: 6px;
+    background: var(--jk-surface);
+    color: var(--jk-text);
+    flex-shrink: 0;
+}
+
+.doc-name {
+    flex: 1;
+    min-width: 0;
+    overflow: hidden;
+    font-size: 16px;
+    font-weight: 500;
+    color: var(--jk-text-strong);
+    white-space: nowrap;
+    text-overflow: ellipsis;
+}
+
+.doc-view,
+.doc-download {
+    display: flex;
+    align-items: center;
+    padding: 4px;
+    border: 0;
+    background: none;
+    color: var(--jk-text);
+    font-size: 14px;
+    cursor: pointer;
+}
+
+.doc-view:hover {
+    text-decoration: underline;
+}
+
+.notice {
+    font-size: 13px;
+    color: var(--jk-text-muted);
+}
+
+.empty-note {
+    padding: 14px 0 4px;
+    color: var(--jk-text-muted);
+    font-size: 14px;
+}
+
+.load-error {
+    margin-bottom: 16px;
+    padding: 12px 16px;
+    border: 1px solid #f5c6cb;
+    border-radius: var(--jk-radius);
+    background: #fdecea;
+    color: var(--jk-badge-cancelled);
+    font-size: 14px;
+}
+
+/* Placeholders while the project loads */
+.skeleton-card {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    padding: 22px 20px;
+}
+
+.skeleton-line {
+    width: 45%;
+    height: 14px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #e6e9ee 25%, #f4f6f9 50%, #e6e9ee 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.3s linear infinite;
+}
+
+.skeleton-line_wide {
+    width: 70%;
+}
+
+@keyframes shimmer {
+    from { background-position: 200% 0; }
+    to { background-position: -200% 0; }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .hero-slide {
+        transition: none;
+    }
+
+    .skeleton-line {
+        animation: none;
+    }
+}
+
+/* ---------- Location view ---------- */
+.map-frame {
+    height: calc(100vh - 300px);
+    min-height: 360px;
+    overflow: hidden;
+    border-radius: var(--jk-radius);
+    border: 1px solid var(--jk-divider);
+    background: var(--jk-tint);
+}
+
+.map-frame lightning-map {
+    display: block;
+    height: 100%;
+}
+
+.map-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: var(--jk-text-muted);
+}
+
+.map-actions {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 16px;
+    flex-wrap: wrap;
+}
+
+.map-address {
+    font-size: 15px;
+    color: var(--jk-text);
+}
+
+/* ---------- Responsive ---------- */
+@media (max-width: 1100px) {
+    .detail-grid {
+        grid-template-columns: 1fr;
+    }
+}
+
+@media (max-width: 700px) {
+    .amenity-row {
+        grid-template-columns: repeat(3, minmax(0, 1fr));
+    }
+
+    .fact-row {
+        grid-template-columns: 1fr;
+    }
+}
+/* =====================================================================================================================
+   CUSTOMER PORTAL (portal="customer"): Figma p18, measured in the 1280 frame (content x = 272..1208; the page's blocks
+   start 10px in, at x = 282, as in the design). Only the cpd- classes below; the partner rules above are untouched.
+   The cp- tokens come from c/customerPortalStyles through the c-customer-portal_-project host.
+   ===================================================================================================================== */
+.cpd-page {
+    display: block;
+    width: 100%;
+    min-width: 0;
+    font-family: var(--cp-font);
+    color: var(--cp-ink);
+}
+
+.cpd-page *,
+.cpd-page *::before,
+.cpd-page *::after {
+    box-sizing: border-box;
+}
+
+/* ---------- Back arrow: 28 x 22 at the top left, a 40px hit area around it ---------- */
+.cpd-back {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 40px;
+    height: 40px;
+    margin: -9px 0 0 -6px;
+    padding: 0;
+    border: 0;
+    border-radius: var(--cp-radius-sm);
+    background: none;
+    color: #111827;
+    cursor: pointer;
+}
+
+.cpd-back svg {
+    display: block;
+    flex: 0 0 auto;
+}
+
+.cpd-back:hover {
+    background: var(--cp-tint);
+}
+
+.cpd-body {
+    margin-top: 40px;
+    padding-left: 10px;
+}
+
+/* ---------- Photos: 928 x 329, radius 6 ---------- */
+.cpd-hero {
+    position: relative;
+    height: 329px;
+    border-radius: 6px;
+    background: #d9d9d9;
+    overflow: hidden;
+}
+
+.cpd-slide {
+    position: absolute;
+    inset: 0;
+    opacity: 0;
+    transition: opacity 0.6s ease;
+    pointer-events: none;
+}
+
+.cpd-slide_active {
+    opacity: 1;
+    pointer-events: auto;
+}
+
+.cpd-photo {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* The photo on show is a button that opens it in the viewer (Figma p20) */
+.cpd-photo-btn {
+    position: relative;
+    display: block;
+    width: 100%;
+    height: 100%;
+    margin: 0;
+    padding: 0;
+    border: 0;
+    background: none;
+    cursor: zoom-in;
+}
+
+.cpd-photo-btn:focus-visible {
+    outline: none;
+}
+
+/* The keyboard focus ring is drawn above the photo (an inset shadow would sit under it) */
+.cpd-photo-btn:focus-visible::after {
+    content: '';
+    position: absolute;
+    inset: 0;
+    border-radius: inherit;
+    box-shadow: inset 0 0 0 3px var(--cp-navy), inset 0 0 0 5px #ffffff;
+    pointer-events: none;
+}
+
+.cpd-hero-placeholder {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    color: #ffffff;
+}
+
+.cpd-hero-building {
+    width: 140px;
+    height: 140px;
+    opacity: 0.85;
+}
+
+/* Arrows: 38px circles, black 24%, 7px / 6px from the sides, centred */
+.cpd-arrow {
+    position: absolute;
+    top: 50%;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 38px;
+    height: 38px;
+    margin-top: -19px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: rgba(0, 0, 0, 0.24);
+    color: #ffffff;
+    cursor: pointer;
+    transition: background-color 0.15s ease;
+}
+
+.cpd-arrow:hover {
+    background: rgba(0, 0, 0, 0.42);
+}
+
+.cpd-arrow svg {
+    display: block;
+}
+
+.cpd-arrow_prev {
+    left: 7px;
+}
+
+.cpd-arrow_next {
+    right: 6px;
+}
+
+/* Dots: 10px white, the current one 14px navy with a white ring, 5px apart, 20px above the bottom */
+.cpd-dots {
+    position: absolute;
+    right: 0;
+    bottom: 20px;
+    left: 0;
+    z-index: 1;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 5px;
+    pointer-events: none;
+}
+
+.cpd-dot {
+    display: block;
+    flex: 0 0 auto;
+    width: 10px;
+    height: 10px;
+    padding: 0;
+    border: 0;
+    border-radius: 50%;
+    background: #ffffff;
+    cursor: pointer;
+    pointer-events: auto;
+}
+
+.cpd-dot_active {
+    width: 14px;
+    height: 14px;
+    border: 1px solid #ffffff;
+    background: var(--cp-navy);
+}
+
+.cpd-arrow:focus-visible,
+.cpd-dot:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: 2px;
+}
+
+/* ---------- Name; View Location and Download Brochure (148 x 40, 12px text) ---------- */
+.cpd-title-row {
+    display: flex;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 24px;
+    margin-top: 21px;
+}
+
+.cpd-title {
+    flex: 1 1 auto;
+    min-width: 0;
+    margin: 0;
+    font-size: 24px;
+    line-height: 32px;
+    font-weight: 600; /* Figma p18: Bold DIN (measured) */
+    color: var(--cp-ink);
+    overflow-wrap: anywhere;
+}
+
+/* 5px under the top of the title; like Figma, the buttons hang 13px below the title line, so the facts keep their
+   24px from the title */
+.cpd-title-actions {
+    display: flex;
+    flex: 0 0 auto;
+    flex-wrap: wrap;
+    justify-content: flex-end;
+    gap: 12px;
+    margin: 5px 0 -13px;
+}
+
+.cpd-btn {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    height: 40px;
+    padding: 0 22px;
+    border: 1px solid var(--cp-navy);
+    border-radius: var(--cp-radius-sm);
+    background: var(--cp-navy);
+    color: #ffffff;
+    font-family: inherit;
+    font-size: 12px;
+    line-height: 1;
+    font-weight: 500;
+    white-space: nowrap;
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease;
+}
+
+.cpd-btn:hover {
+    border-color: var(--cp-navy-hover);
+    background: var(--cp-navy-hover);
+}
+
+.cpd-btn_secondary {
+    background: var(--cp-surface);
+    color: var(--cp-navy);
+}
+
+.cpd-btn_secondary:hover {
+    border-color: var(--cp-navy);
+    background: var(--cp-tint);
+}
+
+.cpd-back:focus-visible,
+.cpd-btn:focus-visible,
+.cpd-icon-btn:focus-visible {
+    outline: 2px solid var(--cp-navy);
+    outline-offset: 2px;
+}
+
+/* ---------- Facts: grey 16px label over 14px value, thin lines between the three ---------- */
+.cpd-facts {
+    display: grid;
+    grid-template-columns: 267fr 391fr 267fr;
+    margin: 24px 0 0;
+    padding: 0;
+}
+
+.cpd-fact {
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    min-width: 0;
+    text-align: center;
+}
+
+.cpd-fact_start {
+    justify-self: start;
+}
+
+.cpd-fact_end {
+    justify-self: end;
+}
+
+.cpd-fact_mid::before,
+.cpd-fact_mid::after {
+    content: '';
+    position: absolute;
+    top: 9px;
+    bottom: 6px;
+    width: 1px;
+    background: var(--cp-border);
+}
+
+.cpd-fact_mid::before {
+    left: 0;
+}
+
+.cpd-fact_mid::after {
+    right: 0;
+}
+
+.cpd-fact-label {
+    margin: 0;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    color: var(--cp-muted);
+}
+
+.cpd-fact-value {
+    margin: 9px 0 0;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    color: var(--cp-ink);
+    overflow-wrap: anywhere;
+}
+
+/* ---------- Spec cells: value over label, 1px #c7c4c4 lines, outer corners 8px ---------- */
+/* Figma's cells are a quarter of the page wide (4 to a row); the box is as wide as the cells it holds
+   (--cpd-spec-cols from the JS) */
+.cpd-specs {
+    display: flex;
+    width: calc(var(--cpd-spec-cols, 4) * 25%);
+    max-width: 100%;
+    margin: 24px 0 0;
+    padding: 0;
+    border: 1px solid var(--cp-border);
+    border-radius: var(--cp-radius-sm);
+}
+
+/* Narrower pages: quarter cells get too tight for "1,390 – 2,400 sq ft.", so the cells share the full width */
+@media (max-width: 1024px) {
+    .cpd-specs {
+        width: auto;
+    }
+}
+
+.cpd-spec {
+    display: flex;
+    flex: 1 1 0;
+    flex-direction: column-reverse;
+    justify-content: flex-end;
+    min-width: 0;
+    padding: 10px 16px;
+}
+
+.cpd-spec + .cpd-spec {
+    border-left: 1px solid var(--cp-border);
+}
+
+.cpd-spec-value,
+.cpd-spec-label {
+    margin: 0;
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 500;
+    color: var(--cp-ink);
+    overflow-wrap: anywhere;
+}
+
+.cpd-spec-label {
+    margin: 6px 0 0;
+}
+
+/* ---------- Sections: 20px titles; amenities = grey icon + 16px label ---------- */
+.cpd-section {
+    margin-top: 32px;
+}
+
+.cpd-section_amenities {
+    margin-top: 21px;
+}
+
+.cpd-section-title {
+    margin: 0;
+    font-size: 20px;
+    line-height: 28px;
+    font-weight: 600; /* Figma p18: Bold DIN (measured) */
+    color: #343434;
+}
+
+.cpd-amenities {
+    display: flex;
+    flex-wrap: wrap;
+    gap: 16px 90px;
+    margin: 8px 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.cpd-amenity {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-width: 0;
+}
+
+.cpd-amenity-icon {
+    display: block;
+    flex: 0 0 auto;
+    color: #a3a3a3;
+}
+
+.cpd-amenity-label {
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    color: var(--cp-ink);
+}
+
+/* ---------- Tables (as .cp-table): navy 36px head, 14px rows, Figma p47 view / download buttons ---------- */
+.cpd-table-wrap {
+    width: 100%;
+    min-width: 0;
+    margin-top: 16px;
+    overflow-x: auto;
+    -webkit-overflow-scrolling: touch;
+}
+
+.cpd-table {
+    width: 100%;
+    border-collapse: separate;
+    border-spacing: 0;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--cp-ink);
+}
+
+.cpd-table th {
+    height: 36px;
+    padding: 0 20px;
+    background: var(--cp-navy);
+    color: #ffffff;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    text-align: left;
+    white-space: nowrap;
+    vertical-align: middle;
+}
+
+.cpd-table th:first-child {
+    border-radius: 8px 0 0 8px;
+}
+
+.cpd-table th:last-child {
+    border-radius: 0 8px 8px 0;
+}
+
+.cpd-table td {
+    padding: 18px 20px;
+    border-bottom: 2px solid var(--cp-line);
+    font-weight: 500;
+    vertical-align: middle;
+    overflow-wrap: anywhere;
+}
+
+.cpd-table tbody tr:first-child td {
+    padding-top: 22px;
+}
+
+.cpd-table .cpd-table-num {
+    width: 1%;
+    padding-right: 4px;
+    white-space: nowrap;
+}
+
+.cpd-table .cpd-table-actions {
+    width: 1%;
+    text-align: right;
+    white-space: nowrap;
+}
+
+.cpd-actions {
+    display: inline-flex;
+    gap: 8px;
+    vertical-align: middle;
+}
+
+.cpd-icon-btn {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    padding: 0;
+    border: 0;
+    border-radius: 4px;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.cpd-icon-btn svg {
+    display: block;
+    fill: currentColor;
+}
+
+.cpd-icon-btn_view {
+    background: var(--cp-title);
+}
+
+.cpd-icon-btn_download {
+    background: #9d6200;
+}
+
+.cpd-icon-btn:hover {
+    filter: brightness(1.25);
+}
+
+.cpd-doc {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    max-width: 100%;
+    vertical-align: middle;
+}
+
+.cpd-doc-icon {
+    display: block;
+    flex: 0 0 auto;
+    color: var(--cp-navy);
+}
+
+.cpd-doc-name {
+    min-width: 0;
+    overflow-wrap: anywhere;
+}
+
+.cpd-muted {
+    color: var(--cp-muted);
+}
+
+.cpd-nowrap {
+    white-space: nowrap;
+}
+
+.cpd-note {
+    margin: 12px 0 0;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--cp-muted);
+}
+
+.cpd-alert {
+    margin: 0 0 16px;
+    padding: 14px 16px;
+    border: 1px solid #f2b8b5;
+    border-radius: var(--cp-radius-sm);
+    background: #fdeceb;
+    color: #8e1018;
+    font-size: 14px;
+    line-height: 20px;
+}
+
+/* While the project loads */
+.cpd-skeleton {
+    display: flex;
+    flex-direction: column;
+    gap: 12px;
+    margin-top: 16px;
+    padding: 18px 20px;
+    border: 1px solid var(--cp-line);
+    border-radius: var(--cp-radius-sm);
+}
+
+.cpd-skeleton-line {
+    display: block;
+    width: 45%;
+    height: 14px;
+    border-radius: 6px;
+    background: linear-gradient(90deg, #e6e9ee 25%, #f4f6f9 50%, #e6e9ee 75%);
+    background-size: 200% 100%;
+    animation: shimmer 1.3s linear infinite;
+}
+
+.cpd-skeleton-line_wide {
+    width: 70%;
+}
+
+/* ---------- Location view ---------- */
+.cpd-map {
+    height: calc(100vh - 360px);
+    min-height: 360px;
+    margin-top: 16px;
+    border: 1px solid var(--cp-border);
+    border-radius: var(--cp-radius-sm);
+    background: var(--cp-tint);
+    overflow: hidden;
+}
+
+.cpd-map lightning-map {
+    display: block;
+    height: 100%;
+}
+
+.cpd-map-empty {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height: 100%;
+    margin: 0;
+    padding: 16px;
+    color: var(--cp-muted);
+    font-size: 16px;
+    line-height: 24px;
+    text-align: center;
+}
+
+.cpd-map-actions {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+    gap: 16px;
+    margin-top: 16px;
+}
+
+.cpd-map-actions .cpd-btn {
+    font-size: 14px;
+}
+
+.cpd-map-address {
+    font-size: 16px;
+    line-height: 24px;
+    color: var(--cp-ink);
+    overflow-wrap: anywhere;
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .cpd-slide,
+    .cpd-arrow,
+    .cpd-btn {
+        transition: none;
+    }
+
+    .cpd-skeleton-line {
+        animation: none;
+    }
+}
+
+/* ---------- Phone width (the shell's own breakpoint) ---------- */
+@media (max-width: 768px) {
+    .cpd-body {
+        margin-top: 24px;
+        padding-left: 0;
+    }
+
+    .cpd-hero {
+        height: auto;
+        aspect-ratio: 16 / 10;
+    }
+
+    .cpd-arrow {
+        width: 32px;
+        height: 32px;
+        margin-top: -16px;
+    }
+
+    .cpd-arrow svg {
+        width: 32px;
+        height: 32px;
+    }
+
+    .cpd-dots {
+        bottom: 12px;
+    }
+
+    .cpd-title-row {
+        flex-direction: column;
+        gap: 12px;
+        margin-top: 16px;
+    }
+
+    .cpd-title {
+        font-size: 20px;
+        line-height: 28px;
+    }
+
+    .cpd-title-actions {
+        width: 100%;
+        margin: 0;
+    }
+
+    .cpd-title-actions .cpd-btn {
+        flex: 1 1 140px;
+        font-size: 14px;
+    }
+
+    /* Facts become rows: label left, value right, a line between them */
+    .cpd-facts {
+        grid-template-columns: minmax(0, 1fr);
+        margin-top: 20px;
+    }
+
+    .cpd-fact,
+    .cpd-fact_start,
+    .cpd-fact_end {
+        flex-direction: row;
+        align-items: baseline;
+        justify-content: space-between;
+        justify-self: stretch;
+        gap: 16px;
+        padding: 10px 0;
+        border-top: 1px solid var(--cp-line);
+        text-align: left;
+    }
+
+    .cpd-fact:first-child {
+        border-top: 0;
+    }
+
+    .cpd-fact_mid::before,
+    .cpd-fact_mid::after {
+        display: none;
+    }
+
+    .cpd-fact-label {
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .cpd-fact-value {
+        margin: 0;
+        text-align: right;
+    }
+
+    .cpd-specs {
+        flex-direction: column;
+        margin: 16px 0 0;
+    }
+
+    .cpd-spec {
+        flex: 0 0 auto;
+    }
+
+    .cpd-spec + .cpd-spec {
+        border-top: 1px solid var(--cp-border);
+        border-left: 0;
+    }
+
+    .cpd-section {
+        margin-top: 24px;
+    }
+
+    .cpd-amenities {
+        gap: 12px 24px;
+    }
+
+    .cpd-table th,
+    .cpd-table td {
+        padding-right: 14px;
+        padding-left: 14px;
+    }
+
+    .cpd-map {
+        height: 60vh;
+        min-height: 280px;
+    }
+}

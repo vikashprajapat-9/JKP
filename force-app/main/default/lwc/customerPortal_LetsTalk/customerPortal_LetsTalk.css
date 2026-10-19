@@ -1,0 +1,146 @@
+@import 'c/customerPortalStyles';
+
+/* Figma p93 (measured at 1280 x 832): picker 34px under the intro and one card column wide (48px, white, 1px #c7c4c4);
+   cards 32px under the picker, 2 columns, 24px gaps; a card = 16px padding, 24px navy icon circle + 16px title,
+   14px text line and a 14px action with a 17px navy arrow circle, 16px between the three rows (128px high). */
+
+.talk-head {
+    margin-bottom: 34px;
+}
+
+.talk-select {
+    width: calc((100% - 24px) / 2);
+    max-width: 100%;
+}
+
+.talk-grid {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    gap: 24px;
+    margin-top: 32px;
+}
+
+.talk-card {
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+    gap: 16px;
+}
+
+.talk-card__head {
+    display: flex;
+    align-items: center;
+    gap: 16px;
+    min-width: 0;
+}
+
+.talk-card__icon {
+    display: inline-flex;
+    flex: 0 0 auto;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 24px;
+    border-radius: 50%;
+    background: var(--cp-navy);
+    color: #ffffff;
+}
+
+.talk-card__icon svg {
+    display: block;
+    width: 24px;
+    height: 24px;
+    fill: currentColor;
+}
+
+.talk-card__title {
+    margin: 0;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    color: var(--cp-ink);
+}
+
+.talk-card__text {
+    margin: 0;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    color: var(--cp-ink);
+    overflow-wrap: anywhere;
+}
+
+.talk-card__action {
+    display: inline-flex;
+    align-items: center;
+    gap: 12px;
+    margin-top: auto;
+    padding: 0;
+    border: 0;
+    background: none;
+    color: var(--cp-ink);
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    text-align: left;
+    cursor: pointer;
+}
+
+.talk-card__action:hover .talk-card__action-label,
+.talk-card__action:focus-visible .talk-card__action-label {
+    text-decoration: underline;
+}
+
+.talk-card__action:focus-visible {
+    outline: 2px solid var(--cp-navy);
+    outline-offset: 2px;
+    border-radius: 4px;
+}
+
+.talk-card__arrow {
+    display: block;
+    flex: 0 0 auto;
+    width: 17px;
+    height: 17px;
+    fill: var(--cp-navy);
+}
+
+.talk-error {
+    flex-wrap: wrap;
+    align-items: center;
+    justify-content: space-between;
+}
+
+.talk-error__text {
+    flex: 1 1 240px;
+}
+
+@media (max-width: 768px) {
+    .talk-head {
+        margin-bottom: 20px;
+    }
+
+    .talk-select {
+        width: 100%;
+    }
+
+    .talk-grid {
+        grid-template-columns: minmax(0, 1fr);
+        gap: 16px;
+        margin-top: 20px;
+    }
+}
+
+/* One booking inside the CRM Contact card: the unit as a badge above the person, a small gap between bookings */
+.talk-contact + .talk-contact {
+    margin-top: 10px;
+}
+
+.talk-contact__unit {
+    margin: 0 0 4px;
+    min-width: 0;
+}
+
+.talk-contact__person {
+    margin: 0;
+}

@@ -1,0 +1,465 @@
+/* Design tokens from the Figma design. Custom properties inherit into
+   every child component's shadow tree, so child CSS uses var(--jk-*). */
+:host {
+    --jk-font: 'JKP Sans', 'Barlow', 'Segoe UI', Roboto, Helvetica, Arial, sans-serif;
+    --jk-navy: #112149;
+    --jk-navy-soft: #29365b;
+    --jk-navy-muted: #414d6e;
+    --jk-gold: #775918;
+    --jk-gold-text: #e3c47a;
+    --jk-text: #1b1b1f;
+    --jk-text-strong: #17274d;
+    --jk-text-muted: #6b6b73;
+    --jk-placeholder: #a8a6a6;
+    --jk-border: #c6c4c4;
+    --jk-divider: #ebe9e9;
+    --jk-tint: #f3f8f9;
+    --jk-icon-bg: #e4edff;
+    --jk-surface: #ffffff;
+    --jk-radius-sm: 6px;
+    --jk-radius: 8px;
+    --jk-radius-lg: 12px;
+    --jk-shadow: 0 3px 9px rgb(0 0 0 / 8%);
+
+    /* Stage badges */
+    --jk-badge-active: #238723;
+    --jk-badge-visited: #ffbf00;
+    --jk-badge-lost: #b5b5bb;
+    --jk-badge-booked: #2d6ecf;
+    --jk-badge-scheduled: #ffdda5;
+    --jk-badge-scheduled-text: #8a5a00;
+    --jk-badge-cancelled: #d93025;
+
+    display: block;
+    font-family: var(--jk-font);
+    color: var(--jk-text);
+    background: var(--jk-surface);
+}
+
+.portal-layout {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    overflow: hidden;
+    background: var(--jk-surface);
+}
+
+/* ---------- Sidebar ---------- */
+.sidebar {
+    width: 217px;
+    flex-shrink: 0;
+    background: var(--jk-surface);
+    box-shadow: 2px 0 6px rgb(0 0 0 / 6%);
+    height: 100%;
+    overflow-y: auto;
+    z-index: 2;
+}
+
+.logo-area {
+    height: 96px;
+    display: flex;
+    align-items: center;
+    padding: 0 24px 0 32px;
+}
+
+.logo {
+    width: 148px;
+    height: auto;
+    display: block;
+}
+
+.vertical {
+    display: flex;
+    flex-direction: column;
+    padding: 16px 0;
+}
+
+.nav-item {
+    width: 100%;
+    height: 52px;
+    display: flex;
+    align-items: center;
+    gap: 12px;
+    padding: 0 22px;
+    border: 0;
+    border-left: 3px solid transparent;
+    background: transparent;
+    color: var(--jk-text-strong);
+    font-family: var(--jk-font);
+    font-size: 15px;
+    font-weight: 500;
+    letter-spacing: 0.2px;
+    text-align: left;
+    cursor: pointer;
+    transition: background 0.15s ease;
+}
+
+.nav-item:hover {
+    background: var(--jk-tint);
+}
+
+.nav-item.active {
+    border-left-color: var(--jk-navy);
+    background: var(--jk-tint);
+    font-weight: 700;
+}
+
+.nav-icon {
+    --slds-c-icon-color-foreground-default: var(--jk-navy);
+    --sds-c-icon-color-foreground-default: var(--jk-navy);
+}
+
+/* ---------- Main ---------- */
+.main-content {
+    flex: 1;
+    min-width: 0;
+    height: 100%;
+    overflow-y: auto;
+    display: flex;
+    flex-direction: column;
+    background: var(--jk-surface);
+}
+
+.top-header {
+    height: 64px;
+    flex-shrink: 0;
+    display: flex;
+    align-items: center;
+    justify-content: flex-end;
+    gap: 24px;
+    padding: 0 60px 0 40px;
+    background: var(--jk-surface);
+    box-shadow: 0 2px 4px rgb(0 0 0 / 4%);
+    position: sticky;
+    top: 0;
+    z-index: 1;
+}
+
+.header-actions {
+    display: flex;
+    align-items: center;
+    gap: 24px;
+}
+
+.header-icon-button {
+    display: flex;
+    border: 0;
+    padding: 0;
+    background: transparent;
+    cursor: pointer;
+}
+
+.bell-icon {
+    --slds-c-icon-color-foreground-default: var(--jk-text);
+    --sds-c-icon-color-foreground-default: var(--jk-text);
+}
+
+/* ---------- The bell: site visit reminders ---------- */
+.bell-wrap {
+    position: relative;
+    display: flex;
+}
+
+.header-icon-button {
+    position: relative;
+}
+
+.bell-badge {
+    position: absolute;
+    top: -6px;
+    right: -8px;
+    min-width: 18px;
+    height: 18px;
+    padding: 0 5px;
+    border-radius: 999px;
+    background: var(--jk-badge-cancelled, #d93025);
+    color: #fff;
+    font-family: var(--jk-font);
+    font-size: 11px;
+    font-weight: 700;
+    line-height: 18px;
+    text-align: center;
+    box-shadow: 0 0 0 2px #fff;
+}
+
+.bell-backdrop {
+    position: fixed;
+    inset: 0;
+    z-index: 50;
+}
+
+.bell-popover {
+    position: absolute;
+    top: calc(100% + 12px);
+    right: -8px;
+    width: min(420px, calc(100vw - 32px));
+    max-height: min(560px, calc(100vh - 120px));
+    display: flex;
+    flex-direction: column;
+    background: #fff;
+    border: 1px solid var(--jk-divider);
+    border-radius: var(--jk-radius-lg);
+    box-shadow: 0 14px 40px rgb(17 33 73 / 18%);
+    z-index: 51;
+    overflow: hidden;
+}
+
+.bell-head {
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 14px 16px;
+    border-bottom: 1px solid var(--jk-divider);
+    background: var(--jk-tint);
+}
+
+.bell-title {
+    font-family: var(--jk-font);
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--jk-text-strong);
+}
+
+.bell-close {
+    border: 0;
+    background: transparent;
+    color: var(--jk-text-muted);
+    font-size: 15px;
+    cursor: pointer;
+}
+
+.bell-body {
+    padding: 12px 14px 4px;
+    overflow-y: auto;
+}
+
+.profile-button {
+    width: 40px;
+    height: 40px;
+    border: 0;
+    border-radius: 50%;
+    background: #6b8e23;
+    color: #ffffff;
+    font-family: var(--jk-font);
+    font-size: 15px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.page-body {
+    flex: 1;
+    padding: 40px 60px 48px 40px;
+}
+
+.page-title {
+    font-size: 32px;
+    font-weight: 600;
+    color: var(--jk-text);
+}
+
+/* ---------- Logout modal ---------- */
+.modal-backdrop {
+    position: fixed;
+    inset: 0;
+    background: rgb(0 0 0 / 35%);
+    z-index: 100;
+}
+
+.logout-modal {
+    position: fixed;
+    top: 50%;
+    left: 50%;
+    transform: translate(-50%, -50%);
+    width: min(404px, calc(100vw - 32px));
+    padding: 32px 21px 32px;
+    border-radius: var(--jk-radius-lg);
+    background: var(--jk-surface);
+    text-align: center;
+    z-index: 101;
+}
+
+.logout-title {
+    margin: 0 0 8px;
+    font-size: 16px;
+    font-weight: 600;
+    color: var(--jk-text);
+}
+
+.logout-text {
+    margin: 0 0 32px;
+    font-size: 14px;
+    line-height: 20px;
+    color: var(--jk-text);
+}
+
+.logout-actions {
+    display: flex;
+    gap: 16px;
+}
+
+.btn {
+    flex: 1;
+    height: 48px;
+    border-radius: var(--jk-radius-sm);
+    font-family: var(--jk-font);
+    font-size: 16px;
+    font-weight: 600;
+    cursor: pointer;
+}
+
+.btn-outline {
+    border: 1px solid var(--jk-text);
+    background: var(--jk-surface);
+    color: var(--jk-text);
+}
+
+.btn-primary {
+    border: 1px solid var(--jk-navy);
+    background: var(--jk-navy);
+    color: #ffffff;
+}
+
+/* ---------- Access ended: the whole portal for a partner whose access has ended ---------- */
+/* The card sits in the middle, and scrolls rather than being cut off on a short screen */
+/* Over the whole portal (its popups included) while Salesforce is asked whether the partner's session is over */
+.session-check {
+    position: fixed;
+    inset: 0;
+    z-index: 10000;
+    background: var(--jk-surface);
+}
+
+.ended-page {
+    position: fixed;
+    inset: 0;
+    display: flex;
+    padding: 32px 16px;
+    overflow-y: auto;
+    background: var(--jk-tint);
+}
+
+.ended-card {
+    width: min(480px, 100%);
+    margin: auto;
+    padding: 40px 32px 36px;
+    box-sizing: border-box;
+    border-radius: var(--jk-radius-lg);
+    background: var(--jk-surface);
+    box-shadow: 0 14px 40px rgb(17 33 73 / 12%);
+    text-align: center;
+    animation: ended-in 0.35s ease-out both;
+}
+
+.ended-logo {
+    display: block;
+    width: 168px;
+    height: auto;
+    margin: 0 auto 28px;
+}
+
+.ended-icon {
+    display: block;
+    width: 112px;
+    height: auto;
+    margin: 0 auto 20px;
+}
+
+.ended-title {
+    margin: 0;
+    font-size: 24px;
+    font-weight: 600;
+    line-height: 30px;
+    color: var(--jk-text);
+}
+
+.ended-title:focus {
+    outline: none;
+}
+
+.ended-text {
+    margin: 12px auto 0;
+    max-width: 400px;
+    font-size: 16px;
+    line-height: 24px;
+    color: var(--jk-text-muted);
+}
+
+.ended-logout {
+    display: inline-flex;
+    flex: none;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
+    min-width: 200px;
+    margin-top: 32px;
+    padding: 0 28px;
+    transition: background 0.2s ease, box-shadow 0.2s ease;
+}
+
+.ended-logout:hover {
+    border-color: var(--jk-navy-soft);
+    background: var(--jk-navy-soft);
+    box-shadow: 0 8px 18px rgb(17 33 73 / 22%);
+}
+
+.ended-logout:focus-visible {
+    outline: 3px solid rgb(17 33 73 / 35%);
+    outline-offset: 2px;
+}
+
+.ended-logout-icon {
+    --slds-c-icon-color-foreground-default: #ffffff;
+    --sds-c-icon-color-foreground-default: #ffffff;
+}
+
+@keyframes ended-in {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: none; }
+}
+
+@media (max-width: 480px) {
+    .ended-card {
+        padding: 32px 20px 28px;
+    }
+
+    .ended-logout {
+        width: 100%;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .ended-card {
+        animation: none;
+    }
+
+    .ended-logout {
+        transition: none;
+    }
+}
+
+@media (max-width: 900px) {
+    .sidebar {
+        width: 72px;
+    }
+
+    .logo-area {
+        padding: 0 12px;
+    }
+
+    .logo {
+        width: 48px;
+        object-fit: cover;
+        object-position: left;
+        height: 40px;
+    }
+
+    .nav-item span {
+        display: none;
+    }
+
+    .top-header,
+    .page-body {
+        padding-left: 16px;
+        padding-right: 16px;
+    }
+}

@@ -1,0 +1,14 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Exclusive_Site_Visits__c</fullName>
+    <description>Site visits with the Completed Visit Status, on leads created during a partner&apos;s temporary access and visited within it, that let the partner keep logging in after the access ends. Either this or Exclusive Converted Leads is enough. Blank or 0: visits do not count.</description>
+    <externalId>false</externalId>
+    <fieldManageability>DeveloperControlled</fieldManageability>
+    <inlineHelpText>Completed site visits, on leads created during the temporary access, that keep the partner&apos;s login after it ends (either this or Exclusive Converted Leads). Blank or 0: not counted.</inlineHelpText>
+    <label>Exclusive Site Visits</label>
+    <precision>4</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>

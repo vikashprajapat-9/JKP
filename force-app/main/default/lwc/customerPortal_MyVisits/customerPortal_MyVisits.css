@@ -1,0 +1,698 @@
+@import 'c/customerPortalStyles';
+
+/* My Visits (Figma "Customer Portal" pages 29-46). Built on the shared cp- classes; everything below is local to
+   this screen and only uses its own visit- class names (sizes measured from the Figma frames, 1 Figma px = 1 CSS px). */
+
+:host {
+    --visit-indigo: #2a1e80; /* address / unit type lines of the property card (p32, p38) */
+    --visit-star-off: var(--cp-border);
+    --visit-star-on: var(--cp-navy);
+}
+
+/* ============================== LOADING / ERROR ============================== */
+.visit-loading {
+    flex-direction: column;
+    gap: 12px;
+}
+
+.visit-spinner {
+    width: 32px;
+    height: 32px;
+    border: 3px solid var(--cp-line);
+    border-top-color: var(--cp-navy);
+    border-radius: 50%;
+    animation: visit-spin 0.8s linear infinite;
+}
+
+@keyframes visit-spin {
+    to {
+        transform: rotate(360deg);
+    }
+}
+
+.visit-error {
+    align-items: center;
+    justify-content: space-between;
+    flex-wrap: wrap;
+}
+
+.visit-error__text {
+    margin: 0;
+}
+
+/* ================================ PAGE HEAD ================================ */
+/* Figma p30 / p37: the intro starts 6px under the title and runs the full width under the Schedule Visit button;
+   the tabs start 17px under the intro. */
+.visit-head {
+    margin-bottom: 18px;
+}
+
+.visit-head__top {
+    display: flex;
+    flex-wrap: wrap;
+    align-items: flex-start;
+    justify-content: space-between;
+    gap: 12px 24px;
+}
+
+/* the button sits 4px below the title's line box in Figma (p29, p37) without pushing the intro down */
+.visit-head__actions {
+    position: relative;
+    top: 4px;
+}
+
+.visit-head__actions .cp-btn {
+    padding: 0 17px;
+}
+
+.visit-head__intro {
+    max-width: none;
+}
+
+/* ================================== TABS =================================== */
+/* Figma p29-31: semi-bold labels, dark 3px underline and faint side lines on the selected tab */
+.visit-tabs {
+    --cp-tab-accent: #1f1e1e;
+}
+
+.visit-tab {
+    font-weight: 500;
+}
+
+.visit-tab.cp-tab_active {
+    box-shadow: inset 0 -3px 0 var(--cp-tab-accent), inset 1px 0 0 #e0e0e0, inset -1px 0 0 #f1f0f0;
+}
+
+.visit-tab:first-child.cp-tab_active {
+    box-shadow: inset 0 -3px 0 var(--cp-tab-accent), inset -1px 0 0 #f1f0f0;
+}
+
+/* ================================== CARDS ================================== */
+.visit-card__media {
+    flex: 0 0 auto;
+}
+
+.visit-card__photo {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* plain white chevrons on the photo, no circle (Figma p29) */
+.visit-card__arrow {
+    position: absolute;
+    top: 50%;
+    z-index: 1;
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 24px;
+    height: 32px;
+    margin-top: -12px;
+    padding: 0;
+    border: 0;
+    border-radius: 4px;
+    background: none;
+    color: #ffffff;
+    cursor: pointer;
+}
+
+.visit-card__arrow svg {
+    width: 6px;
+    height: 10.4px;
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.5;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+    filter: drop-shadow(0 0 1px rgba(0, 0, 0, 0.35));
+}
+
+.visit-card__arrow:focus-visible {
+    outline: 2px solid #ffffff;
+    outline-offset: -2px;
+}
+
+.visit-card__arrow_prev {
+    left: 1px;
+}
+
+.visit-card__arrow_next {
+    right: -1px;
+}
+
+.visit-card__dots {
+    bottom: 5px;
+}
+
+.visit-card__body {
+    gap: 0;
+    padding: 6px 16px 16px;
+}
+
+.visit-card__address {
+    margin-top: 1px;
+    font-weight: 500;
+    color: var(--cp-ink);
+}
+
+.visit-facts {
+    display: flex;
+    flex-direction: column;
+    gap: 8px;
+    margin: 11px 0 0;
+}
+
+.visit-fact {
+    margin: 0;
+    font-size: 12px;
+    line-height: 16px;
+    color: var(--cp-ink);
+    overflow-wrap: anywhere;
+}
+
+.visit-fact__label,
+.visit-fact__value {
+    display: inline;
+    margin: 0;
+    font-weight: 500;
+}
+
+.visit-fact__label {
+    margin-right: 9px;
+}
+
+.visit-card__actions {
+    padding-top: 16px;
+    --cp-btn-secondary-ink: var(--cp-ink);
+}
+
+/* ============================== MODALS (common) ============================== */
+/* Figma p32/p35/p38/p44: 866 x 632 panels, content centred vertically, 58px side padding */
+.visit-modal {
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    min-height: 632px;
+    padding: 38px 58px 42px;
+}
+
+.visit-modal__title {
+    padding: 0 40px;
+    font-size: 28px;
+    line-height: 36px;
+    color: var(--cp-title);
+}
+
+.visit-modal__text {
+    margin: 9px 0 0;
+    color: var(--cp-ink);
+}
+
+.visit-modal__body {
+    margin-top: 24px;
+}
+
+.visit-modal__section {
+    margin: 0;
+    font-size: 16px;
+    line-height: 20px;
+    font-weight: 500;
+    color: var(--cp-ink);
+}
+
+.visit-modal__footer {
+    margin-top: 40px;
+}
+
+.visit-submit {
+    width: 320px;
+    max-width: 100%;
+}
+
+.visit-label {
+    margin-bottom: 12px;
+}
+
+/* two columns, 349px each with a 52px gap (Figma) */
+.visit-form {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 52px;
+    row-gap: 24px;
+}
+
+.visit-form > .cp-field + .cp-field {
+    margin-top: 0;
+}
+
+.visit-form_after-card {
+    margin-top: 24px;
+}
+
+.visit-form_after-info {
+    margin-top: 27px;
+}
+
+/* selects: grey placeholder text until a value is chosen */
+.visit-select_empty {
+    color: var(--cp-placeholder);
+}
+
+.visit-select_empty option {
+    color: var(--cp-ink);
+}
+
+/* ====================== DATE / TIME FIELDS (Figma icons) ====================== */
+/* The native picker does the work; the Figma text ("Select Date Of Visit", "24/07/2024", "12:00 PM") is drawn on
+   top while the field is not being edited. */
+.visit-picker {
+    position: relative;
+    display: block;
+}
+
+.visit-picker__input {
+    padding-right: 52px;
+    color: transparent;
+    caret-color: transparent;
+    cursor: pointer;
+}
+
+.visit-picker__input::-webkit-datetime-edit,
+.visit-picker__input::-webkit-date-and-time-value {
+    color: transparent;
+}
+
+.visit-picker__input::-webkit-calendar-picker-indicator {
+    position: absolute;
+    top: 50%;
+    right: 12px;
+    width: 28px;
+    height: 28px;
+    margin: -14px 0 0;
+    padding: 0;
+    opacity: 0;
+    cursor: pointer;
+}
+
+.visit-picker__input:focus {
+    color: var(--cp-ink);
+    caret-color: auto;
+}
+
+.visit-picker__input:focus::-webkit-datetime-edit,
+.visit-picker__input:focus::-webkit-date-and-time-value {
+    color: var(--cp-ink);
+}
+
+.visit-picker__text {
+    position: absolute;
+    top: 1px;
+    right: 52px;
+    bottom: 1px;
+    left: 17px;
+    display: flex;
+    align-items: center;
+    overflow: hidden;
+    color: var(--cp-placeholder);
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    white-space: nowrap;
+    pointer-events: none;
+}
+
+.visit-picker_filled .visit-picker__text {
+    color: var(--cp-ink);
+}
+
+.visit-picker__input:focus ~ .visit-picker__text {
+    visibility: hidden;
+}
+
+.visit-picker__icon {
+    position: absolute;
+    top: 50%;
+    fill: #232323;
+    pointer-events: none;
+}
+
+.visit-picker__icon_date {
+    right: 17px;
+    width: 18px;
+    height: 18px;
+    margin-top: -9px;
+}
+
+.visit-picker__icon_time {
+    right: 15px;
+    width: 20px;
+    height: 20px;
+    margin-top: -10px;
+}
+
+/* ==================== PROPERTY DETAILS CARD (Reschedule / Cancel) ==================== */
+.visit-prop {
+    display: flex;
+    align-items: flex-start;
+    gap: 16px;
+    margin-top: 18px;
+    padding: 16px;
+}
+
+.visit-prop__thumb {
+    flex: 0 0 auto;
+    width: 88px;
+    height: 88px;
+    border-radius: 8px;
+    background: var(--cp-disabled);
+    overflow: hidden;
+}
+
+.visit-prop__thumb img {
+    display: block;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+.visit-prop__info {
+    flex: 1 1 auto;
+    min-width: 0;
+}
+
+.visit-prop__name {
+    margin: 0;
+    font-size: 20px;
+    line-height: 20px;
+    font-weight: 500;
+    color: var(--cp-ink);
+    overflow-wrap: anywhere;
+}
+
+.visit-prop__line {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    margin: 4px 0 0;
+    font-size: 14px;
+    line-height: 20px;
+    font-weight: 500;
+    color: var(--visit-indigo);
+}
+
+.visit-prop__name + .visit-prop__line {
+    margin-top: 10px;
+}
+
+.visit-prop__text {
+    min-width: 0;
+    overflow: hidden;
+    text-overflow: ellipsis;
+    white-space: nowrap;
+}
+
+.visit-prop__icon {
+    flex: 0 0 auto;
+    width: 13px;
+    height: 14px;
+    fill: currentColor;
+}
+
+.visit-prop__stroke {
+    fill: none;
+    stroke: currentColor;
+    stroke-width: 1.1;
+    stroke-linecap: round;
+    stroke-linejoin: round;
+}
+
+/* ============================ CANCEL: reason textarea ============================ */
+.visit-field_after-card {
+    margin-top: 24px;
+}
+
+.visit-label_textarea {
+    margin-bottom: 16px;
+}
+
+/* Figma p38/p39: the text starts 17px under the top edge */
+.visit-textarea {
+    min-height: 148px;
+    padding-top: 9px;
+    resize: vertical;
+}
+
+/* ======================= FOLLOW UP: property information ======================= */
+.visit-info {
+    display: grid;
+    grid-template-columns: repeat(2, minmax(0, 1fr));
+    column-gap: 52px;
+    row-gap: 18px;
+    margin: 5px 0 0;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    color: var(--cp-ink);
+}
+
+.visit-info__item {
+    margin: 0;
+    overflow-wrap: anywhere;
+}
+
+.visit-info__item dt,
+.visit-info__item dd {
+    display: inline;
+    margin: 0;
+}
+
+.visit-info__item dt {
+    margin-right: 5px;
+}
+
+/* ================================ FEEDBACK FORM ================================ */
+.visit-modal_feedback {
+    min-height: 0;
+    padding: 48px 41px 51px;
+}
+
+.visit-modal__text_feedback {
+    margin: 9px -2px 0;
+}
+
+.visit-questions {
+    display: flex;
+    flex-direction: column;
+    gap: 5px;
+    margin: 24px 0 0;
+    padding: 0;
+    list-style: none;
+}
+
+.visit-question {
+    margin: 0;
+}
+
+.visit-question__text {
+    margin: 0;
+    font-size: 16px;
+    line-height: 24px;
+    font-weight: 500;
+    color: var(--cp-ink);
+}
+
+.visit-stars {
+    display: flex;
+    flex-wrap: wrap;
+}
+
+.visit-star {
+    display: inline-flex;
+    align-items: center;
+    justify-content: center;
+    width: 48px;
+    height: 48px;
+    padding: 0;
+    border: 0;
+    border-radius: 8px;
+    background: none;
+    color: var(--visit-star-off);
+    cursor: pointer;
+}
+
+.visit-star svg {
+    width: 26.7px;
+    height: 25.4px;
+    fill: currentColor;
+}
+
+.visit-star_filled {
+    color: var(--visit-star-on);
+}
+
+.visit-star:hover {
+    background: var(--cp-tint);
+}
+
+.visit-star:focus-visible {
+    outline: 2px solid var(--cp-navy);
+    outline-offset: -2px;
+}
+
+.visit-modal__footer_feedback {
+    margin-top: 35px;
+    --cp-btn-secondary-ink: var(--cp-navy);
+}
+
+.visit-feedback-btn {
+    width: 213px;
+    max-width: 100%;
+}
+
+/* ================================ CONFIRMATIONS ================================ */
+/* Figma p34/p37/p40/p43: 866 x 436 panel, 150px illustration, centred; p46: 632px panel with the flag illustration */
+.visit-modal_success {
+    min-height: 436px;
+    padding: 40px 58px;
+}
+
+.visit-modal_success-art {
+    min-height: 632px;
+}
+
+.visit-success {
+    padding: 0;
+}
+
+.visit-success__icon {
+    width: 150px;
+    height: 150px;
+}
+
+.visit-success__art {
+    display: block;
+    width: 234px;
+    height: 354px;
+    max-width: 100%;
+}
+
+/* 400px: long titles wrap as in Figma p40, the others stay on one line (p34, p37, p43, p46) */
+.visit-success__title {
+    max-width: 400px;
+    margin-top: 22px;
+    font-weight: 500;
+    color: var(--cp-ink);
+}
+
+.visit-success__art + .visit-success__title {
+    margin-top: 19px;
+}
+
+.visit-success__text {
+    max-width: 480px;
+    margin-top: 4px;
+    color: var(--cp-ink);
+    font-weight: 500;
+}
+
+/* ================================ PHONE WIDTH ================================ */
+@media (max-width: 768px) {
+    .visit-head {
+        margin-bottom: 16px;
+    }
+
+    .visit-head__actions {
+        margin-top: 0;
+    }
+
+    /* the three tabs share the width (labels wrap to two lines) so none hides past the edge */
+    .visit-tab {
+        flex: 1 1 0;
+        min-width: 0;
+        padding: 0 8px;
+        font-size: 14px;
+        line-height: 18px;
+        white-space: normal;
+        text-align: center;
+    }
+
+    .visit-modal,
+    .visit-modal_feedback,
+    .visit-modal_success,
+    .visit-modal_success-art {
+        min-height: 0;
+        padding: 24px 16px;
+    }
+
+    .visit-modal__title {
+        padding: 0 28px;
+        font-size: 22px;
+        line-height: 30px;
+    }
+
+    .visit-modal__body,
+    .visit-questions {
+        margin-top: 24px;
+    }
+
+    .visit-form,
+    .visit-info {
+        grid-template-columns: minmax(0, 1fr);
+    }
+
+    .visit-form_after-card,
+    .visit-field_after-card,
+    .visit-form_after-info {
+        margin-top: 24px;
+    }
+
+    .visit-modal__footer {
+        margin-top: 32px;
+    }
+
+    .visit-submit {
+        width: 100%;
+    }
+
+    .visit-prop {
+        gap: 12px;
+        padding: 12px;
+    }
+
+    .visit-prop__thumb {
+        width: 64px;
+        height: 64px;
+    }
+
+    .visit-prop__name {
+        font-size: 18px;
+        line-height: 24px;
+    }
+
+    .visit-prop__line {
+        font-size: 14px;
+        line-height: 20px;
+    }
+
+    .visit-star {
+        width: 44px;
+        height: 44px;
+    }
+
+    .visit-feedback-btn {
+        width: auto;
+    }
+
+    .visit-success__art {
+        width: 160px;
+        height: 242px;
+    }
+}
+
+@media (prefers-reduced-motion: reduce) {
+    .visit-spinner {
+        animation-duration: 3s;
+    }
+}

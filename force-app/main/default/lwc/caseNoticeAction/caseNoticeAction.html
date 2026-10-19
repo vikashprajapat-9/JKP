@@ -1,0 +1,57 @@
+<template>
+    <lightning-quick-action-panel header="Notice of Termination Review">
+        
+        <!-- Loading Spinner -->
+        <template if:true={isLoading}>
+            <lightning-spinner alternative-text="Loading" size="medium"></lightning-spinner>
+        </template>
+
+        <!-- If Action is Eligible -->
+        <template if:true={isEligible}>
+            <div class="slds-m-around_medium">
+                <p class="slds-text-body_regular slds-m-bottom_medium">
+                    The final payment reminder period has expired without payment. Choose your action:
+                </p>
+
+                <!-- Radio Options -->
+                <lightning-radio-group 
+                    name="actionGroup"
+                    label="Select Action"
+                    options={actionOptions}
+                    value={selectedAction}
+                    onchange={handleActionChange}
+                    required>
+                </lightning-radio-group>
+
+                <!-- Show Reason only if HOLD is selected -->
+                <template if:true={isHoldSelected}>
+                    <div class="slds-m-top_small">
+                        <lightning-input 
+                            label="Reason for Hold (30 Days Extension)" 
+                            value={holdReason} 
+                            onchange={handleReasonChange}
+                            placeholder="e.g. Customer promised settlement by end of month..."
+                            required>
+                        </lightning-input>
+                    </div>
+                </template>
+            </div>
+        </template>
+
+        <!-- If Action is NOT Eligible -->
+        <template if:false={isEligible}>
+            <div class="slds-m-around_medium slds-text-color_error slds-text-heading_small">
+                ⚠️ Notice review is not required for this Case at this stage.
+            </div>
+        </template>
+
+        <!-- Modal Footer Buttons -->
+        <div slot="footer">
+            <lightning-button label="Cancel" onclick={handleCancel} class="slds-m-right_small"></lightning-button>
+            <template if:true={isEligible}>
+                <lightning-button variant="brand" label="Confirm & Execute" onclick={handleConfirm}></lightning-button>
+            </template>
+        </div>
+
+    </lightning-quick-action-panel>
+</template>

@@ -1,0 +1,28 @@
+/* Dynamic Task Quick Action Modal Centering and Adaptive Sizing */
+.slds-modal__container {
+    margin: 0 auto !important;
+    width: 90% !important;
+    max-width: 52rem !important;
+    min-width: 20rem !important;
+    height: auto !important;
+    min-height: auto !important;
+    max-height: 90vh !important;
+    display: flex !important;
+    flex-direction: column !important;
+    justify-content: center !important;
+    align-self: center !important;
+}
+
+.cuf-content {
+    padding: 0 !important;
+}
+
+.slds-modal__content {
+    height: auto !important;
+    min-height: auto !important;
+    max-height: 85vh !important;
+    overflow-y: auto !important;
+    padding: 0 !important;
+    border-radius: 8px !important;
+    background: transparent !important;
+}

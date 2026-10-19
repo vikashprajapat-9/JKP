@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<CustomField xmlns="http://soap.sforce.com/2006/04/metadata">
+    <fullName>Trigger_Tranche__c</fullName>
+    <description>For a payout event with a tranche: the number of the tranche that must be paid.</description>
+    <externalId>false</externalId>
+    <inlineHelpText>Only for the event &quot;A tranche is paid&quot;: 2 for the 2nd tranche.</inlineHelpText>
+    <label>Tranche Number</label>
+    <precision>3</precision>
+    <required>false</required>
+    <scale>0</scale>
+    <trackHistory>true</trackHistory>
+    <trackTrending>false</trackTrending>
+    <type>Number</type>
+    <unique>false</unique>
+</CustomField>
